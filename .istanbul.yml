@@ -1,0 +1,9 @@
+instrumentation:
+  excludes: [
+    'coverage',
+    'node_modules',
+    'spec/support/**',
+  ]
+  include-all-sources: true
+reporting:
+  print: none
