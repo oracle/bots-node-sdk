@@ -1,5 +1,6 @@
 instrumentation:
   excludes: [
+    'docs/**',
     'coverage',
     'node_modules',
     'spec/support/**',

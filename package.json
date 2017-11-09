@@ -1,5 +1,5 @@
 {
-  "name": "@oracle/chatbot-sdk",
+  "name": "@oracle/bots-js-sdk",
   "version": "0.0.1",
   "description": "Oracle chatbot utilities and custom component service middleware",
   "main": "dist/index.js",
@@ -9,6 +9,7 @@
     "build:watch": "tsc -w",
     "clean": "shx rm -rf ./dist",
     "lint": "tslint .",
+    "pretest": "npm run build",
     "test": "NODE_ENV=test istanbul cover ./spec/support/test.js",
     "posttest": "node ./spec/support/coverage.js"
   },
@@ -16,7 +17,7 @@
     "Matt Vander Vliet <matthew.vander.vliet@oracle.com>",
     "Adao Oliveira Junior <adao.junior@oracle.com>"
   ],
-  "license": "UPL-1.0",
+  "license": "ISC",
   "files": [
     "dist",
     "!dist/spec/**",
