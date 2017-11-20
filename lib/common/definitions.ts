@@ -28,3 +28,15 @@ export type Primitive = 'int' | 'float' | 'double' | 'boolean' | 'string' | 'map
 export interface Callback {
   (err?: Error, result?: any): void;
 }
+
+/**
+ * Standard logging interface
+ */
+export interface Logger {
+  debug(...args: any[]): void;
+  error(...args: any[]): void;
+  info(...args: any[]): void;
+  log(...args: any[]): void;
+  trace(...args: any[]): void;
+  warn(...args: any[]): void;
+}

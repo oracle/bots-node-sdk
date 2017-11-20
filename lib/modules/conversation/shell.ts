@@ -5,17 +5,13 @@
 const SDK = require('./sdk');
 
 // Module-scoped resources
-// const registry = require('./registry'); // specifies component names/impls
 
-export = function(config, registry)
+export = function ComponentShell(config, registry) {
 
-{
-  var logger = (config ? config.logger : null);
+  let logger = (config ? config.logger : null);
   if (!logger) {
-    const log4js = require('log4js');
-    logger = log4js.getLogger();
-    logger.setLevel('INFO');
-//    log4js.replaceConsole(logger); //should not replace console for MCe as MCS relies on console.log for diagnostics
+    logger = console;
+    logger.info("shell.js create console logger");
   }
 
   return {
@@ -23,15 +19,15 @@ export = function(config, registry)
     /**
      * Returns an array of metadata for all components.
      */
-    getAllComponentMetadata: function() {
-        const allComponents = [];
-        if (registry.components){
-          for (var componentName in registry.components) {
-              allComponents.push(registry.components[componentName].metadata());
-          }
+    getAllComponentMetadata: function () {
+      const allComponents = [];
+      if (registry.components) {
+        for (var componentName in registry.components) {
+          allComponents.push(registry.components[componentName].metadata());
         }
-        var allMetadata = {version: SDK.sdkVersion(), components: allComponents};
-        return allMetadata;
+      }
+      var allMetadata = { version: SDK.sdkVersion(), components: allComponents };
+      return allMetadata;
     },
 
     /**
@@ -56,7 +52,7 @@ export = function(config, registry)
      *   Component implementations may cause arbitrary errors to be propagated
      *   through.
      */
-    invokeComponentByName: function(componentName, requestBody, sdkMixin, callback) {
+    invokeComponentByName: function (componentName, requestBody, sdkMixin, callback) {
 
       sdkMixin = sdkMixin ? sdkMixin : {};
 
