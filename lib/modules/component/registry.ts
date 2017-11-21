@@ -3,37 +3,39 @@ import * as fs from 'fs';
 import * as _ from 'lodash';
 import * as log4js from 'log4js';
 
-import { Type } from '../../common/definitions';
-import { BotComponent, ComponentMetaName, BotComponentMeta } from './decorator';
-import { BotComponentInterface } from './abstract';
+import { CONSTANTS } from '../../common/constants';
+import { Type, isType } from '../../common/definitions';
+import { BotComponent, BotComponentMetaName, BotComponentMeta } from './decorator';
+import { ComponentInterface } from './abstract';
 
-export type RegistryCollectionName = string;
+export type CollectionName = string;
 
-export class BotComponentRegistry {
-  public static readonly COMPONENT_DIR = 'components';
+export class ComponentRegistry {
+  public static readonly COMPONENT_DIR = CONSTANTS.DEFAULT_COMPONENT_DIR;
   protected _logger: log4js.Logger;
-  protected _collectionName: RegistryCollectionName;
-  protected _collections = new Map<RegistryCollectionName, BotComponentRegistry>();
-  protected _components = new Map<ComponentMetaName, BotComponentInterface>();
+  protected _collectionName: CollectionName;
+  protected _collections = new Map<CollectionName, ComponentRegistry>();
+  protected _components = new Map<BotComponentMetaName, ComponentInterface>();
   private __valid: boolean;
 
   public static assemble(
-    parent: BotComponentRegistry,
+    parent: ComponentRegistry,
     componentDir = this.COMPONENT_DIR,
-    cwd: string = process.cwd()): BotComponentRegistry {
+    cwd: string = process.cwd()): ComponentRegistry {
     if (!~componentDir.indexOf(cwd)) {
       componentDir = path.join(cwd, componentDir);
     }
     return new this(parent, componentDir);
   }
-  constructor(protected _parent: BotComponentRegistry, protected _baseDir: string) {
+
+  constructor(protected _parent: ComponentRegistry, protected _baseDir: string) {
     // setup additional iVars.
     this._logger = log4js.getLogger(this.constructor.name);
     this.__collect(_baseDir);
   }
 
   /**
-   * SDK.shell compatability.
+   * Conversation shell compatability.
    * @desc allows components to be resolved by registry.components
    */
   public get components() {
@@ -78,7 +80,7 @@ export class BotComponentRegistry {
    * @param subdir: string - component subdirectory (absolute).
    */
   protected _addCollection(subdir: string): void {
-    this._collections.set(path.basename(subdir), BotComponentRegistry.assemble(this, subdir, this._baseDir));
+    this._collections.set(path.basename(subdir), ComponentRegistry.assemble(this, subdir, this._baseDir));
     // this._logger.info(`Registered component collection: '${path.basename(subdir)}'`);
   }
 
@@ -106,19 +108,19 @@ export class BotComponentRegistry {
 
   /**
    * component instantiation factory.
-   * @param ctor: BotComponentInterface.prototype.constructor - component constructor
+   * @param ctor: ComponentInterface.prototype.constructor - component constructor
    * @todo handle dependency injections
    */
-  private __componentFactory(mod: Type<BotComponentInterface>): BotComponentInterface {
+  private __componentFactory(mod: Type<ComponentInterface>): ComponentInterface {
     const ctor = makeCtor(mod);
     return new ctor();
   }
 
   /**
    * register an instantiated component in
-   * @param component: BotComponentInterface - instantiated bot component class
+   * @param component: ComponentInterface - instantiated bot component class
    */
-  private __register(component: BotComponentInterface): void {
+  private __register(component: ComponentInterface): void {
     const meta = component.metadata();
     if (this.isComponent(meta.name)) {
       return this._logger.warn(`Duplicate component found: ${meta.name} while attempting to register ${component['constructor'].name}`);
@@ -138,7 +140,7 @@ export class BotComponentRegistry {
   /**
    * list collections in this registry
    */
-  public getCollectionNames(): RegistryCollectionName[] {
+  public getCollectionNames(): CollectionName[] {
     let keys = []
     this._collections.forEach((coll, name) => {
       keys.push(name);
@@ -149,16 +151,16 @@ export class BotComponentRegistry {
   /**
    * get a registry for a specific collection of components.
    * @param collection: RegistryCollectionName - (optional) the name of the collection;
-   * @return BotComponentRegistry | this.
+   * @return ComponentRegistry | this.
    */
-  public getRegistry(collection?: RegistryCollectionName): BotComponentRegistry | this {
+  public getRegistry(collection?: CollectionName): ComponentRegistry | this {
     return collection ? this._collections.get(collection) : this;
   }
 
   /**
    * get component map for this registry
    */
-  public getComponents(): Map<ComponentMetaName, BotComponentInterface> {
+  public getComponents(): Map<BotComponentMetaName, ComponentInterface> {
     return this._components;
   }
 
@@ -166,7 +168,7 @@ export class BotComponentRegistry {
    * get component from map by name
    * @param name - component name
    */
-  public getComponent(name: ComponentMetaName): BotComponentInterface {
+  public getComponent(name: BotComponentMetaName): ComponentInterface {
     return this._components.get(name);
   }
 
@@ -174,7 +176,7 @@ export class BotComponentRegistry {
    * test existence of collection
    * @param name - collection name
    */
-  public isCollection(name: RegistryCollectionName): boolean {
+  public isCollection(name: CollectionName): boolean {
     return this._collections.has(name);
   }
 
@@ -182,7 +184,7 @@ export class BotComponentRegistry {
    * test existence of component
    * @param name - component name
    */
-  public isComponent(name: ComponentMetaName): boolean {
+  public isComponent(name: BotComponentMetaName): boolean {
     return this._components.has(name);
   }
 
@@ -191,7 +193,7 @@ export class BotComponentRegistry {
    * @param collection: RegistryCollectionName - (optional) the collection name
    * @return BotComponentMeta[] - array of component metadata
    */
-  public getMetadata(collection?: RegistryCollectionName): BotComponentMeta[] {
+  public getMetadata(collection?: CollectionName): BotComponentMeta[] {
     const registry = this.getRegistry(collection);
     let meta = [];
     if (!!registry) {
@@ -204,7 +206,6 @@ export class BotComponentRegistry {
     }
     return meta;
   }
-
 
 }
 
@@ -221,10 +222,10 @@ function makeCtor(value: any) {
 
 /**
  * test for class decorated with @BotComponent
- * @param value: any - class or object from module.exports.
+ * @param ref class or object from exports.
  * @todo create a decorator factory to test annotations against instanceof
  */
-function isBotComponent(value: any): value is BotComponent {
-  return (typeof value === 'function' && typeof value.prototype.metadata === 'function') ||
-    (typeof value === 'object' && typeof value.metadata  === 'function'); // legacy
+function isBotComponent(ref: any): ref is BotComponent {
+  return (typeof ref === 'function' && isType(ref.prototype.metadata) && isType(ref.prototype.invoke)) || // class usage
+    (typeof ref === 'object' && isType(ref.metadata) && isType(ref.invoke)); // legacy
 }

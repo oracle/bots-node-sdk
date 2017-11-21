@@ -1,4 +1,4 @@
-import { express, BotMiddlewareAbstract } from './abstract';
+import { express, MiddlewareAbstract } from './abstract';
 import * as bodyParser from 'body-parser';
 
 /**
@@ -10,7 +10,7 @@ export interface ParserMiddlewareOptions {
   limit?: string;
 }
 
-export class BotParserMiddleware extends BotMiddlewareAbstract {
+export class ParserMiddleware extends MiddlewareAbstract {
 
   protected _init(router: express.Router, options: ParserMiddlewareOptions): void {
     const common = {

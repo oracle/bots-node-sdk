@@ -1,82 +1,9 @@
 /* tslint:disable */
-import * as joi from 'joi';
-import commonMessageSchema = require('./schema/commonMessageSchema');
 
-export = function (Joi) {
+import * as Joi from 'joi';
+import { CommonValidator } from '../../common/validator';
+import commonMessageSchemaFactory = require('./schema/commonMessageSchema');
 
-  const actionSchema = Joi.object().keys({
-    type: Joi.string().required().valid('postback', 'call', 'url', 'share', 'location'),
-    postback: Joi.when('type', { is: 'postback', then: Joi.alternatives().try([Joi.string(), Joi.object()]), otherwise: Joi.any().forbidden() }),
-    phoneNumber: Joi.when('type', { is: 'call', then: Joi.string().required(), otherwise: Joi.any().forbidden() }),
-    url: Joi.when('type', { is: 'url', then: Joi.string().required().uri(), otherwise: Joi.any().forbidden() }),
-    label: Joi.string().optional().trim(),
-    imageUrl: Joi.string().uri().optional(),
-    channelExtensions: Joi.object().optional()
-  });
-  const actionsSchema = Joi.array().items(actionSchema);
-  const attachmentSchema = Joi.object().keys({
-    type: Joi.string().required().valid('file', 'video', 'audio', 'image'),
-    url: Joi.string().uri()
-  });
-  const cardSchema = Joi.object().keys({
-    title: Joi.string().required(),
-    description: Joi.string().optional(),
-    imageUrl: Joi.string().uri().optional(),
-    url: Joi.string().uri().optional(),
-    actions: actionsSchema.optional(),
-    channelExtensions: Joi.object().optional()
-  });
-  const locationSchema = Joi.object().keys({
-    title: Joi.string().optional(),
-    url: Joi.string().uri().optional(),
-    latitude: Joi.number().required(),
-    longitude: Joi.number().required()
-  });
-  const textConversationMessageSchema = Joi.object().keys({
-    type: Joi.string().required().valid('text'),
-    text: Joi.string().required().trim(),
-    actions: actionsSchema.optional(),
-    globalActions: actionsSchema.optional(),
-    channelExtensions: Joi.object().optional()
-  });
-  const cardConversationMessageSchema = Joi.object().keys({
-    type: Joi.string().required().valid('card'),
-    layout: Joi.string().required().valid('horizontal', 'vertical'),
-    cards: Joi.array().items(cardSchema).min(1),
-    actions: actionsSchema.optional(),
-    globalActions: actionsSchema.optional(),
-    channelExtensions: Joi.object().optional()
-  });
-  const attachmentConversationMessageSchema = Joi.object().keys({
-    type: Joi.string().required().valid('attachment'),
-    attachment: attachmentSchema.required(),
-    actions: actionsSchema.optional(),
-    globalActions: actionsSchema.optional(),
-    channelExtensions: Joi.object().optional()
-  });
-  const locationConversationMessageSchema = Joi.object().keys({
-    type: Joi.string().required().valid('location'),
-    location: locationSchema.required(),
-    actions: actionsSchema.optional(),
-    globalActions: actionsSchema.optional(),
-    channelExtensions: Joi.object().optional()
-  });
-  const rawConversationMessageSchema = Joi.object().keys({
-    type: Joi.string().required().valid('raw'),
-    payload: Joi.required(),
-  });
-  const postbackConversationMessageSchema = Joi.object().keys({
-    type: Joi.string().required().valid('postback'),
-    postback: Joi.alternatives().try([Joi.string(), Joi.object()]).required(),
-    text: Joi.string().optional().trim(),
-    actions: actionsSchema.optional(),
-    globalActions: actionsSchema.optional(),
-    channelExtensions: Joi.object().optional()
-  });
-  const agentConversationMessageSchema = Joi.object().keys({
-    type: Joi.string().required().valid('agentRequest', 'agentRequestResponse', 'agentConversationHistory', 'agentJoined', 'agentLeft', 'botConversationEnded', 'agent', 'botToAgentText')
-  }).options({ 'allowUnknown': true });
-  const conversationMessageSchema = Joi.alternatives().try(textConversationMessageSchema, cardConversationMessageSchema, attachmentConversationMessageSchema, locationConversationMessageSchema, postbackConversationMessageSchema, rawConversationMessageSchema, agentConversationMessageSchema);
 
   /**
    * The Bots MessageModel is a utility class that helps creating and validating
@@ -92,11 +19,10 @@ export = function (Joi) {
    * The payload can be created using the various static utility methods for creating different
    * response types including TextConversationMessage, CardConversationMessage, AttachmentConversationMessage, etc.
    */
-  const MessageModel = class {
+  export class MessageModel {
     private _payload: any;
     private _messagePayload: any;
     private _validationError: any;
-    private _validator: joi.AnySchema;
     /**
      * To create a MessageModel object using a string or an object representing the message.
      * The object is one of a known Common Message Model message type such as Text, Card, Attachment, Location, Postback, Agent or Raw type.  This object can be created
@@ -106,13 +32,11 @@ export = function (Joi) {
      * The input will be parsed.  If it is a valid message, messagePayload() will return the valid message object.  If not, the message content can be retrieved via payload().
      * @constructor
      * @param {string|object} payload - The payload to be parsed into a MessageModel object
-     * @param {joi.AnySchema} [validator] - The payload validator schema (optional)
      */
-    constructor(payload, validator?: joi.AnySchema) {
+    constructor(payload) {
       this._payload = payload;
       this._messagePayload = null;
       this._validationError = null;
-      this._validator = validator || joi.any();
       this._parse();
     }
 
@@ -175,6 +99,8 @@ export = function (Joi) {
     validationError() {
       return this._validationError;
     }
+
+    static _provideValidator() {}
 
     static _parseLegacyChoice(payload) {
       if (payload.choices && payload.choices instanceof Array && payload.choices.length > 0) {
@@ -445,7 +371,7 @@ export = function (Joi) {
      * @param {object} payload - The payload object to be verified
      */
     static validateConversationMessage(payload) {
-      var result = conversationMessageSchema.validate(payload);
+      const result = CommonValidator.fromFactory(commonMessageSchemaFactory).validate(payload);
       if (result && !result.error) {
         return true;
       } else {
@@ -454,5 +380,3 @@ export = function (Joi) {
     }
 
   };
-  return MessageModel;
-};

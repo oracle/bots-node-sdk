@@ -1,3 +1,3 @@
 export * from './decorator';
-export { BotComponentAbstract, BotComponentInterface } from './abstract';
-export { BotComponentRegistry } from './registry';
+export { ComponentAbstract, ComponentInterface } from './abstract';
+export { ComponentRegistry } from './registry';

@@ -12,11 +12,11 @@ export class CommonValidator {
    * static method to provide a singleton schema object reference
    * @param schemaFactory a Joi schema factory accepting a single argument, the joi validator object.
    */
-  public static fromFactory(schemaFactory: (joi: any) => Joi.Schema): Joi.Schema {
-    if (!this._schema.has(schemaFactory)) {
-      const schema = schemaFactory(CommonProvider.get(PROVIDER_KEY_JOI))
-      this._schema.set(schemaFactory, schema);
+  public static fromFactory(factory: (joi: any) => Joi.Schema): Joi.Schema {
+    if (!this._schema.has(factory)) {
+      const schema = factory(CommonProvider.get(PROVIDER_KEY_JOI))
+      this._schema.set(factory, schema);
     }
-    return this._schema.get(schemaFactory);
+    return this._schema.get(factory);
   }
 }

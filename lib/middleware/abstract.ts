@@ -2,7 +2,23 @@ import * as express from 'express';
 import * as log4js from 'log4js';
 export { express }
 
-export abstract class BotMiddlewareAbstract {
+export interface StaticMiddlwareAbstract {
+  // new (root: string, router: express.IRouter<any>, options?: any);
+  extend(root: string, router: express.IRouter<any>, options?: any);
+}
+
+/**
+ * interface for extended request object in OMCe
+ * https://docs.oracle.com/en/cloud/paas/mobile-suite/develop/calling-apis-custom-code.html
+ */
+export interface MobileCloudRequest extends express.Request {
+  oracleMobile?: { [service: string]: { [method: string]: Function } };
+}
+
+/**
+ * Embedded middleware abstraction layer.
+ */
+export abstract class MiddlewareAbstract {
   protected _logger: log4js.Logger; // establish a namespaced logger instance
 
   /**
@@ -12,7 +28,7 @@ export abstract class BotMiddlewareAbstract {
    * @param options: any - Channel specific middleware options.
    * @return instantiated class.
    */
-  public static extend(root: string, router: express.IRouter<any>, options: any = {}): BotMiddlewareAbstract {
+  public static extend(root: string, router: express.IRouter<any>, options: any = {}): MiddlewareAbstract {
     const THIS: any = this; // bypass "Cannot create instance of abstract class error"
     return new THIS(root, router, options);
   }

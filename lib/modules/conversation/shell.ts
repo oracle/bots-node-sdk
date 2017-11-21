@@ -1,10 +1,7 @@
 /* tslint:disable */
 
 // External deps
-// const log4js = require('log4js');
-const SDK = require('./sdk');
-
-// Module-scoped resources
+import { ComponentInvocation as SDK } from './conversation';
 
 export = function ComponentShell(config, registry) {
 

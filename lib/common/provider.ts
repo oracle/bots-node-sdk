@@ -56,7 +56,7 @@ export class CommonProvider {
 
   /**
    * accessor for a shared logger reference.
-   * @return object with logging interface
+   * @return logger interface object
    */
   public static getLogger(): Logger {
     return this.get(PROVIDER_KEY_LOGGER) || console;

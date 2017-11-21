@@ -8,6 +8,7 @@
     "build": "npm run clean && tsc",
     "build:watch": "tsc -w",
     "clean": "shx rm -rf ./dist",
+    "docs": "typedoc --out ./docs",
     "lint": "tslint .",
     "pretest": "npm run build",
     "test": "NODE_ENV=test istanbul cover ./spec/support/test.js",

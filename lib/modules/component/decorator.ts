@@ -1,10 +1,13 @@
 import { Type, Primitive } from '../../common/definitions';
-import { BotComponentInterface, BotConversationHandler } from './abstract';
+import { ComponentInterface } from './abstract';
 
-export type ComponentMetaName = string;
+export type BotComponentMetaName = string;
 
+/**
+ * Component metadata defintion
+ */
 export interface BotComponentMeta {
-  name?: ComponentMetaName;
+  name?: BotComponentMetaName;
   supportedActions?: string[];
   properties?: {
     [property: string]: {
@@ -16,16 +19,17 @@ export interface BotComponentMeta {
 export interface BotComponent extends BotComponentMeta { }
 
 /**
- * BotComponent
- * @param annotations {BotComponent} - metadata
+ * BotComponent class decorator function. (TypeScript only)
+ * Used to source component metadata object.
+ * @param annotations Component metadata object.
  */
 export const BotComponent = (annotations: BotComponent = {}): Function => { // decorator factory
-  return <T extends Type<BotComponentInterface>>(ctor: T) => { // class decorator
+  return <T extends Type<ComponentInterface>>(ctor: T) => { // class decorator
     // assert annotation component name.
     annotations.name = annotations.name ||
       ctor.prototype.constructor.name.replace(/([a-z-]+)([A-Z])/g, '$1.$2').toLowerCase();
 
-    return class extends ctor implements BotComponentInterface {
+    return class extends ctor implements ComponentInterface {
       private readonly __decoratorMetadata = Object.assign({}, annotations);
 
       // auto-implement the interface methods

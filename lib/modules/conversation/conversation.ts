@@ -2,6 +2,7 @@
 
 import { MessageModel } from '../message/common';
 
+import { Logger } from '../../common/definitions';
 import { CommonProvider } from '../../common/provider';
 import { CommonValidator } from '../../common/validator';
 import componentRequestSchemaFactory = require('./schema/componentRequestSchema');
@@ -37,10 +38,24 @@ const ERROR = {
 const PRIMITIVE_TYPES = ['int', 'float', 'double', 'boolean', 'string', 'map', 'list'];
 const NLPRESULT_TYPE = 'nlpresult';
 
+function createErrorDetails(title, detail, errorCode, errorDetails) {
+  const details = Object.assign({}, ERROR);
+  details.title = title;
+  details.detail = detail;
+  details['o:errorCode'] = errorCode;
+  details['o:errorDetails'] = errorDetails;
+  return details;
+}
+
+function validateRequestBody(reqBody) {
+  const requestSchema = CommonValidator.fromFactory(componentRequestSchemaFactory);
+  return requestSchema.validate(reqBody, { allowUnknown: true });
+}
+
 /**
  * Wrapper object for accessing nlpresult
  */
-const NLPResult = class {
+export class NLPResult {
   private _nlpresult: any;
   constructor(nlpresult) {
     this._nlpresult = nlpresult;
@@ -82,7 +97,7 @@ const NLPResult = class {
  * It offers a friendlier interface to reading context for the invocation
  * as well as changing variables and sending results back to the diaog engine.
  */
-const ComponentInvocation = class {
+export class ComponentInvocation {
   private _request: any;
   private _response: any;
   /**
@@ -147,7 +162,7 @@ const ComponentInvocation = class {
    * Retrieves the logger so the component can use the shared logger for logging.  The shared logger should support the methods log, info, warn, error and trace.
    * @return {object} The logger.
    */
-  logger() {
+  logger(): Logger {
     return CommonProvider.getLogger();
   }
 
@@ -621,18 +636,3 @@ const ComponentInvocation = class {
   }
 };
 
-function createErrorDetails(title, detail, errorCode, errorDetails) {
-  const details = Object.assign({}, ERROR);
-  details.title = title;
-  details.detail = detail;
-  details['o:errorCode'] = errorCode;
-  details['o:errorDetails'] = errorDetails;
-  return details;
-}
-
-function validateRequestBody(reqBody) {
-  const requestSchema = CommonValidator.fromFactory(componentRequestSchemaFactory);
-  return requestSchema.validate(reqBody, { allowUnknown: true });
-}
-
-return ComponentInvocation;

@@ -1,4 +1,4 @@
-import { express, BotMiddlewareAbstract } from './abstract';
+import { express, MiddlewareAbstract } from './abstract';
 import * as auth from 'basic-auth';
 
 export enum AUTH_TYPE {
@@ -19,7 +19,7 @@ export interface AuthBasicCredentials {
   pass?: string;
 }
 
-export class BotAuthMiddleware extends BotMiddlewareAbstract {
+export class AuthMiddleware extends MiddlewareAbstract {
 
   protected _init(router: express.Router, options: AuthMiddlewareOptions): void {
     switch (options.type) {
