@@ -1,6 +1,5 @@
 import * as path from 'path';
 import * as fs from 'fs';
-import * as _ from 'lodash';
 import * as log4js from 'log4js';
 
 import { CONSTANTS } from '../../common/constants';

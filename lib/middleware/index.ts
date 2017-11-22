@@ -4,6 +4,8 @@ import { AuthMiddleware, AuthMiddlewareOptions, AUTH_TYPE } from './auth';
 import { ParserMiddleware, ParserMiddlewareOptions } from './parser';
 import { ComponentMiddleware, ComponentMiddlewareOptions } from './component';
 
+export { AUTH_TYPE }
+
 /**
  * MiddlewareOptions type. Defines options/configuration for Bot middleware.
  */

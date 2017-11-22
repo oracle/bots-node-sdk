@@ -1,1 +1,2 @@
-export { ComponentInvocation as Conversation } from './conversation';
+// public exports
+export { ComponentInvocation as Conversation } from './sdk';

@@ -1,7 +1,7 @@
 /* tslint:disable */
 
 // External deps
-import { ComponentInvocation as SDK } from './conversation';
+import { ComponentInvocation as SDK } from './sdk';
 
 export = function ComponentShell(config, registry) {
 

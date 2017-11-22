@@ -35,6 +35,6 @@ describe('BotComponentRegistry', () => {
   it('should return metadata', () => {
     expect(registry.getMetadata()).toBeDefined();
     expect(registry.getMetadata('foo').length).toEqual(0);
-  })
+  });
 
 });

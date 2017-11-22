@@ -1,11 +1,11 @@
 /* tslint:disable */
 
-import { MessageModel } from '../message/common';
+import { MessageModel } from '../message/messageModel';
 
 import { Logger } from '../../common/definitions';
 import { CommonProvider } from '../../common/provider';
 import { CommonValidator } from '../../common/validator';
-import componentRequestSchemaFactory = require('./schema/componentRequestSchema');
+import ComponentRequestSchemaFactory = require('./schema/componentRequestSchema');
 
 const sdkVersion = '1.1';
 
@@ -48,8 +48,7 @@ function createErrorDetails(title, detail, errorCode, errorDetails) {
 }
 
 function validateRequestBody(reqBody) {
-  const requestSchema = CommonValidator.fromFactory(componentRequestSchemaFactory);
-  return requestSchema.validate(reqBody, { allowUnknown: true });
+  return CommonValidator.validate(ComponentRequestSchemaFactory, reqBody, { allowUnknown: true });
 }
 
 /**
@@ -634,5 +633,6 @@ export class ComponentInvocation {
     this._response.callbackToken = (typeof callbackToken === "undefined" ? null : callbackToken);
     return this;
   }
+
 };
 

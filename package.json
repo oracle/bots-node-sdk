@@ -1,9 +1,9 @@
 {
   "name": "@oracle/bots-js-sdk",
   "version": "0.0.1",
-  "description": "Oracle chatbot utilities and custom component service middleware",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "description": "Oracle bot custom component service middleware and utilities",
+  "main": "dist/lib/index.js",
+  "typings": "dist/lib/index.d.ts",
   "scripts": {
     "build": "npm run clean && tsc",
     "build:watch": "tsc -w",
@@ -28,16 +28,18 @@
   "dependencies": {
     "basic-auth": "^2.0.0",
     "body-parser": "^1.18.2",
-    "express": "^4.15.4",
     "joi": "^11.1.1",
-    "log4js": "^1.1.1"
+    "log4js": "^1.1.1",
+    "request": "^2.83.0"
   },
   "devDependencies": {
     "@types/express": "^4.0.37",
     "@types/jasmine": "^2.5.54",
     "@types/joi": "^10.4.3",
     "@types/log4js": "0.0.33",
+    "@types/request": "^2.0.7",
     "@types/supertest": "^2.0.3",
+    "express": "^4.15.4",
     "istanbul": "^0.4.5",
     "jasmine": "^2.8.0",
     "jasmine-spec-reporter": "^4.2.1",
@@ -47,5 +49,8 @@
     "tslint": "^5.7.0",
     "typedoc": "^0.8.0",
     "typescript": "^2.5.2"
+  },
+  "peerDependencies": {
+    "express": "^4.15.4"
   }
 }

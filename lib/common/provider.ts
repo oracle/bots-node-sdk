@@ -9,7 +9,7 @@ export type ProviderKey = any;
 export type ProviderRef = any;
 export type ProviderDefinition = {
   key: ProviderKey;
-  use: any;
+  use: ProviderRef;
 };
 export type Provider = ProviderDefinition | ProviderDefinition[];
 

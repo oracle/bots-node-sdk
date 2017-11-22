@@ -1,5 +1,8 @@
 import * as Joi from 'joi';
 
+/**
+ * MessageModel validation schema factory
+ */
 export = (joi: any): Joi.Schema => {
 
   const actionSchema = joi.object().keys({

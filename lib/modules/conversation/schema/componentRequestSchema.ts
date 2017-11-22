@@ -1,5 +1,8 @@
 import * as Joi from 'joi';
 
+/**
+ * Component invokation request schema factory
+ */
 export = (joi: any): Joi.Schema => {
   // joi does not seem to support recursive schemas.
   const contextSchema = joi.object().keys({
