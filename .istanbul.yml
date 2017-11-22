@@ -1,8 +1,10 @@
 instrumentation:
   excludes: [
+    'docs/**',
     'coverage',
     'node_modules',
-    'spec/support/**',
+    'spec/**',
+    'dist/spec/**',
   ]
   include-all-sources: true
 reporting:

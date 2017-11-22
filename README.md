@@ -1,6 +1,104 @@
-# IBCS Javascript SDK
+# WIP: Oracle Bots JavaScript SDK
 
-- Middleware
-- Utils
-- SDK Documentation
-- Unit Testing harness
+> This README is a work in progress. Please forgive any brevity or lack of cohesiveness.
+
+## About 
+- [Middleware](#middleware) - Custom Component express middleware wrapper.
+- [Utils](#utilities) - Utility functions for interfacing with Bots.
+- [Coverage report](./COVERAGE.md) - Unit testing coverage report.
+
+```
+npm install git+ssh://alm.oraclecorp.com:2222/mcs_intelligent-bots-cloud-service/bots-js-sdk.git
+```
+
+## Documentation
+
+TODO - typedoc + dash
+
+## Middleware
+
+Support
+- auth
+- body parser
+- custom component
+
+> JavaScript 
+```javascript
+const OracleBot = require('@oracle/bot-js-sdk');
+
+module.exports = function(app) {
+  app.use(OracleBot.middleware({
+    root: __dirname,
+    component: {
+      baseDir: OracleBot.DEFAULT_COMPONENT_DIR
+    }
+  }));
+};
+```
+
+> TypeScript
+```javascript
+import * as express from 'express';
+import * as OracleBot from '@oracle/bot-js-sdk';
+
+export = function(app: express.Express): void {
+  app.use(OracleBot.middleware({
+    root: __dirname, // root of application source
+    component: { // component middleware options
+      baseDir: 'components' // relative directory for components in source
+    }
+  }));
+};
+```
+
+## Utilities
+
+Utility functions are available within the `Util` namespace of the main entrypoint. 
+
+```javascript
+const Util = require('@oracle/bot-js-sdk').Util;
+```
+
+### Custom Components
+- Registry - Presently automatic through `fs` scanning as part of middleware configuration.
+- TODO: Support manual registry for legacy compatibility.
+- Developing: 
+
+### Webhook
+- Utils - `OracleBot.Util.Webhook`
+- TODO: Middleware Gateway
+
+### Message Formatting
+- MessageModel - `OracleBot.MessageModel`
+- Utils = `OracleBot.Util.MessageModel`
+
+## Testing Harness
+
+This package includes conversation unit testing facilities. 
+
+> JavaScript
+```javascript
+const BotTesting = require('@oracle/bot-js-sdk/testing');
+```
+
+> TypeScript
+```javascript
+import * as BotTesting from '@oracle/bot-js-sdk/testing';
+
+import { MyComponent } from '../../components/MyComponent';
+
+describe('MyComponent', () => {
+  it('should chat', done => {
+    const conv = BotTesting.MockComponent.Conversation.any();
+    new MyComponent().invoke(conv, (err) => {
+      expect(err).toBeFalsy();
+      expect(conv.text()).toBeDefined();
+      done();
+    });
+  });
+});
+```
+
+## Test
+
+`npm test`
