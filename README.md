@@ -7,9 +7,22 @@
 - [Utils](#utilities) - Utility functions for interfacing with Bots.
 - [Coverage report](./COVERAGE.md) - Unit testing coverage report.
 
+
+## Installation
+
+**NOTE** This project is intended for public [GitHub](https://github.com/oracle/) and 
+[@oracle/ npm](https://www.npmjs.com/org/oracle). Therefore npm installation directly from
+alm `git` should be replaced by `git submodule` addition in the consuming project(s).
+
+```shell
+# export ORACLE_ID=my.oracle.username
+
+npm install git+ssh://${ORACLE_ID}%40oracle.com@alm.oraclecorp.com:2222/mcs_intelligent-bots-cloud-service/bots-js-sdk.git
 ```
-npm install git+ssh://alm.oraclecorp.com:2222/mcs_intelligent-bots-cloud-service/bots-js-sdk.git
-```
+
+## TEST
+
+`npm test`
 
 ## Documentation
 
@@ -23,6 +36,7 @@ Support
 - custom component
 
 > JavaScript 
+
 ```javascript
 const OracleBot = require('@oracle/bot-js-sdk');
 
@@ -30,13 +44,14 @@ module.exports = function(app) {
   app.use(OracleBot.middleware({
     root: __dirname,
     component: {
-      baseDir: OracleBot.DEFAULT_COMPONENT_DIR
+      baseDir: 'components'
     }
   }));
 };
 ```
 
 > TypeScript
+
 ```javascript
 import * as express from 'express';
 import * as OracleBot from '@oracle/bot-js-sdk';
@@ -77,11 +92,13 @@ const Util = require('@oracle/bot-js-sdk').Util;
 This package includes conversation unit testing facilities. 
 
 > JavaScript
+
 ```javascript
 const BotTesting = require('@oracle/bot-js-sdk/testing');
 ```
 
 > TypeScript
+
 ```javascript
 import * as BotTesting from '@oracle/bot-js-sdk/testing';
 
@@ -98,7 +115,3 @@ describe('MyComponent', () => {
   });
 });
 ```
-
-## Test
-
-`npm test`

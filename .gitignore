@@ -1,3 +1,5 @@
 node_modules
 coverage
-dist
+docs
+# keep dist for purposes of installing directly from alm:
+!dist

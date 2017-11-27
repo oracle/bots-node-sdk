@@ -1,0 +1,7 @@
+{
+  "mode": "file",
+  "exclude": "spec/**/*",
+  "excludePrivate": true,
+  "hideGenerator": true,
+  "theme": "minimal"
+}

@@ -1,0 +1,1 @@
+{"version":3,"file":"abstract.js","sourceRoot":"","sources":["../../../../lib/modules/component/abstract.ts"],"names":[],"mappings":";;AAAA,iCAAiC;AAUjC;;;;GAIG;AACH;IAEE;QACE,IAAI,CAAC,MAAM,GAAG,MAAM,CAAC,SAAS,CAAC,IAAI,CAAC,WAAW,CAAC,IAAI,CAAC,CAAC;IACxD,CAAC;IAED;;;OAGG;IACH,IAAI,WAAW;QACb,MAAM,CAAC,IAAI,CAAC,qBAAqB,CAAC,CAAC;IACrC,CAAC;CAWF;AAvBD,8CAuBC"}

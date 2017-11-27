@@ -1,0 +1,1 @@
+{"version":3,"file":"spec.config.js","sourceRoot":"","sources":["../../../spec/support/spec.config.ts"],"names":[],"mappings":";AAGA,iBAAS;IACP,IAAI,EAAE,IAAI;IACV,eAAe,EAAE,MAAM;IACvB,IAAI,EAAE;QACJ,IAAI,EAAE,aAAa;QACnB,IAAI,EAAE,aAAa;KACpB;IACD,MAAM,EAAE,EAEP;IACD,QAAQ,EAAE;QACR,EAAE,EAAE,IAAI;KACT;CACF,CAAC"}

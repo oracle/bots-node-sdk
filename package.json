@@ -4,26 +4,35 @@
   "description": "Oracle bot custom component service middleware and utilities",
   "main": "dist/lib/index.js",
   "typings": "dist/lib/index.d.ts",
+  "engines": {
+    "node": ">=6.11.3",
+    "npm": ">=3.10.10"
+  },
+  "config": {
+    "outdir": "dist",
+    "docdir": "docs"
+  },
   "scripts": {
-    "build": "npm run clean && tsc",
+    "build": "npm run clean && npm run build:compile",
+    "build:compile": "tsc",
     "build:watch": "tsc -w",
-    "clean": "shx rm -rf ./dist",
-    "docs": "typedoc --out ./docs",
+    "clean": "shx rm -rf $npm_package_config_outdir",
+    "docs": "typedoc --options typedoc.json --out $npm_package_config_docdir ./lib",
     "lint": "tslint .",
-    "pretest": "npm run build",
     "test": "NODE_ENV=test istanbul cover ./spec/support/test.js",
+    "pretest": "npm run build",
     "posttest": "node ./spec/support/coverage.js"
   },
   "contributors": [
     "Matt Vander Vliet <matthew.vander.vliet@oracle.com>",
-    "Adao Oliveira Junior <adao.junior@oracle.com>"
+    "Adao Oliveira Junior <adao.junior@oracle.com>",
+    "Henrick Yau <henrick.yau@oracle.com>"
   ],
   "license": "ISC",
   "files": [
     "dist",
     "!dist/spec/**",
-    "testing",
-    "COVERAGE.md"
+    "testing/package.json"
   ],
   "dependencies": {
     "basic-auth": "^2.0.0",
@@ -48,6 +57,7 @@
     "supertest": "^3.0.0",
     "tslint": "^5.7.0",
     "typedoc": "^0.8.0",
+    "typedoc-dash-theme": "^1.1.0",
     "typescript": "^2.5.2"
   },
   "peerDependencies": {
