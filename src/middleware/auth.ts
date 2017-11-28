@@ -9,19 +9,19 @@ export enum AUTH_TYPE {
 /**
  * concentrated auth middleware options
  */
-export type AuthMiddlewareOptions = {
+export interface IAuthMiddlewareOptions {
   type: AUTH_TYPE;
-  credentials?: AuthBasicCredentials;
+  credentials?: IAuthBasicCredentials;
 }
 
-export interface AuthBasicCredentials {
+export interface IAuthBasicCredentials {
   user?: string;
   pass?: string;
 }
 
 export class AuthMiddleware extends MiddlewareAbstract {
 
-  protected _init(router: express.Router, options: AuthMiddlewareOptions): void {
+  protected _init(router: express.Router, options: IAuthMiddlewareOptions): void {
     switch (options.type) {
       case AUTH_TYPE.BASIC:
         router.use(this._basicHandler(options.credentials));
@@ -29,7 +29,7 @@ export class AuthMiddleware extends MiddlewareAbstract {
     }
   }
 
-  private _basicHandler(config: AuthBasicCredentials): express.RequestHandler {
+  private _basicHandler(config: IAuthBasicCredentials): express.RequestHandler {
     return (req, res, next) => {
       const requestCredentials = auth(req);
       if (!requestCredentials || requestCredentials.name !== config.user || requestCredentials.pass !== config.pass) {

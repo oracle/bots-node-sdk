@@ -1,5 +1,5 @@
 import { MessageModel } from '../message/messageModel';
-import { Logger } from '../../common/definitions';
+import { ILogger } from '../../common/definitions';
 /**
  * Wrapper object for accessing nlpresult
  */
@@ -54,7 +54,7 @@ export declare class ComponentInvocation {
      * Retrieves the logger so the component can use the shared logger for logging.  The shared logger should support the methods log, info, warn, error and trace.
      * @return {object} The logger.
      */
-    logger(): Logger;
+    logger(): ILogger;
     /**
      * Retrieves the raw payload of the current input message.
      * @return {object} The raw payload.

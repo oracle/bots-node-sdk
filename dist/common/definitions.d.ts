@@ -21,13 +21,13 @@ export declare type Primitive = 'int' | 'float' | 'double' | 'boolean' | 'string
 /**
  * Standard async callback signature
  */
-export interface Callback {
+export interface ICallback {
     (err?: Error, result?: any): void;
 }
 /**
  * Standard logging interface
  */
-export interface Logger {
+export interface ILogger {
     debug(...args: any[]): void;
     error(...args: any[]): void;
     info(...args: any[]): void;

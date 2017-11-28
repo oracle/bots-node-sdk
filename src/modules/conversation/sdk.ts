@@ -2,7 +2,7 @@
 
 import { MessageModel } from '../message/messageModel';
 
-import { Logger } from '../../common/definitions';
+import { ILogger } from '../../common/definitions';
 import { CommonProvider } from '../../common/provider';
 import { CommonValidator } from '../../common/validator';
 import ComponentRequestSchemaFactory = require('./schema/componentRequestSchema');
@@ -161,7 +161,7 @@ export class ComponentInvocation {
    * Retrieves the logger so the component can use the shared logger for logging.  The shared logger should support the methods log, info, warn, error and trace.
    * @return {object} The logger.
    */
-  logger(): Logger {
+  logger(): ILogger {
     return CommonProvider.getLogger();
   }
 

@@ -8,10 +8,12 @@
 - [Utils](#utilities) - Utility functions for interfacing with Bots.
 - [Coverage report](./COVERAGE.md) - Unit testing coverage report.
 
+---
+
 ## Installation
 
-**NOTE** This project is intended for public [GitHub](https://github.com/oracle/) and 
-[@oracle/ npm](https://www.npmjs.com/org/oracle). Therefore npm installation directly from
+**NOTE** This project is intended for public [GitHub](https://github.com/oracle/) and
+[@oracle/* npm](https://www.npmjs.com/org/oracle). Therefore npm installation directly from
 alm `git` should be replaced by `git submodule` addition in the consuming project(s).
 
 ```shell
@@ -20,7 +22,7 @@ alm `git` should be replaced by `git submodule` addition in the consuming projec
 npm install git+ssh://${ORACLE_ID}%40oracle.com@alm.oraclecorp.com:2222/mcs_intelligent-bots-cloud-service/bots-js-sdk.git
 ```
 
-## TEST
+## Test
 
 `npm test`
 

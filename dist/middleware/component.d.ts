@@ -3,7 +3,7 @@ import { express, MiddlewareAbstract } from './abstract';
 /**
  * concentrated component middleware options
  */
-export interface ComponentMiddlewareOptions {
+export interface IComponentMiddlewareOptions {
     baseDir?: string;
     mixins?: any;
 }
@@ -12,7 +12,7 @@ export interface ComponentMiddlewareOptions {
  * @extends MiddlewareAbstract
  */
 export declare class ComponentMiddleware extends MiddlewareAbstract {
-    protected _init(router: express.Router, options: ComponentMiddlewareOptions): void;
+    protected _init(router: express.Router, options: IComponentMiddlewareOptions): void;
     /**
      * invoke the component shell.
      * @param componentName: string - component name

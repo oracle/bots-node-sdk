@@ -1,6 +1,6 @@
 import * as Joi from 'joi';
 
-import { Logger } from './definitions';
+import { ILogger } from './definitions';
 
 export const PROVIDER_KEY_JOI = 'joi';
 export const PROVIDER_KEY_LOGGER = 'logger';
@@ -58,7 +58,7 @@ export class CommonProvider {
    * accessor for a shared logger reference.
    * @return logger interface object
    */
-  public static getLogger(): Logger {
+  public static getLogger(): ILogger {
     return this.get(PROVIDER_KEY_LOGGER) || console;
   }
 

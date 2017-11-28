@@ -18,7 +18,7 @@ import { Conversation as SDK } from '../../';
  *  })
  */
 export declare namespace MockComponent {
-    interface RequestBody {
+    interface IRequestBody {
         botId?: any;
         platformVersion?: any;
         context?: any;
@@ -32,7 +32,7 @@ export declare namespace MockComponent {
      * @param properties - conversation properties (optional)
      * @param variables - conversation variables (optional)
      */
-    function Request(type?: string, properties?: any, variables?: any): RequestBody;
+    function Request(type?: string, properties?: any, variables?: any): IRequestBody;
     /**
      * extension of the main Conversation class to provide testing conveniences
      * @todo: extend any methods to suppress unwanted testing functionality.
@@ -48,6 +48,6 @@ export declare namespace MockComponent {
          * @param req the component invocation request body
          * @return Conversation
          */
-        static fromRequest(req: RequestBody): Conversation;
+        static fromRequest(req: IRequestBody): Conversation;
     }
 }

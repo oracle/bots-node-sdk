@@ -4,8 +4,8 @@ import * as log4js from 'log4js';
 
 import { CONSTANTS } from '../../common/constants';
 import { Type, isType } from '../../common/definitions';
-import { BotComponent, BotComponentMetaName, BotComponentMeta } from './decorator';
-import { ComponentInterface } from './abstract';
+import { BotComponent, BotComponentMetaName, IBotComponentMeta } from './decorator';
+import { IComponentInterface } from './abstract';
 
 export type CollectionName = string;
 
@@ -14,7 +14,7 @@ export class ComponentRegistry {
   protected _logger: log4js.Logger;
   protected _collectionName: CollectionName;
   protected _collections = new Map<CollectionName, ComponentRegistry>();
-  protected _components = new Map<BotComponentMetaName, ComponentInterface>();
+  protected _components = new Map<BotComponentMetaName, IComponentInterface>();
   private __valid: boolean;
 
   public static assemble(
@@ -110,7 +110,7 @@ export class ComponentRegistry {
    * @param ctor: ComponentInterface.prototype.constructor - component constructor
    * @todo handle dependency injections
    */
-  private __componentFactory(mod: Type<ComponentInterface>): ComponentInterface {
+  private __componentFactory(mod: Type<IComponentInterface>): IComponentInterface {
     const ctor = makeCtor(mod);
     return new ctor();
   }
@@ -119,7 +119,7 @@ export class ComponentRegistry {
    * register an instantiated component in
    * @param component: ComponentInterface - instantiated bot component class
    */
-  private __register(component: ComponentInterface): void {
+  private __register(component: IComponentInterface): void {
     const meta = component.metadata();
     if (this.isComponent(meta.name)) {
       return this._logger.warn(`Duplicate component found: ${meta.name} while attempting to register ${component['constructor'].name}`);
@@ -159,7 +159,7 @@ export class ComponentRegistry {
   /**
    * get component map for this registry
    */
-  public getComponents(): Map<BotComponentMetaName, ComponentInterface> {
+  public getComponents(): Map<BotComponentMetaName, IComponentInterface> {
     return this._components;
   }
 
@@ -167,7 +167,7 @@ export class ComponentRegistry {
    * get component from map by name
    * @param name - component name
    */
-  public getComponent(name: BotComponentMetaName): ComponentInterface {
+  public getComponent(name: BotComponentMetaName): IComponentInterface {
     return this._components.get(name);
   }
 
@@ -192,7 +192,7 @@ export class ComponentRegistry {
    * @param collection: RegistryCollectionName - (optional) the collection name
    * @return BotComponentMeta[] - array of component metadata
    */
-  public getMetadata(collection?: CollectionName): BotComponentMeta[] {
+  public getMetadata(collection?: CollectionName): IBotComponentMeta[] {
     const registry = this.getRegistry(collection);
     let meta = [];
     if (!!registry) {

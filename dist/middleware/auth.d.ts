@@ -7,15 +7,15 @@ export declare enum AUTH_TYPE {
 /**
  * concentrated auth middleware options
  */
-export declare type AuthMiddlewareOptions = {
+export interface IAuthMiddlewareOptions {
     type: AUTH_TYPE;
-    credentials?: AuthBasicCredentials;
-};
-export interface AuthBasicCredentials {
+    credentials?: IAuthBasicCredentials;
+}
+export interface IAuthBasicCredentials {
     user?: string;
     pass?: string;
 }
 export declare class AuthMiddleware extends MiddlewareAbstract {
-    protected _init(router: express.Router, options: AuthMiddlewareOptions): void;
+    protected _init(router: express.Router, options: IAuthMiddlewareOptions): void;
     private _basicHandler(config);
 }

@@ -1,17 +1,17 @@
 import * as log4js from 'log4js';
 import { Conversation } from '../conversation';
-import { Callback } from '../../common/definitions';
-import { BotComponent, BotComponentMeta } from './decorator';
-export interface ComponentInterface {
-    metadata?(): BotComponentMeta;
-    invoke(conversation: Conversation, done: Callback): void;
+import { ICallback } from '../../common/definitions';
+import { BotComponent, IBotComponentMeta } from './decorator';
+export interface IComponentInterface {
+    metadata?(): IBotComponentMeta;
+    invoke(conversation: Conversation, done: ICallback): void;
 }
 /**
  * Custom component abstract class.
  * @preferred
  * @example export class MyCustomComponent extends ComponentAbstract { ... }
  */
-export declare abstract class ComponentAbstract implements ComponentInterface {
+export declare abstract class ComponentAbstract implements IComponentInterface {
     protected readonly logger: log4js.Logger;
     constructor();
     /**
@@ -26,5 +26,5 @@ export declare abstract class ComponentAbstract implements ComponentInterface {
      * @param done Conversation done callback
      * @return void
      */
-    abstract invoke(conversation: Conversation, done: Callback): void;
+    abstract invoke(conversation: Conversation, done: ICallback): void;
 }

@@ -1,5 +1,5 @@
-import { Callback } from '../common/definitions';
-import { express, MiddlewareAbstract, MobileCloudRequest } from './abstract';
+import { ICallback } from '../common/definitions';
+import { express, MiddlewareAbstract, IMobileCloudRequest } from './abstract';
 import { ComponentRegistry } from '../modules/component';
 
 import Shell = require('../modules/conversation/shell');
@@ -7,7 +7,7 @@ import Shell = require('../modules/conversation/shell');
 /**
  * concentrated component middleware options
  */
-export interface ComponentMiddlewareOptions {
+export interface IComponentMiddlewareOptions {
   baseDir?: string; // base component directory
   mixins?: any; // conversation mixin methods / properties
 }
@@ -26,8 +26,8 @@ const MESSAGES = {
  */
 export class ComponentMiddleware extends MiddlewareAbstract {
 
-  protected _init(router: express.Router, options: ComponentMiddlewareOptions): void {
-    const opts: ComponentMiddlewareOptions = {
+  protected _init(router: express.Router, options: IComponentMiddlewareOptions): void {
+    const opts: IComponentMiddlewareOptions = {
       baseDir: ComponentRegistry.COMPONENT_DIR,
       mixins: { },
       ...options
@@ -91,8 +91,8 @@ export class ComponentMiddleware extends MiddlewareAbstract {
   private __invoke(
     componentName: string,
     registry: ComponentRegistry,
-    options: ComponentMiddlewareOptions,
-    req: MobileCloudRequest,
+    options: IComponentMiddlewareOptions,
+    req: IMobileCloudRequest,
     res: express.Response
   ): void {
     // apply mixins and invoke component
@@ -108,7 +108,7 @@ export class ComponentMiddleware extends MiddlewareAbstract {
    * convenience handler for CC invokcation
    * @param res: express.Resonse
    */
-  private __invokationCb(res: express.Response): Callback {
+  private __invokationCb(res: express.Response): ICallback {
     return (err, data) => {
       // direct port from components.js
       if (!err) {

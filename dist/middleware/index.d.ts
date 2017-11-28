@@ -1,17 +1,17 @@
 /// <reference types="express" />
 import * as express from 'express';
-import { AuthMiddlewareOptions, AUTH_TYPE } from './auth';
-import { ParserMiddlewareOptions } from './parser';
-import { ComponentMiddlewareOptions } from './component';
+import { IAuthMiddlewareOptions, AUTH_TYPE } from './auth';
+import { IParserMiddlewareOptions } from './parser';
+import { IComponentMiddlewareOptions } from './component';
 export { AUTH_TYPE };
 /**
  * MiddlewareOptions type. Defines options/configuration for Bot middleware.
  */
-export interface MiddewareOptions {
+export interface IMiddewareOptions {
     root?: string;
-    auth?: AuthMiddlewareOptions;
-    parser?: ParserMiddlewareOptions;
-    component?: ComponentMiddlewareOptions;
+    auth?: IAuthMiddlewareOptions;
+    parser?: IParserMiddlewareOptions;
+    component?: IComponentMiddlewareOptions;
 }
 /**
  * middleware function. Add bot middleware to the app router stack.
@@ -19,4 +19,4 @@ export interface MiddewareOptions {
  * @return express.Router
  * @todo add webhook middleware
  */
-export declare function middleware(options?: MiddewareOptions): express.Router;
+export declare function middleware(options?: IMiddewareOptions): express.Router;

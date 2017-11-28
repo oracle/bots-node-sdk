@@ -1,6 +1,6 @@
 import * as log4js from 'log4js';
-import { BotComponentMetaName, BotComponentMeta } from './decorator';
-import { ComponentInterface } from './abstract';
+import { BotComponentMetaName, IBotComponentMeta } from './decorator';
+import { IComponentInterface } from './abstract';
 export declare type CollectionName = string;
 export declare class ComponentRegistry {
     protected _parent: ComponentRegistry;
@@ -9,7 +9,7 @@ export declare class ComponentRegistry {
     protected _logger: log4js.Logger;
     protected _collectionName: CollectionName;
     protected _collections: Map<string, ComponentRegistry>;
-    protected _components: Map<string, ComponentInterface>;
+    protected _components: Map<string, IComponentInterface>;
     private __valid;
     static assemble(parent: ComponentRegistry, componentDir?: string, cwd?: string): ComponentRegistry;
     constructor(_parent: ComponentRegistry, _baseDir: string);
@@ -63,12 +63,12 @@ export declare class ComponentRegistry {
     /**
      * get component map for this registry
      */
-    getComponents(): Map<BotComponentMetaName, ComponentInterface>;
+    getComponents(): Map<BotComponentMetaName, IComponentInterface>;
     /**
      * get component from map by name
      * @param name - component name
      */
-    getComponent(name: BotComponentMetaName): ComponentInterface;
+    getComponent(name: BotComponentMetaName): IComponentInterface;
     /**
      * test existence of collection
      * @param name - collection name
@@ -84,5 +84,5 @@ export declare class ComponentRegistry {
      * @param collection: RegistryCollectionName - (optional) the collection name
      * @return BotComponentMeta[] - array of component metadata
      */
-    getMetadata(collection?: CollectionName): BotComponentMeta[];
+    getMetadata(collection?: CollectionName): IBotComponentMeta[];
 }

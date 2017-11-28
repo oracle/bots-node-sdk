@@ -1,3 +1,3 @@
 export * from './decorator';
-export { ComponentAbstract, ComponentInterface } from './abstract';
+export { ComponentAbstract, IComponentInterface } from './abstract';
 export { ComponentRegistry } from './registry';

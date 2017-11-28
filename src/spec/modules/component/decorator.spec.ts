@@ -1,6 +1,6 @@
 import {
   BotComponent,
-  ComponentInterface,
+  IComponentInterface,
   ComponentAbstract
 } from '../../main';
 
@@ -24,7 +24,7 @@ describe('@BotComponent Decorator', () => {
   });
 
   it('should catch errors gracefully', done => {
-    const c = <ComponentInterface>new TestComponentWithError();
+    const c = <IComponentInterface>new TestComponentWithError();
     expect(c.invoke).toThrow(); // invocation without Callback will throw
     c.invoke(null, (err) => {
       expect(err).toBeDefined();
@@ -37,7 +37,7 @@ describe('@BotComponent Decorator', () => {
    * the decorator creates one allowing calls to the method.
    */
   it('should callback with error on improper implementation', done => {
-    const c = <ComponentInterface>new TestInvalidComponent();
+    const c = <IComponentInterface>new TestInvalidComponent();
     c.invoke(null, (err) => {
       expect(err).toBeDefined();
       done();

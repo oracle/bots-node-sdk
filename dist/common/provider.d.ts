@@ -1,4 +1,4 @@
-import { Logger } from './definitions';
+import { ILogger } from './definitions';
 export declare const PROVIDER_KEY_JOI = "joi";
 export declare const PROVIDER_KEY_LOGGER = "logger";
 export declare type ProviderKey = any;
@@ -36,5 +36,5 @@ export declare class CommonProvider {
      * accessor for a shared logger reference.
      * @return logger interface object
      */
-    static getLogger(): Logger;
+    static getLogger(): ILogger;
 }

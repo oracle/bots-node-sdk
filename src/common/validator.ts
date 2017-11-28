@@ -1,7 +1,7 @@
 import * as Joi from 'joi';
 import { CommonProvider, PROVIDER_KEY_JOI } from './provider';
 
-export interface ValidationSchemaFactory {
+export interface IValidationSchemaFactory {
   (joi: any): Joi.Schema;
 }
 
@@ -16,7 +16,7 @@ export class CommonValidator {
    * static method to provide a singleton schema object reference
    * @param factory - Joi schema factory accepting a single argument, the joi validator object.
    */
-  public static getSchema(factory: ValidationSchemaFactory): Joi.Schema {
+  public static getSchema(factory: IValidationSchemaFactory): Joi.Schema {
     if (!this._schemaCache.has(factory)) {
       const joi = CommonProvider.get(PROVIDER_KEY_JOI);
       if (!joi) {
@@ -34,7 +34,7 @@ export class CommonValidator {
    * @param payload - Payload to validate against schema
    * @param options - Validation options (optional)
    */
-  public static validate(factory: ValidationSchemaFactory, payload: any, options?: Joi.ValidationOptions): Joi.ValidationResult<any> {
+  public static validate(factory: IValidationSchemaFactory, payload: any, options?: Joi.ValidationOptions): Joi.ValidationResult<any> {
     return this.getSchema(factory).validate(payload, options);
   }
 

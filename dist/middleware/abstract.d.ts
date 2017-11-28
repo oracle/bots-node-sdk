@@ -2,14 +2,14 @@
 import * as express from 'express';
 import * as log4js from 'log4js';
 export { express };
-export interface StaticMiddlwareAbstract {
+export interface IStaticMiddlwareAbstract {
     extend(root: string, router: express.IRouter<any>, options?: any): any;
 }
 /**
  * interface for extended request object in OMCe
  * https://docs.oracle.com/en/cloud/paas/mobile-suite/develop/calling-apis-custom-code.html
  */
-export interface MobileCloudRequest extends express.Request {
+export interface IMobileCloudRequest extends express.Request {
     oracleMobile?: {
         [service: string]: {
             [method: string]: Function;

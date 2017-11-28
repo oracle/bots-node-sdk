@@ -1,11 +1,11 @@
 import * as log4js from 'log4js';
 import { Conversation } from '../conversation';
-import { Callback } from '../../common/definitions';
-import { BotComponent, BotComponentMeta } from './decorator';
+import { ICallback } from '../../common/definitions';
+import { BotComponent, IBotComponentMeta } from './decorator';
 
-export interface ComponentInterface {
-  metadata?(): BotComponentMeta; // established by decorator
-  invoke(conversation: Conversation, done: Callback): void;
+export interface IComponentInterface {
+  metadata?(): IBotComponentMeta; // established by decorator
+  invoke(conversation: Conversation, done: ICallback): void;
 }
 
 /**
@@ -13,7 +13,7 @@ export interface ComponentInterface {
  * @preferred
  * @example export class MyCustomComponent extends ComponentAbstract { ... }
  */
-export abstract class ComponentAbstract implements ComponentInterface {
+export abstract class ComponentAbstract implements IComponentInterface {
   protected readonly logger: log4js.Logger; // establish a namespaced logger instance
   constructor() {
     this.logger = log4js.getLogger(this.constructor.name);
@@ -34,6 +34,6 @@ export abstract class ComponentAbstract implements ComponentInterface {
    * @param done Conversation done callback
    * @return void
    */
-  public abstract invoke(conversation: Conversation, done: Callback): void
+  public abstract invoke(conversation: Conversation, done: ICallback): void
 
 }

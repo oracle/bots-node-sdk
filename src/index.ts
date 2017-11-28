@@ -8,6 +8,8 @@ CommonProvider.register([
   {key: PROVIDER_KEY_LOGGER, use: log4js.getLogger()},
 ]);
 
+export { CommonProvider as Foo }
+
 // main exports
 export * from './middleware';
 export * from './modules';

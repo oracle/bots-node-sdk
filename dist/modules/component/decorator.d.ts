@@ -3,7 +3,7 @@ export declare type BotComponentMetaName = string;
 /**
  * Component metadata defintion
  */
-export interface BotComponentMeta {
+export interface IBotComponentMeta {
     name?: BotComponentMetaName;
     supportedActions?: string[];
     properties?: {
@@ -13,7 +13,7 @@ export interface BotComponentMeta {
         };
     };
 }
-export interface BotComponent extends BotComponentMeta {
+export interface BotComponent extends IBotComponentMeta {
 }
 /**
  * BotComponent class decorator function. (TypeScript only)
