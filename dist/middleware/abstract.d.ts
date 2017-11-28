@@ -7,7 +7,7 @@ export interface IStaticMiddlwareAbstract {
 }
 /**
  * interface for extended request object in OMCe
- * https://docs.oracle.com/en/cloud/paas/mobile-suite/develop/calling-apis-custom-code.html
+ * @see https://docs.oracle.com/en/cloud/paas/mobile-suite/develop/calling-apis-custom-code.html
  */
 export interface IMobileCloudRequest extends express.Request {
     oracleMobile?: {

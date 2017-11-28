@@ -16,7 +16,7 @@ let ComponentTwo = class ComponentTwo {
     }
 };
 ComponentTwo = __decorate([
-    main_1.BotComponent({
+    main_1.Component({
         name: 'test.nonextended',
     })
 ], ComponentTwo);
@@ -27,7 +27,7 @@ exports.ComponentTwo = ComponentTwo;
 let ComponentTwoDuplicate = class ComponentTwoDuplicate {
 };
 ComponentTwoDuplicate = __decorate([
-    main_1.BotComponent({
+    main_1.Component({
         name: 'test.nonextended',
     })
 ], ComponentTwoDuplicate);

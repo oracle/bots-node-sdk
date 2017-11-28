@@ -4,6 +4,7 @@ instrumentation:
     'coverage',
     'node_modules',
     '**/spec/**',
+    'typedoc.js',
   ]
   include-all-sources: true
 reporting:

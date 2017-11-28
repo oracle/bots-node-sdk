@@ -1,6 +1,6 @@
 import { ComponentRegistry } from '../../main';
 
-describe('BotComponentRegistry', () => {
+describe('ComponentRegistry', () => {
   let registry: ComponentRegistry;
 
   beforeAll(() => {

@@ -1,7 +1,13 @@
 /**
- * wrapper for the various utilility objects
+ * Util module encapsulating various utility methods, classes, etc.
+ *
+ * ```javascript
+ * import * as OracleBot from '@oracle/bot-js-sdk';
+ *
+ * OracleBot.Util.MessageModel.cardToText(...args);
+ * ```
  */
-export declare namespace Util {
+export declare module Util {
     const MessageModel: {
         convertRespToText: (convMsg: any) => string;
         cardToText: (card: any, cardPrefix: any) => string;

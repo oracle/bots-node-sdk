@@ -72,13 +72,13 @@ class ComponentRegistry {
         // this._logger.info(`Registered component collection: '${path.basename(subdir)}'`);
     }
     /**
-     * resolve BotComponent classes from
+     * resolve Component classes from
      * @param file: string - source file (absolute)
      */
     _resolveComponents(file) {
         try {
             const mod = require(file);
-            if (isBotComponent(mod)) {
+            if (isComponent(mod)) {
                 // handle direct export case `export = SomeComponentClass`
                 return [mod];
             }
@@ -86,7 +86,7 @@ class ComponentRegistry {
                 // handle case where a single file exports decorated class(es).
                 return Object.keys(mod)
                     .map(key => mod[key])
-                    .filter(obj => isBotComponent(obj));
+                    .filter(obj => isComponent(obj));
             }
         }
         catch (e) {
@@ -171,7 +171,7 @@ class ComponentRegistry {
     /**
      * return component metadata as json array
      * @param collection: RegistryCollectionName - (optional) the collection name
-     * @return BotComponentMeta[] - array of component metadata
+     * @return ComponentMeta[] - array of component metadata
      */
     getMetadata(collection) {
         const registry = this.getRegistry(collection);
@@ -201,11 +201,11 @@ function makeCtor(value) {
     });
 }
 /**
- * test for class decorated with @BotComponent
+ * test for class decorated with @Component
  * @param ref class or object from exports.
  * @todo create a decorator factory to test annotations against instanceof
  */
-function isBotComponent(ref) {
+function isComponent(ref) {
     return (typeof ref === 'function' && definitions_1.isType(ref.prototype.metadata) && definitions_1.isType(ref.prototype.invoke)) || // class usage
         (typeof ref === 'object' && definitions_1.isType(ref.metadata) && definitions_1.isType(ref.invoke)); // legacy
 }

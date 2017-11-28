@@ -28,7 +28,7 @@ npm install git+ssh://${ORACLE_ID}%40oracle.com@alm.oraclecorp.com:2222/mcs_inte
 
 ## Documentation
 
-TODO - typedoc + dash
+Generate SDK documentation `npm run docs && open ./docs/index.html`
 
 ## Middleware
 
@@ -44,7 +44,7 @@ Support
 const OracleBot = require('@oracle/bot-js-sdk');
 
 module.exports = function(app) {
-  app.use(OracleBot.middleware({
+  app.use(OracleBot.Middleware.init({
     root: __dirname,
     component: {
       baseDir: 'components'
@@ -59,8 +59,8 @@ module.exports = function(app) {
 import * as express from 'express';
 import * as OracleBot from '@oracle/bot-js-sdk';
 
-export = function(app: express.Express): void {
-  app.use(OracleBot.middleware({
+export = (app: express.Express): void => {
+  app.use(OracleBot.Middleware.init({
     root: __dirname, // root of application source
     component: { // component middleware options
       baseDir: 'components' // relative directory for components in source

@@ -12,7 +12,7 @@ class ComponentAbstract {
     }
     /**
      * convenience getter to access decorator annotations.
-     * requires the use of @BotComponent({ ... }) decorator
+     * requires the use of @Component({ ... }) decorator
      */
     get annotations() {
         return this['__decoratorMetadata'];

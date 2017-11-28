@@ -7,7 +7,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const main_1 = require("../../main");
-describe('@BotComponent Decorator', () => {
+describe('@Component Decorator', () => {
     it('should utilize decorator reverse abstraction', () => {
         const c = new TestComponent();
         expect(c['metadata']).toEqual(jasmine.any(Function));
@@ -47,7 +47,7 @@ let TestComponent = class TestComponent extends main_1.ComponentAbstract {
     invoke() { }
 };
 TestComponent = __decorate([
-    main_1.BotComponent({
+    main_1.Lib.Component({
         supportedActions: [],
         properties: {
             firstname: { type: 'string', required: true }
@@ -61,7 +61,7 @@ let TestComponentWithError = class TestComponentWithError extends main_1.Compone
     }
 };
 TestComponentWithError = __decorate([
-    main_1.BotComponent({
+    main_1.Lib.Component({
         name: 'test.error',
         supportedActions: [],
         properties: {
@@ -73,7 +73,7 @@ TestComponentWithError = __decorate([
 let TestInvalidComponent = class TestInvalidComponent {
 };
 TestInvalidComponent = __decorate([
-    main_1.BotComponent({
+    main_1.Lib.Component({
         supportedActions: [],
         properties: {},
     })

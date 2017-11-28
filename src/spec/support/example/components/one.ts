@@ -1,9 +1,9 @@
-import { BotComponent, ComponentAbstract } from '../../../main';
+import { Component, ComponentAbstract } from '../../../main';
 
 /**
  * test component by extending OracleBot.ComponentAbstract
  */
-@BotComponent({
+@Component({
   name: 'test.one',
 })
 export class MyFirstComponent extends ComponentAbstract {

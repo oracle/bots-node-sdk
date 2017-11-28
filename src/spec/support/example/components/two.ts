@@ -1,9 +1,9 @@
-import { BotComponent, ComponentAbstract } from '../../../main';
+import { Component, ComponentAbstract } from '../../../main';
 
 /**
  * test component without extending OracleBot.ComponentAbstract
  */
-@BotComponent({
+@Component({
   name: 'test.nonextended',
 })
 export class ComponentTwo {
@@ -15,7 +15,7 @@ export class ComponentTwo {
 /**
  * test creation of a component with same name
  */
-@BotComponent({
+@Component({
   name: 'test.nonextended',
 })
 export class ComponentTwoDuplicate {

@@ -4,7 +4,7 @@ import * as log4js from 'log4js';
 
 import { CONSTANTS } from '../../common/constants';
 import { Type, isType } from '../../common/definitions';
-import { BotComponent, BotComponentMetaName, IBotComponentMeta } from './decorator';
+import { Component, ComponentMetadataName, IComponentMetadata } from './decorator';
 import { IComponentInterface } from './abstract';
 
 export type CollectionName = string;
@@ -14,7 +14,7 @@ export class ComponentRegistry {
   protected _logger: log4js.Logger;
   protected _collectionName: CollectionName;
   protected _collections = new Map<CollectionName, ComponentRegistry>();
-  protected _components = new Map<BotComponentMetaName, IComponentInterface>();
+  protected _components = new Map<ComponentMetadataName, IComponentInterface>();
   private __valid: boolean;
 
   public static assemble(
@@ -84,20 +84,20 @@ export class ComponentRegistry {
   }
 
   /**
-   * resolve BotComponent classes from
+   * resolve Component classes from
    * @param file: string - source file (absolute)
    */
   protected _resolveComponents(file: string): any[] {
     try {
       const mod = require(file);
-      if (isBotComponent(mod)) {
+      if (isComponent(mod)) {
         // handle direct export case `export = SomeComponentClass`
         return [mod];
       } else {
         // handle case where a single file exports decorated class(es).
         return Object.keys(mod)
             .map(key => mod[key])
-            .filter(obj => isBotComponent(obj));
+            .filter(obj => isComponent(obj));
       }
     } catch (e) {
       this._logger.error(e);
@@ -159,7 +159,7 @@ export class ComponentRegistry {
   /**
    * get component map for this registry
    */
-  public getComponents(): Map<BotComponentMetaName, IComponentInterface> {
+  public getComponents(): Map<ComponentMetadataName, IComponentInterface> {
     return this._components;
   }
 
@@ -167,7 +167,7 @@ export class ComponentRegistry {
    * get component from map by name
    * @param name - component name
    */
-  public getComponent(name: BotComponentMetaName): IComponentInterface {
+  public getComponent(name: ComponentMetadataName): IComponentInterface {
     return this._components.get(name);
   }
 
@@ -183,16 +183,16 @@ export class ComponentRegistry {
    * test existence of component
    * @param name - component name
    */
-  public isComponent(name: BotComponentMetaName): boolean {
+  public isComponent(name: ComponentMetadataName): boolean {
     return this._components.has(name);
   }
 
   /**
    * return component metadata as json array
    * @param collection: RegistryCollectionName - (optional) the collection name
-   * @return BotComponentMeta[] - array of component metadata
+   * @return ComponentMeta[] - array of component metadata
    */
-  public getMetadata(collection?: CollectionName): IBotComponentMeta[] {
+  public getMetadata(collection?: CollectionName): IComponentMetadata[] {
     const registry = this.getRegistry(collection);
     let meta = [];
     if (!!registry) {
@@ -220,11 +220,11 @@ function makeCtor(value: any) {
 }
 
 /**
- * test for class decorated with @BotComponent
+ * test for class decorated with @Component
  * @param ref class or object from exports.
  * @todo create a decorator factory to test annotations against instanceof
  */
-function isBotComponent(ref: any): ref is BotComponent {
+function isComponent(ref: any): ref is Component {
   return (typeof ref === 'function' && isType(ref.prototype.metadata) && isType(ref.prototype.invoke)) || // class usage
     (typeof ref === 'object' && isType(ref.metadata) && isType(ref.invoke)); // legacy
 }

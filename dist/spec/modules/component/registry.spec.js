@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const main_1 = require("../../main");
-describe('BotComponentRegistry', () => {
+describe('ComponentRegistry', () => {
     let registry;
     beforeAll(() => {
         registry = main_1.ComponentRegistry.assemble(null, '../../support/example/components', __dirname);

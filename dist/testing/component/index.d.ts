@@ -1,21 +1,23 @@
 import { Conversation as SDK } from '../../';
 /**
  * MockComponent Testing Harness
- * @example
- *  import * as Testing from '@oracle/bot-js-sdk/testing';
- *  import { MyCustomComponent } from 'path/to/custom/components';
  *
- *  describe('MyCustomComponent', () => {
- *    it('should reply with message', done => {
- *      const request = Testing.MockComponent.Request();
- *      const conversation = Testing.MockComponent.Conversation.fromRequest(request);
- *      new MyCustomComponent()
- *        .invoke(conversation, err => {
- *          expect(conversation.response().messages).toBeDefined();
- *          return err ? done.fail(err) : done();
- *        });
- *    })
- *  })
+ * ```javascript
+ * import * as Testing from '@oracle/bot-js-sdk/testing';
+ * import { MyCustomComponent } from 'path/to/custom/components';
+ *
+ * describe('MyCustomComponent', () => {
+ *   it('should reply with message', done => {
+ *     const request = Testing.MockComponent.Request();
+ *     const conversation = Testing.MockComponent.Conversation.fromRequest(request);
+ *     new MyCustomComponent()
+ *       .invoke(conversation, err => {
+ *         expect(conversation.response().messages).toBeDefined();
+ *         return err ? done.fail(err) : done();
+ *       });
+ *   })
+ * })
+ * ```
  */
 export declare namespace MockComponent {
     interface IRequestBody {

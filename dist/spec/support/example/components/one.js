@@ -17,7 +17,7 @@ let MyFirstComponent = class MyFirstComponent extends main_1.ComponentAbstract {
     }
 };
 MyFirstComponent = __decorate([
-    main_1.BotComponent({
+    main_1.Component({
         name: 'test.one',
     })
 ], MyFirstComponent);

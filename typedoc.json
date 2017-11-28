@@ -1,7 +1,0 @@
-{
-  "mode": "modules",
-  "excludeExternals": true,
-  "excludePrivate": true,
-  "hideGenerator": true,
-  "theme": "default"
-}

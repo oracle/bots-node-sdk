@@ -1,10 +1,10 @@
 import * as log4js from 'log4js';
 import { Conversation } from '../conversation';
 import { ICallback } from '../../common/definitions';
-import { BotComponent, IBotComponentMeta } from './decorator';
+import { Component, IComponentMetadata } from './decorator';
 
 export interface IComponentInterface {
-  metadata?(): IBotComponentMeta; // established by decorator
+  metadata?(): IComponentMetadata; // established by decorator
   invoke(conversation: Conversation, done: ICallback): void;
 }
 
@@ -21,9 +21,9 @@ export abstract class ComponentAbstract implements IComponentInterface {
 
   /**
    * convenience getter to access decorator annotations.
-   * requires the use of @BotComponent({ ... }) decorator
+   * requires the use of @Component({ ... }) decorator
    */
-  get annotations(): BotComponent {
+  get annotations(): Component {
     return this['__decoratorMetadata'];
   }
 

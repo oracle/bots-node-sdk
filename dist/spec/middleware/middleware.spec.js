@@ -17,7 +17,7 @@ describe('Middleware', () => {
         let spyAuthMw = spyOn(auth_1.AuthMiddleware.prototype, '_init');
         let spyParserMw = spyOn(parser_1.ParserMiddleware.prototype, '_init');
         let spyCompMw = spyOn(component_1.ComponentMiddleware.prototype, '_init');
-        expect(OracleBot.middleware).not.toThrow();
+        expect(OracleBot.Middleware.init).not.toThrow();
         // individual middlewares don't get invoked without configs
         expect(spyAuthMw).not.toHaveBeenCalled();
         expect(spyParserMw).not.toHaveBeenCalled();

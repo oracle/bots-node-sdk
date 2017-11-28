@@ -1,6 +1,6 @@
-import { BotComponent, ComponentAbstract } from '../../../../main';
+import { Component, ComponentAbstract } from '../../../../main';
 
-@BotComponent({
+@Component({
   name: 'sub.one',
 })
 export class SubComponent extends ComponentAbstract {

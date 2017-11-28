@@ -17,7 +17,7 @@
     "build:compile": "tsc",
     "build:watch": "tsc -w",
     "clean": "shx rm -rf $npm_package_config_outdir",
-    "docs": "shx rm -rf docs && typedoc --options ./typedoc.json --exclude '**/*+(spec|schema)/**' --out $npm_package_config_docdir ./src",
+    "docs": "shx rm -rf ./docs && typedoc --options ./typedoc.js --exclude '**/*+(spec|schema|common)/**' --out $npm_package_config_docdir ./src/",
     "lint": "tslint .",
     "test": "NODE_ENV=test istanbul cover ./src/spec/support/test.js",
     "pretest": "npm run build",

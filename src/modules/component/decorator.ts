@@ -1,13 +1,13 @@
 import { Type, Primitive } from '../../common/definitions';
 import { IComponentInterface } from './abstract';
 
-export type BotComponentMetaName = string;
+export type ComponentMetadataName = string;
 
 /**
  * Component metadata defintion
  */
-export interface IBotComponentMeta {
-  name?: BotComponentMetaName;
+export interface IComponentMetadata {
+  name?: ComponentMetadataName;
   supportedActions?: string[];
   properties?: {
     [property: string]: {
@@ -16,14 +16,30 @@ export interface IBotComponentMeta {
     }
   };
 }
-export interface BotComponent extends IBotComponentMeta { }
+export interface Component extends IComponentMetadata { }
 
 /**
- * BotComponent class decorator function. (TypeScript only)
- * Used to source component metadata object.
- * @param annotations Component metadata object.
+ * @preferred
+ * Component class decorator function. (`TypeScript` only)
+ * Used to source component annotations (metadata) object.
+ * @param annotations - Component metadata object.
+ * @example
+ * ```javascript
+ * import * as OracleBot from '@oracle/bot-js-sdk';
+ *
+ * @OracleBot.Component({
+ *   name: 'my.custom.component',
+ *   properties: {},
+ *   supportedActions: []
+ * })
+ * export class MyCustomComponent {
+ *   invoke(conversation: OracleBot.Conversation, done) {
+ *     // ...
+ *   }
+ * }
+ * ```
  */
-export const BotComponent = (annotations: BotComponent = {}): Function => { // decorator factory
+export const Component = (annotations: Component = {}): Function => { // decorator factory
   return <T extends Type<IComponentInterface>>(ctor: T) => { // class decorator
     // assert annotation component name.
     annotations.name = annotations.name ||
@@ -33,7 +49,7 @@ export const BotComponent = (annotations: BotComponent = {}): Function => { // d
       private readonly __decoratorMetadata = Object.assign({}, annotations);
 
       // auto-implement the interface methods
-      metadata(): IBotComponentMeta {
+      metadata(): IComponentMetadata {
         return this.__decoratorMetadata;
       }
       // front door of component instance invokation.

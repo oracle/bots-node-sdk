@@ -14,7 +14,7 @@ let SubComponent = class SubComponent extends main_1.ComponentAbstract {
     }
 };
 SubComponent = __decorate([
-    main_1.BotComponent({
+    main_1.Component({
         name: 'sub.one',
     })
 ], SubComponent);

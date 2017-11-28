@@ -5,7 +5,7 @@ const OracleBot = require("../main");
 const CONF = require("./spec.config");
 const app = express();
 // enable auth/parser at root level
-app.use(OracleBot.middleware({
+app.use(OracleBot.Middleware.init({
     parser: CONF.parser,
     auth: {
         type: OracleBot.AUTH_TYPE.BASIC,
@@ -13,7 +13,7 @@ app.use(OracleBot.middleware({
     },
 }));
 // add prefixed /component middleware
-app.use(CONF.componentPrefix, OracleBot.middleware({
+app.use(CONF.componentPrefix, OracleBot.Middleware.init({
     root: __dirname,
     component: {
         baseDir: path.join(__dirname, 'example/components')

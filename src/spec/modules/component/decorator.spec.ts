@@ -1,10 +1,10 @@
 import {
-  BotComponent,
+  Lib,
   IComponentInterface,
   ComponentAbstract
 } from '../../main';
 
-describe('@BotComponent Decorator', () => {
+describe('@Component Decorator', () => {
 
   it('should utilize decorator reverse abstraction', () => {
     const c = new TestComponent();
@@ -47,7 +47,7 @@ describe('@BotComponent Decorator', () => {
 });
 
 // test a valid component
-@BotComponent({
+@Lib.Component({
   supportedActions: [],
   properties: {
     firstname: { type: 'string', required: true }
@@ -58,7 +58,7 @@ class TestComponent extends ComponentAbstract {
 }
 
 // test a valid component with explicit name
-@BotComponent({
+@Lib.Component({
   name: 'test.error',
   supportedActions: [],
   properties: {
@@ -72,7 +72,7 @@ class TestComponentWithError extends ComponentAbstract {
 }
 
 // test invalid component
-@BotComponent({
+@Lib.Component({
   supportedActions: [],
   properties: {},
 })

@@ -9,7 +9,7 @@ const main_1 = require("../../../main");
 let ComponentThree = class ComponentThree {
 };
 ComponentThree = __decorate([
-    main_1.BotComponent({
+    main_1.Component({
         name: 'test.direct',
     })
 ], ComponentThree);
