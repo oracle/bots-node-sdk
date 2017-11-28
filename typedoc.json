@@ -1,7 +1,7 @@
 {
-  "mode": "file",
-  "exclude": "spec/**/*",
+  "mode": "modules",
+  "excludeExternals": true,
   "excludePrivate": true,
   "hideGenerator": true,
-  "theme": "minimal"
+  "theme": "default"
 }

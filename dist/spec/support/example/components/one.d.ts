@@ -1,4 +1,4 @@
-import { ComponentAbstract } from '../../../../lib';
+import { ComponentAbstract } from '../../../main';
 /**
  * test component by extending OracleBot.ComponentAbstract
  */

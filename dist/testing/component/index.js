@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const lib_1 = require("../../lib");
+const _1 = require("../../");
 /**
  * MockComponent Testing Harness
  * @example
@@ -69,7 +69,7 @@ var MockComponent;
      * extension of the main Conversation class to provide testing conveniences
      * @todo: extend any methods to suppress unwanted testing functionality.
      */
-    class Conversation extends lib_1.Conversation {
+    class Conversation extends _1.Conversation {
         /**
          * create a mock conversation with an "empty" valid request.
          * @return Conversation

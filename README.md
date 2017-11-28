@@ -1,12 +1,12 @@
-# WIP: Oracle Bots JavaScript SDK
+# Oracle Bots JavaScript SDK
 
 > This README is a work in progress. Please forgive any brevity or lack of cohesiveness.
 
-## About 
+## About
+
 - [Middleware](#middleware) - Custom Component express middleware wrapper.
 - [Utils](#utilities) - Utility functions for interfacing with Bots.
 - [Coverage report](./COVERAGE.md) - Unit testing coverage report.
-
 
 ## Installation
 
@@ -15,7 +15,7 @@
 alm `git` should be replaced by `git submodule` addition in the consuming project(s).
 
 ```shell
-# export ORACLE_ID=my.oracle.username
+#export ORACLE_ID=my.oracle.username
 
 npm install git+ssh://${ORACLE_ID}%40oracle.com@alm.oraclecorp.com:2222/mcs_intelligent-bots-cloud-service/bots-js-sdk.git
 ```
@@ -31,11 +31,12 @@ TODO - typedoc + dash
 ## Middleware
 
 Support
+
 - auth
 - body parser
 - custom component
 
-> JavaScript 
+> JavaScript
 
 ```javascript
 const OracleBot = require('@oracle/bot-js-sdk');
@@ -75,15 +76,18 @@ const Util = require('@oracle/bot-js-sdk').Util;
 ```
 
 ### Custom Components
+
 - Registry - Presently automatic through `fs` scanning as part of middleware configuration.
 - TODO: Support manual registry for legacy compatibility.
-- Developing: 
+- Developing:
 
 ### Webhook
+
 - Utils - `OracleBot.Util.Webhook`
 - TODO: Middleware Gateway
 
 ### Message Formatting
+
 - MessageModel - `OracleBot.MessageModel`
 - Utils = `OracleBot.Util.MessageModel`
 

@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const constants_1 = require("../../lib/common/constants");
-const definitions_1 = require("../../lib/common/definitions");
+const constants_1 = require("../../common/constants");
+const definitions_1 = require("../../common/definitions");
 describe('Common', () => {
     describe('CONSTANTS', () => {
         it('should declare constants', () => {

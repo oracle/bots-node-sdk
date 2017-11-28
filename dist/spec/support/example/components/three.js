@@ -5,11 +5,11 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-const lib_1 = require("../../../../lib");
+const main_1 = require("../../../main");
 let ComponentThree = class ComponentThree {
 };
 ComponentThree = __decorate([
-    lib_1.BotComponent({
+    main_1.BotComponent({
         name: 'test.direct',
     })
 ], ComponentThree);

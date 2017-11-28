@@ -1,7 +1,7 @@
 "use strict";
 const express = require("express");
 const path = require("path");
-const OracleBot = require("../../lib");
+const OracleBot = require("../main");
 const CONF = require("./spec.config");
 const app = express();
 // enable auth/parser at root level

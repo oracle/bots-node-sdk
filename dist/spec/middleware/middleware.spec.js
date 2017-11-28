@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const OracleBot = require("../../lib/");
-const abstract_1 = require("../../lib/middleware/abstract");
-const auth_1 = require("../../lib/middleware/auth");
-const parser_1 = require("../../lib/middleware/parser");
-const component_1 = require("../../lib/middleware/component");
+const OracleBot = require("../main");
+const abstract_1 = require("../../middleware/abstract");
+const auth_1 = require("../../middleware/auth");
+const parser_1 = require("../../middleware/parser");
+const component_1 = require("../../middleware/component");
 const testing_1 = require("../../testing");
 // some test components
 const one_1 = require("../support/example/components/one");

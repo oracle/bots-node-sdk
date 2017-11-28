@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const lib_1 = require("../../lib");
+const main_1 = require("../main");
 const BotTesting = require("../../testing");
 describe('Testing harness', () => {
     describe('MockComponent', () => {
@@ -11,7 +11,7 @@ describe('Testing harness', () => {
         });
         it('should extend primary Conversation class', () => {
             const conv = BotTesting.MockComponent.Conversation.any();
-            expect(conv instanceof lib_1.Conversation).toBe(true);
+            expect(conv instanceof main_1.Conversation).toBe(true);
         });
     });
 });

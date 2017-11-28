@@ -6,15 +6,15 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const lib_1 = require("../../../../../lib");
-let SubComponent = class SubComponent extends lib_1.ComponentAbstract {
+const main_1 = require("../../../../main");
+let SubComponent = class SubComponent extends main_1.ComponentAbstract {
     invoke(sdk, done) {
         this.logger.info('A siloed component!');
         done();
     }
 };
 SubComponent = __decorate([
-    lib_1.BotComponent({
+    main_1.BotComponent({
         name: 'sub.one',
     })
 ], SubComponent);

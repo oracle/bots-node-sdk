@@ -1,4 +1,4 @@
-import { Conversation as SDK } from '../../lib';
+import { Conversation as SDK } from '../../';
 /**
  * MockComponent Testing Harness
  * @example

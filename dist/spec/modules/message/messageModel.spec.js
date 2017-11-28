@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const _1 = require("../../../lib/");
+const main_1 = require("../../main");
 describe('MessageModel', () => {
     describe('CardMessageConversionToText', () => {
         it('Simple Text', function () {
@@ -13,10 +13,10 @@ describe('MessageModel', () => {
                 }
             ];
             const cards = cardContents.map(function (content, index) {
-                return _1.MessageModel.cardObject(content.title, content.description);
+                return main_1.MessageModel.cardObject(content.title, content.description);
             });
-            const cardMsg = _1.MessageModel.cardConversationMessage('horizontal', cards);
-            const convertedCardMsg = _1.Util.MessageModel.convertRespToText(cardMsg);
+            const cardMsg = main_1.MessageModel.cardConversationMessage('horizontal', cards);
+            const convertedCardMsg = main_1.Util.MessageModel.convertRespToText(cardMsg);
             // console.log(convertedCardMsg);
             expect(convertedCardMsg.trim()) // tslint:disable-next-line
                 .toEqual('You can choose from the following cards for more information: Card HAWAIIAN CHICKEN, Card PEPPERONI, Card BACON SPINACH ALFREDO.');
@@ -24,28 +24,28 @@ describe('MessageModel', () => {
     });
     describe('TextMessageConversionToText', function () {
         it('Simple Text', function () {
-            const textMsg = _1.MessageModel.textConversationMessage('Hello can I help you?');
-            const convertedTextMsg = _1.Util.MessageModel.convertRespToText(textMsg);
+            const textMsg = main_1.MessageModel.textConversationMessage('Hello can I help you?');
+            const convertedTextMsg = main_1.Util.MessageModel.convertRespToText(textMsg);
             expect(convertedTextMsg.trim()).toEqual('Hello can I help you?');
         });
         it('Text with Actions', function () {
             const actionLabels = ['Menu', 'Start over', 'Agent'];
             const actions = actionLabels.map(function (label, index) {
-                return _1.MessageModel.postbackActionObject(label, null, { index: index, label: label });
+                return main_1.MessageModel.postbackActionObject(label, null, { index: index, label: label });
             });
-            const textMsg = _1.MessageModel.textConversationMessage('Hello can I help you?', actions);
-            const convertedTextMsg = _1.Util.MessageModel.convertRespToText(textMsg);
+            const textMsg = main_1.MessageModel.textConversationMessage('Hello can I help you?', actions);
+            const convertedTextMsg = main_1.Util.MessageModel.convertRespToText(textMsg);
             // console.log(convertedTextMsg);
             expect(convertedTextMsg.trim()).toEqual('Hello can I help you? You can choose from the following options: Menu, Start over, Agent.');
         });
         it('Text with Global Actions', function () {
             const actionLabels = ['Menu', 'Start over', 'Agent'];
             const actions = actionLabels.map(function (label, index) {
-                return _1.MessageModel.postbackActionObject(label, null, { index: index, label: label });
+                return main_1.MessageModel.postbackActionObject(label, null, { index: index, label: label });
             });
-            let textMsg = _1.MessageModel.textConversationMessage('Hello can I help you?');
-            textMsg = _1.MessageModel.addGlobalActions(textMsg, actions);
-            const convertedTextMsg = _1.Util.MessageModel.convertRespToText(textMsg);
+            let textMsg = main_1.MessageModel.textConversationMessage('Hello can I help you?');
+            textMsg = main_1.MessageModel.addGlobalActions(textMsg, actions);
+            const convertedTextMsg = main_1.Util.MessageModel.convertRespToText(textMsg);
             // console.log(convertedTextMsg);
             expect(convertedTextMsg.trim()).toEqual('Hello can I help you? The following global actions are available: Menu, Start over, Agent.');
         });

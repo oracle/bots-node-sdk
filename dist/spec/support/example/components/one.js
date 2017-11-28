@@ -6,18 +6,18 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const lib_1 = require("../../../../lib");
+const main_1 = require("../../../main");
 /**
  * test component by extending OracleBot.ComponentAbstract
  */
-let MyFirstComponent = class MyFirstComponent extends lib_1.ComponentAbstract {
+let MyFirstComponent = class MyFirstComponent extends main_1.ComponentAbstract {
     invoke(sdk, done) {
         this.logger.info('Testing');
         done();
     }
 };
 MyFirstComponent = __decorate([
-    lib_1.BotComponent({
+    main_1.BotComponent({
         name: 'test.one',
     })
 ], MyFirstComponent);

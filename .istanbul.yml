@@ -3,8 +3,7 @@ instrumentation:
     'docs/**',
     'coverage',
     'node_modules',
-    'spec/**',
-    'dist/spec/**',
+    '**/spec/**',
   ]
   include-all-sources: true
 reporting:

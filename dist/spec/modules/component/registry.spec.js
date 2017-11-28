@@ -1,21 +1,21 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const lib_1 = require("../../../lib");
+const main_1 = require("../../main");
 describe('BotComponentRegistry', () => {
     let registry;
     beforeAll(() => {
-        registry = lib_1.ComponentRegistry.assemble(null, '../../support/example/components', __dirname);
+        registry = main_1.ComponentRegistry.assemble(null, '../../support/example/components', __dirname);
     });
     it('should not assemble invalid path', () => {
-        expect(lib_1.ComponentRegistry.assemble(registry, 'babytown').isValid()).toBe(false);
+        expect(main_1.ComponentRegistry.assemble(registry, 'babytown').isValid()).toBe(false);
     });
     it('should assemble registry', () => {
-        expect(registry instanceof lib_1.ComponentRegistry).toBe(true);
+        expect(registry instanceof main_1.ComponentRegistry).toBe(true);
         expect(registry.isCollection('foo')).toBe(false);
         expect(registry.isCollection('sub')).toBe(true);
         expect(registry.getRegistry()).toEqual(registry);
         // collections
-        expect(registry.getRegistry('sub') instanceof lib_1.ComponentRegistry).toBe(true);
+        expect(registry.getRegistry('sub') instanceof main_1.ComponentRegistry).toBe(true);
         expect(registry.getCollectionNames().length).toBeGreaterThan(0);
     });
     it('should collect components', () => {

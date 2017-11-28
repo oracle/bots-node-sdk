@@ -6,7 +6,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const lib_1 = require("../../../../lib");
+const main_1 = require("../../../main");
 /**
  * test component without extending OracleBot.ComponentAbstract
  */
@@ -16,7 +16,7 @@ let ComponentTwo = class ComponentTwo {
     }
 };
 ComponentTwo = __decorate([
-    lib_1.BotComponent({
+    main_1.BotComponent({
         name: 'test.nonextended',
     })
 ], ComponentTwo);
@@ -27,7 +27,7 @@ exports.ComponentTwo = ComponentTwo;
 let ComponentTwoDuplicate = class ComponentTwoDuplicate {
 };
 ComponentTwoDuplicate = __decorate([
-    lib_1.BotComponent({
+    main_1.BotComponent({
         name: 'test.nonextended',
     })
 ], ComponentTwoDuplicate);

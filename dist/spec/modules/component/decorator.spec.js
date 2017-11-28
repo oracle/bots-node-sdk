@@ -6,7 +6,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const lib_1 = require("../../../lib");
+const main_1 = require("../../main");
 describe('@BotComponent Decorator', () => {
     it('should utilize decorator reverse abstraction', () => {
         const c = new TestComponent();
@@ -43,11 +43,11 @@ describe('@BotComponent Decorator', () => {
     });
 });
 // test a valid component
-let TestComponent = class TestComponent extends lib_1.ComponentAbstract {
+let TestComponent = class TestComponent extends main_1.ComponentAbstract {
     invoke() { }
 };
 TestComponent = __decorate([
-    lib_1.BotComponent({
+    main_1.BotComponent({
         supportedActions: [],
         properties: {
             firstname: { type: 'string', required: true }
@@ -55,13 +55,13 @@ TestComponent = __decorate([
     })
 ], TestComponent);
 // test a valid component with explicit name
-let TestComponentWithError = class TestComponentWithError extends lib_1.ComponentAbstract {
+let TestComponentWithError = class TestComponentWithError extends main_1.ComponentAbstract {
     invoke() {
         throw new Error('Bad things happen');
     }
 };
 TestComponentWithError = __decorate([
-    lib_1.BotComponent({
+    main_1.BotComponent({
         name: 'test.error',
         supportedActions: [],
         properties: {
@@ -73,7 +73,7 @@ TestComponentWithError = __decorate([
 let TestInvalidComponent = class TestInvalidComponent {
 };
 TestInvalidComponent = __decorate([
-    lib_1.BotComponent({
+    main_1.BotComponent({
         supportedActions: [],
         properties: {},
     })
