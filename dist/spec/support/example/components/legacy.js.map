@@ -1,0 +1,1 @@
+{"version":3,"file":"legacy.js","sourceRoot":"","sources":["../../../../../src/spec/support/example/components/legacy.ts"],"names":[],"mappings":";AAGA,iBAAS;IACP,QAAQ;QACN,MAAM,CAAC;YACL,IAAI,EAAE,cAAc;SACrB,CAAA;IACH,CAAC;IAED,MAAM,CAAC,GAAG,EAAE,IAAI;QACd,GAAG,CAAC,KAAK,CAAC,kBAAkB,CAAC,CAAC;QAC9B,IAAI,EAAE,CAAC;IACT,CAAC;CACF,CAAC"}

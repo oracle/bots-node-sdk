@@ -1,0 +1,1 @@
+export { MessageModel } from './messageModel';

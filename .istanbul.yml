@@ -3,8 +3,8 @@ instrumentation:
     'docs/**',
     'coverage',
     'node_modules',
-    'spec/**',
-    'dist/spec/**',
+    '**/spec/**',
+    'typedoc.js',
   ]
   include-all-sources: true
 reporting:

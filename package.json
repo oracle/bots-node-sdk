@@ -2,28 +2,38 @@
   "name": "@oracle/bots-js-sdk",
   "version": "0.0.1",
   "description": "Oracle bot custom component service middleware and utilities",
-  "main": "dist/lib/index.js",
-  "typings": "dist/lib/index.d.ts",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "engines": {
+    "node": ">=6.11.3",
+    "npm": ">=3.10.10"
+  },
+  "config": {
+    "outdir": "dist",
+    "docdir": "docs"
+  },
   "scripts": {
-    "build": "npm run clean && tsc",
+    "build": "npm run clean && npm run build:compile",
+    "build:compile": "tsc",
     "build:watch": "tsc -w",
-    "clean": "shx rm -rf ./dist",
-    "docs": "typedoc --out ./docs",
+    "clean": "shx rm -rf $npm_package_config_outdir",
+    "docs": "shx rm -rf ./docs && typedoc --options ./typedoc.js --exclude '**/*+(spec|schema|common)/**' --out $npm_package_config_docdir ./src/",
     "lint": "tslint .",
+    "test": "NODE_ENV=test istanbul cover ./src/spec/support/test.js",
     "pretest": "npm run build",
-    "test": "NODE_ENV=test istanbul cover ./spec/support/test.js",
-    "posttest": "node ./spec/support/coverage.js"
+    "posttest": "node ./src/spec/support/coverage.js",
+    "prepublish": "npm run build"
   },
   "contributors": [
     "Matt Vander Vliet <matthew.vander.vliet@oracle.com>",
-    "Adao Oliveira Junior <adao.junior@oracle.com>"
+    "Adao Oliveira Junior <adao.junior@oracle.com>",
+    "Henrick Yau <henrick.yau@oracle.com>"
   ],
   "license": "ISC",
   "files": [
     "dist",
     "!dist/spec/**",
-    "testing",
-    "COVERAGE.md"
+    "testing"
   ],
   "dependencies": {
     "basic-auth": "^2.0.0",
@@ -47,7 +57,7 @@
     "shx": "^0.2.2",
     "supertest": "^3.0.0",
     "tslint": "^5.7.0",
-    "typedoc": "^0.8.0",
+    "typedoc": "^0.9.0",
     "typescript": "^2.5.2"
   },
   "peerDependencies": {
