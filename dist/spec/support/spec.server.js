@@ -1,6 +1,5 @@
 "use strict";
 const express = require("express");
-const path = require("path");
 const OracleBot = require("../main");
 const CONF = require("./spec.config");
 const app = express();
@@ -16,7 +15,10 @@ app.use(OracleBot.Middleware.init({
 app.use(CONF.componentPrefix, OracleBot.Middleware.init({
     root: __dirname,
     component: {
-        baseDir: path.join(__dirname, 'example/components'),
+        baseDir: 'example/components',
+        register: [
+            './example/more.components/a.component'
+        ]
     }
 }));
 // some things behind the bot MW

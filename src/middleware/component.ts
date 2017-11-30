@@ -10,7 +10,7 @@ import Shell = require('../modules/conversation/shell');
  */
 export interface IComponentMiddlewareOptions {
   baseDir?: string; // base component directory for fs registry scan
-  components?: ComponentListItem[] // list of components to register, these will be considered 'global'
+  register?: ComponentListItem[] // list of components to register, these will be considered 'global'
   mixins?: any; // conversation mixin methods | properties
 }
 
@@ -20,7 +20,7 @@ export interface IComponentMiddlewareOptions {
 const [PARAM_COLLECTION, PARAM_COMPONENT] = ['collection', 'component'];
 const MESSAGES = {
   NOT_FOUND: 'not found',
-}
+};
 
 /**
  * ComponentMiddleware.
@@ -30,25 +30,29 @@ export class ComponentMiddleware extends MiddlewareAbstract {
 
   protected _init(router: express.Router, options: IComponentMiddlewareOptions): void {
     const opts: IComponentMiddlewareOptions = {
+      // option defaults
       baseDir: ComponentRegistry.COMPONENT_DIR,
-      components: [],
+      register: [],
       mixins: { },
+      // user options
       ...options
     };
 
-    // TODO: apply manual registry here
-
     /**
      * assemble root registry from baseDirectory
+     * merge explicitly provided component registry with the fs registry.
      */
-    const componentDir = path.join(this._root || process.cwd(), opts.baseDir)
     const rootRegistry = ComponentRegistry.assemble(null, opts.baseDir, this._root);
+    if (opts.register) {
+      const globalRegistry = ComponentRegistry.create(opts.register, this._root);
+      rootRegistry.merge(globalRegistry, true);
+    }
 
     /**
      * establish component metadata index
      */
     router.get('/', (req, res) => {
-      const meta = Shell(null, rootRegistry)
+      const meta = this.__getShell(rootRegistry)
         .getAllComponentMetadata();
       res.json(meta);
     });
@@ -68,7 +72,7 @@ export class ComponentMiddleware extends MiddlewareAbstract {
     router.get(`/collection/:${PARAM_COLLECTION}`, (req, res) => {
       const collectionName = req.params[PARAM_COLLECTION];
       if (rootRegistry.isCollection(collectionName)) {
-        const meta = Shell(null, rootRegistry.getRegistry(collectionName))
+        const meta = this.__getShell(rootRegistry.getRegistry(collectionName))
           .getAllComponentMetadata();
         res.json(meta);
       } else {
@@ -87,6 +91,14 @@ export class ComponentMiddleware extends MiddlewareAbstract {
       // invoke
       this.__invoke(componentName, registry || rootRegistry, opts, req, res);
     });
+  }
+
+  /**
+   * get Shell methods
+   * @param registry - The registry for the invocation shell
+   */
+  private __getShell(registry: ComponentRegistry) {
+    return Shell({logger: this._logger}, registry);
   }
 
   /**
@@ -109,7 +121,7 @@ export class ComponentMiddleware extends MiddlewareAbstract {
     if (!!req.oracleMobile) {
       mixins.oracleMobile = req.oracleMobile;
     }
-    Shell(null, registry)
+    this.__getShell(registry)
       .invokeComponentByName(componentName, req.body, mixins, this.__invokationCb(res));
   }
 

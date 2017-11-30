@@ -82,6 +82,10 @@ describe('Middleware', () => {
                     expect(res.body.version).toBeTruthy(`not contain version`);
                     expect(res.body.components).toBeDefined(`did not contain components`);
                     expect(res.body.components[0].name).toBeDefined(`component had no name`);
+                    // assert manual registry is applied globally
+                    expect(res.body.components.some(c => {
+                        return c.name === 'more.a';
+                    })).toBe(true);
                 })
                     .end(err => {
                     return err ? done.fail(err) : done();
@@ -151,6 +155,10 @@ describe('Middleware', () => {
                         .expect(200)
                         .expect(res => {
                         expect(res.body.version).toBeTruthy(`not contain version`);
+                        // assert manual registry is applied globally
+                        expect(res.body.components.some(c => {
+                            return c.name === 'more.a';
+                        })).toBe(true);
                     })
                         .end(err => {
                         return err ? done.fail(err) : done();

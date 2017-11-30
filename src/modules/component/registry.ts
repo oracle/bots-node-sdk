@@ -12,18 +12,18 @@ export type CollectionName = string;
 /**
  * Define accepted type for component initialization objects.
  */
-export type ComponentListItem = string | Type<IComponentInterface>;
+export type ComponentListItem = string | Type<IComponentInterface> | {[key: string]: Type<IComponentInterface>};
 
 export class ComponentRegistry {
   public static readonly COMPONENT_DIR = CONSTANTS.DEFAULT_COMPONENT_DIR;
   private _logger: log4js.Logger;
-  private _valid: boolean;
   protected _collectionName: CollectionName;
   protected _collections = new Map<CollectionName, ComponentRegistry>();
   protected _components = new Map<ComponentMetadataName, IComponentInterface>();
 
   /**
-   * create a registry from a list of components
+   * Create a registry from a list of component references. The resulting registry
+   * is flat and does NOT group components into collections.
    * @param components - array of components, which can be paths, objects, or classes.
    * @param cwd - working directory
    */
@@ -34,6 +34,8 @@ export class ComponentRegistry {
 
   /**
    * Assemble a component registry from the filesystem.
+   * Directories within the main component directory will be consumed as independent
+   * child component collections.
    * @param parent - parent registry for nested "collections"
    * @param componentDir - relative path to component directory
    * @param cwd - working directory
@@ -46,33 +48,35 @@ export class ComponentRegistry {
     componentDir = fullPath(cwd, componentDir);
     // instantiate and scan the fs
     return new this(parent)
-      .__buildFromDir(componentDir, !parent);
+      .__buildFromFs(componentDir, !parent);
   }
 
+  /**
+   * ComponentRegistry constructor.
+   * @param _parent - parent registry for child collection.
+   */
   constructor(protected _parent?: ComponentRegistry) {
     // setup additional iVars.
     this._logger = log4js.getLogger(this.constructor.name);
   }
 
   /**
-   * Legacy conversation shell compatability "components" property accessor
-   * @desc allows components to be resolved by `registry.components`
+   * Build a registry with high degree of flexibility in list items.
+   * @param list - Array of component references; can be paths, objects, or classes.
+   * @param baseDir - Base path reference for resolving string component paths.
    */
-  public get components(): {[name: string]: IComponentInterface} {
-    const c = {};
-    this.getComponents().forEach((component, name) => {
-      c[name] = component;
-    });
-    return c;
-  }
-
   private __buildFromItems(list: ComponentListItem[], baseDir: string): this {
     const results = list.map(item => {
       if (isComponent(item)) {
         return [this.__componentFactory(<any>item)];
+      } else if (typeof item === 'object') {
+        // resolve from object containing {[key: string]: component}
+        return Object.values(item)
+          .filter(isComponent)
+          .map(ref => this.__componentFactory(ref));
       } else if (typeof item === 'string') {
         // resolve from path, considering each path may contain >=1 components
-        return this.__digestPath(item, false);
+        return this.__digestPath(fullPath(baseDir, item), false);
       }
     }).filter(item => item && item.length); // filter empties
     // flatten and register
@@ -87,30 +91,13 @@ export class ComponentRegistry {
    * @param withCollections - group subdirectories as collections
    * @return void
    */
-  private __buildFromDir(baseDir: string, withCollections?: boolean): this {
+  private __buildFromFs(baseDir: string, withCollections?: boolean): this {
     const dir = path.resolve(baseDir);
     if (fs.existsSync(dir)) {
-      this._valid = true;
       this.__scanDir(dir, withCollections)
         .forEach(component => this.__register(component));
-      // fs.readdirSync(dir) // scan directory for components
-      //   .filter(name => ~['', '.js'].indexOf(path.extname(name))) // js and folders
-      //   .map(name => path.join(dir, name)) // absolute path
-      //   .forEach(file => {
-      //     const stat = fs.statSync(file);
-      //     if (stat.isDirectory() && !this._parent) { // single level recursion
-      //       // create new registry from the child directory
-      //       this._addCollection(file);
-      //     } else if (stat.isFile()) {
-      //       // resolve classes from the files
-      //       this._resolveComponents(file)
-      //         .map(c => this.__componentFactory(c))
-      //         .forEach(instance => this.__register(instance));
-      //     }
-      //   });
     } else {
-      this._logger.error(`Invalid component registry ${baseDir}`);
-      this._valid = false;
+      this._logger.error(`Invalid component directory ${baseDir}`);
     }
     return this;
   }
@@ -124,11 +111,19 @@ export class ComponentRegistry {
     const results = fs.readdirSync(dir) // scan directory for components
       .filter(name => ~['', '.js'].indexOf(path.extname(name))) // js and folders
       .map(name => path.join(dir, name)) // absolute path
+      .sort((a, b) => {
+        return fs.statSync(a).isDirectory() ? 1 : 0;
+      })
       .map(file => this.__digestPath(file, withCollections));
     // because __digest returns an array, we need to flatten the final result.
     return [].concat(...results);
   }
 
+  /**
+   * resolve (file|dir)path into component instantiations.
+   * @param filePath - absolute path to a component resource or directory
+   * @param withCollections - consider directories as separate registry collections.
+   */
   private __digestPath(filePath: string, withCollections?: boolean): IComponentInterface[] {
     // consider case where manual registry is used and contain files references without extensions
     filePath = fs.existsSync(filePath) ? filePath : `${filePath}.js`;
@@ -166,10 +161,8 @@ export class ComponentRegistry {
         // handle direct export case `export = SomeComponentClass`
         return [mod];
       } else {
-        // handle case where a single file exports decorated class(es).
-        return Object.keys(mod)
-            .map(key => mod[key])
-            .filter(obj => isComponent(obj));
+        // handle case where a single file exports object(s) as keys.
+        return Object.values(mod).filter(isComponent);
       }
     } catch (e) {
       this._logger.error(e);
@@ -200,18 +193,45 @@ export class ComponentRegistry {
   }
 
   /**
+   * merge components from another registry
+   * @param registry - Source registry for merge operation.
+   * @param recursive - Recursively merge into child collections.
+   */
+  public merge(registry: ComponentRegistry, recursive?: boolean): this {
+    registry.getComponents().forEach(component => {
+      this.__register(component);
+      if (recursive) {
+        this._collections.forEach(collection => collection.__register(component));
+      }
+    });
+    return this;
+  }
+
+  /**
+   * Legacy conversation shell compatability "components" property accessor
+   * @desc allows components to be resolved by `registry.components`
+   */
+  public get components(): {[name: string]: IComponentInterface} {
+    const c = {};
+    this.getComponents().forEach((component, name) => {
+      c[name] = component;
+    });
+    return c;
+  }
+
+  /**
    * test if registry is valid.
    * @return boolean.
    */
   public isValid(): boolean {
-    return this._valid;
+    return (this._components.size || this._collections.size) > 0;
   }
 
   /**
    * list collections in this registry
    */
   public getCollectionNames(): CollectionName[] {
-    let keys = []
+    let keys = [];
     this._collections.forEach((coll, name) => {
       keys.push(name);
     });
@@ -304,7 +324,7 @@ function makeCtor(type: Type<IComponentInterface>): any {
  * @param ref class or object from exports.
  * @todo create a decorator factory to test annotations against instanceof
  */
-function isComponent(ref: any): ref is Component {
+function isComponent(ref: any): ref is Type<IComponentInterface> {
   return (isType(ref) && isType(ref.prototype.metadata) && isType(ref.prototype.invoke)) || // class usage
     (typeof ref === 'object' && isType(ref.metadata) && isType(ref.invoke)); // legacy
 }

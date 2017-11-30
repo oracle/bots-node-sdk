@@ -5,36 +5,42 @@ export declare type CollectionName = string;
 /**
  * Define accepted type for component initialization objects.
  */
-export declare type ComponentListItem = string | Type<IComponentInterface>;
+export declare type ComponentListItem = string | Type<IComponentInterface> | {
+    [key: string]: Type<IComponentInterface>;
+};
 export declare class ComponentRegistry {
     protected _parent: ComponentRegistry;
     static readonly COMPONENT_DIR: string;
     private _logger;
-    private _valid;
     protected _collectionName: CollectionName;
     protected _collections: Map<string, ComponentRegistry>;
     protected _components: Map<string, IComponentInterface>;
     /**
-     * create a registry from a list of components
+     * Create a registry from a list of component references. The resulting registry
+     * is flat and does NOT group components into collections.
      * @param components - array of components, which can be paths, objects, or classes.
      * @param cwd - working directory
      */
     static create(components: ComponentListItem[], cwd?: string): ComponentRegistry;
     /**
      * Assemble a component registry from the filesystem.
+     * Directories within the main component directory will be consumed as independent
+     * child component collections.
      * @param parent - parent registry for nested "collections"
      * @param componentDir - relative path to component directory
      * @param cwd - working directory
      */
     static assemble(parent: ComponentRegistry, componentDir?: string, cwd?: string): ComponentRegistry;
+    /**
+     * ComponentRegistry constructor.
+     * @param _parent - parent registry for child collection.
+     */
     constructor(_parent?: ComponentRegistry);
     /**
-     * Legacy conversation shell compatability "components" property accessor
-     * @desc allows components to be resolved by `registry.components`
+     * Build a registry with high degree of flexibility in list items.
+     * @param list - Array of component references; can be paths, objects, or classes.
+     * @param baseDir - Base path reference for resolving string component paths.
      */
-    readonly components: {
-        [name: string]: IComponentInterface;
-    };
     private __buildFromItems(list, baseDir);
     /**
      * Scan directory for valid components
@@ -42,13 +48,18 @@ export declare class ComponentRegistry {
      * @param withCollections - group subdirectories as collections
      * @return void
      */
-    private __buildFromDir(baseDir, withCollections?);
+    private __buildFromFs(baseDir, withCollections?);
     /**
      * scan a directory for valid component implementations
      * @param dir - directory to scan for components
      * @param withCollections - group subdirectories as collections
      */
     private __scanDir(dir, withCollections?);
+    /**
+     * resolve (file|dir)path into component instantiations.
+     * @param filePath - absolute path to a component resource or directory
+     * @param withCollections - consider directories as separate registry collections.
+     */
     private __digestPath(filePath, withCollections?);
     /**
      * create a child collection of components from a subdirectory
@@ -70,6 +81,19 @@ export declare class ComponentRegistry {
      * @param component - instantiated bot component class
      */
     private __register(component);
+    /**
+     * merge components from another registry
+     * @param registry - Source registry for merge operation.
+     * @param recursive - Recursively merge into child collections.
+     */
+    merge(registry: ComponentRegistry, recursive?: boolean): this;
+    /**
+     * Legacy conversation shell compatability "components" property accessor
+     * @desc allows components to be resolved by `registry.components`
+     */
+    readonly components: {
+        [name: string]: IComponentInterface;
+    };
     /**
      * test if registry is valid.
      * @return boolean.

@@ -6,6 +6,10 @@ const log4js = require("log4js");
 const constants_1 = require("../../common/constants");
 const definitions_1 = require("../../common/definitions");
 class ComponentRegistry {
+    /**
+     * ComponentRegistry constructor.
+     * @param _parent - parent registry for child collection.
+     */
     constructor(_parent) {
         this._parent = _parent;
         this._collections = new Map();
@@ -14,7 +18,8 @@ class ComponentRegistry {
         this._logger = log4js.getLogger(this.constructor.name);
     }
     /**
-     * create a registry from a list of components
+     * Create a registry from a list of component references. The resulting registry
+     * is flat and does NOT group components into collections.
      * @param components - array of components, which can be paths, objects, or classes.
      * @param cwd - working directory
      */
@@ -24,6 +29,8 @@ class ComponentRegistry {
     }
     /**
      * Assemble a component registry from the filesystem.
+     * Directories within the main component directory will be consumed as independent
+     * child component collections.
      * @param parent - parent registry for nested "collections"
      * @param componentDir - relative path to component directory
      * @param cwd - working directory
@@ -33,27 +40,27 @@ class ComponentRegistry {
         componentDir = fullPath(cwd, componentDir);
         // instantiate and scan the fs
         return new this(parent)
-            .__buildFromDir(componentDir, !parent);
+            .__buildFromFs(componentDir, !parent);
     }
     /**
-     * Legacy conversation shell compatability "components" property accessor
-     * @desc allows components to be resolved by `registry.components`
+     * Build a registry with high degree of flexibility in list items.
+     * @param list - Array of component references; can be paths, objects, or classes.
+     * @param baseDir - Base path reference for resolving string component paths.
      */
-    get components() {
-        const c = {};
-        this.getComponents().forEach((component, name) => {
-            c[name] = component;
-        });
-        return c;
-    }
     __buildFromItems(list, baseDir) {
         const results = list.map(item => {
             if (isComponent(item)) {
                 return [this.__componentFactory(item)];
             }
+            else if (typeof item === 'object') {
+                // resolve from object containing {[key: string]: component}
+                return Object.values(item)
+                    .filter(isComponent)
+                    .map(ref => this.__componentFactory(ref));
+            }
             else if (typeof item === 'string') {
                 // resolve from path, considering each path may contain >=1 components
-                return this.__digestPath(item, false);
+                return this.__digestPath(fullPath(baseDir, item), false);
             }
         }).filter(item => item && item.length); // filter empties
         // flatten and register
@@ -67,31 +74,14 @@ class ComponentRegistry {
      * @param withCollections - group subdirectories as collections
      * @return void
      */
-    __buildFromDir(baseDir, withCollections) {
+    __buildFromFs(baseDir, withCollections) {
         const dir = path.resolve(baseDir);
         if (fs.existsSync(dir)) {
-            this._valid = true;
             this.__scanDir(dir, withCollections)
                 .forEach(component => this.__register(component));
-            // fs.readdirSync(dir) // scan directory for components
-            //   .filter(name => ~['', '.js'].indexOf(path.extname(name))) // js and folders
-            //   .map(name => path.join(dir, name)) // absolute path
-            //   .forEach(file => {
-            //     const stat = fs.statSync(file);
-            //     if (stat.isDirectory() && !this._parent) { // single level recursion
-            //       // create new registry from the child directory
-            //       this._addCollection(file);
-            //     } else if (stat.isFile()) {
-            //       // resolve classes from the files
-            //       this._resolveComponents(file)
-            //         .map(c => this.__componentFactory(c))
-            //         .forEach(instance => this.__register(instance));
-            //     }
-            //   });
         }
         else {
-            this._logger.error(`Invalid component registry ${baseDir}`);
-            this._valid = false;
+            this._logger.error(`Invalid component directory ${baseDir}`);
         }
         return this;
     }
@@ -104,10 +94,18 @@ class ComponentRegistry {
         const results = fs.readdirSync(dir) // scan directory for components
             .filter(name => ~['', '.js'].indexOf(path.extname(name))) // js and folders
             .map(name => path.join(dir, name)) // absolute path
+            .sort((a, b) => {
+            return fs.statSync(a).isDirectory() ? 1 : 0;
+        })
             .map(file => this.__digestPath(file, withCollections));
         // because __digest returns an array, we need to flatten the final result.
         return [].concat(...results);
     }
+    /**
+     * resolve (file|dir)path into component instantiations.
+     * @param filePath - absolute path to a component resource or directory
+     * @param withCollections - consider directories as separate registry collections.
+     */
     __digestPath(filePath, withCollections) {
         // consider case where manual registry is used and contain files references without extensions
         filePath = fs.existsSync(filePath) ? filePath : `${filePath}.js`;
@@ -146,10 +144,8 @@ class ComponentRegistry {
                 return [mod];
             }
             else {
-                // handle case where a single file exports decorated class(es).
-                return Object.keys(mod)
-                    .map(key => mod[key])
-                    .filter(obj => isComponent(obj));
+                // handle case where a single file exports object(s) as keys.
+                return Object.values(mod).filter(isComponent);
             }
         }
         catch (e) {
@@ -179,11 +175,36 @@ class ComponentRegistry {
         }
     }
     /**
+     * merge components from another registry
+     * @param registry - Source registry for merge operation.
+     * @param recursive - Recursively merge into child collections.
+     */
+    merge(registry, recursive) {
+        registry.getComponents().forEach(component => {
+            this.__register(component);
+            if (recursive) {
+                this._collections.forEach(collection => collection.__register(component));
+            }
+        });
+        return this;
+    }
+    /**
+     * Legacy conversation shell compatability "components" property accessor
+     * @desc allows components to be resolved by `registry.components`
+     */
+    get components() {
+        const c = {};
+        this.getComponents().forEach((component, name) => {
+            c[name] = component;
+        });
+        return c;
+    }
+    /**
      * test if registry is valid.
      * @return boolean.
      */
     isValid() {
-        return this._valid;
+        return (this._components.size || this._collections.size) > 0;
     }
     /**
      * list collections in this registry

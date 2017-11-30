@@ -2,6 +2,7 @@ import * as express from 'express';
 import * as http from 'http';
 import * as path from 'path';
 import * as OracleBot from '../main';
+import * as log4js from 'log4js';
 
 import CONF = require('./spec.config');
 const app = express();
@@ -19,8 +20,10 @@ app.use(OracleBot.Middleware.init({
 app.use(CONF.componentPrefix, OracleBot.Middleware.init({
   root: __dirname,
   component: {
-    baseDir: path.join(__dirname, 'example/components'),
-    // registry: [...components]
+    baseDir: 'example/components', // use fs registry
+    register: [ // register global components manually
+      './example/more.components/a.component'
+    ]
   }
 }));
 

@@ -6,7 +6,7 @@ import { ComponentListItem } from '../modules/component/registry';
  */
 export interface IComponentMiddlewareOptions {
     baseDir?: string;
-    components?: ComponentListItem[];
+    register?: ComponentListItem[];
     mixins?: any;
 }
 /**
@@ -15,6 +15,11 @@ export interface IComponentMiddlewareOptions {
  */
 export declare class ComponentMiddleware extends MiddlewareAbstract {
     protected _init(router: express.Router, options: IComponentMiddlewareOptions): void;
+    /**
+     * get Shell methods
+     * @param registry - The registry for the invocation shell
+     */
+    private __getShell(registry);
     /**
      * invoke the component shell.
      * @param componentName: string - component name
