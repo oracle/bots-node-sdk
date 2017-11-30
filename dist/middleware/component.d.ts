@@ -1,10 +1,12 @@
 /// <reference types="express" />
 import { express, MiddlewareAbstract } from './abstract';
+import { ComponentListItem } from '../modules/component/registry';
 /**
- * concentrated component middleware options
+ * component middleware specific options
  */
 export interface IComponentMiddlewareOptions {
     baseDir?: string;
+    register?: ComponentListItem[];
     mixins?: any;
 }
 /**
@@ -13,6 +15,11 @@ export interface IComponentMiddlewareOptions {
  */
 export declare class ComponentMiddleware extends MiddlewareAbstract {
     protected _init(router: express.Router, options: IComponentMiddlewareOptions): void;
+    /**
+     * get Shell methods
+     * @param registry - The registry for the invocation shell
+     */
+    private __getShell(registry);
     /**
      * invoke the component shell.
      * @param componentName: string - component name

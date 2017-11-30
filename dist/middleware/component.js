@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const abstract_1 = require("./abstract");
-const component_1 = require("../modules/component");
+const registry_1 = require("../modules/component/registry");
 const Shell = require("../modules/conversation/shell");
 /**
  * define req.param keys
@@ -16,13 +16,23 @@ const MESSAGES = {
  */
 class ComponentMiddleware extends abstract_1.MiddlewareAbstract {
     _init(router, options) {
-        const opts = Object.assign({ baseDir: component_1.ComponentRegistry.COMPONENT_DIR, mixins: {} }, options);
-        const rootRegistry = component_1.ComponentRegistry.assemble(null, opts.baseDir, this._root);
+        const opts = Object.assign({ 
+            // option defaults
+            baseDir: registry_1.ComponentRegistry.COMPONENT_DIR, register: [], mixins: {} }, options);
+        /**
+         * assemble root registry from baseDirectory
+         * merge explicitly provided component registry with the fs registry.
+         */
+        const rootRegistry = registry_1.ComponentRegistry.assemble(null, opts.baseDir, this._root);
+        if (opts.register) {
+            const globalRegistry = registry_1.ComponentRegistry.create(opts.register, this._root);
+            rootRegistry.merge(globalRegistry, true);
+        }
         /**
          * establish component metadata index
          */
         router.get('/', (req, res) => {
-            const meta = Shell(null, rootRegistry)
+            const meta = this.__getShell(rootRegistry)
                 .getAllComponentMetadata();
             res.json(meta);
         });
@@ -40,7 +50,7 @@ class ComponentMiddleware extends abstract_1.MiddlewareAbstract {
         router.get(`/collection/:${PARAM_COLLECTION}`, (req, res) => {
             const collectionName = req.params[PARAM_COLLECTION];
             if (rootRegistry.isCollection(collectionName)) {
-                const meta = Shell(null, rootRegistry.getRegistry(collectionName))
+                const meta = this.__getShell(rootRegistry.getRegistry(collectionName))
                     .getAllComponentMetadata();
                 res.json(meta);
             }
@@ -61,6 +71,13 @@ class ComponentMiddleware extends abstract_1.MiddlewareAbstract {
         });
     }
     /**
+     * get Shell methods
+     * @param registry - The registry for the invocation shell
+     */
+    __getShell(registry) {
+        return Shell({ logger: this._logger }, registry);
+    }
+    /**
      * invoke the component shell.
      * @param componentName: string - component name
      * @param registry - registry to which the component belongs
@@ -74,7 +91,7 @@ class ComponentMiddleware extends abstract_1.MiddlewareAbstract {
         if (!!req.oracleMobile) {
             mixins.oracleMobile = req.oracleMobile;
         }
-        Shell(null, registry)
+        this.__getShell(registry)
             .invokeComponentByName(componentName, req.body, mixins, this.__invokationCb(res));
     }
     /**

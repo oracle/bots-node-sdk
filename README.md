@@ -47,7 +47,12 @@ module.exports = function(app) {
   app.use(OracleBot.Middleware.init({
     root: __dirname,
     component: {
-      baseDir: 'components'
+      baseDir: 'components',
+      register: [
+        './path/to/a/component',
+        './path/to/other/components',
+        './path/to/even/more/components',
+      ]
     }
   }));
 };
@@ -63,7 +68,12 @@ export = (app: express.Express): void => {
   app.use(OracleBot.Middleware.init({
     root: __dirname, // root of application source
     component: { // component middleware options
-      baseDir: 'components' // relative directory for components in source
+      baseDir: 'components', // relative directory for components in fs
+      register: [ // explicitly provide a global registry
+        './path/to/a/component',
+        './path/to/other/components',
+        './path/to/even/more/components',
+      ]
     }
   }));
 };

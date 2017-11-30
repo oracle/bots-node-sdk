@@ -14,6 +14,9 @@ class AuthMiddleware extends abstract_1.MiddlewareAbstract {
             case AUTH_TYPE.BASIC:
                 router.use(this._basicHandler(options.credentials));
                 break;
+            case AUTH_TYPE.INHERIT: // Do nothing
+            default:
+                break;
         }
     }
     _basicHandler(config) {

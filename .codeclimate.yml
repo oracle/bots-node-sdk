@@ -1,0 +1,13 @@
+version: "2"
+plugins:
+  tslint:
+    enabled: false
+    config: tslint.json
+  nodesecurity:
+    enabled: true
+
+exclude_patterns:
+  - src/spec
+  - coverage
+  - docs
+  - node_modules
