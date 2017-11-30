@@ -16,7 +16,7 @@ app.use(OracleBot.Middleware.init({
 app.use(CONF.componentPrefix, OracleBot.Middleware.init({
     root: __dirname,
     component: {
-        baseDir: path.join(__dirname, 'example/components')
+        baseDir: path.join(__dirname, 'example/components'),
     }
 }));
 // some things behind the bot MW

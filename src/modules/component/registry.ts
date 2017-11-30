@@ -9,87 +9,159 @@ import { IComponentInterface } from './abstract';
 
 export type CollectionName = string;
 
+/**
+ * Define accepted type for component initialization objects.
+ */
+export type ComponentListItem = string | Type<IComponentInterface>;
+
 export class ComponentRegistry {
   public static readonly COMPONENT_DIR = CONSTANTS.DEFAULT_COMPONENT_DIR;
-  protected _logger: log4js.Logger;
+  private _logger: log4js.Logger;
+  private _valid: boolean;
   protected _collectionName: CollectionName;
   protected _collections = new Map<CollectionName, ComponentRegistry>();
   protected _components = new Map<ComponentMetadataName, IComponentInterface>();
-  private __valid: boolean;
 
+  /**
+   * create a registry from a list of components
+   * @param components - array of components, which can be paths, objects, or classes.
+   * @param cwd - working directory
+   */
+  public static create(components: ComponentListItem[], cwd: string = process.cwd()): ComponentRegistry {
+    return new this(null)
+      .__buildFromItems(components, cwd);
+  }
+
+  /**
+   * Assemble a component registry from the filesystem.
+   * @param parent - parent registry for nested "collections"
+   * @param componentDir - relative path to component directory
+   * @param cwd - working directory
+   */
   public static assemble(
     parent: ComponentRegistry,
     componentDir = this.COMPONENT_DIR,
     cwd: string = process.cwd()): ComponentRegistry {
-    if (!~componentDir.indexOf(cwd)) {
-      componentDir = path.join(cwd, componentDir);
-    }
-    return new this(parent, componentDir);
+    // verify absolute component dir
+    componentDir = fullPath(cwd, componentDir);
+    // instantiate and scan the fs
+    return new this(parent)
+      .__buildFromDir(componentDir, !parent);
   }
 
-  constructor(protected _parent: ComponentRegistry, protected _baseDir: string) {
+  constructor(protected _parent?: ComponentRegistry) {
     // setup additional iVars.
     this._logger = log4js.getLogger(this.constructor.name);
-    this.__collect(_baseDir);
   }
 
   /**
-   * Conversation shell compatability.
-   * @desc allows components to be resolved by registry.components
+   * Legacy conversation shell compatability "components" property accessor
+   * @desc allows components to be resolved by `registry.components`
    */
-  public get components() {
+  public get components(): {[name: string]: IComponentInterface} {
     const c = {};
     this.getComponents().forEach((component, name) => {
       c[name] = component;
     });
     return c;
   }
-  /**
-   * traverse directory for valid components
-   * @param baseDir: string - Top level directory for this registry
-   * @return void.
-   */
-  private __collect(baseDir: string): void {
-    const dir = path.resolve(baseDir);
-    if (fs.existsSync(dir)) {
-      this.__valid = true;
-      fs.readdirSync(dir)
-        .filter(name => ~['', '.js'].indexOf(path.extname(name))) // js and folders
-        .map(name => path.join(dir, name)) // absolute path
-        .forEach(file => {
-          const stat = fs.statSync(file);
-          if (stat.isDirectory() && !this._parent) { // single level recursion
-            // create new registry from the child directory
-            this._addCollection(file);
-          } else if (stat.isFile()) {
-            // resolve classes from the files
-            this._resolveComponents(file)
-              .map(c => this.__componentFactory(c))
-              .forEach(instance => this.__register(instance));
-          }
-        });
-    } else {
-      this._logger.error(`Invalid component registry ${baseDir}`);
-      this.__valid = false;
-    }
+
+  private __buildFromItems(list: ComponentListItem[], baseDir: string): this {
+    const results = list.map(item => {
+      if (isComponent(item)) {
+        return [this.__componentFactory(<any>item)];
+      } else if (typeof item === 'string') {
+        // resolve from path, considering each path may contain >=1 components
+        return this.__digestPath(item, false);
+      }
+    }).filter(item => item && item.length); // filter empties
+    // flatten and register
+    [].concat(...results)
+      .forEach(component => this.__register(component));
+    return this;
   }
 
   /**
-   * create a collection of components from a subdirectory
-   * @param subdir: string - component subdirectory (absolute).
+   * Scan directory for valid components
+   * @param baseDir - Top level directory for this registry
+   * @param withCollections - group subdirectories as collections
+   * @return void
+   */
+  private __buildFromDir(baseDir: string, withCollections?: boolean): this {
+    const dir = path.resolve(baseDir);
+    if (fs.existsSync(dir)) {
+      this._valid = true;
+      this.__scanDir(dir, withCollections)
+        .forEach(component => this.__register(component));
+      // fs.readdirSync(dir) // scan directory for components
+      //   .filter(name => ~['', '.js'].indexOf(path.extname(name))) // js and folders
+      //   .map(name => path.join(dir, name)) // absolute path
+      //   .forEach(file => {
+      //     const stat = fs.statSync(file);
+      //     if (stat.isDirectory() && !this._parent) { // single level recursion
+      //       // create new registry from the child directory
+      //       this._addCollection(file);
+      //     } else if (stat.isFile()) {
+      //       // resolve classes from the files
+      //       this._resolveComponents(file)
+      //         .map(c => this.__componentFactory(c))
+      //         .forEach(instance => this.__register(instance));
+      //     }
+      //   });
+    } else {
+      this._logger.error(`Invalid component registry ${baseDir}`);
+      this._valid = false;
+    }
+    return this;
+  }
+
+  /**
+   * scan a directory for valid component implementations
+   * @param dir - directory to scan for components
+   * @param withCollections - group subdirectories as collections
+   */
+  private __scanDir(dir: string, withCollections?: boolean): IComponentInterface[] {
+    const results = fs.readdirSync(dir) // scan directory for components
+      .filter(name => ~['', '.js'].indexOf(path.extname(name))) // js and folders
+      .map(name => path.join(dir, name)) // absolute path
+      .map(file => this.__digestPath(file, withCollections));
+    // because __digest returns an array, we need to flatten the final result.
+    return [].concat(...results);
+  }
+
+  private __digestPath(filePath: string, withCollections?: boolean): IComponentInterface[] {
+    // consider case where manual registry is used and contain files references without extensions
+    filePath = fs.existsSync(filePath) ? filePath : `${filePath}.js`;
+    const stat = fs.statSync(filePath);
+    if (stat.isDirectory() && withCollections) { // single level recursion into collections
+      // create new registry from the child directory
+      this._addCollection(filePath);
+    } else if (stat.isDirectory()) {
+      // scan the directory and flatten
+      return this.__scanDir(filePath, false);
+    } else if (stat.isFile()) {
+      // resolve as classes from the files
+      return this.__resolveComponents(filePath)
+        .map(c => this.__componentFactory(c));
+    }
+    return [];
+  }
+
+  /**
+   * create a child collection of components from a subdirectory
+   * @param subdir - component subdirectory absolute path
    */
   protected _addCollection(subdir: string): void {
-    this._collections.set(path.basename(subdir), ComponentRegistry.assemble(this, subdir, this._baseDir));
-    // this._logger.info(`Registered component collection: '${path.basename(subdir)}'`);
+    this._collections.set(path.basename(subdir), ComponentRegistry.assemble(this, subdir));
   }
 
   /**
    * resolve Component classes from
-   * @param file: string - source file (absolute)
+   * @param filePath - source file absolute path
    */
-  protected _resolveComponents(file: string): any[] {
+  private __resolveComponents(filePath: string): any[] {
     try {
-      const mod = require(file);
+      const mod = require(filePath);
       if (isComponent(mod)) {
         // handle direct export case `export = SomeComponentClass`
         return [mod];
@@ -107,8 +179,7 @@ export class ComponentRegistry {
 
   /**
    * component instantiation factory.
-   * @param ctor: ComponentInterface.prototype.constructor - component constructor
-   * @todo handle dependency injections
+   * @param mod - component reference (class|object)
    */
   private __componentFactory(mod: Type<IComponentInterface>): IComponentInterface {
     const ctor = makeCtor(mod);
@@ -117,7 +188,7 @@ export class ComponentRegistry {
 
   /**
    * register an instantiated component in
-   * @param component: ComponentInterface - instantiated bot component class
+   * @param component - instantiated bot component class
    */
   private __register(component: IComponentInterface): void {
     const meta = component.metadata();
@@ -129,11 +200,11 @@ export class ComponentRegistry {
   }
 
   /**
-   * check if registry is valid.
+   * test if registry is valid.
    * @return boolean.
    */
   public isValid(): boolean {
-    return this.__valid;
+    return this._valid;
   }
 
   /**
@@ -149,8 +220,8 @@ export class ComponentRegistry {
 
   /**
    * get a registry for a specific collection of components.
-   * @param collection: RegistryCollectionName - (optional) the name of the collection;
-   * @return ComponentRegistry | this.
+   * @param collection - (optional) the name of the collection;
+   * @return child registry | this.
    */
   public getRegistry(collection?: CollectionName): ComponentRegistry | this {
     return collection ? this._collections.get(collection) : this;
@@ -189,8 +260,8 @@ export class ComponentRegistry {
 
   /**
    * return component metadata as json array
-   * @param collection: RegistryCollectionName - (optional) the collection name
-   * @return ComponentMeta[] - array of component metadata
+   * @param collection - the collection name, defaults to the parent collection (optional)
+   * @return - array of component metadata
    */
   public getMetadata(collection?: CollectionName): IComponentMetadata[] {
     const registry = this.getRegistry(collection);
@@ -209,13 +280,22 @@ export class ComponentRegistry {
 }
 
 /**
+ * get full path in fs.
+ * @param cwd - absolute path
+ * @param dirname - a directory or file string
+ */
+function fullPath(cwd: string, dirname: string): string {
+  return ~dirname.indexOf(cwd) ? dirname : path.join(cwd, dirname);
+}
+
+/**
  * wrap a raw Object in a function.
  * @desc converts module.exports = {} to a prototyped object
- * @param value: any.
+ * @param type - component reference object
  */
-function makeCtor(value: any) {
-  return (value.prototype && value) || (function LegacyComponentWrapper() {
-    return value;
+function makeCtor(type: Type<IComponentInterface>): any {
+  return (isType(type) && type) || (function LegacyComponentWrapper() {
+    return type;
   });
 }
 
@@ -225,6 +305,6 @@ function makeCtor(value: any) {
  * @todo create a decorator factory to test annotations against instanceof
  */
 function isComponent(ref: any): ref is Component {
-  return (typeof ref === 'function' && isType(ref.prototype.metadata) && isType(ref.prototype.invoke)) || // class usage
+  return (isType(ref) && isType(ref.prototype.metadata) && isType(ref.prototype.invoke)) || // class usage
     (typeof ref === 'object' && isType(ref.metadata) && isType(ref.invoke)); // legacy
 }

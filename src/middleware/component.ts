@@ -1,15 +1,17 @@
+import * as path from 'path';
 import { ICallback } from '../common/definitions';
 import { express, MiddlewareAbstract, IMobileCloudRequest } from './abstract';
-import { ComponentRegistry } from '../modules/component';
+import { ComponentRegistry, ComponentListItem } from '../modules/component/registry';
 
 import Shell = require('../modules/conversation/shell');
 
 /**
- * concentrated component middleware options
+ * component middleware specific options
  */
 export interface IComponentMiddlewareOptions {
-  baseDir?: string; // base component directory
-  mixins?: any; // conversation mixin methods / properties
+  baseDir?: string; // base component directory for fs registry scan
+  components?: ComponentListItem[] // list of components to register, these will be considered 'global'
+  mixins?: any; // conversation mixin methods | properties
 }
 
 /**
@@ -29,10 +31,17 @@ export class ComponentMiddleware extends MiddlewareAbstract {
   protected _init(router: express.Router, options: IComponentMiddlewareOptions): void {
     const opts: IComponentMiddlewareOptions = {
       baseDir: ComponentRegistry.COMPONENT_DIR,
+      components: [],
       mixins: { },
       ...options
     };
 
+    // TODO: apply manual registry here
+
+    /**
+     * assemble root registry from baseDirectory
+     */
+    const componentDir = path.join(this._root || process.cwd(), opts.baseDir)
     const rootRegistry = ComponentRegistry.assemble(null, opts.baseDir, this._root);
 
     /**

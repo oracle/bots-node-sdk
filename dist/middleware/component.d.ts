@@ -1,10 +1,12 @@
 /// <reference types="express" />
 import { express, MiddlewareAbstract } from './abstract';
+import { ComponentListItem } from '../modules/component/registry';
 /**
- * concentrated component middleware options
+ * component middleware specific options
  */
 export interface IComponentMiddlewareOptions {
     baseDir?: string;
+    components?: ComponentListItem[];
     mixins?: any;
 }
 /**

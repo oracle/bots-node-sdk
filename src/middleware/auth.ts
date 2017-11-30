@@ -2,7 +2,7 @@ import { express, MiddlewareAbstract } from './abstract';
 import * as auth from 'basic-auth';
 
 export enum AUTH_TYPE {
-  INHERIT, // Inherit from upstream services
+  INHERIT, // Inherit from upstream services, no middleware applied
   BASIC = 1, // HTTP Basic auth
 };
 
@@ -25,6 +25,9 @@ export class AuthMiddleware extends MiddlewareAbstract {
     switch (options.type) {
       case AUTH_TYPE.BASIC:
         router.use(this._basicHandler(options.credentials));
+        break;
+      case AUTH_TYPE.INHERIT: // Do nothing
+      default:
         break;
     }
   }

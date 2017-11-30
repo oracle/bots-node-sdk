@@ -1,7 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const path = require("path");
 const abstract_1 = require("./abstract");
-const component_1 = require("../modules/component");
+const registry_1 = require("../modules/component/registry");
 const Shell = require("../modules/conversation/shell");
 /**
  * define req.param keys
@@ -16,8 +17,13 @@ const MESSAGES = {
  */
 class ComponentMiddleware extends abstract_1.MiddlewareAbstract {
     _init(router, options) {
-        const opts = Object.assign({ baseDir: component_1.ComponentRegistry.COMPONENT_DIR, mixins: {} }, options);
-        const rootRegistry = component_1.ComponentRegistry.assemble(null, opts.baseDir, this._root);
+        const opts = Object.assign({ baseDir: registry_1.ComponentRegistry.COMPONENT_DIR, components: [], mixins: {} }, options);
+        // TODO: apply manual registry here
+        /**
+         * assemble root registry from baseDirectory
+         */
+        const componentDir = path.join(this._root || process.cwd(), opts.baseDir);
+        const rootRegistry = registry_1.ComponentRegistry.assemble(null, opts.baseDir, this._root);
         /**
          * establish component metadata index
          */

@@ -6,24 +6,38 @@ const log4js = require("log4js");
 const constants_1 = require("../../common/constants");
 const definitions_1 = require("../../common/definitions");
 class ComponentRegistry {
-    constructor(_parent, _baseDir) {
+    constructor(_parent) {
         this._parent = _parent;
-        this._baseDir = _baseDir;
         this._collections = new Map();
         this._components = new Map();
         // setup additional iVars.
         this._logger = log4js.getLogger(this.constructor.name);
-        this.__collect(_baseDir);
-    }
-    static assemble(parent, componentDir = this.COMPONENT_DIR, cwd = process.cwd()) {
-        if (!~componentDir.indexOf(cwd)) {
-            componentDir = path.join(cwd, componentDir);
-        }
-        return new this(parent, componentDir);
     }
     /**
-     * Conversation shell compatability.
-     * @desc allows components to be resolved by registry.components
+     * create a registry from a list of components
+     * @param components - array of components, which can be paths, objects, or classes.
+     * @param cwd - working directory
+     */
+    static create(components, cwd = process.cwd()) {
+        return new this(null)
+            .__buildFromItems(components, cwd);
+    }
+    /**
+     * Assemble a component registry from the filesystem.
+     * @param parent - parent registry for nested "collections"
+     * @param componentDir - relative path to component directory
+     * @param cwd - working directory
+     */
+    static assemble(parent, componentDir = this.COMPONENT_DIR, cwd = process.cwd()) {
+        // verify absolute component dir
+        componentDir = fullPath(cwd, componentDir);
+        // instantiate and scan the fs
+        return new this(parent)
+            .__buildFromDir(componentDir, !parent);
+    }
+    /**
+     * Legacy conversation shell compatability "components" property accessor
+     * @desc allows components to be resolved by `registry.components`
      */
     get components() {
         const c = {};
@@ -32,52 +46,101 @@ class ComponentRegistry {
         });
         return c;
     }
+    __buildFromItems(list, baseDir) {
+        const results = list.map(item => {
+            if (isComponent(item)) {
+                return [this.__componentFactory(item)];
+            }
+            else if (typeof item === 'string') {
+                // resolve from path, considering each path may contain >=1 components
+                return this.__digestPath(item, false);
+            }
+        }).filter(item => item && item.length); // filter empties
+        // flatten and register
+        [].concat(...results)
+            .forEach(component => this.__register(component));
+        return this;
+    }
     /**
-     * traverse directory for valid components
-     * @param baseDir: string - Top level directory for this registry
-     * @return void.
+     * Scan directory for valid components
+     * @param baseDir - Top level directory for this registry
+     * @param withCollections - group subdirectories as collections
+     * @return void
      */
-    __collect(baseDir) {
+    __buildFromDir(baseDir, withCollections) {
         const dir = path.resolve(baseDir);
         if (fs.existsSync(dir)) {
-            this.__valid = true;
-            fs.readdirSync(dir)
-                .filter(name => ~['', '.js'].indexOf(path.extname(name))) // js and folders
-                .map(name => path.join(dir, name)) // absolute path
-                .forEach(file => {
-                const stat = fs.statSync(file);
-                if (stat.isDirectory() && !this._parent) {
-                    // create new registry from the child directory
-                    this._addCollection(file);
-                }
-                else if (stat.isFile()) {
-                    // resolve classes from the files
-                    this._resolveComponents(file)
-                        .map(c => this.__componentFactory(c))
-                        .forEach(instance => this.__register(instance));
-                }
-            });
+            this._valid = true;
+            this.__scanDir(dir, withCollections)
+                .forEach(component => this.__register(component));
+            // fs.readdirSync(dir) // scan directory for components
+            //   .filter(name => ~['', '.js'].indexOf(path.extname(name))) // js and folders
+            //   .map(name => path.join(dir, name)) // absolute path
+            //   .forEach(file => {
+            //     const stat = fs.statSync(file);
+            //     if (stat.isDirectory() && !this._parent) { // single level recursion
+            //       // create new registry from the child directory
+            //       this._addCollection(file);
+            //     } else if (stat.isFile()) {
+            //       // resolve classes from the files
+            //       this._resolveComponents(file)
+            //         .map(c => this.__componentFactory(c))
+            //         .forEach(instance => this.__register(instance));
+            //     }
+            //   });
         }
         else {
             this._logger.error(`Invalid component registry ${baseDir}`);
-            this.__valid = false;
+            this._valid = false;
         }
+        return this;
     }
     /**
-     * create a collection of components from a subdirectory
-     * @param subdir: string - component subdirectory (absolute).
+     * scan a directory for valid component implementations
+     * @param dir - directory to scan for components
+     * @param withCollections - group subdirectories as collections
+     */
+    __scanDir(dir, withCollections) {
+        const results = fs.readdirSync(dir) // scan directory for components
+            .filter(name => ~['', '.js'].indexOf(path.extname(name))) // js and folders
+            .map(name => path.join(dir, name)) // absolute path
+            .map(file => this.__digestPath(file, withCollections));
+        // because __digest returns an array, we need to flatten the final result.
+        return [].concat(...results);
+    }
+    __digestPath(filePath, withCollections) {
+        // consider case where manual registry is used and contain files references without extensions
+        filePath = fs.existsSync(filePath) ? filePath : `${filePath}.js`;
+        const stat = fs.statSync(filePath);
+        if (stat.isDirectory() && withCollections) {
+            // create new registry from the child directory
+            this._addCollection(filePath);
+        }
+        else if (stat.isDirectory()) {
+            // scan the directory and flatten
+            return this.__scanDir(filePath, false);
+        }
+        else if (stat.isFile()) {
+            // resolve as classes from the files
+            return this.__resolveComponents(filePath)
+                .map(c => this.__componentFactory(c));
+        }
+        return [];
+    }
+    /**
+     * create a child collection of components from a subdirectory
+     * @param subdir - component subdirectory absolute path
      */
     _addCollection(subdir) {
-        this._collections.set(path.basename(subdir), ComponentRegistry.assemble(this, subdir, this._baseDir));
-        // this._logger.info(`Registered component collection: '${path.basename(subdir)}'`);
+        this._collections.set(path.basename(subdir), ComponentRegistry.assemble(this, subdir));
     }
     /**
      * resolve Component classes from
-     * @param file: string - source file (absolute)
+     * @param filePath - source file absolute path
      */
-    _resolveComponents(file) {
+    __resolveComponents(filePath) {
         try {
-            const mod = require(file);
+            const mod = require(filePath);
             if (isComponent(mod)) {
                 // handle direct export case `export = SomeComponentClass`
                 return [mod];
@@ -96,8 +159,7 @@ class ComponentRegistry {
     }
     /**
      * component instantiation factory.
-     * @param ctor: ComponentInterface.prototype.constructor - component constructor
-     * @todo handle dependency injections
+     * @param mod - component reference (class|object)
      */
     __componentFactory(mod) {
         const ctor = makeCtor(mod);
@@ -105,7 +167,7 @@ class ComponentRegistry {
     }
     /**
      * register an instantiated component in
-     * @param component: ComponentInterface - instantiated bot component class
+     * @param component - instantiated bot component class
      */
     __register(component) {
         const meta = component.metadata();
@@ -117,11 +179,11 @@ class ComponentRegistry {
         }
     }
     /**
-     * check if registry is valid.
+     * test if registry is valid.
      * @return boolean.
      */
     isValid() {
-        return this.__valid;
+        return this._valid;
     }
     /**
      * list collections in this registry
@@ -135,8 +197,8 @@ class ComponentRegistry {
     }
     /**
      * get a registry for a specific collection of components.
-     * @param collection: RegistryCollectionName - (optional) the name of the collection;
-     * @return ComponentRegistry | this.
+     * @param collection - (optional) the name of the collection;
+     * @return child registry | this.
      */
     getRegistry(collection) {
         return collection ? this._collections.get(collection) : this;
@@ -170,8 +232,8 @@ class ComponentRegistry {
     }
     /**
      * return component metadata as json array
-     * @param collection: RegistryCollectionName - (optional) the collection name
-     * @return ComponentMeta[] - array of component metadata
+     * @param collection - the collection name, defaults to the parent collection (optional)
+     * @return - array of component metadata
      */
     getMetadata(collection) {
         const registry = this.getRegistry(collection);
@@ -191,13 +253,21 @@ class ComponentRegistry {
 ComponentRegistry.COMPONENT_DIR = constants_1.CONSTANTS.DEFAULT_COMPONENT_DIR;
 exports.ComponentRegistry = ComponentRegistry;
 /**
+ * get full path in fs.
+ * @param cwd - absolute path
+ * @param dirname - a directory or file string
+ */
+function fullPath(cwd, dirname) {
+    return ~dirname.indexOf(cwd) ? dirname : path.join(cwd, dirname);
+}
+/**
  * wrap a raw Object in a function.
  * @desc converts module.exports = {} to a prototyped object
- * @param value: any.
+ * @param type - component reference object
  */
-function makeCtor(value) {
-    return (value.prototype && value) || (function LegacyComponentWrapper() {
-        return value;
+function makeCtor(type) {
+    return (definitions_1.isType(type) && type) || (function LegacyComponentWrapper() {
+        return type;
     });
 }
 /**
@@ -206,7 +276,7 @@ function makeCtor(value) {
  * @todo create a decorator factory to test annotations against instanceof
  */
 function isComponent(ref) {
-    return (typeof ref === 'function' && definitions_1.isType(ref.prototype.metadata) && definitions_1.isType(ref.prototype.invoke)) || // class usage
+    return (definitions_1.isType(ref) && definitions_1.isType(ref.prototype.metadata) && definitions_1.isType(ref.prototype.invoke)) || // class usage
         (typeof ref === 'object' && definitions_1.isType(ref.metadata) && definitions_1.isType(ref.invoke)); // legacy
 }
 //# sourceMappingURL=registry.js.map

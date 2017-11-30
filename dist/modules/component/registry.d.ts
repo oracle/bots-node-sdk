@@ -1,52 +1,77 @@
-import * as log4js from 'log4js';
+import { Type } from '../../common/definitions';
 import { ComponentMetadataName, IComponentMetadata } from './decorator';
 import { IComponentInterface } from './abstract';
 export declare type CollectionName = string;
+/**
+ * Define accepted type for component initialization objects.
+ */
+export declare type ComponentListItem = string | Type<IComponentInterface>;
 export declare class ComponentRegistry {
     protected _parent: ComponentRegistry;
-    protected _baseDir: string;
     static readonly COMPONENT_DIR: string;
-    protected _logger: log4js.Logger;
+    private _logger;
+    private _valid;
     protected _collectionName: CollectionName;
     protected _collections: Map<string, ComponentRegistry>;
     protected _components: Map<string, IComponentInterface>;
-    private __valid;
+    /**
+     * create a registry from a list of components
+     * @param components - array of components, which can be paths, objects, or classes.
+     * @param cwd - working directory
+     */
+    static create(components: ComponentListItem[], cwd?: string): ComponentRegistry;
+    /**
+     * Assemble a component registry from the filesystem.
+     * @param parent - parent registry for nested "collections"
+     * @param componentDir - relative path to component directory
+     * @param cwd - working directory
+     */
     static assemble(parent: ComponentRegistry, componentDir?: string, cwd?: string): ComponentRegistry;
-    constructor(_parent: ComponentRegistry, _baseDir: string);
+    constructor(_parent?: ComponentRegistry);
     /**
-     * Conversation shell compatability.
-     * @desc allows components to be resolved by registry.components
+     * Legacy conversation shell compatability "components" property accessor
+     * @desc allows components to be resolved by `registry.components`
      */
-    readonly components: {};
+    readonly components: {
+        [name: string]: IComponentInterface;
+    };
+    private __buildFromItems(list, baseDir);
     /**
-     * traverse directory for valid components
-     * @param baseDir: string - Top level directory for this registry
-     * @return void.
+     * Scan directory for valid components
+     * @param baseDir - Top level directory for this registry
+     * @param withCollections - group subdirectories as collections
+     * @return void
      */
-    private __collect(baseDir);
+    private __buildFromDir(baseDir, withCollections?);
     /**
-     * create a collection of components from a subdirectory
-     * @param subdir: string - component subdirectory (absolute).
+     * scan a directory for valid component implementations
+     * @param dir - directory to scan for components
+     * @param withCollections - group subdirectories as collections
+     */
+    private __scanDir(dir, withCollections?);
+    private __digestPath(filePath, withCollections?);
+    /**
+     * create a child collection of components from a subdirectory
+     * @param subdir - component subdirectory absolute path
      */
     protected _addCollection(subdir: string): void;
     /**
      * resolve Component classes from
-     * @param file: string - source file (absolute)
+     * @param filePath - source file absolute path
      */
-    protected _resolveComponents(file: string): any[];
+    private __resolveComponents(filePath);
     /**
      * component instantiation factory.
-     * @param ctor: ComponentInterface.prototype.constructor - component constructor
-     * @todo handle dependency injections
+     * @param mod - component reference (class|object)
      */
     private __componentFactory(mod);
     /**
      * register an instantiated component in
-     * @param component: ComponentInterface - instantiated bot component class
+     * @param component - instantiated bot component class
      */
     private __register(component);
     /**
-     * check if registry is valid.
+     * test if registry is valid.
      * @return boolean.
      */
     isValid(): boolean;
@@ -56,8 +81,8 @@ export declare class ComponentRegistry {
     getCollectionNames(): CollectionName[];
     /**
      * get a registry for a specific collection of components.
-     * @param collection: RegistryCollectionName - (optional) the name of the collection;
-     * @return ComponentRegistry | this.
+     * @param collection - (optional) the name of the collection;
+     * @return child registry | this.
      */
     getRegistry(collection?: CollectionName): ComponentRegistry | this;
     /**
@@ -81,8 +106,8 @@ export declare class ComponentRegistry {
     isComponent(name: ComponentMetadataName): boolean;
     /**
      * return component metadata as json array
-     * @param collection: RegistryCollectionName - (optional) the collection name
-     * @return ComponentMeta[] - array of component metadata
+     * @param collection - the collection name, defaults to the parent collection (optional)
+     * @return - array of component metadata
      */
     getMetadata(collection?: CollectionName): IComponentMetadata[];
 }
