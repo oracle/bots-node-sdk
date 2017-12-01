@@ -7,8 +7,7 @@ const provider_1 = require("../common/provider");
  * Embedded middleware abstraction layer.
  */
 class MiddlewareAbstract {
-    constructor(_root, router, options) {
-        this._root = _root;
+    constructor(router, options) {
         // setup additional iVars.
         this._logger = provider_1.CommonProvider.getLogger();
         // init middleware
@@ -22,14 +21,13 @@ class MiddlewareAbstract {
     }
     /**
      * extend static method. Instantiate the middleware class.
-     * @param root: string - base application dirname.
      * @param router: express.Router - main namespace router.
      * @param options: any - Channel specific middleware options.
      * @return instantiated class.
      */
-    static extend(root, router, options = {}) {
+    static extend(router, options = {}) {
         const THIS = this; // bypass "Cannot create instance of abstract class error"
-        return new THIS(root, router, options);
+        return new THIS(router, options);
     }
 }
 MiddlewareAbstract.required = false; // all middleware defaults to !required

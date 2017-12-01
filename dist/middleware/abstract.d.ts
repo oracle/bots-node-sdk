@@ -4,7 +4,7 @@ import { ILogger } from '../common/definitions';
 export { express };
 export interface IStaticMiddlwareAbstract {
     required: boolean;
-    extend(root: string, router: express.IRouter<any>, options?: any): any;
+    extend(router: express.IRouter<any>, options?: any): any;
 }
 /**
  * interface for extended request object in OMCe
@@ -21,18 +21,16 @@ export interface IMobileCloudRequest extends express.Request {
  * Embedded middleware abstraction layer.
  */
 export declare abstract class MiddlewareAbstract {
-    protected _root: string;
     static required: boolean;
     protected _logger: ILogger;
     /**
      * extend static method. Instantiate the middleware class.
-     * @param root: string - base application dirname.
      * @param router: express.Router - main namespace router.
      * @param options: any - Channel specific middleware options.
      * @return instantiated class.
      */
-    static extend(root: string, router: express.IRouter<any>, options?: any): MiddlewareAbstract;
-    constructor(_root: string, router: express.IRouter<any>, options?: any);
+    static extend(router: express.IRouter<any>, options?: any): MiddlewareAbstract;
+    constructor(router: express.IRouter<any>, options?: any);
     /**
      * abstract _init. to be implemented by implementation classes.
      * @param router: express.Router main namespace router.

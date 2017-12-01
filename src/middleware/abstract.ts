@@ -4,9 +4,8 @@ import { ILogger, Type } from '../common/definitions';
 export { express }
 
 export interface IStaticMiddlwareAbstract {
-  // new (root: string, router: express.IRouter<any>, options?: any);
   required: boolean;
-  extend(root: string, router: express.IRouter<any>, options?: any);
+  extend(router: express.IRouter<any>, options?: any);
 }
 
 /**
@@ -26,17 +25,16 @@ export abstract class MiddlewareAbstract {
 
   /**
    * extend static method. Instantiate the middleware class.
-   * @param root: string - base application dirname.
    * @param router: express.Router - main namespace router.
    * @param options: any - Channel specific middleware options.
    * @return instantiated class.
    */
-  public static extend(root: string, router: express.IRouter<any>, options: any = {}): MiddlewareAbstract {
+  public static extend(router: express.IRouter<any>, options: any = {}): MiddlewareAbstract {
     const THIS: any = this; // bypass "Cannot create instance of abstract class error"
-    return new THIS(root, router, options);
+    return new THIS(router, options);
   }
 
-  constructor(protected _root: string, router: express.IRouter<any>, options?: any) {
+  constructor(router: express.IRouter<any>, options?: any) {
     // setup additional iVars.
     this._logger = CommonProvider.getLogger();
     // init middleware

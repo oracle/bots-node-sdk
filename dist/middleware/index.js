@@ -11,13 +11,14 @@ const component_1 = require("./component");
  *
  * export = (app: express.Express): void => {
  *   app.use(OracleBot.Middleware.init({
- *     root: __dirname, // root of application source
  *     component: { // component middleware options
- *       baseDir: 'components', // relative directory for components in fs
+ *       cwd: __dirname, // root of application source
+ *       path: './components', // relative directory for components in fs
  *       register: [ // explicitly provide a global registry
  *         './path/to/a/component',
+ *         require('./path/to/another/component'),
  *         './path/to/other/components',
- *         './path/to/even/more/components',
+ *         './path/to/a/directory',
  *       ]
  *     }
  *   }));
@@ -29,13 +30,12 @@ var Middleware;
     ;
     /**
      * init middleware function. Add bot middleware to the app router stack.
-     * @param options: MiddlewareOptions to configure the middleware.
+     * @param options  options to configure the middleware.
      * @return express.Router
      * @todo add webhook middleware
      */
     function init(options = {}) {
         const router = express.Router();
-        const root = options.root || process.cwd();
         // create iterable map
         const mwMap = new Map([
             ['parser', parser_1.ParserMiddleware],
@@ -44,7 +44,7 @@ var Middleware;
         // iterate and apply the middleware layers
         mwMap.forEach((mw, key) => {
             if (mw.required || !!options[key]) {
-                mw.extend(root, router, options[key]);
+                mw.extend(router, options[key]);
             }
         });
         return router;

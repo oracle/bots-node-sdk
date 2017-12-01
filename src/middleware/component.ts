@@ -9,7 +9,8 @@ import Shell = require('../modules/conversation/shell');
  * component middleware specific options
  */
 export interface IComponentMiddlewareOptions {
-  baseDir?: string; // base component directory for fs registry scan
+  cwd: string; // working directory of the project runtime (defaults to process.cwd())
+  path?: string; // base component directory for fs registry scan
   register?: ComponentListItem[] // list of components to register, these will be considered 'global'
   mixins?: any; // conversation mixin methods | properties
 }
@@ -31,7 +32,7 @@ export class ComponentMiddleware extends MiddlewareAbstract {
   protected _init(router: express.Router, options: IComponentMiddlewareOptions): void {
     const opts: IComponentMiddlewareOptions = {
       // option defaults
-      baseDir: ComponentRegistry.COMPONENT_DIR,
+      path: ComponentRegistry.COMPONENT_DIR,
       register: [],
       mixins: { },
       // user options
@@ -42,9 +43,9 @@ export class ComponentMiddleware extends MiddlewareAbstract {
      * assemble root registry from baseDirectory
      * merge explicitly provided component registry with the fs registry.
      */
-    const rootRegistry = ComponentRegistry.assemble(null, opts.baseDir, this._root);
+    const rootRegistry = ComponentRegistry.assemble(null, opts.path, opts.cwd);
     if (opts.register) {
-      const globalRegistry = ComponentRegistry.create(opts.register, this._root);
+      const globalRegistry = ComponentRegistry.create(opts.register, opts.cwd);
       rootRegistry.merge(globalRegistry, true);
     }
 
