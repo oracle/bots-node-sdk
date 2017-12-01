@@ -2,7 +2,6 @@ import * as express from 'express';
 import * as http from 'http';
 import * as path from 'path';
 import * as OracleBot from '../main';
-import * as log4js from 'log4js';
 
 import CONF = require('./spec.config');
 const app = express();
@@ -39,6 +38,6 @@ app.post('/echo', (req, res) => {
 
 // export the http.Server for supertest
 const server = app.listen(CONF.port, () => {
-  console.log(`spec server listening on :${CONF.port}`);
+  // console.log(`spec server listening on :${CONF.port}`);
 });
 export = server;

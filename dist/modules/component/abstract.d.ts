@@ -1,6 +1,5 @@
-import * as log4js from 'log4js';
+import { ILogger, ICallback } from '../../common/definitions';
 import { Conversation } from '../conversation';
-import { ICallback } from '../../common/definitions';
 import { Component, IComponentMetadata } from './decorator';
 export interface IComponentInterface {
     metadata?(): IComponentMetadata;
@@ -12,7 +11,7 @@ export interface IComponentInterface {
  * @example export class MyCustomComponent extends ComponentAbstract { ... }
  */
 export declare abstract class ComponentAbstract implements IComponentInterface {
-    protected readonly logger: log4js.Logger;
+    protected readonly logger: ILogger;
     constructor();
     /**
      * convenience getter to access decorator annotations.

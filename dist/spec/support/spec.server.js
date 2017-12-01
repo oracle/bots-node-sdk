@@ -31,7 +31,7 @@ app.post('/echo', (req, res) => {
 });
 // export the http.Server for supertest
 const server = app.listen(CONF.port, () => {
-    console.log(`spec server listening on :${CONF.port}`);
+    // console.log(`spec server listening on :${CONF.port}`);
 });
 module.exports = server;
 //# sourceMappingURL=spec.server.js.map

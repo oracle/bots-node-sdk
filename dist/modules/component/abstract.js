@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const log4js = require("log4js");
+const provider_1 = require("../../common/provider");
 /**
  * Custom component abstract class.
  * @preferred
@@ -8,7 +8,7 @@ const log4js = require("log4js");
  */
 class ComponentAbstract {
     constructor() {
-        this.logger = log4js.getLogger(this.constructor.name);
+        this.logger = provider_1.CommonProvider.getLogger();
     }
     /**
      * convenience getter to access decorator annotations.

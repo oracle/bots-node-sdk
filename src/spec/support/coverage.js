@@ -13,8 +13,9 @@ writeReport(collector, 'html', null, 'coverage');
 writeReport(collector, 'text', null, 'COVERAGE.md').then(() => {
   const md = fs.readFileSync('COVERAGE.md')
     .toString()
-    .replace(/\[[\d\;]+m/g, '')
+    .replace(/\[[\d\;]+m/g, '') // remove colors
     .replace(/^[\|-]+/, '')
+    .trim();
   fs.writeFileSync('COVERAGE.md', 
 `# Test Coverage Report
 

@@ -1,5 +1,6 @@
 import * as express from 'express';
-import * as log4js from 'log4js';
+import { CommonProvider } from '../common/provider';
+import { ILogger } from '../common/definitions';
 export { express }
 
 export interface IStaticMiddlwareAbstract {
@@ -19,7 +20,7 @@ export interface IMobileCloudRequest extends express.Request {
  * Embedded middleware abstraction layer.
  */
 export abstract class MiddlewareAbstract {
-  protected _logger: log4js.Logger; // establish a namespaced logger instance
+  protected _logger: ILogger; // establish a namespaced logger instance
 
   /**
    * extend static method. Instantiate the middleware class.
@@ -35,7 +36,7 @@ export abstract class MiddlewareAbstract {
 
   constructor(protected _root: string, router: express.IRouter<any>, options?: any) {
     // setup additional iVars.
-    this._logger = log4js.getLogger(this.constructor.name);
+    this._logger = CommonProvider.getLogger();
     // init middleware
     try {
       this._init(router, options);

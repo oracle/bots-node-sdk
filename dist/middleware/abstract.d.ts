@@ -1,6 +1,6 @@
 /// <reference types="express" />
 import * as express from 'express';
-import * as log4js from 'log4js';
+import { ILogger } from '../common/definitions';
 export { express };
 export interface IStaticMiddlwareAbstract {
     extend(root: string, router: express.IRouter<any>, options?: any): any;
@@ -21,7 +21,7 @@ export interface IMobileCloudRequest extends express.Request {
  */
 export declare abstract class MiddlewareAbstract {
     protected _root: string;
-    protected _logger: log4js.Logger;
+    protected _logger: ILogger;
     /**
      * extend static method. Instantiate the middleware class.
      * @param root: string - base application dirname.

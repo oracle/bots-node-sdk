@@ -4,15 +4,15 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 // main provider for common object references.
-const log4js = require("log4js");
 const Joi = require("joi");
 const provider_1 = require("./common/provider");
-provider_1.CommonProvider.register([
-    { key: provider_1.PROVIDER_KEY_JOI, use: Joi },
-    { key: provider_1.PROVIDER_KEY_LOGGER, use: log4js.getLogger() },
-]);
 // main exports
+__export(require("./config"));
 __export(require("./middleware"));
 __export(require("./modules"));
 __export(require("./util"));
+// TODO - Move to a Config module.
+provider_1.CommonProvider.register([
+    { key: provider_1.PROVIDER_KEY_JOI, use: Joi }
+]);
 //# sourceMappingURL=index.js.map
