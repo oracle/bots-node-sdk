@@ -36,7 +36,7 @@
     "testing"
   ],
   "dependencies": {
-    "body-parser": "^1.15.2",
+    "body-parser": "^1.18.2",
     "joi": "^13.0.2",
     "request": "^2.81.0"
   },
