@@ -1,7 +1,6 @@
 import * as OracleBot from '../main';
 
 import { MiddlewareAbstract } from '../../middleware/abstract'
-import { AuthMiddleware } from '../../middleware/auth'
 import { ParserMiddleware } from '../../middleware/parser'
 import { ComponentMiddleware } from '../../middleware/component'
 
@@ -21,13 +20,11 @@ import serverConf = require('../support/spec.config');
 describe('Middleware', () => {
 
   it('should perform child middleware instantiations', () => {
-    let spyAuthMw = spyOn(<any>AuthMiddleware.prototype, '_init');
     let spyParserMw = spyOn(<any>ParserMiddleware.prototype, '_init');
     let spyCompMw = spyOn(<any>ComponentMiddleware.prototype, '_init');
     expect(OracleBot.Middleware.init).not.toThrow();
     // individual middlewares don't get invoked without configs
-    expect(spyAuthMw).not.toHaveBeenCalled();
-    expect(spyParserMw).not.toHaveBeenCalled();
+    expect(spyParserMw).toHaveBeenCalled(); // parser is required mw
     expect(spyCompMw).not.toHaveBeenCalled();
   });
 

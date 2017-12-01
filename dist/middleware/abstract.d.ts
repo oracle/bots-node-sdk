@@ -3,6 +3,7 @@ import * as express from 'express';
 import { ILogger } from '../common/definitions';
 export { express };
 export interface IStaticMiddlwareAbstract {
+    required: boolean;
     extend(root: string, router: express.IRouter<any>, options?: any): any;
 }
 /**
@@ -21,6 +22,7 @@ export interface IMobileCloudRequest extends express.Request {
  */
 export declare abstract class MiddlewareAbstract {
     protected _root: string;
+    static required: boolean;
     protected _logger: ILogger;
     /**
      * extend static method. Instantiate the middleware class.

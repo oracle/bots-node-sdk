@@ -32,5 +32,6 @@ class MiddlewareAbstract {
         return new THIS(root, router, options);
     }
 }
+MiddlewareAbstract.required = false; // all middleware defaults to !required
 exports.MiddlewareAbstract = MiddlewareAbstract;
 //# sourceMappingURL=abstract.js.map

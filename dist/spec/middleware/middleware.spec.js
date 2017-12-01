@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const OracleBot = require("../main");
 const abstract_1 = require("../../middleware/abstract");
-const auth_1 = require("../../middleware/auth");
 const parser_1 = require("../../middleware/parser");
 const component_1 = require("../../middleware/component");
 const testing_1 = require("../../testing");
@@ -14,13 +13,11 @@ const supertest = require("supertest");
 const serverConf = require("../support/spec.config");
 describe('Middleware', () => {
     it('should perform child middleware instantiations', () => {
-        let spyAuthMw = spyOn(auth_1.AuthMiddleware.prototype, '_init');
         let spyParserMw = spyOn(parser_1.ParserMiddleware.prototype, '_init');
         let spyCompMw = spyOn(component_1.ComponentMiddleware.prototype, '_init');
         expect(OracleBot.Middleware.init).not.toThrow();
         // individual middlewares don't get invoked without configs
-        expect(spyAuthMw).not.toHaveBeenCalled();
-        expect(spyParserMw).not.toHaveBeenCalled();
+        expect(spyParserMw).toHaveBeenCalled(); // parser is required mw
         expect(spyCompMw).not.toHaveBeenCalled();
     });
     it('should be failure tolerant', () => {
