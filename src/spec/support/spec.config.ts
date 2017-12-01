@@ -4,10 +4,6 @@
 export = {
   port: 4111,
   componentPrefix: '/bot',
-  auth: {
-    user: 'BotTestUser',
-    pass: 'BotTestPass',
-  },
   parser: {
     // intentionally empty
   },
