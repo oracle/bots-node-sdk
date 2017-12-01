@@ -2,8 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const path = require("path");
 const fs = require("fs");
-const log4js = require("log4js");
 const constants_1 = require("../../common/constants");
+const provider_1 = require("../../common/provider");
 const definitions_1 = require("../../common/definitions");
 class ComponentRegistry {
     /**
@@ -15,7 +15,7 @@ class ComponentRegistry {
         this._collections = new Map();
         this._components = new Map();
         // setup additional iVars.
-        this._logger = log4js.getLogger(this.constructor.name);
+        this._logger = provider_1.CommonProvider.getLogger();
     }
     /**
      * Create a registry from a list of component references. The resulting registry

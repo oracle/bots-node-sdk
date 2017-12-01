@@ -1,8 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
-const auth_1 = require("./auth");
-exports.AUTH_TYPE = auth_1.AUTH_TYPE;
 const parser_1 = require("./parser");
 const component_1 = require("./component");
 /**
@@ -40,13 +38,12 @@ var Middleware;
         const root = options.root || process.cwd();
         // create iterable map
         const mwMap = new Map([
-            ['auth', auth_1.AuthMiddleware],
             ['parser', parser_1.ParserMiddleware],
             ['component', component_1.ComponentMiddleware],
         ]);
         // iterate and apply the middleware layers
         mwMap.forEach((mw, key) => {
-            if (!!options[key]) {
+            if (mw.required || !!options[key]) {
                 mw.extend(root, router, options[key]);
             }
         });

@@ -1,7 +1,6 @@
 import * as OracleBot from '../main';
 
 import { MiddlewareAbstract } from '../../middleware/abstract'
-import { AuthMiddleware } from '../../middleware/auth'
 import { ParserMiddleware } from '../../middleware/parser'
 import { ComponentMiddleware } from '../../middleware/component'
 
@@ -21,13 +20,11 @@ import serverConf = require('../support/spec.config');
 describe('Middleware', () => {
 
   it('should perform child middleware instantiations', () => {
-    let spyAuthMw = spyOn(<any>AuthMiddleware.prototype, '_init');
     let spyParserMw = spyOn(<any>ParserMiddleware.prototype, '_init');
     let spyCompMw = spyOn(<any>ComponentMiddleware.prototype, '_init');
     expect(OracleBot.Middleware.init).not.toThrow();
     // individual middlewares don't get invoked without configs
-    expect(spyAuthMw).not.toHaveBeenCalled();
-    expect(spyParserMw).not.toHaveBeenCalled();
+    expect(spyParserMw).toHaveBeenCalled(); // parser is required mw
     expect(spyCompMw).not.toHaveBeenCalled();
   });
 
@@ -50,7 +47,7 @@ describe('Middleware', () => {
     });
 
     describe('arbitrary routing', () => {
-      it('should DENY `/` without auth', done => {
+      xit('should DENY `/` without auth', done => {
         supertest(server)
           .get('/')
           .expect(401)
@@ -62,7 +59,6 @@ describe('Middleware', () => {
       it('should allow / WITH auth', done => {
         supertest(server)
           .get('/')
-          .auth(serverConf.auth.user, serverConf.auth.pass)
           .expect(200, serverConf.messages.OK)
           .end(err => {
             return err ? done.fail(err) : done();
@@ -74,7 +70,6 @@ describe('Middleware', () => {
         supertest(server)
           .post('/echo')
           .send(body)
-          .auth(serverConf.auth.user, serverConf.auth.pass)
           .expect(200)
           .expect(res => {
             expect(res.body).toEqual(body);
@@ -91,7 +86,6 @@ describe('Middleware', () => {
       it('should get root metadata', done => {
         supertest(server)
           .get(`${serverConf.componentPrefix}`)
-          .auth(serverConf.auth.user, serverConf.auth.pass)
           .expect(200)
           .expect(res => {
             expect(res.body.version).toBeTruthy(`not contain version`);
@@ -113,7 +107,6 @@ describe('Middleware', () => {
         supertest(server)
           .post(`${serverConf.componentPrefix}/test.one`)
           .send(MockComponent.Request())
-          .auth(serverConf.auth.user, serverConf.auth.pass)
           .expect(200)
           .expect(res => {
             expect(spy).toHaveBeenCalled();
@@ -130,7 +123,6 @@ describe('Middleware', () => {
         supertest(server)
           .post(`${serverConf.componentPrefix}/legacy.style`)
           .send(MockComponent.Request())
-          .auth(serverConf.auth.user, serverConf.auth.pass)
           .expect(200)
           .expect(res => {
             expect(spy).toHaveBeenCalled();
@@ -146,7 +138,6 @@ describe('Middleware', () => {
         supertest(server)
           .post(`${serverConf.componentPrefix}/foo`)
           .send(MockComponent.Request())
-          .auth(serverConf.auth.user, serverConf.auth.pass)
           .expect(404)
           .end(err =>  err ? done.fail(err) : done());
       });
@@ -156,7 +147,6 @@ describe('Middleware', () => {
         it('should 404 invalid collection', done => {
           supertest(server)
             .get(`${serverConf.componentPrefix}/collection/foo`)
-            .auth(serverConf.auth.user, serverConf.auth.pass)
             .expect(404)
             .end(err =>  err ? done.fail(err) : done());
         });
@@ -165,7 +155,6 @@ describe('Middleware', () => {
           supertest(server)
             .post(`${serverConf.componentPrefix}/collection/foo/foo`)
             .send(MockComponent.Request())
-            .auth(serverConf.auth.user, serverConf.auth.pass)
             .expect(404)
             .end(err =>  err ? done.fail(err) : done());
         });
@@ -173,7 +162,6 @@ describe('Middleware', () => {
         it('should get {collection} metadata', done => {
           supertest(server)
             .get(`${serverConf.componentPrefix}/collection/sub`)
-            .auth(serverConf.auth.user, serverConf.auth.pass)
             .expect(200)
             .expect(res => {
               expect(res.body.version).toBeTruthy(`not contain version`);
@@ -191,7 +179,6 @@ describe('Middleware', () => {
           supertest(server)
             .post(`${serverConf.componentPrefix}/collection/sub/sub.one`)
             .send(MockComponent.Request())
-            .auth(serverConf.auth.user, serverConf.auth.pass)
             .expect(200)
             .end(err => {
               return err ? done.fail(err) : done();
@@ -202,19 +189,9 @@ describe('Middleware', () => {
 
       describe('error handling', () => {
 
-        it('should deny without auth', done => {
-          supertest(server)
-            .get(`${serverConf.componentPrefix}`)
-            .expect(401)
-            .end(err => {
-              return err ? done.fail(err) : done();
-            });
-        });
-
         it('should 404 unknown collection metadata', done => {
           supertest(server)
             .get(`${serverConf.componentPrefix}/foo`)
-            .auth(serverConf.auth.user, serverConf.auth.pass)
             .expect(404)
             .end(err => {
               return err ? done.fail(err) : done();
@@ -225,7 +202,6 @@ describe('Middleware', () => {
           supertest(server)
             .post(`${serverConf.componentPrefix}/foo/bar`)
             .send(MockComponent.Request())
-            .auth(serverConf.auth.user, serverConf.auth.pass)
             .expect(404)
             .end(err => {
               return err ? done.fail(err) : done();
@@ -236,7 +212,6 @@ describe('Middleware', () => {
           supertest(server)
             .post(`${serverConf.componentPrefix}/test.one`)
             .send({})
-            .auth(serverConf.auth.user, serverConf.auth.pass)
             .expect(400)
             .end(err => {
               return err ? done.fail(err) : done();

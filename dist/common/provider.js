@@ -25,7 +25,7 @@ class CommonProvider {
                     this._map.set(provider.key, provider.use);
                 }
                 else {
-                    throw new Error(`${this.constructor.name} already registered ${provider.key}`);
+                    this.getLogger().warn(`${this.constructor.name} already registered ${provider.key}`);
                 }
             });
         });

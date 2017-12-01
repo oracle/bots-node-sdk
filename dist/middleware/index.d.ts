@@ -1,9 +1,7 @@
 /// <reference types="express" />
 import * as express from 'express';
-import { IAuthMiddlewareOptions, AUTH_TYPE } from './auth';
 import { IParserMiddlewareOptions } from './parser';
 import { IComponentMiddlewareOptions } from './component';
-export { AUTH_TYPE };
 /**
  * Configurable middleware module.
  *
@@ -31,7 +29,6 @@ export declare namespace Middleware {
      */
     interface IMiddewareOptions {
         root?: string;
-        auth?: IAuthMiddlewareOptions;
         parser?: IParserMiddlewareOptions;
         component?: IComponentMiddlewareOptions;
     }

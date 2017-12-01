@@ -1,10 +1,7 @@
 import * as express from 'express';
 import { IStaticMiddlwareAbstract } from './abstract';
-import { AuthMiddleware, IAuthMiddlewareOptions, AUTH_TYPE } from './auth';
 import { ParserMiddleware, IParserMiddlewareOptions } from './parser';
 import { ComponentMiddleware, IComponentMiddlewareOptions } from './component';
-
-export { AUTH_TYPE }
 
 /**
  * Configurable middleware module.
@@ -34,7 +31,6 @@ export namespace Middleware {
    */
   export interface IMiddewareOptions {
     root?: string; // server root directory defaults to process.cwd()
-    auth?: IAuthMiddlewareOptions;
     parser?: IParserMiddlewareOptions;
     component?: IComponentMiddlewareOptions;
   };
@@ -50,13 +46,12 @@ export namespace Middleware {
     const root = options.root || process.cwd();
     // create iterable map
     const mwMap = new Map<string, IStaticMiddlwareAbstract>([
-      ['auth', AuthMiddleware],
       ['parser', ParserMiddleware],
       ['component', ComponentMiddleware],
     ]);
     // iterate and apply the middleware layers
     mwMap.forEach((mw, key) => {
-      if (!!options[key]) {
+      if (mw.required || !!options[key]) {
         mw.extend(root, router, options[key]);
       }
     });

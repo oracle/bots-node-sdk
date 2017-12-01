@@ -24,5 +24,7 @@ class ParserMiddleware extends abstract_1.MiddlewareAbstract {
         }
     }
 }
+// Parser middleware is required
+ParserMiddleware.required = true;
 exports.ParserMiddleware = ParserMiddleware;
 //# sourceMappingURL=parser.js.map

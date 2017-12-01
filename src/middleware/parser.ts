@@ -22,6 +22,8 @@ export interface IParsedRequest extends express.Request {
  * Body parser middleware
  */
 export class ParserMiddleware extends MiddlewareAbstract {
+  // Parser middleware is required
+  public static required = true;
 
   protected _init(router: express.Router, options: IParserMiddlewareOptions): void {
     const common = {

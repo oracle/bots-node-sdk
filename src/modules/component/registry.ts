@@ -1,9 +1,9 @@
 import * as path from 'path';
 import * as fs from 'fs';
-import * as log4js from 'log4js';
 
 import { CONSTANTS } from '../../common/constants';
-import { Type, isType } from '../../common/definitions';
+import { CommonProvider } from '../../common/provider';
+import { Type, isType, ILogger } from '../../common/definitions';
 import { Component, ComponentMetadataName, IComponentMetadata } from './decorator';
 import { IComponentInterface } from './abstract';
 
@@ -16,7 +16,7 @@ export type ComponentListItem = string | Type<IComponentInterface> | {[key: stri
 
 export class ComponentRegistry {
   public static readonly COMPONENT_DIR = CONSTANTS.DEFAULT_COMPONENT_DIR;
-  private _logger: log4js.Logger;
+  private _logger: ILogger;
   protected _collectionName: CollectionName;
   protected _collections = new Map<CollectionName, ComponentRegistry>();
   protected _components = new Map<ComponentMetadataName, IComponentInterface>();
@@ -57,7 +57,7 @@ export class ComponentRegistry {
    */
   constructor(protected _parent?: ComponentRegistry) {
     // setup additional iVars.
-    this._logger = log4js.getLogger(this.constructor.name);
+    this._logger = CommonProvider.getLogger();
   }
 
   /**

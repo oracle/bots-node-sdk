@@ -1,6 +1,7 @@
-import * as log4js from 'log4js';
+import { CommonProvider } from '../../common/provider';
+import { ILogger, ICallback } from '../../common/definitions';
+
 import { Conversation } from '../conversation';
-import { ICallback } from '../../common/definitions';
 import { Component, IComponentMetadata } from './decorator';
 
 export interface IComponentInterface {
@@ -14,9 +15,9 @@ export interface IComponentInterface {
  * @example export class MyCustomComponent extends ComponentAbstract { ... }
  */
 export abstract class ComponentAbstract implements IComponentInterface {
-  protected readonly logger: log4js.Logger; // establish a namespaced logger instance
+  protected readonly logger: ILogger; // establish a logger instance
   constructor() {
-    this.logger = log4js.getLogger(this.constructor.name);
+    this.logger = CommonProvider.getLogger();
   }
 
   /**

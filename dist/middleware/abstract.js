@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
 exports.express = express;
-const log4js = require("log4js");
+const provider_1 = require("../common/provider");
 /**
  * Embedded middleware abstraction layer.
  */
@@ -10,7 +10,7 @@ class MiddlewareAbstract {
     constructor(_root, router, options) {
         this._root = _root;
         // setup additional iVars.
-        this._logger = log4js.getLogger(this.constructor.name);
+        this._logger = provider_1.CommonProvider.getLogger();
         // init middleware
         try {
             this._init(router, options);
@@ -32,5 +32,6 @@ class MiddlewareAbstract {
         return new THIS(root, router, options);
     }
 }
+MiddlewareAbstract.required = false; // all middleware defaults to !required
 exports.MiddlewareAbstract = MiddlewareAbstract;
 //# sourceMappingURL=abstract.js.map
