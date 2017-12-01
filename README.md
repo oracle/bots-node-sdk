@@ -18,9 +18,9 @@
 alm `git` should be replaced by `git submodule` addition in the consuming project(s).
 
 ```shell
-# export ORACLE_ID=my.oracle.username
-
-npm install git+ssh://${ORACLE_ID}%40oracle.com@alm.oraclecorp.com:2222/mcs_intelligent-bots-cloud-service/bots-js-sdk.git
+export ORACLE_ID=my.oracle.username
+git config --global url."ssh://${ORACLE_ID}%40oracle.com@alm.oraclecorp.com:2222/".insteadof "alm:"
+npm install git+ssh://alm:mcs_intelligent-bots-cloud-service/bots-js-sdk.git
 ```
 
 ## Test
