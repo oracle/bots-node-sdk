@@ -9,10 +9,10 @@ const app = express();
 
 // add prefixed /component middleware
 app.use(CONF.componentPrefix, OracleBot.Middleware.init({
-  root: __dirname,
   parser: CONF.parser,
   component: {
-    baseDir: 'example/components', // use fs registry
+    cwd: __dirname,
+    path: 'example/components', // use fs registry
     register: [ // register global components manually
       './example/more.components/a.component'
     ]

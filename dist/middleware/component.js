@@ -18,14 +18,14 @@ class ComponentMiddleware extends abstract_1.MiddlewareAbstract {
     _init(router, options) {
         const opts = Object.assign({ 
             // option defaults
-            baseDir: registry_1.ComponentRegistry.COMPONENT_DIR, register: [], mixins: {} }, options);
+            path: registry_1.ComponentRegistry.COMPONENT_DIR, register: [], mixins: {} }, options);
         /**
          * assemble root registry from baseDirectory
          * merge explicitly provided component registry with the fs registry.
          */
-        const rootRegistry = registry_1.ComponentRegistry.assemble(null, opts.baseDir, this._root);
+        const rootRegistry = registry_1.ComponentRegistry.assemble(null, opts.path, opts.cwd);
         if (opts.register) {
-            const globalRegistry = registry_1.ComponentRegistry.create(opts.register, this._root);
+            const globalRegistry = registry_1.ComponentRegistry.create(opts.register, opts.cwd);
             rootRegistry.merge(globalRegistry, true);
         }
         /**

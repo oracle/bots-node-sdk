@@ -22,18 +22,20 @@
     "test": "NODE_ENV=test istanbul cover ./src/spec/support/test.js",
     "pretest": "npm run build",
     "posttest": "node ./src/spec/support/coverage.js",
-    "prepublish": "npm run build"
+    "prepare": "npm run build"
   },
   "contributors": [
     "Matt Vander Vliet <matthew.vander.vliet@oracle.com>",
     "Adao Oliveira Junior <adao.junior@oracle.com>",
     "Henrick Yau <henrick.yau@oracle.com>"
   ],
-  "license": "ISC",
+  "license": "UPL-1.0",
   "files": [
     "dist",
     "!dist/spec/**",
-    "testing"
+    "testing",
+    "Dockerfile",
+    ".dockerignore"
   ],
   "dependencies": {
     "body-parser": "^1.18.2",

@@ -5,7 +5,8 @@ import { ComponentListItem } from '../modules/component/registry';
  * component middleware specific options
  */
 export interface IComponentMiddlewareOptions {
-    baseDir?: string;
+    cwd: string;
+    path?: string;
     register?: ComponentListItem[];
     mixins?: any;
 }

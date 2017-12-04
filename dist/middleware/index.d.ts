@@ -10,13 +10,14 @@ import { IComponentMiddlewareOptions } from './component';
  *
  * export = (app: express.Express): void => {
  *   app.use(OracleBot.Middleware.init({
- *     root: __dirname, // root of application source
  *     component: { // component middleware options
- *       baseDir: 'components', // relative directory for components in fs
+ *       cwd: __dirname, // root of application source
+ *       path: './components', // relative directory for components in fs
  *       register: [ // explicitly provide a global registry
  *         './path/to/a/component',
+ *         require('./path/to/another/component'),
  *         './path/to/other/components',
- *         './path/to/even/more/components',
+ *         './path/to/a/directory',
  *       ]
  *     }
  *   }));
@@ -28,13 +29,12 @@ export declare namespace Middleware {
      * MiddlewareOptions. Define options/configuration for Bot middleware.
      */
     interface IMiddewareOptions {
-        root?: string;
         parser?: IParserMiddlewareOptions;
         component?: IComponentMiddlewareOptions;
     }
     /**
      * init middleware function. Add bot middleware to the app router stack.
-     * @param options: MiddlewareOptions to configure the middleware.
+     * @param options  options to configure the middleware.
      * @return express.Router
      * @todo add webhook middleware
      */
