@@ -46,7 +46,7 @@ export const Component = (annotations: Component = {}): Function => { // decorat
       ctor.prototype.constructor.name.replace(/([a-z-]+)([A-Z])/g, '$1.$2').toLowerCase();
 
     return class extends ctor implements IComponentInterface {
-      private readonly __decoratorMetadata = Object.assign({}, annotations);
+      private readonly __decoratorMetadata = {...annotations};
 
       // auto-implement the interface methods
       metadata(): IComponentMetadata {
@@ -65,6 +65,7 @@ export const Component = (annotations: Component = {}): Function => { // decorat
           }
         }
       }
+
     }
   };
 };

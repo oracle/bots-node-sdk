@@ -157,7 +157,7 @@ import { MyComponent } from '../../components/MyComponent';
 
 describe('MyComponent', () => {
   it('should chat', done => {
-    const conv = BotTesting.MockComponent.Conversation.any();
+    const conv = BotTesting.MockConversation.any();
     new MyComponent().invoke(conv, (err) => {
       expect(err).toBeFalsy();
       expect(conv.text()).toBeDefined();

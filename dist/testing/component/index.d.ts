@@ -1,6 +1,24 @@
 import { Conversation as SDK } from '../../';
 /**
- * MockComponent Testing Harness
+ * Component Testing Harness
+ *
+ */
+export interface IMockRequestBody {
+    botId?: any;
+    platformVersion?: any;
+    context?: any;
+    properties?: any;
+    message?: any;
+}
+/**
+ * Create a mock request for component middleware handling
+ * @param type - channel type
+ * @param properties - conversation properties (optional)
+ * @param variables - conversation variables (optional)
+ */
+export declare function MockRequest(type?: string, properties?: any, variables?: any): IMockRequestBody;
+/**
+ * Extension for the main Conversation class with testing conveniences.
  *
  * ```javascript
  * import * as Testing from '@oracle/bot-js-sdk/testing';
@@ -8,8 +26,8 @@ import { Conversation as SDK } from '../../';
  *
  * describe('MyCustomComponent', () => {
  *   it('should reply with message', done => {
- *     const request = Testing.MockComponent.Request();
- *     const conversation = Testing.MockComponent.Conversation.fromRequest(request);
+ *     const request = Testing.MockRequest();
+ *     const conversation = Testing.MockConversation.fromRequest(request);
  *     new MyCustomComponent()
  *       .invoke(conversation, err => {
  *         expect(conversation.response().messages).toBeDefined();
@@ -19,37 +37,16 @@ import { Conversation as SDK } from '../../';
  * })
  * ```
  */
-export declare namespace MockComponent {
-    interface IRequestBody {
-        botId?: any;
-        platformVersion?: any;
-        context?: any;
-        properties?: any;
-        message?: any;
-    }
+export declare class MockConversation extends SDK {
     /**
-     * Request
-     * @description create a mock request for component middleware handling
-     * @param type - channel type
-     * @param properties - conversation properties (optional)
-     * @param variables - conversation variables (optional)
+     * create a mock conversation with an "empty" valid request.
+     * @return Conversation
      */
-    function Request(type?: string, properties?: any, variables?: any): IRequestBody;
+    static any(): MockConversation;
     /**
-     * extension of the main Conversation class to provide testing conveniences
-     * @todo: extend any methods to suppress unwanted testing functionality.
+     * create conversation instance from a request
+     * @param req the component invocation request body
+     * @return Conversation
      */
-    class Conversation extends SDK {
-        /**
-         * create a mock conversation with an "empty" valid request.
-         * @return Conversation
-         */
-        static any(): Conversation;
-        /**
-         * create conversation instance from a request
-         * @param req the component invocation request body
-         * @return Conversation
-         */
-        static fromRequest(req: IRequestBody): Conversation;
-    }
+    static fromRequest(req: IMockRequestBody): MockConversation;
 }

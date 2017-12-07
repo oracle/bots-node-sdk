@@ -12,7 +12,6 @@ export namespace Config {
       key: PROVIDER_KEY_LOGGER,
       use: logger
     });
-    return this;
   }
 
 }

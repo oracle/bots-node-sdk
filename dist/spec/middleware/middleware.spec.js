@@ -90,7 +90,7 @@ describe('Middleware', () => {
                 const spy = spyOn(one_1.MyFirstComponent.prototype, 'invoke').and.callThrough();
                 supertest(server)
                     .post(`${serverConf.componentPrefix}/test.one`)
-                    .send(testing_1.MockComponent.Request())
+                    .send(testing_1.MockRequest())
                     .expect(200)
                     .expect(res => {
                     expect(spy).toHaveBeenCalled();
@@ -105,7 +105,7 @@ describe('Middleware', () => {
                 const spy = spyOn(LegacyComponent, 'invoke').and.callThrough();
                 supertest(server)
                     .post(`${serverConf.componentPrefix}/legacy.style`)
-                    .send(testing_1.MockComponent.Request())
+                    .send(testing_1.MockRequest())
                     .expect(200)
                     .expect(res => {
                     expect(spy).toHaveBeenCalled();
@@ -119,7 +119,7 @@ describe('Middleware', () => {
             it('should 404 invalid component invokation', done => {
                 supertest(server)
                     .post(`${serverConf.componentPrefix}/foo`)
-                    .send(testing_1.MockComponent.Request())
+                    .send(testing_1.MockRequest())
                     .expect(404)
                     .end(err => err ? done.fail(err) : done());
             });
@@ -133,7 +133,7 @@ describe('Middleware', () => {
                 it('should 404 invalid component invokation', done => {
                     supertest(server)
                         .post(`${serverConf.componentPrefix}/collection/foo/foo`)
-                        .send(testing_1.MockComponent.Request())
+                        .send(testing_1.MockRequest())
                         .expect(404)
                         .end(err => err ? done.fail(err) : done());
                 });
@@ -155,7 +155,7 @@ describe('Middleware', () => {
                 it('should invoke siloed components', done => {
                     supertest(server)
                         .post(`${serverConf.componentPrefix}/collection/sub/sub.one`)
-                        .send(testing_1.MockComponent.Request())
+                        .send(testing_1.MockRequest())
                         .expect(200)
                         .end(err => {
                         return err ? done.fail(err) : done();
@@ -174,7 +174,7 @@ describe('Middleware', () => {
                 it('should 404 invalid registry', done => {
                     supertest(server)
                         .post(`${serverConf.componentPrefix}/foo/bar`)
-                        .send(testing_1.MockComponent.Request())
+                        .send(testing_1.MockRequest())
                         .expect(404)
                         .end(err => {
                         return err ? done.fail(err) : done();
