@@ -23,17 +23,17 @@ export interface Component extends IComponentMetadata { }
  * Component class decorator function. (`TypeScript` only)
  * Used to source component annotations (metadata) object.
  * @param annotations - Component metadata object.
- * @example
+ *
  * ```javascript
  * import * as OracleBot from '@oracle/bot-js-sdk';
  *
- * @OracleBot.Component({
+ * @OracleBot.Lib.Component({
  *   name: 'my.custom.component',
  *   properties: {},
  *   supportedActions: []
  * })
  * export class MyCustomComponent {
- *   invoke(conversation: OracleBot.Conversation, done) {
+ *   invoke(conversation: OracleBot.Lib.Conversation, done) {
  *     // ...
  *   }
  * }
@@ -50,6 +50,10 @@ export const Component = (annotations: Component = {}): Function => { // decorat
 
       // auto-implement the interface methods
       metadata(): IComponentMetadata {
+        if (!!super.metadata) {
+          console.warn(`${ctor.prototype.constructor.name} used decorator, but has metadata() defined. Ignoring annotations.`);
+          return super.metadata();
+        }
         return this.__decoratorMetadata;
       }
       // front door of component instance invokation.

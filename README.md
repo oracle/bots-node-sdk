@@ -4,7 +4,8 @@
 
 ## About
 
-- [Middleware](#middleware) - Custom Component express middleware wrapper.
+- [Installation](#installation) - Installation and usage information.
+- [Middleware](#middleware) - Configurable Bots express middleware.
 - [Utils](#utilities) - Utility functions for interfacing with Bots.
 - [Custom Components](#custom-components) - Developing your custom bot components (new vs old).
 - [Coverage report](./COVERAGE.md) - Unit testing coverage report.
@@ -12,6 +13,10 @@
 ---
 
 ## Installation
+
+```shell
+npm install @oracle/bots-js-sdk
+```
 
 **NOTE** This project is intended for public [GitHub](https://github.com/oracle/) and
 [@oracle/* npm](https://www.npmjs.com/org/oracle). Therefore npm installation directly from
@@ -22,10 +27,6 @@ export ORACLE_ID=my.oracle.username
 git config --global url."ssh://${ORACLE_ID}%40oracle.com@alm.oraclecorp.com:2222/".insteadof "alm:"
 npm install git+ssh://alm:mcs_intelligent-bots-cloud-service/bots-js-sdk.git
 ```
-
-## Test
-
-`npm test`
 
 ## Documentation
 
@@ -48,7 +49,7 @@ paths or objects and a filesystem registry path respectively.
 - `path` *string* - Relative path to a main component directory. This directory is automatically scanned to create a hierarchical registry.
   - Any directories are considered child registries in the hierarchy called *"collections"*. Collections behave exactly like the top level registry, except they are isolated in the API as `/collection/:collection` and `/collection/:collection/:component`.
 
-> JavaScript
+> JavaScript Example
 
 ```javascript
 const OracleBot = require('@oracle/bot-js-sdk');
@@ -68,7 +69,7 @@ module.exports = function(app) {
 };
 ```
 
-> TypeScript
+> TypeScript Example
 
 ```javascript
 import * as express from 'express';
@@ -91,28 +92,68 @@ export = (app: express.Express): void => {
 
 ## Custom Components
 
-Using the `@oracle/bot-js-sdk` for Custom Component development introduces a handful of new
-features and requirements, but is **100%** compatible with existing components you may have.
+Using the `@oracle/bot-js-sdk` for Custom Component development introduces a variety of new
+features and requirements, but is **100%** compatible with existing components you may have
+already developed with the original SDK.
 
-Because this project uses [TypeScript](https://www.typescriptlang.org/index.html), we encourage
-(however do not require) strongly-typed component development.
+Because this project uses [TypeScript](https://www.typescriptlang.org/index.html), we encourage,
+however **do not require**, strongly-typed component development.
 
-Ultimately this supports an **optional** new structure to the anatomy of any custom component.
-All properties and call signatures are strongly typed, therefore allowing clean progammability.
+Ultimately this supports **OPTIONAL** new structures to the definition of any custom component.
+All properties and call signatures are defined, therefore supporting typestrong progammability.
+
+> Legacy JavaScript Example `MyCustomComponent.js`
+
+```javascript
+module.exports = {
+  metadata: () => ({
+    name: 'my.custom.component',
+    properties: {},
+    supportedActions: []
+  }),
+  invoke: (conversation, done) => {
+    conversation.reply('hello').tranistion();
+    done();
+  }
+}
+```
+
+> New Example Using JavaScript `MyCustomComponent.js`
+
+Define component by exporting class(es) with the **OPTION** of extending the
+`ComponentAbstract` class for additional iVars and methods. **NOTE** Component
+classes are instantiated as singletons.
+
+```javascript
+const OracleBot = require('@oracle/bots-js-sdk');
+
+module.exports = class MyCustomComponent extends OracleBot.Lib.ComponentAbstract {
+  metadata = () => ({
+    name: 'my.custom.component',
+    properties: {},
+    supportedActions: []
+  })
+  invoke(conversation, done) {
+    conversation.reply('hello').transition();
+    done();
+  }
+}
+```
+
+> New Example Using TypeScript `MyCustomComponent.ts`
 
 ```javascript
 import * as OracleBot from '@oracle/bots-js-sdk';
 
 // decorator to apply class annotations available through the class.prototype.metadata() method.
 @OracleBot.Lib.Component({
-  name: 'my.ts.component',
-  properties: {},
-  supportedActions: []
+  name: 'my.custom.component', // (optional)
+  properties: {}, // (optional)
+  supportedActions: [] // (optional)
 })
-export class MyComponent extends OracleBot.Lib.ComponentAbstract { // optionally extend the ComponentAbstract for convenient iVars.
+export class MyCustomComponent extends OracleBot.Lib.ComponentAbstract { // optionally extend the ComponentAbstract for convenient iVars.
   invoke(conversation: OracleBot.Lib.Conversation, done) {
-    // perform actions against the conversation api
-    conversation.reply('hello');
+    conversation.reply('hello').transition();
     done();
   }
 }
@@ -140,15 +181,6 @@ const Util = require('@oracle/bot-js-sdk').Util;
 
 `@oracle/bots-js-sdk` also includes unit testing facilities, which can be utilized within
 your preferred test runner.
-
-> JavaScript
-
-```javascript
-const BotTesting = require('@oracle/bot-js-sdk/testing');
-// ...
-```
-
-> TypeScript
 
 ```javascript
 import * as BotTesting from '@oracle/bot-js-sdk/testing';

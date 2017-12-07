@@ -44,6 +44,11 @@ describe('@Component Decorator', () => {
     });
   });
 
+  it('should give explicit class.prototype.metadata() priority', () => {
+    const c = new TestDecoratedComponentWithMetaFoo();
+    expect(c.metadata()).toEqual('foo');
+  });
+
 });
 
 // test a valid component
@@ -78,4 +83,12 @@ class TestComponentWithError extends ComponentAbstract {
 })
 class TestInvalidComponent {
   /* intentionally missing invoke method to throw error */
+}
+
+// test use of decorator and metadata implementation
+@Lib.Component()
+class TestDecoratedComponentWithMetaFoo {
+  metadata() {
+    return 'foo'
+  }
 }
