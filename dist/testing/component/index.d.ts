@@ -1,22 +1,12 @@
-import { Conversation as SDK } from '../../';
+import { Conversation as SDK, IComponentRequestBody } from '../../';
 /**
- * Component Testing Harness
- *
- */
-export interface IMockRequestBody {
-    botId?: any;
-    platformVersion?: any;
-    context?: any;
-    properties?: any;
-    message?: any;
-}
-/**
- * Create a mock request for component middleware handling
+ * Create a mock request for component middleware handling.
+ * Invidual properties and variables may be specified by modifying the result.
  * @param type - channel type
  * @param properties - conversation properties (optional)
  * @param variables - conversation variables (optional)
  */
-export declare function MockRequest(type?: string, properties?: any, variables?: any): IMockRequestBody;
+export declare function MockRequest(type?: string, properties?: any, variables?: any): IComponentRequestBody;
 /**
  * Extension for the main Conversation class with testing conveniences.
  *
@@ -48,5 +38,5 @@ export declare class MockConversation extends SDK {
      * @param req the component invocation request body
      * @return Conversation
      */
-    static fromRequest(req: IMockRequestBody): MockConversation;
+    static fromRequest(req: IComponentRequestBody): MockConversation;
 }

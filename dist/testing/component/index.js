@@ -2,7 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const _1 = require("../../");
 /**
- * Create a mock request for component middleware handling
+ * Create a mock request for component middleware handling.
+ * Invidual properties and variables may be specified by modifying the result.
  * @param type - channel type
  * @param properties - conversation properties (optional)
  * @param variables - conversation variables (optional)
