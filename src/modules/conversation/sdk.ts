@@ -66,7 +66,7 @@ export class NLPResult {
    * @param {string} [entity] - name of the entity
    * @return {object} The entity match result.
    */
-  entityMatches(entity) {
+  entityMatches(entity?) {
     if (!this._nlpresult) {
       return entity === undefined ? {} : [];
     }
@@ -412,7 +412,7 @@ export class ComponentInvocation {
    * @param {string} [nlpVariableName] - variable to be given the nlpResult
    * @return {NLPResult} The nlp resolution result.
    */
-  nlpResult(nlpVariableName) {
+  nlpResult(nlpVariableName?) {
     if (nlpVariableName === undefined) {
       for (let name in this._response.context.variables) {
         if (this._response.context.variables[name].type === NLPRESULT_TYPE) {
@@ -477,7 +477,7 @@ export class ComponentInvocation {
    * The SDK's "reply" function automatically sets "keepTurn" to false.
    * @param {boolean} [k] - whether to keep the turn for sending more replies
    */
-  keepTurn(k) {
+  keepTurn(k?) {
     this._response.keepTurn = (typeof k === "undefined" ? true : !!k);
     return this;
   }
@@ -486,7 +486,7 @@ export class ComponentInvocation {
    * "releaseTurn" is the shorthand for keepTurn(false)
    * @param {boolean} [k] - whether to keep the turn for sending more replies
    */
-  releaseTurn(k) {
+  releaseTurn(k?) {
     this._response.keepTurn = (typeof k === "undefined" ? false : !k);
     return this;
   }
@@ -533,7 +533,7 @@ export class ComponentInvocation {
   * determine the next state to transition to.
   *
   */
-  transition(t) {
+  transition(t?) {
     this._response.transition = true;
     if (typeof t !== 'undefined') {
       this._response.action = t;
@@ -561,7 +561,7 @@ export class ComponentInvocation {
   * @param {object|string|MessageModel} payload - payload to be sent back.  payload could also be a string for text response
   * @param {object} [channelConversation] - to override the default channelConversation from request
   */
-  reply(payload, channelConversation) {
+  reply(payload, channelConversation?) {
     var response: any = {
       tenantId: this._request.message.tenantId,
       channelConversation: channelConversation || Object.assign({}, this._request.message.channelConversation)

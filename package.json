@@ -22,7 +22,7 @@
     "test": "NODE_ENV=test istanbul cover ./src/spec/support/test.js",
     "pretest": "npm run build",
     "posttest": "node ./src/spec/support/coverage.js",
-    "prepare": "npm run build"
+    "prepare": "npm run lint && npm run build"
   },
   "contributors": [
     "Matt Vander Vliet <matthew.vander.vliet@oracle.com>",

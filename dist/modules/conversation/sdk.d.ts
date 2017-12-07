@@ -12,7 +12,7 @@ export declare class NLPResult {
      * @param {string} [entity] - name of the entity
      * @return {object} The entity match result.
      */
-    entityMatches(entity: any): any;
+    entityMatches(entity?: any): any;
 }
 /**
  * The Bots JS SDK exports a class that wraps an invocation to the custom component.
@@ -155,7 +155,7 @@ export declare class ComponentInvocation {
      * @param {string} [nlpVariableName] - variable to be given the nlpResult
      * @return {NLPResult} The nlp resolution result.
      */
-    nlpResult(nlpVariableName: any): NLPResult;
+    nlpResult(nlpVariableName?: any): NLPResult;
     /**
      * Sets the action to return from this component, which will determine the
      * next state in the dialog.
@@ -182,12 +182,12 @@ export declare class ComponentInvocation {
      * The SDK's "reply" function automatically sets "keepTurn" to false.
      * @param {boolean} [k] - whether to keep the turn for sending more replies
      */
-    keepTurn(k: any): this;
+    keepTurn(k?: any): this;
     /**
      * "releaseTurn" is the shorthand for keepTurn(false)
      * @param {boolean} [k] - whether to keep the turn for sending more replies
      */
-    releaseTurn(k: any): this;
+    releaseTurn(k?: any): this;
     /**
     * Set "done" to true when your component has completed its logic and
     * the dialog should transition to the next state.
@@ -226,7 +226,7 @@ export declare class ComponentInvocation {
     * determine the next state to transition to.
     *
     */
-    transition(t: any): this;
+    transition(t?: any): this;
     /**
     * Sets the error flag on the response.
     * @param {boolean} e - sets error if true
@@ -243,7 +243,7 @@ export declare class ComponentInvocation {
     * @param {object|string|MessageModel} payload - payload to be sent back.  payload could also be a string for text response
     * @param {object} [channelConversation] - to override the default channelConversation from request
     */
-    reply(payload: any, channelConversation: any): this;
+    reply(payload: any, channelConversation?: any): this;
     response(): any;
     resolveVariable(variable: any): any;
     reformatDate(date: any): any;
