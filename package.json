@@ -33,6 +33,7 @@
   "files": [
     "dist",
     "!dist/spec/**",
+    "!dist/**/*.map",
     "testing",
     "Dockerfile",
     ".dockerignore"
