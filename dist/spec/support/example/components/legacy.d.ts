@@ -1,5 +1,5 @@
 declare const _default: {
-    metadata(): {
+    metadata: () => {
         name: string;
     };
     invoke(sdk: any, done: any): void;

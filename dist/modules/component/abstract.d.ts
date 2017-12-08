@@ -20,7 +20,7 @@ export declare abstract class ComponentAbstract implements IComponentInterface {
     readonly annotations: Component;
     /**
      * invoke.
-     * @desc component invokation method.
+     * @desc component invocation method.
      * @param conversation Instantiated Conversation instance
      * @param done Conversation done callback
      * @return void

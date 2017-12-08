@@ -41,6 +41,10 @@ describe('@Component Decorator', () => {
             done();
         });
     });
+    it('should give explicit class.prototype.metadata() priority', () => {
+        const c = new TestDecoratedComponentWithMetaFoo();
+        expect(c.metadata()).toEqual('foo');
+    });
 });
 // test a valid component
 let TestComponent = class TestComponent extends main_1.ComponentAbstract {
@@ -78,4 +82,13 @@ TestInvalidComponent = __decorate([
         properties: {},
     })
 ], TestInvalidComponent);
+// test use of decorator and metadata implementation
+let TestDecoratedComponentWithMetaFoo = class TestDecoratedComponentWithMetaFoo {
+    metadata() {
+        return 'foo';
+    }
+};
+TestDecoratedComponentWithMetaFoo = __decorate([
+    main_1.Lib.Component()
+], TestDecoratedComponentWithMetaFoo);
 //# sourceMappingURL=decorator.spec.js.map

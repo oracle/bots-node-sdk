@@ -16,4 +16,4 @@ VOLUME /var/application
 
 EXPOSE 7950
 EXPOSE 7929
-ENTRYPOINT ["supper --inspect=0.0.0.0:7929 -s -t -c -n error ./index.js"]
+ENTRYPOINT "supper --inspect=0.0.0.0:7929 -s -t -c -n error ./index.js"

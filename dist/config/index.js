@@ -12,7 +12,6 @@ var Config;
             key: provider_1.PROVIDER_KEY_LOGGER,
             use: logger
         });
-        return this;
     }
     Config.setLogger = setLogger;
 })(Config = exports.Config || (exports.Config = {}));

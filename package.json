@@ -19,10 +19,10 @@
     "clean": "shx rm -rf $npm_package_config_outdir",
     "docs": "shx rm -rf ./docs && typedoc --options ./typedoc.js --exclude '**/*+(spec|schema|common)/**' --out $npm_package_config_docdir ./src/",
     "lint": "tslint .",
-    "test": "NODE_ENV=test istanbul cover ./src/spec/support/test.js",
+    "test": "istanbul cover ./src/spec/support/test.js",
+    "prepare": "npm run lint && npm run build",
     "pretest": "npm run build",
-    "posttest": "node ./src/spec/support/coverage.js",
-    "prepare": "npm run build"
+    "posttest": "node ./src/spec/support/coverage.js"
   },
   "contributors": [
     "Matt Vander Vliet <matthew.vander.vliet@oracle.com>",
@@ -33,6 +33,7 @@
   "files": [
     "dist",
     "!dist/spec/**",
+    "!dist/**/*.map",
     "testing",
     "Dockerfile",
     ".dockerignore"

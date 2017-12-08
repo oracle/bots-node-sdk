@@ -34,5 +34,5 @@ export declare class ComponentMiddleware extends MiddlewareAbstract {
      * convenience handler for CC invokcation
      * @param res: express.Resonse
      */
-    private __invokationCb(res);
+    private __invocationCb(res);
 }
