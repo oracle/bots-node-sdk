@@ -128,11 +128,13 @@ classes are instantiated as singletons.
 const OracleBot = require('@oracle/bots-js-sdk');
 
 module.exports = class MyCustomComponent extends OracleBot.Lib.ComponentAbstract {
-  metadata = () => ({
-    name: 'my.custom.component',
-    properties: {},
-    supportedActions: []
-  })
+  metadata() {
+    return {
+      name: 'my.custom.component',
+      properties: {},
+      supportedActions: []
+    }
+  }
   invoke(conversation, done) {
     conversation.reply('hello').transition();
     done();
