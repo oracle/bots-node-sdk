@@ -59,7 +59,7 @@ export class ComponentMiddleware extends MiddlewareAbstract {
     });
 
     /**
-     * handle root component invokation
+     * handle root component invocation
      */
     router.post(`/:${PARAM_COMPONENT}`, (req, res) => {
       const componentName = req.params[PARAM_COMPONENT];
@@ -83,7 +83,7 @@ export class ComponentMiddleware extends MiddlewareAbstract {
     });
 
     /**
-     * handle component invokation by collection
+     * handle component invocation by collection
      */
     router.post(`/collection/:${PARAM_COLLECTION}/:${PARAM_COMPONENT}`, (req, res) => {
       const collectionName = req.params[PARAM_COLLECTION];
@@ -123,14 +123,14 @@ export class ComponentMiddleware extends MiddlewareAbstract {
       mixins.oracleMobile = req.oracleMobile;
     }
     this.__getShell(registry)
-      .invokeComponentByName(componentName, req.body, mixins, this.__invokationCb(res));
+      .invokeComponentByName(componentName, req.body, mixins, this.__invocationCb(res));
   }
 
   /**
    * convenience handler for CC invokcation
    * @param res: express.Resonse
    */
-  private __invokationCb(res: express.Response): ICallback {
+  private __invocationCb(res: express.Response): ICallback {
     return (err, data) => {
       // direct port from components.js
       if (!err) {

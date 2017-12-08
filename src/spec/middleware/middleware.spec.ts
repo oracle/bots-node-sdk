@@ -134,7 +134,7 @@ describe('Middleware', () => {
           });
       });
 
-      it('should 404 invalid component invokation', done => {
+      it('should 404 invalid component invocation', done => {
         supertest(server)
           .post(`${serverConf.componentPrefix}/foo`)
           .send(MockRequest())
@@ -151,7 +151,7 @@ describe('Middleware', () => {
             .end(err =>  err ? done.fail(err) : done());
         });
 
-        it('should 404 invalid component invokation', done => {
+        it('should 404 invalid component invocation', done => {
           supertest(server)
             .post(`${serverConf.componentPrefix}/collection/foo/foo`)
             .send(MockRequest())

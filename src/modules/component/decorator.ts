@@ -56,7 +56,7 @@ export const Component = (annotations: Component = {}): Function => { // decorat
         }
         return this.__decoratorMetadata;
       }
-      // front door of component instance invokation.
+      // front door of component instance invocation.
       invoke(...args: any[]): void {
         const cb = (args[args.length - 1] || function(err) {throw err});
         if (!super.invoke) {

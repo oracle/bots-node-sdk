@@ -39,7 +39,7 @@ exports.Component = (annotations = {}) => {
                 }
                 return this.__decoratorMetadata;
             }
-            // front door of component instance invokation.
+            // front door of component instance invocation.
             invoke(...args) {
                 const cb = (args[args.length - 1] || function (err) { throw err; });
                 if (!super.invoke) {

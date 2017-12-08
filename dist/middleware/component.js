@@ -37,7 +37,7 @@ class ComponentMiddleware extends abstract_1.MiddlewareAbstract {
             res.json(meta);
         });
         /**
-         * handle root component invokation
+         * handle root component invocation
          */
         router.post(`/:${PARAM_COMPONENT}`, (req, res) => {
             const componentName = req.params[PARAM_COMPONENT];
@@ -60,7 +60,7 @@ class ComponentMiddleware extends abstract_1.MiddlewareAbstract {
             }
         });
         /**
-         * handle component invokation by collection
+         * handle component invocation by collection
          */
         router.post(`/collection/:${PARAM_COLLECTION}/:${PARAM_COMPONENT}`, (req, res) => {
             const collectionName = req.params[PARAM_COLLECTION];
@@ -92,13 +92,13 @@ class ComponentMiddleware extends abstract_1.MiddlewareAbstract {
             mixins.oracleMobile = req.oracleMobile;
         }
         this.__getShell(registry)
-            .invokeComponentByName(componentName, req.body, mixins, this.__invokationCb(res));
+            .invokeComponentByName(componentName, req.body, mixins, this.__invocationCb(res));
     }
     /**
      * convenience handler for CC invokcation
      * @param res: express.Resonse
      */
-    __invokationCb(res) {
+    __invocationCb(res) {
         return (err, data) => {
             // direct port from components.js
             if (!err) {

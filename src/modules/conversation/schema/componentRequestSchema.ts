@@ -1,7 +1,7 @@
 import * as Joi from 'joi';
 
 /**
- * Component invokation request schema factory
+ * Component invocation request schema factory
  */
 export = (joi: any): Joi.Schema => {
   // joi does not seem to support recursive schemas.
