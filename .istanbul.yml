@@ -1,10 +1,10 @@
 instrumentation:
   excludes: [
+    '*.js',
     'docs/**',
     'coverage',
     'node_modules',
     '**/spec/**',
-    'typedoc.js',
   ]
   include-all-sources: true
 reporting:

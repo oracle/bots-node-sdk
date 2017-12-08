@@ -297,7 +297,7 @@ function makeCtor(type) {
  * @todo create a decorator factory to test annotations against instanceof
  */
 function isComponent(ref) {
-    return (definitions_1.isType(ref) && definitions_1.isType(ref.prototype.metadata) && definitions_1.isType(ref.prototype.invoke)) || // class usage
+    return (definitions_1.isType(ref) /*&& isType(ref.prototype.metadata)*/ && definitions_1.isType(ref.prototype.invoke)) || // class usage
         (typeof ref === 'object' && definitions_1.isType(ref.metadata) && definitions_1.isType(ref.invoke)); // legacy
 }
 //# sourceMappingURL=registry.js.map

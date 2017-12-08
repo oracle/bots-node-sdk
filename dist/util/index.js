@@ -6,7 +6,7 @@ const webhookUtil = require("./webhookUtil");
  * Util module encapsulating various utility methods, classes, etc.
  *
  * ```javascript
- * import * as OracleBot from '@oracle/bot-js-sdk';
+ * import * as OracleBot from '@oracle/bots-js-sdk';
  *
  * OracleBot.Util.MessageModel.cardToText(...args);
  * ```

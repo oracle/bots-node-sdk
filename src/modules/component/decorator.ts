@@ -25,7 +25,7 @@ export interface Component extends IComponentMetadata { }
  * @param annotations - Component metadata object.
  *
  * ```javascript
- * import * as OracleBot from '@oracle/bot-js-sdk';
+ * import * as OracleBot from '@oracle/bots-js-sdk';
  *
  * @OracleBot.Lib.Component({
  *   name: 'my.custom.component',

@@ -5,9 +5,13 @@ import { ComponentListItem } from '../modules/component/registry';
  * component middleware specific options
  */
 export interface IComponentMiddlewareOptions {
+    /** working directory of the project runtime (defaults to process.cwd()) */
     cwd: string;
-    path?: string;
+    /** list of components to register, these will be considered 'global' */
     register?: ComponentListItem[];
+    /** base directory for component registry scan into collections */
+    autocollect?: string;
+    /** conversation mixin methods | properties */
     mixins?: any;
 }
 /**

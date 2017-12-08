@@ -7,13 +7,13 @@ import { ComponentMiddleware, IComponentMiddlewareOptions } from './component';
  * Configurable middleware module.
  *
  * ```javascript
- * import * as OracleBot from '@oracle/bot-js-sdk';
+ * import * as OracleBot from '@oracle/bots-js-sdk';
  *
  * export = (app: express.Express): void => {
- *   app.use(OracleBot.Middleware.init({
+ *   app.use('/components', OracleBot.Middleware.init({
  *     component: { // component middleware options
  *       cwd: __dirname, // root of application source
- *       path: './components', // relative directory for components in fs
+ *       autocollect: './components', // relative directory for components in fs
  *       register: [ // explicitly provide a global registry
  *         './path/to/a/component',
  *         require('./path/to/another/component'),

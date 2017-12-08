@@ -9,10 +9,14 @@ import Shell = require('../modules/conversation/shell');
  * component middleware specific options
  */
 export interface IComponentMiddlewareOptions {
-  cwd: string; // working directory of the project runtime (defaults to process.cwd())
-  path?: string; // base component directory for fs registry scan
-  register?: ComponentListItem[] // list of components to register, these will be considered 'global'
-  mixins?: any; // conversation mixin methods | properties
+  /** working directory of the project runtime (defaults to process.cwd()) */
+  cwd: string;
+  /** list of components to register, these will be considered 'global' */
+  register?: ComponentListItem[];
+  /** base directory for component registry scan into collections */
+  autocollect?: string;
+  /** conversation mixin methods | properties */
+  mixins?: any;
 }
 
 /**
@@ -32,21 +36,24 @@ export class ComponentMiddleware extends MiddlewareAbstract {
   protected _init(router: express.Router, options: IComponentMiddlewareOptions): void {
     const opts: IComponentMiddlewareOptions = {
       // option defaults
-      path: ComponentRegistry.COMPONENT_DIR,
-      register: [],
+      // autocollect: ComponentRegistry.COMPONENT_DIR,
+      register: [ ],
       mixins: { },
       // user options
       ...options
     };
 
     /**
-     * assemble root registry from baseDirectory
-     * merge explicitly provided component registry with the fs registry.
+     * assemble root registry from provided `autocollect`
+     * merge explicitly provided component registry with the hierarchical fs registry.
      */
-    const rootRegistry = ComponentRegistry.assemble(null, opts.path, opts.cwd);
-    if (opts.register) {
-      const globalRegistry = ComponentRegistry.create(opts.register, opts.cwd);
-      rootRegistry.merge(globalRegistry, true);
+    let rootRegistry: ComponentRegistry;
+    const commonRegistry = ComponentRegistry.create(opts.register, opts.cwd);
+    if (opts.autocollect) {
+      rootRegistry = ComponentRegistry.assemble(null, opts.autocollect, opts.cwd)
+        .merge(commonRegistry, true);
+    } else {
+      rootRegistry = commonRegistry;
     }
 
     /**
