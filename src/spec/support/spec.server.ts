@@ -12,7 +12,7 @@ app.use(CONF.componentPrefix, OracleBot.Middleware.init({
   parser: CONF.parser,
   component: {
     cwd: __dirname,
-    path: 'example/components', // use fs registry
+    autocollect: 'example/components', // use fs registry
     register: [ // register global components manually
       './example/more.components/a.component'
     ]

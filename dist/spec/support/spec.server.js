@@ -8,7 +8,7 @@ app.use(CONF.componentPrefix, OracleBot.Middleware.init({
     parser: CONF.parser,
     component: {
         cwd: __dirname,
-        path: 'example/components',
+        autocollect: 'example/components',
         register: [
             './example/more.components/a.component'
         ]

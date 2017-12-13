@@ -15,7 +15,7 @@
 ## Installation
 
 ```shell
-npm install @oracle/bots-js-sdk
+npm install --save @oracle/bots-js-sdk
 ```
 
 **NOTE** This project is intended for public [GitHub](https://github.com/oracle/) and
@@ -39,26 +39,26 @@ Support for various Bot requests is handled by the configurable `Middleware` mod
 ### Component Middleware
 
 Initializing the component middleware includes some basic configurations. Most important
-are the `register` (explicit) and `path` (fs scanning) registry properties, which specify component
+are the `register` (explicit) and `autocollect` (fs scanning) registry properties, which specify component
 paths or objects and a filesystem registry path respectively.
 
 - `cwd` *string* - Top level directory to which all other paths are relative. `__dirname` is recommended.
 - `register` *(string|object(s)|function)[]* - Define *global* component registry from flexible array of the components to resolve.
   - String paths may also be directories, which are scanned and added to the registry.
-  - ALL Components from the global registry are included in the automated "root registry" from `path`.
-- `path` *string* - Relative path to a main component directory. This directory is automatically scanned to create a hierarchical registry.
-  - Any directories are considered child registries in the hierarchy called *"collections"*. Collections behave exactly like the top level registry, except they are isolated in the API as `/collection/:collection` and `/collection/:collection/:component`.
+  - If used with `autocollect`, all components will be shared with the automated "root registry" derived from `autocollect`.
+- `autocollect` *string* - Relative path to a main component directory. This directory is automatically scanned to create a hierarchical registry.
+  - Any directories are considered child registries in the hierarchy called *"collections"*. Collections behave exactly like the top level registry, except they are siloed in the API as `/collection/:collection` and `/collection/:collection/:component`.
 
 > JavaScript Example
 
 ```javascript
-const OracleBot = require('@oracle/bot-js-sdk');
+const OracleBot = require('@oracle/bots-js-sdk');
 
 module.exports = function(app) {
   app.use('/components', OracleBot.Middleware.init({
     component: {
       cwd: __dirname,
-      path: './components',
+      autocollect: './components',
       register: [
         './path/to/a/component',
         './path/to/other/components',
@@ -73,13 +73,13 @@ module.exports = function(app) {
 
 ```javascript
 import * as express from 'express';
-import * as OracleBot from '@oracle/bot-js-sdk';
+import * as OracleBot from '@oracle/bots-js-sdk';
 
 export = (app: express.Express): void => {
   app.use('/components', OracleBot.Middleware.init({
     component: { // component middleware options
       cwd: __dirname, // working directory of the project runtime (defaults to process.cwd())
-      path: './components', // relative directory for components in fs
+      autocollect: './components', // relative directory for components in fs
       register: [ // explicitly provide a global registry
         './path/to/a/component',
         './path/to/other/components',
@@ -92,7 +92,7 @@ export = (app: express.Express): void => {
 
 ## Custom Components
 
-Using the `@oracle/bot-js-sdk` for Custom Component development introduces a variety of new
+Using the `@oracle/bots-js-sdk` for Custom Component development introduces a variety of new
 features and requirements, but is **100%** compatible with existing components you may have
 already developed with the original SDK.
 
@@ -166,7 +166,7 @@ export class MyCustomComponent extends OracleBot.Lib.ComponentAbstract { // opti
 Utility functions are available within the `Util` namespace of the main entrypoint.
 
 ```javascript
-const Util = require('@oracle/bot-js-sdk').Util;
+const Util = require('@oracle/bots-js-sdk').Util;
 ```
 
 ### Webhook
@@ -185,7 +185,7 @@ const Util = require('@oracle/bot-js-sdk').Util;
 your preferred test runner.
 
 ```javascript
-import * as BotTesting from '@oracle/bot-js-sdk/testing';
+import * as BotTesting from '@oracle/bots-js-sdk/testing';
 
 import { MyComponent } from '../../components/MyComponent';
 

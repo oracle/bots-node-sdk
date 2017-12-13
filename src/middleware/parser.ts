@@ -29,7 +29,8 @@ export class ParserMiddleware extends MiddlewareAbstract {
     const common = {
       limit: options.limit || '5mb',
       verify: (req: IParsedRequest, res, buf, encoding) => {
-        // capture raw body/encoding for signature validation (if necessary)
+        // Instead of just letting bodyParser.json to parse the raw message to JSON, the rawMessage and its encoding is saved as properties
+        // 'rawBody' and 'encoding' for use in signature verification in method verifyMessageFormat.
         req.rawBody = buf;
         req.encoding = encoding;
         return;

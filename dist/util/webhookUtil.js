@@ -1,5 +1,6 @@
 "use strict";
 /* tslint:disable */
+Object.defineProperty(exports, "__esModule", { value: true });
 const crypto = require("crypto");
 const request = require("request");
 const constants_1 = require("../common/constants");
@@ -33,6 +34,7 @@ function verifyMessageFromBot(signature, msgBody, encoding, secretKey) {
     console.log('Valid signature: %s', signature);
     return true;
 }
+exports.verifyMessageFromBot = verifyMessageFromBot;
 /**
  * utility function for use with expressjs route in handling the raw message body of the webhook message received from bot.
  * Instead of just letting bodyParser.json to parse the raw message to JSON, the rawMessage and its encoding is saved as properties
@@ -48,6 +50,7 @@ function bodyParserRawMessageVerify(req, res, buf, encoding) {
     req.rawBody = buf;
     req.encoding = encoding;
 }
+exports.bodyParserRawMessageVerify = bodyParserRawMessageVerify;
 /*
  'buf' is a Buffer
  'secret' is a String
@@ -72,6 +75,7 @@ function buildSignature(buf, secret) {
 function messageToBot(channelUrl, channelSecretKey, userId, inMsg, callback) {
     messageToBotWithProperties(channelUrl, channelSecretKey, userId, inMsg, null, callback);
 }
+exports.messageToBot = messageToBot;
 /**
  * utility function to send message to bot webhook channel, generating the right message with signature.  This function also allows additional
  * properties to be sent along to the bot.  A common use case is to add a userProfile property.
@@ -127,10 +131,15 @@ function messageToBotWithProperties(channelUrl, channelSecretKey, userId, inMsg,
         }
     });
 }
-module.exports = {
-    messageToBot: messageToBot,
-    messageToBotWithProperties: messageToBotWithProperties,
-    verifyMessageFromBot: verifyMessageFromBot,
-    bodyParserRawMessageVerify: bodyParserRawMessageVerify
-};
+exports.messageToBotWithProperties = messageToBotWithProperties;
+// /**
+//  * The webhookUtil is a set of utility functions for bot integration via webhook channel.
+//  * @module webhookUtil
+//  */
+// export = {
+//     messageToBot: messageToBot,
+//     messageToBotWithProperties: messageToBotWithProperties,
+//     verifyMessageFromBot: verifyMessageFromBot,
+//     bodyParserRawMessageVerify: bodyParserRawMessageVerify
+// };
 //# sourceMappingURL=webhookUtil.js.map

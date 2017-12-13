@@ -1,5 +1,6 @@
 "use strict";
 /* tslint:disable */
+Object.defineProperty(exports, "__esModule", { value: true });
 function trailingPeriod(text) {
     if (!text || (typeof text != 'string'))
         return "";
@@ -74,6 +75,7 @@ function cardToText(card, cardPrefix) {
     }
     return cardText;
 }
+exports.cardToText = cardToText;
 function cardsSummaryToText(cards, prompt) {
     var cardsText = prompt || 'You can choose from the following cards for more information: ';
     cards.forEach(function (card, index) {
@@ -131,8 +133,15 @@ function convertRespToText(convMsg) {
     }
     return sentence;
 }
-module.exports = {
-    convertRespToText: convertRespToText,
-    cardToText: cardToText
-};
+exports.convertRespToText = convertRespToText;
+// /**
+//  * The messageModelUtil is a set of utility functions to help deriving string or speech representation
+//  * of a CMM (Conversation Message Model) message.  This is used primarily to output text or speech to
+//  * voice and text-based channels like Alexa and SMS.
+//  * @module messageModelUtil
+//  */
+// export = {
+//   convertRespToText: convertRespToText,
+//   cardToText: cardToText
+// };
 //# sourceMappingURL=messageModelUtil.js.map

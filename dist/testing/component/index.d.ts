@@ -11,7 +11,7 @@ export declare function MockRequest(type?: string, properties?: any, variables?:
  * Extension for the main Conversation class with testing conveniences.
  *
  * ```javascript
- * import * as Testing from '@oracle/bot-js-sdk/testing';
+ * import * as Testing from '@oracle/bots-js-sdk/testing';
  * import { MyCustomComponent } from 'path/to/custom/components';
  *
  * describe('MyCustomComponent', () => {
