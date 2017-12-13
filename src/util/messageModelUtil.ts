@@ -62,7 +62,7 @@ function textMessageToText(resp) {
  * @param {object} card - A card (as defined in Conversation Message Model)
  * @param {string} [cardPrefix] - A string prefix used before the card content, for example 'Card'
  */
-function cardToText(card, cardPrefix) {
+export function cardToText(card, cardPrefix) {
   var cardText = trailingPeriod((cardPrefix ? cardPrefix + ' ' : '') + card.title);
   if (card.description) {
     cardText = trailingPeriod(cardText + card.description);
@@ -116,7 +116,7 @@ function attachmentMessageToText(resp) {
  * @return {string} A string or speech representation of the conversation message.
  * @param {object} convMsg - A message conforming to Conversation Message Model.
  */
-function convertRespToText(convMsg) {
+export function convertRespToText(convMsg) {
   var sentence = "";
   if (convMsg.type) {
     switch (convMsg.type) {
@@ -137,13 +137,13 @@ function convertRespToText(convMsg) {
   return sentence;
 }
 
-/**
- * The messageModelUtil is a set of utility functions to help deriving string or speech representation
- * of a CMM (Conversation Message Model) message.  This is used primarily to output text or speech to
- * voice and text-based channels like Alexa and SMS.
- * @module messageModelUtil
- */
-export = {
-  convertRespToText: convertRespToText,
-  cardToText: cardToText
-};
+// /**
+//  * The messageModelUtil is a set of utility functions to help deriving string or speech representation
+//  * of a CMM (Conversation Message Model) message.  This is used primarily to output text or speech to
+//  * voice and text-based channels like Alexa and SMS.
+//  * @module messageModelUtil
+//  */
+// export = {
+//   convertRespToText: convertRespToText,
+//   cardToText: cardToText
+// };

@@ -16,7 +16,7 @@ import { CONSTANTS } from '../common/constants';
  * @param {string} encoding - encoding of the raw message body.
  * @param {string} secretKey - secretKey used to calculate message signature
  */
-function verifyMessageFromBot(signature, msgBody, encoding, secretKey) {
+export function verifyMessageFromBot(signature, msgBody, encoding, secretKey) {
     console.log('Signature:', signature);
     console.log('Encoding:', encoding);
     console.log('Body: \n"%s"', msgBody);
@@ -47,7 +47,7 @@ function verifyMessageFromBot(signature, msgBody, encoding, secretKey) {
  * @param {Buffer} buf - the raw message body.
  * @param {string} encoding - encoding of the raw message body.
  */
-function bodyParserRawMessageVerify(req, res, buf, encoding) {
+export function bodyParserRawMessageVerify(req, res, buf, encoding) {
   req.rawBody = buf;
   req.encoding = encoding;
 }
@@ -75,7 +75,7 @@ function buildSignature(buf, secret) {
  * @param {object|string} inMsg - message to be sent to bot
  * @param {function} callback - callback function to be invoked after message is sent
  */
-function messageToBot(channelUrl, channelSecretKey, userId, inMsg, callback) {
+export function messageToBot(channelUrl, channelSecretKey, userId, inMsg, callback) {
   messageToBotWithProperties(channelUrl, channelSecretKey, userId, inMsg, null, callback);
 }
 
@@ -91,7 +91,7 @@ function messageToBot(channelUrl, channelSecretKey, userId, inMsg, callback) {
  * @param {function} callback - callback function to be invoked after message is sent
  */
 
-function messageToBotWithProperties(channelUrl, channelSecretKey, userId, inMsg, additionalProperties, callback) {
+export function messageToBotWithProperties(channelUrl, channelSecretKey, userId, inMsg, additionalProperties, callback) {
     var outMsg: any = {
         userId: userId,
 //        text: inMsg
@@ -138,13 +138,13 @@ function messageToBotWithProperties(channelUrl, channelSecretKey, userId, inMsg,
     });
 }
 
-/**
- * The webhookUtil is a set of utility functions for bot integration via webhook channel.
- * @module webhookUtil
- */
-export = {
-    messageToBot: messageToBot,
-    messageToBotWithProperties: messageToBotWithProperties,
-    verifyMessageFromBot: verifyMessageFromBot,
-    bodyParserRawMessageVerify: bodyParserRawMessageVerify
-};
+// /**
+//  * The webhookUtil is a set of utility functions for bot integration via webhook channel.
+//  * @module webhookUtil
+//  */
+// export = {
+//     messageToBot: messageToBot,
+//     messageToBotWithProperties: messageToBotWithProperties,
+//     verifyMessageFromBot: verifyMessageFromBot,
+//     bodyParserRawMessageVerify: bodyParserRawMessageVerify
+// };
