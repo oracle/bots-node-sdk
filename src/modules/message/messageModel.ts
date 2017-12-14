@@ -98,8 +98,6 @@ export class MessageModel {
     return this._validationError;
   }
 
-  static _provideValidator() { }
-
   static _parseLegacyChoice(payload) {
     if (payload.choices && payload.choices instanceof Array && payload.choices.length > 0) {
       var postbacks = payload.choices.map(function (choice) {
@@ -129,7 +127,7 @@ export class MessageModel {
 
   }
 
-  static _baseActionObject(type, label, imageUrl) {
+  private static _baseActionObject(type, label?, imageUrl?) {
     var instance: any = {
       type: type
     };

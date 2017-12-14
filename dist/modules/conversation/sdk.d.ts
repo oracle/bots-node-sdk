@@ -13,6 +13,17 @@ export declare class NLPResult {
      * @return {object} The entity match result.
      */
     entityMatches(entity?: any): any;
+    /**
+     * Returns intent matches if any.
+     * Intent matches are returned in descending order of score
+     * @return {object[]} The intent match results, each match with properties score and intent.
+     */
+    intentMatches(): any;
+    /**
+     * Returns top intent match (with highest score), if any.
+     * @return {object} The top intent match (with properties score and intent)
+     */
+    topIntentMatch(): any;
 }
 /**
  * The Bots JS SDK exports a class that wraps an invocation to the custom component.
@@ -52,7 +63,7 @@ export declare class ComponentInvocation {
     platformVersion(): any;
     /**
      * Retrieves the logger so the component can use the shared logger for logging.  The shared logger should support the methods log, info, warn, error and trace.
-     * @return {object} The logger.
+     * @return {object} The logger().
      */
     logger(): ILogger;
     /**
@@ -246,7 +257,6 @@ export declare class ComponentInvocation {
     reply(payload: any, channelConversation?: any): this;
     response(): any;
     resolveVariable(variable: any): any;
-    reformatDate(date: any): any;
     /**
     * When expecting an out of band conversation continuation, such as a
     * user following the OAuth flow, completing a form and hitting submit, or

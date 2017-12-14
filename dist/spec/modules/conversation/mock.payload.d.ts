@@ -81,6 +81,34 @@ export declare const Mock: {
                         'value': boolean;
                         'entity': boolean;
                     };
+                    'iResult': {
+                        'type': string;
+                        'value': {
+                            'timeStamp': number;
+                            'intentMatches': {
+                                'summary': {
+                                    'score': number;
+                                    'intent': string;
+                                }[];
+                                'detail': {
+                                    'final_norm': {
+                                        'sentence': any[];
+                                        'score': number;
+                                        'intent': string;
+                                    }[];
+                                };
+                            };
+                            'trainingDataUnit': any;
+                            'botName': string;
+                            'appId': string;
+                            'query': string;
+                            'entityMatches': {
+                                'PizzaType': string[];
+                                'PizzaSize': string[];
+                            };
+                        };
+                        'entity': boolean;
+                    };
                     'system.errorAction': {
                         'type': string;
                         'value': any;
@@ -145,6 +173,34 @@ export declare const Mock: {
                     'hungry': {
                         'type': string;
                         'value': boolean;
+                        'entity': boolean;
+                    };
+                    'iResult': {
+                        'type': string;
+                        'value': {
+                            'timeStamp': number;
+                            'intentMatches': {
+                                'summary': {
+                                    'score': number;
+                                    'intent': string;
+                                }[];
+                                'detail': {
+                                    'final_norm': {
+                                        'sentence': any[];
+                                        'score': number;
+                                        'intent': string;
+                                    }[];
+                                };
+                            };
+                            'trainingDataUnit': any;
+                            'botName': string;
+                            'appId': string;
+                            'query': string;
+                            'entityMatches': {
+                                'PizzaType': string[];
+                                'PizzaSize': string[];
+                            };
+                        };
                         'entity': boolean;
                     };
                     'system.errorAction': {
