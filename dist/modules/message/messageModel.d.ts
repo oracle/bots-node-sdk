@@ -49,7 +49,6 @@ export declare class MessageModel {
      * @return {object} The validation error(s) encountered when converting the payload to the Conversation Message Model.
      */
     validationError(): any;
-    static _provideValidator(): void;
     static _parseLegacyChoice(payload: any): any;
     /**
      * Static utility method to create a TextConversationMessage
@@ -58,7 +57,7 @@ export declare class MessageModel {
      * @param {object[]} [actions] - A list of actions related to the text.
      */
     static textConversationMessage(text: any, actions?: any): any;
-    static _baseActionObject(type: any, label: any, imageUrl: any): any;
+    private static _baseActionObject(type, label?, imageUrl?);
     /**
      * Static utility method to create a postback Action.  A label or an imageUrl is required.
      * @return {object} A postbackActionObject.

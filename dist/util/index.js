@@ -8,6 +8,10 @@ const webhookUtil_1 = require("./webhookUtil");
  *
  * ```javascript
  * import { Util } from '@oracle/bots-js-sdk';
+ *
+ * // OR
+ *
+ * const Util = require('@oracle/bots-js=sdk').Util;
  * ```
  */
 var Util;
@@ -16,9 +20,6 @@ var Util;
      * MessageModel is a set of utility functions to help deriving string or speech representation
      * of a CMM (Conversation Message Model) message.  This is used primarily to output text or speech to
      * voice and text-based channels like Alexa and SMS.
-     * ```javascript
-     * Util.MessageModel
-     * ```
      */
     Util.MessageModel = {
         cardToText: messageModelUtil_1.cardToText,
@@ -26,9 +27,6 @@ var Util;
     };
     /**
      * Webhook is a set of utility functions for bot integration via webhook channel.
-     * ```javascript
-     * Util.Webhook
-     * ```
      */
     Util.Webhook = {
         messageToBot: webhookUtil_1.messageToBot,
@@ -38,9 +36,6 @@ var Util;
     };
     /**
      * Text is a set of text-based utiltiies for bot integration.
-     * ```javascript
-     * Util.Text
-     * ```
      */
     Util.Text = {
         approxTextMatch: textUtil_1.approxTextMatch,

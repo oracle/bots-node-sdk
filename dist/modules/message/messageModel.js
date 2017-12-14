@@ -92,7 +92,6 @@ class MessageModel {
     validationError() {
         return this._validationError;
     }
-    static _provideValidator() { }
     static _parseLegacyChoice(payload) {
         if (payload.choices && payload.choices instanceof Array && payload.choices.length > 0) {
             var postbacks = payload.choices.map(function (choice) {

@@ -84,6 +84,49 @@ exports.Mock = {
                         'value': true,
                         'entity': false
                     },
+                    'iResult': {
+                        'type': 'nlpresult',
+                        'value': {
+                            'timeStamp': 1510192951256,
+                            'intentMatches': {
+                                'summary': [{
+                                        'score': 0.9977130404520472,
+                                        'intent': 'OrderPizza'
+                                    },
+                                    {
+                                        'score': 0.0022869595479527573,
+                                        'intent': 'CancelPizza'
+                                    }
+                                ],
+                                'detail': {
+                                    'final_norm': [{
+                                            'sentence': [],
+                                            'score': 0.9977130404520472,
+                                            'intent': 'OrderPizza'
+                                        },
+                                        {
+                                            'sentence': [],
+                                            'score': 0.0022869595479527573,
+                                            'intent': 'CancelPizza'
+                                        }
+                                    ]
+                                }
+                            },
+                            'trainingDataUnit': null,
+                            'botName': 'PizzaBot',
+                            'appId': '98C3F6F8-3D9C-4F32-B62A-3B06185422B4',
+                            'query': 'order large pepperoni pizza',
+                            'entityMatches': {
+                                'PizzaType': [
+                                    'pepperoni'
+                                ],
+                                'PizzaSize': [
+                                    'Large'
+                                ]
+                            }
+                        },
+                        'entity': false
+                    },
                     'system.errorAction': {
                         'type': 'string',
                         'value': null,
@@ -149,6 +192,49 @@ exports.Mock = {
                     'hungry': {
                         'type': 'boolean',
                         'value': false,
+                        'entity': false
+                    },
+                    'iResult': {
+                        'type': 'nlpresult',
+                        'value': {
+                            'timeStamp': 1510192951256,
+                            'intentMatches': {
+                                'summary': [{
+                                        'score': 0.9977130404520472,
+                                        'intent': 'OrderPizza'
+                                    },
+                                    {
+                                        'score': 0.0022869595479527573,
+                                        'intent': 'CancelPizza'
+                                    }
+                                ],
+                                'detail': {
+                                    'final_norm': [{
+                                            'sentence': [],
+                                            'score': 0.9977130404520472,
+                                            'intent': 'OrderPizza'
+                                        },
+                                        {
+                                            'sentence': [],
+                                            'score': 0.0022869595479527573,
+                                            'intent': 'CancelPizza'
+                                        }
+                                    ]
+                                }
+                            },
+                            'trainingDataUnit': null,
+                            'botName': 'PizzaBot',
+                            'appId': '98C3F6F8-3D9C-4F32-B62A-3B06185422B4',
+                            'query': 'order large pepperoni pizza',
+                            'entityMatches': {
+                                'PizzaType': [
+                                    'pepperoni'
+                                ],
+                                'PizzaSize': [
+                                    'Large'
+                                ]
+                            }
+                        },
                         'entity': false
                     },
                     'system.errorAction': {

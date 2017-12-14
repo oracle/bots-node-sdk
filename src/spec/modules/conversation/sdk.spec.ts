@@ -44,6 +44,10 @@ describe('Component Conversation SDK', () => {
     expect(sdk.response().modifyContext).toEqual(false); // only reading so far
     expect(sdk.channelType()).toEqual('test');
 
+    const nlpResult = sdk.nlpResult();
+    expect(nlpResult.topIntentMatch().intent).toEqual('OrderPizza');
+    expect(nlpResult.entityMatches('PizzaType')[0]).toEqual('pepperoni');
+
     sdk.variable('name', 'Ken');
     expect(sdk.variable('name')).toEqual('Ken');
     expect(sdk.response().modifyContext).toEqual(true); // wrote to context
@@ -58,6 +62,15 @@ describe('Component Conversation SDK', () => {
 
     sdk.action('eatpizza').done(true);
     expect(sdk.response()).toEqual(Mock.res.complete, 'Unexpected response');
+  });
+
+  it('should read botId, text, and properties from DE requiest', () => {
+    const sdk = new Lib.Conversation(Mock.req.complete);
+    const props = sdk.properties();
+    expect(sdk.botId()).toEqual('963B57F7-CFE6-439D-BB39-2E342AD4EC92');
+    expect(sdk.text()).toEqual('22');
+    expect(props).toBeTruthy();
+    expect(props.minAge).toEqual(18);
   });
 
 });

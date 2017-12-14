@@ -4,6 +4,10 @@ import { IApproximateTextMatch } from './textUtil';
  *
  * ```javascript
  * import { Util } from '@oracle/bots-js-sdk';
+ *
+ * // OR
+ *
+ * const Util = require('@oracle/bots-js=sdk').Util;
  * ```
  */
 export declare namespace Util {
@@ -11,9 +15,6 @@ export declare namespace Util {
      * MessageModel is a set of utility functions to help deriving string or speech representation
      * of a CMM (Conversation Message Model) message.  This is used primarily to output text or speech to
      * voice and text-based channels like Alexa and SMS.
-     * ```javascript
-     * Util.MessageModel
-     * ```
      */
     const MessageModel: {
         cardToText: (card: any, cardPrefix: any) => string;
@@ -21,9 +22,6 @@ export declare namespace Util {
     };
     /**
      * Webhook is a set of utility functions for bot integration via webhook channel.
-     * ```javascript
-     * Util.Webhook
-     * ```
      */
     const Webhook: {
         messageToBot: (channelUrl: any, channelSecretKey: any, userId: any, inMsg: any, callback: any) => void;
@@ -33,9 +31,6 @@ export declare namespace Util {
     };
     /**
      * Text is a set of text-based utiltiies for bot integration.
-     * ```javascript
-     * Util.Text
-     * ```
      */
     const Text: {
         approxTextMatch: (item: string, list: string[], lowerCase: boolean, removeSpace: boolean, threshold: number) => IApproximateTextMatch;
