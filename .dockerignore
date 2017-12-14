@@ -1,0 +1,2 @@
+# Dockerfile is used externally, therefore exclude everything in this project.
+*
