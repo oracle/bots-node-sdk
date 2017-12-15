@@ -5,3 +5,4 @@ docs
 *.js.map
 # keep dist for purposes of installing directly from alm:
 !dist
+dist/**/*.spec.*
