@@ -9,7 +9,7 @@ describe('Text Utilities', () => {
         expect(match).not.toBeNull();
         expect(match.exactMatch).toBe(false);
         expect(match.similarity).toBeGreaterThanOrEqual(0.9);
-        expect(match.item).toBeDefined();
+        expect(match.item).toEqual('Hello World');
     });
 });
 //# sourceMappingURL=text.spec.js.map
