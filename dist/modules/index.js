@@ -46,6 +46,8 @@ var Lib;
     class ComponentRegistry extends component_1.ComponentRegistry {
     }
     Lib.ComponentRegistry = ComponentRegistry;
+    // Legacy Shell (for use by swagger)
+    Lib.ComponentShell = conversation_1.ComponentShell;
     // Component Conversation invocation
     class Conversation extends conversation_1.Conversation {
     }

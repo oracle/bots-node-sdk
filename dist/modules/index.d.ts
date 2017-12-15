@@ -36,6 +36,13 @@ export declare module Lib {
     }
     class ComponentRegistry extends pComponentRegistry {
     }
+    const ComponentShell: (config: any, registry: any) => {
+        getAllComponentMetadata: () => {
+            version: string;
+            components: any[];
+        };
+        invokeComponentByName: (componentName: any, requestBody: any, sdkMixin: any, callback: any) => void;
+    };
     class Conversation extends pConv {
     }
     class MessageModel extends pMM {

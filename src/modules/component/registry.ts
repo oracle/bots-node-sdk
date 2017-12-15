@@ -65,13 +65,14 @@ export class ComponentRegistry {
    * @param list - Array of component references; can be paths, objects, or classes.
    * @param baseDir - Base path reference for resolving string component paths.
    */
-  private __buildFromItems(list: ComponentListItem[], baseDir: string): this {
-    const results = list.map(item => {
+  private __buildFromItems(list: ComponentListItem | ComponentListItem[], baseDir: string): this {
+    const results = [].concat(list).map(item => {
       if (isComponent(item)) {
         return [this.__componentFactory(<any>item)];
       } else if (typeof item === 'object') {
         // resolve from object containing {[key: string]: component}
-        return Object.values(item)
+        return Object.keys(item)
+          .map(k => item[k])
           .filter(isComponent)
           .map(ref => this.__componentFactory(ref));
       } else if (typeof item === 'string') {
