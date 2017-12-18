@@ -50,5 +50,15 @@ var Middleware;
         return router;
     }
     Middleware.init = init;
+    /**
+     * parser function exposes a router with configurable body-parser middleware applied.
+     * @param options - bodyParser middleware options
+     */
+    function parser(options = {}) {
+        return init({
+            parser: options
+        });
+    }
+    Middleware.parser = parser;
 })(Middleware = exports.Middleware || (exports.Middleware = {}));
 //# sourceMappingURL=index.js.map

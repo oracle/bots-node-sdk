@@ -50,8 +50,8 @@ function approxTextMatch(item, list, lowerCase, removeSpace, threshold) {
         // console.log(result);
         matchedItem = result.reduce((prev, current) => {
             return ((prev && current.similarity > prev.similarity) ? current : prev) || current;
-        });
-        if (threshold && matchedItem.similarity >= (threshold)) {
+        }, null);
+        if (matchedItem && matchedItem.similarity >= (threshold)) {
             return matchedItem;
         }
         else {

@@ -60,8 +60,8 @@ export function approxTextMatch(item: string, list: string[], lowerCase: boolean
         // console.log(result);
         matchedItem = result.reduce((prev, current) => {
             return ((prev && current.similarity > prev.similarity) ? current : prev) || current;
-        });
-        if (threshold && matchedItem.similarity >= (threshold)) {
+        }, null);
+        if (matchedItem && matchedItem.similarity >= (threshold)) {
             return matchedItem;
         } else {
             return null;
