@@ -55,6 +55,7 @@
     "express": "^4.15.4",
     "istanbul": "^0.4.5",
     "jasmine": "^2.8.0",
+    "jasmine-reporters": "^2.2.1",
     "jasmine-spec-reporter": "^4.2.1",
     "log4js": "^2.3.4",
     "remap-istanbul": "^0.9.5",
