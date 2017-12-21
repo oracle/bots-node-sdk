@@ -20,7 +20,7 @@
     "docs": "shx rm -rf ./docs && typedoc --options ./typedoc.js --exclude '**/*+(spec|schema|common)/**' --out $npm_package_config_docdir ./src/",
     "lint": "tslint .",
     "test": "istanbul cover ./src/spec/support/test.js",
-    "prepare": "npm run lint && npm run build",
+    "prepack": "npm run lint && npm run build",
     "pretest": "npm run build",
     "posttest": "node ./src/spec/support/coverage.js"
   },
@@ -55,6 +55,7 @@
     "express": "^4.15.4",
     "istanbul": "^0.4.5",
     "jasmine": "^2.8.0",
+    "jasmine-reporters": "^2.2.1",
     "jasmine-spec-reporter": "^4.2.1",
     "log4js": "^2.3.4",
     "remap-istanbul": "^0.9.5",

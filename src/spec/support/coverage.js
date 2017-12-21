@@ -7,9 +7,9 @@ const loadCoverage = require('remap-istanbul/lib/loadCoverage');
 const remap = require('remap-istanbul/lib/remap');
 const writeReport = require('remap-istanbul/lib/writeReport');
 
-let collector = remap(loadCoverage('coverage/coverage.json'));
+let collector = remap(loadCoverage('reports/coverage/coverage.json'));
 writeReport(collector, 'text');
-writeReport(collector, 'html', null, 'coverage');
+writeReport(collector, 'html', null, 'reports/coverage');
 writeReport(collector, 'text', null, 'COVERAGE.md').then(() => {
   const md = fs.readFileSync('COVERAGE.md')
     .toString()
