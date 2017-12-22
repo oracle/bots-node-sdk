@@ -63,7 +63,7 @@ export namespace Middleware {
    * parser function exposes a router with configurable body-parser middleware applied.
    * @param options - bodyParser middleware options
    */
-  export function parser(options: IParserMiddlewareOptions = {}): express.Router {
+  export function getRouter(options: IParserMiddlewareOptions = {}): express.Router {
     return init({
       parser: options
     });

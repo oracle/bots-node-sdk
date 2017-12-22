@@ -12,6 +12,7 @@ import LegacyComponent = require('../support/example/components/legacy');
 
 // supertest
 import * as http from 'http';
+import * as express from 'express';
 import * as supertest from 'supertest';
 
 // open spec server configs.
@@ -19,13 +20,23 @@ import serverConf = require('../support/spec.config');
 
 describe('Middleware', () => {
 
-  it('should perform child middleware instantiations', () => {
+  it('should init child middleware', () => {
     let spyParserMw = spyOn(<any>ParserMiddleware.prototype, '_init');
     let spyCompMw = spyOn(<any>ComponentMiddleware.prototype, '_init');
     expect(OracleBot.Middleware.init).not.toThrow();
     // individual middlewares don't get invoked without configs
     expect(spyParserMw).toHaveBeenCalled(); // parser is required mw
     expect(spyCompMw).not.toHaveBeenCalled();
+  });
+
+  it('should return basic router with body parser', () => {
+    const router = OracleBot.Middleware.getRouter();
+    expect(router.stack).toBeDefined();
+    expect(router.stack.length).toBeGreaterThan(0);
+    expect(router.stack.slice().shift().name).toMatch(/parser/i);
+    expect(router.get).toEqual(jasmine.any(Function));
+    expect(router.post).toEqual(jasmine.any(Function));
+    expect(router.use).toEqual(jasmine.any(Function));
   });
 
   it('should be failure tolerant', () => {

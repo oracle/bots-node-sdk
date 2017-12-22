@@ -54,11 +54,11 @@ var Middleware;
      * parser function exposes a router with configurable body-parser middleware applied.
      * @param options - bodyParser middleware options
      */
-    function parser(options = {}) {
+    function getRouter(options = {}) {
         return init({
             parser: options
         });
     }
-    Middleware.parser = parser;
+    Middleware.getRouter = getRouter;
 })(Middleware = exports.Middleware || (exports.Middleware = {}));
 //# sourceMappingURL=index.js.map
