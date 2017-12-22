@@ -39,4 +39,9 @@ export declare namespace Middleware {
      * @todo add webhook middleware
      */
     function init(options?: IMiddewareOptions): express.Router;
+    /**
+     * parser function exposes a router with configurable body-parser middleware applied.
+     * @param options - bodyParser middleware options
+     */
+    function getRouter(options?: IParserMiddlewareOptions): express.Router;
 }

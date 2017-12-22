@@ -1,7 +1,8 @@
 .DS_Store
 node_modules
-coverage
+reports
 docs
 *.js.map
 # keep dist for purposes of installing directly from alm:
 !dist
+dist/**/*.spec.*

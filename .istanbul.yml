@@ -2,10 +2,11 @@ instrumentation:
   excludes: [
     '*.js',
     'docs/**',
-    'coverage',
+    'reports',
     'node_modules',
     '**/spec/**',
   ]
   include-all-sources: true
 reporting:
+  dir: './reports/coverage'
   print: none

@@ -1,7 +1,7 @@
 "use strict";
 /* tslint:disable */
 Object.defineProperty(exports, "__esModule", { value: true });
-const natural = require("natural");
+const leven = require("leven");
 /**
  * utility function to perform approximate string matching.  This is useful in cases like voice integration where the voice recognition may not
  * produce perfect text input, i.e., what the user says may not be perfectly converted into text.  In such case, an approximate matching needs to
@@ -38,9 +38,11 @@ function approxTextMatch(item, list, lowerCase, removeSpace, threshold) {
             matched = true;
             return matchedItem;
         }
+        const L = Math.max(itemProcessed.length, listItemProcessed.length);
+        const similarity = (L - leven(itemProcessed, listItemProcessed)) / L;
         return {
+            similarity,
             exactMatch: false,
-            similarity: natural.JaroWinklerDistance(itemProcessed, listItemProcessed),
             item: listItem
         };
     });
@@ -48,8 +50,8 @@ function approxTextMatch(item, list, lowerCase, removeSpace, threshold) {
         // console.log(result);
         matchedItem = result.reduce((prev, current) => {
             return ((prev && current.similarity > prev.similarity) ? current : prev) || current;
-        });
-        if (threshold && matchedItem.similarity >= (threshold)) {
+        }, null);
+        if (matchedItem && matchedItem.similarity >= (threshold)) {
             return matchedItem;
         }
         else {

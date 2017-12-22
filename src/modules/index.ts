@@ -14,7 +14,7 @@ import {
   ComponentAbstract as pComponentAbstract,
   ComponentRegistry as pComponentRegistry
 } from './component';
-import { Conversation as pConv } from './conversation';
+import { Conversation as pConv, ComponentShell as pShell } from './conversation';
 import { MessageModel as pMM } from './message';
 
 /**
@@ -46,6 +46,9 @@ export module Lib {
 
   // Custom Component registry class
   export class ComponentRegistry extends pComponentRegistry { }
+
+  // Legacy Shell (for use by swagger)
+  export const ComponentShell = pShell;
 
   // Component Conversation invocation
   export class Conversation extends pConv { }

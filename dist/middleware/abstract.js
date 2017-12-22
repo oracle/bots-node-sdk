@@ -13,7 +13,7 @@ class MiddlewareAbstract {
         // init middleware
         try {
             this._init(router, options);
-            this._logger.info(`Initialized`);
+            // this._logger.info(`Initialized`);
         }
         catch (e) {
             this._logger.error(`Failed to init ${this.constructor.name}`, e);

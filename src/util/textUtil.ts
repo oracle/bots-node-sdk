@@ -1,6 +1,6 @@
 /* tslint:disable */
 
-import * as natural from 'natural';
+import leven = require('leven');
 
 export interface IApproximateTextMatch {
   /** Closest matching item in list of options */
@@ -48,9 +48,11 @@ export function approxTextMatch(item: string, list: string[], lowerCase: boolean
             matched = true;
             return matchedItem;
         }
+        const L = Math.max(itemProcessed.length, listItemProcessed.length);
+        const similarity = (L - leven(itemProcessed, listItemProcessed)) / L;
         return {
+            similarity,
             exactMatch: false,
-            similarity: natural.JaroWinklerDistance(itemProcessed, listItemProcessed),
             item: listItem
         };
     });
@@ -58,8 +60,8 @@ export function approxTextMatch(item: string, list: string[], lowerCase: boolean
         // console.log(result);
         matchedItem = result.reduce((prev, current) => {
             return ((prev && current.similarity > prev.similarity) ? current : prev) || current;
-        });
-        if (threshold && matchedItem.similarity >= (threshold)) {
+        }, null);
+        if (matchedItem && matchedItem.similarity >= (threshold)) {
             return matchedItem;
         } else {
             return null;
