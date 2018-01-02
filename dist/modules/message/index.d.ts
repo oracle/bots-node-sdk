@@ -1,1 +1,0 @@
-export { MessageModel } from './messageModel';
