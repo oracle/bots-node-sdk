@@ -8,6 +8,6 @@ plugins:
 
 exclude_patterns:
   - src/spec
-  - coverage
+  - reports
   - docs
   - node_modules
