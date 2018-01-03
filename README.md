@@ -1,14 +1,12 @@
 # Oracle Bots JavaScript SDK
 
-> This README is a work in progress. Please forgive any brevity or lack of cohesiveness.
-
-## About
+This SDK is intended as the primary productivity resource for Oracle Bots development in a Node.js
+express environment.
 
 - [Installation](#installation) - Installation and usage information.
 - [Middleware](#middleware) - Configurable Bots express middleware.
 - [Utils](#utilities) - Utility functions for interfacing with Bots.
 - [Custom Components](#custom-components) - Developing your custom bot components (new vs old).
-- [Coverage report](./COVERAGE.md) - Unit testing coverage report.
 
 ---
 
@@ -23,9 +21,7 @@ npm install --save @oracle/bots-js-sdk
 `git` or artifactory should be removed prior to publishing.
 
 ```shell
-export ORACLE_ID=my.oracle.username
-git config --global url."ssh://${ORACLE_ID}%40oracle.com@alm.oraclecorp.com:2222/".insteadof "alm:"
-npm install git+ssh://alm:mcs_intelligent-bots-cloud-service/bots-js-sdk.git
+npm install --save http://artifactory-slc.oraclecorp.com/artifactory/bot-dev-local/@oracle/bots-js-sdk/latest.tgz
 ```
 
 ## Documentation
