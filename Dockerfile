@@ -19,4 +19,4 @@ EXPOSE 7929
 
 ENV PORT 7950
 
-ENTRYPOINT supper --inspect=0.0.0.0:7929 -s -t -c -n error ./index.js
+CMD supper --inspect=0.0.0.0:7929 -s -t -c -n error ./index.js

@@ -1,14 +1,12 @@
 # Oracle Bots JavaScript SDK
 
-> This README is a work in progress. Please forgive any brevity or lack of cohesiveness.
-
-## About
+This SDK is intended as the primary productivity resource for Oracle Bots development in a Node.js
+express environment.
 
 - [Installation](#installation) - Installation and usage information.
 - [Middleware](#middleware) - Configurable Bots express middleware.
 - [Utils](#utilities) - Utility functions for interfacing with Bots.
 - [Custom Components](#custom-components) - Developing your custom bot components (new vs old).
-- [Coverage report](./COVERAGE.md) - Unit testing coverage report.
 
 ---
 
@@ -18,14 +16,12 @@
 npm install --save @oracle/bots-js-sdk
 ```
 
-**NOTE** This project is intended for public [GitHub](https://github.com/oracle/) and
-[@oracle/* npm](https://www.npmjs.com/org/oracle). Therefore npm installation directly from
-alm `git` should be replaced by `git submodule` addition in the consuming project(s).
+**NOTE** - This project is intended for public [GitHub](https://github.com/oracle/) and
+[@oracle/*](https://www.npmjs.com/org/oracle). Therefore npm installation directly from
+`git` or artifactory should be removed prior to publishing.
 
 ```shell
-export ORACLE_ID=my.oracle.username
-git config --global url."ssh://${ORACLE_ID}%40oracle.com@alm.oraclecorp.com:2222/".insteadof "alm:"
-npm install git+ssh://alm:mcs_intelligent-bots-cloud-service/bots-js-sdk.git
+npm install --save http://artifactory-slc.oraclecorp.com/artifactory/bot-dev-local/@oracle/bots-js-sdk/latest.tgz
 ```
 
 ## Documentation
@@ -39,7 +35,7 @@ Support for various Bot requests is handled by the configurable `Middleware` mod
 ### Component Middleware
 
 Initializing the component middleware includes some basic configurations. Most important
-are the `register` (explicit) and `autocollect` (fs scanning) registry properties, which specify component
+are the `register` (common) and `autocollect` (namespaced) registry properties, which specify component
 paths or objects and a filesystem registry path respectively.
 
 - `cwd` *string* - Top level directory to which all other paths are relative. `__dirname` is recommended.
@@ -47,7 +43,7 @@ paths or objects and a filesystem registry path respectively.
   - String paths may also be directories, which are scanned and added to the registry.
   - If used with `autocollect`, all components will be shared with the automated "root registry" derived from `autocollect`.
 - `autocollect` *string* - Relative path to a main component directory. This directory is automatically scanned to create a hierarchical registry.
-  - Any directories are considered child registries in the hierarchy called *"collections"*. Collections behave exactly like the top level registry, except they are siloed in the API as `/collection/:collection` and `/collection/:collection/:component`.
+  - Any directories are considered namespaced child registries in the hierarchy called *"collections"*. Collections behave exactly like the top level registry, except they are siloed in the API as `/collection/:collection` and `/collection/:collection/:component`.
 
 > JavaScript Example
 
@@ -99,8 +95,9 @@ already developed with the original SDK.
 Because this project uses [TypeScript](https://www.typescriptlang.org/index.html), we encourage,
 however **do not require**, strongly-typed component development.
 
-Ultimately this supports **OPTIONAL** new structures to the definition of any custom component.
-All properties and call signatures are defined, therefore supporting typestrong progammability.
+This SDK supports **OPTIONAL** new structures to the definition of any custom component, as well
+as full support for using legacy formats. All properties and call signatures are defined, therefore
+support typestrong progammability.
 
 > Legacy JavaScript Example `MyCustomComponent.js`
 
@@ -176,8 +173,8 @@ const Util = require('@oracle/bots-js-sdk').Util;
 
 ### Message Formatting
 
-- MessageModel - `OracleBot.MessageModel`
-- Utils = `OracleBot.Util.MessageModel`
+- MessageModel - `OracleBot.Lib.MessageModel` create stuctured object of a known Common Message Model message such as Text, Card, Attachment, Location, Postback, Agent or Raw type.
+- Utils - `OracleBot.Util.MessageModel` functions to help deriving string or speech representation of a Conversation Message Model payload. This is used primarily to output text or speech to voice and text-based channels like Alexa and SMS.
 
 ## Unit Testing Harness
 
