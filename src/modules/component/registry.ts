@@ -163,7 +163,9 @@ export class ComponentRegistry {
         return [mod];
       } else {
         // handle case where a single file exports object(s) as keys.
-        return Object.values(mod).filter(isComponent);
+        return Object.keys(mod)
+          .map(key => mod[key])
+          .filter(isComponent);
       }
     } catch (e) {
       this._logger.error(e);
