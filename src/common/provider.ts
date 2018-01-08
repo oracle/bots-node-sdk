@@ -59,7 +59,12 @@ export class CommonProvider {
    * @return logger interface object
    */
   public static getLogger(): ILogger {
-    return this.get(PROVIDER_KEY_LOGGER) || console;
+    const logger = this.get(PROVIDER_KEY_LOGGER) || console;
+    // polyfill basic method implementations with noop
+    ['log', 'trace', 'info', 'debug', 'warn', 'error'].forEach(method => {
+      logger[method] = logger[method] || (() => {}); // noop unknown methods.
+    });
+    return logger;
   }
 
 }
