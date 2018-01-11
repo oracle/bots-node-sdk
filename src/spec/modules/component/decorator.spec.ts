@@ -1,5 +1,7 @@
-import { Lib } from '../../main';
-import { IComponentInterface } from '../../../modules/component';
+import {
+  Lib,
+  IComponentInterface,
+} from '../../main';
 
 describe('@Component Decorator', () => {
 

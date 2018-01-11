@@ -7,3 +7,8 @@ Config.setLogger(log4js.getLogger());
 
 // export main dist entrypoint
 export * from '../index';
+// export separate entrypoint artifacts
+export * from '../modules/';
+export * from '../middleware/';
+export * from '../config/';
+export * from '../util/';
