@@ -1,8 +1,5 @@
-import {
-  Lib,
-  IComponentInterface,
-  ComponentAbstract
-} from '../../main';
+import { Lib } from '../../main';
+import { IComponentInterface } from '../../../modules/component';
 
 describe('@Component Decorator', () => {
 
@@ -24,7 +21,7 @@ describe('@Component Decorator', () => {
   });
 
   it('should catch errors gracefully', done => {
-    const c = <IComponentInterface>new TestComponentWithError();
+    const c = new TestComponentWithError();
     expect(c.invoke).toThrow(); // invocation without Callback will throw
     c.invoke(null, (err) => {
       expect(err).toBeDefined();
@@ -58,7 +55,7 @@ describe('@Component Decorator', () => {
     firstname: { type: 'string', required: true }
   },
 })
-class TestComponent extends ComponentAbstract {
+class TestComponent extends Lib.ComponentAbstract {
   invoke() { }
 }
 
@@ -70,8 +67,8 @@ class TestComponent extends ComponentAbstract {
     firstname: { type: 'string', required: true }
   },
 })
-class TestComponentWithError extends ComponentAbstract {
-  invoke() {
+class TestComponentWithError extends Lib.ComponentAbstract {
+  invoke(...args: any[]) {
     throw new Error('Bad things happen');
   }
 }

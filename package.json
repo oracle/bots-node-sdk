@@ -31,10 +31,13 @@
   ],
   "license": "UPL-1.0",
   "files": [
+    "config",
+    "util",
+    "middleware",
+    "testing",
     "dist",
     "!dist/spec/**",
     "!dist/**/*.map",
-    "testing",
     "Dockerfile",
     ".dockerignore"
   ],

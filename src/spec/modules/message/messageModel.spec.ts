@@ -1,4 +1,6 @@
-import { MessageModel, Util } from '../../main';
+import { Lib, Util } from '../../main';
+
+const MessageModel = Lib.MessageModel;
 
 describe('MessageModel', () => {
 
