@@ -1,4 +1,4 @@
-import * as _Middleware from './middleware/'; // directory index
+import * as middleware from './middleware/'; // directory index
 // import { Middleware } from './middleware/';
 
 /**
@@ -24,6 +24,6 @@ import * as _Middleware from './middleware/'; // directory index
  * ```
  */
 export namespace Middleware {
-  export const init = _Middleware.init;
-  export const getRouter = _Middleware.getRouter;
+  export const init = middleware.init;
+  export const getRouter = middleware.getRouter;
 }

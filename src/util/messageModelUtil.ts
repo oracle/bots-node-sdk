@@ -137,13 +137,13 @@ export function convertRespToText(convMsg) {
   return sentence;
 }
 
-// /**
-//  * The messageModelUtil is a set of utility functions to help deriving string or speech representation
-//  * of a CMM (Conversation Message Model) message.  This is used primarily to output text or speech to
-//  * voice and text-based channels like Alexa and SMS.
-//  * @module messageModelUtil
-//  */
-// export = {
-//   convertRespToText: convertRespToText,
-//   cardToText: cardToText
-// };
+/**
+ * The messageModelUtil is a set of utility functions to help deriving string or speech representation
+ * of a CMM (Conversation Message Model) message.  This is used primarily to output text or speech to
+ * voice and text-based channels like Alexa and SMS.
+ * @module messageModelUtil
+ */
+export const messageModelUtil = {
+  convertRespToText,
+  cardToText,
+};

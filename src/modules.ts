@@ -1,4 +1,4 @@
-import * as _Lib from './modules/'; // index
+import * as lib from './modules/'; // index
 import { Component as _Component } from './modules/'; // decorator
 
 /**
@@ -22,22 +22,22 @@ import { Component as _Component } from './modules/'; // decorator
 export namespace Lib {
 
   // Custom component @Component decorator
-  export const Component = _Lib.Component;
-  export type Component = _Lib.Component;
+  export const Component = lib.Component;
+  export type Component = lib.Component;
 
   // Custom Component abstraction class
-  export abstract class ComponentAbstract extends _Lib.ComponentAbstract { }
+  export abstract class ComponentAbstract extends lib.ComponentAbstract { }
 
   // Custom Component registry class
-  export class ComponentRegistry extends _Lib.ComponentRegistry { }
+  export class ComponentRegistry extends lib.ComponentRegistry { }
 
   // Legacy Shell (for use by swagger)
-  export const ComponentShell = _Lib.ComponentShell;
+  export const ComponentShell = lib.ComponentShell;
 
   // Component Conversation invocation
-  export class Conversation extends _Lib.Conversation { }
+  export class Conversation extends lib.Conversation { }
 
   // Conversation Message Model
-  export class MessageModel extends _Lib.MessageModel { }
+  export class MessageModel extends lib.MessageModel { }
 
 }
