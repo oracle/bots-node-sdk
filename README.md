@@ -164,12 +164,12 @@ Utility functions are available within the `Util` namespace of the main entrypoi
 
 ```javascript
 const Util = require('@oracle/bots-js-sdk').Util;
+const Util = require('@oracle/bots-js-sdk/util');
 ```
 
 ### Webhook
 
 - Utils - `OracleBot.Util.Webhook`
-- TODO: Middleware Webhook Gateway
 
 ### Message Formatting
 
