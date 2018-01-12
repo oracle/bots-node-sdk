@@ -1,15 +1,17 @@
-
-// main provider for common object references.
-import * as Joi from 'joi';
-import { CommonProvider, PROVIDER_KEY_JOI } from './common/provider';
-
-// main exports
+/**
+ * This file is the top level entrypoint to this project.
+ * Each of the wildcard exports below exposes the corresponding module's namespace
+ * from the associative '{name}.ts' file. As a result, consumers can access each 
+ * namespace as a key in the root module.
+ *
+ * ```javascript
+ * const OracleBot = require('@oracle/bots-js-sdk');
+ * OracleBot.Middleware //...
+ * OracleBot.Util //...
+ * // etc...
+ * ```
+ */
 export * from './config';
 export * from './middleware';
 export * from './modules';
 export * from './util';
-
-// TODO - Move to a Config module.
-CommonProvider.register([
-  {key: PROVIDER_KEY_JOI, use: Joi}
-]);

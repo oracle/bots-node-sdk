@@ -1,4 +1,4 @@
-import { ComponentRegistry } from '../../main';
+import { ComponentRegistry } from '../../../modules/';
 import { ComponentA } from '../../support/example/more.components/a.component'
 import { ComponentB } from '../../support/example/more.components/b.component'
 

@@ -138,13 +138,13 @@ export function messageToBotWithProperties(channelUrl, channelSecretKey, userId,
     });
 }
 
-// /**
-//  * The webhookUtil is a set of utility functions for bot integration via webhook channel.
-//  * @module webhookUtil
-//  */
-// export = {
-//     messageToBot: messageToBot,
-//     messageToBotWithProperties: messageToBotWithProperties,
-//     verifyMessageFromBot: verifyMessageFromBot,
-//     bodyParserRawMessageVerify: bodyParserRawMessageVerify
-// };
+/**
+ * The webhookUtil is a set of utility functions for bot integration via webhook channel.
+ * @module webhookUtil
+ */
+export const webhookUtil = {
+    messageToBot,
+    messageToBotWithProperties,
+    verifyMessageFromBot,
+    bodyParserRawMessageVerify,
+};

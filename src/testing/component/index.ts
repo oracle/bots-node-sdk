@@ -1,4 +1,4 @@
-import { Conversation as SDK, IComponentRequestBody } from '../../';
+import { Conversation as SDK, IComponentRequestBody } from '../../modules/';
 
 /**
  * Create a mock request for component middleware handling.

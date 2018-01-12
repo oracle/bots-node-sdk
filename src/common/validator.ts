@@ -1,5 +1,5 @@
 import * as Joi from 'joi';
-import { CommonProvider, PROVIDER_KEY_JOI } from './provider';
+import { PROVIDER_KEY_JOI } from './provider';
 
 export interface IValidationSchemaFactory {
   (joi: any): Joi.Schema;
@@ -18,7 +18,11 @@ export class CommonValidator {
    */
   public static getSchema(factory: IValidationSchemaFactory): Joi.Schema {
     if (!this._schemaCache.has(factory)) {
-      const joi = CommonProvider.get(PROVIDER_KEY_JOI);
+      let joi: any;
+      ['joi', 'joi-browser'].some(name => {
+        try { joi = require(name); } catch (e) { }
+        return joi;
+      });
       if (!joi) {
         throw new Error(`'${PROVIDER_KEY_JOI}' reference not provided`);
       }

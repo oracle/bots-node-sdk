@@ -71,10 +71,10 @@ export function approxTextMatch(item: string, list: string[], lowerCase: boolean
     }
 }
 
-// /**
-//  * The botUtil is a set of utility functions for bot integration.
-//  * @module botUtil
-//  */
-// module.exports = {
-//   approxTextMatch: approxTextMatch
-// };
+/**
+ * The botUtil is a set of utility functions for bot integration.
+ * @module textUtil
+ */
+export const textUtil = {
+  approxTextMatch,
+};
