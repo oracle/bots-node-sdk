@@ -1,9 +1,9 @@
 import * as path from 'path';
 import { ICallback } from '../common/definitions';
 import { express, MiddlewareAbstract, IMobileCloudRequest } from './abstract';
-import { ComponentRegistry, ComponentListItem } from '../modules/component/registry';
+import { ComponentRegistry, ComponentListItem } from '../lib/component/registry';
 
-import Shell = require('../modules/conversation/shell');
+import Shell = require('../lib/conversation/shell');
 
 /**
  * component middleware specific options

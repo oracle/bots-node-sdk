@@ -13,5 +13,5 @@
  */
 export * from './config';
 export * from './middleware';
-export * from './modules';
+export * from './lib';
 export * from './util';

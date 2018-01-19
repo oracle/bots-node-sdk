@@ -21,6 +21,7 @@ npm install --save @oracle/bots-js-sdk
 `git` or artifactory should be removed prior to publishing.
 
 ```shell
+export no_proxy=".oraclecorp.com"
 npm install --save http://artifactory-slc.oraclecorp.com/artifactory/bot-dev-local/@oracle/bots-js-sdk/latest.tgz
 ```
 
