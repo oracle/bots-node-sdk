@@ -1,5 +1,5 @@
-import * as lib from './modules/'; // index
-import { Component as _Component } from './modules/'; // decorator
+import * as lib from './lib/'; // index
+import { Component as _Component } from './lib/'; // decorator
 
 /**
  * SDK 'Lib' exposing core classes, decorators, etc.
@@ -25,14 +25,14 @@ export namespace Lib {
   export const Component = lib.Component;
   export type Component = lib.Component;
 
+  // Legacy Shell (for use by swagger)
+  export const ComponentShell = lib.ComponentShell;
+
   // Custom Component abstraction class
   export abstract class ComponentAbstract extends lib.ComponentAbstract { }
 
   // Custom Component registry class
   export class ComponentRegistry extends lib.ComponentRegistry { }
-
-  // Legacy Shell (for use by swagger)
-  export const ComponentShell = lib.ComponentShell;
 
   // Component Conversation invocation
   export class Conversation extends lib.Conversation { }

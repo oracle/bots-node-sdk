@@ -1,4 +1,4 @@
 {
-  "main": "../dist/modules/index.js",
-  "typings": "../dist/modules/index.d.ts"
+  "main": "../dist/lib/index.js",
+  "typings": "../dist/lib/index.d.ts"
 }

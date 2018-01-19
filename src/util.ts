@@ -31,10 +31,10 @@ export namespace Util {
   export const Webhook = {
     messageToBot: util.webhookUtil.messageToBot,
     messageToBotWithProperties: util.webhookUtil.messageToBotWithProperties,
-    verifyMessageFromBot: util.webhookUtil.messageToBotWithProperties,
-    // bodyParserRawMessageVerify, ==> intentionally omitted
+    verifyMessageFromBot: util.webhookUtil.verifyMessageFromBot,
+    bodyParserRawMessageVerify: util.webhookUtil.bodyParserRawMessageVerify
   };
-  export import webhoookUtil = util.webhookUtil; // preferred, but not picked up by TypeDoc.
+  export import webhookUtil = util.webhookUtil; // preferred, but not picked up by TypeDoc.
 
   /**
    * Text is a set of text-based utiltiies for bot message processing.
