@@ -195,7 +195,7 @@ export class MessageModel {
    * @param {string} [label] - label of the action.
    * @param {string} [imageUrl] - image to show for the action.
    */
-  static shareActionObject(label, imageUrl?) {
+  static shareActionObject(label?, imageUrl?) {
     return this._baseActionObject('share', label, imageUrl);
   }
 
