@@ -9,6 +9,7 @@ LABEL com.oracle.bots.version="18.1.1"
 
 RUN npm config set loglevel warn \
   && npm set progress=false \
+  && npm config set registry http://registry.npmjs.org \
   && npm install -g supper --color=always
 
 WORKDIR /var/application
