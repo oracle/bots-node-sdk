@@ -39,7 +39,8 @@
     "!dist/spec/**",
     "!dist/**/*.map",
     "Dockerfile",
-    ".dockerignore"
+    ".dockerignore",
+    "LICENSE.md"
   ],
   "dependencies": {
     "body-parser": "^1.18.2",
