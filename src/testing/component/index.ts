@@ -1,4 +1,4 @@
-import { Conversation as SDK, IComponentRequestBody } from '../../lib/';
+import { Conversation as SDK, IComponentRequestBody, MessagePayload } from '../../lib/';
 
 /**
  * Create a mock request for component middleware handling.
@@ -82,4 +82,13 @@ export class MockConversation extends SDK {
   public static fromRequest(req: IComponentRequestBody): MockConversation {
     return new this(req);
   }
+
+  /**
+   * get conversation reply messages
+   * @return - message list returned by the component
+   */
+  public getReplies(): MessagePayload[] {
+    return this.response().messages;
+  }
+
 }

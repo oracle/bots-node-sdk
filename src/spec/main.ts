@@ -1,5 +1,5 @@
 // configure logger for testing
-import * as log4js from 'log4js';
+const log4js = require('log4js');
 import { Config } from '../index';
 
 (log4js['setGlobalLogLevel'] || (() => {}))('OFF');
