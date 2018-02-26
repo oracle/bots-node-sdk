@@ -151,6 +151,6 @@ describe('MyComponent', () => {
 });
 ```
 
-## [License](./LICENSE.md)
+## License
 
 Copyright (c) 2016, 2017 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0

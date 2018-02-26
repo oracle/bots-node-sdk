@@ -59,7 +59,7 @@ function textMessageToText(resp) {
 
 /**
  * utility function to derive a string representation of a card within a conversation message for use with speech or text based channels like Alexa and SMS.
- * @function module:messageModelUtil.cardToText
+ * @function module:Util/MessageModel.cardToText
  * @return {string} A string or speech representation of the card.
  * @param {object} card - A card (as defined in Conversation Message Model)
  * @param {string} [cardPrefix] - A string prefix used before the card content, for example 'Card'
@@ -114,7 +114,7 @@ function attachmentMessageToText(resp) {
 }
 /**
  * utility function to derive a string representation of a Conversation Message for use with speech or text based channels like Alexa and SMS.
- * @function module:messageModelUtil.convertRespToText
+ * @function module:Util/MessageModel.convertRespToText
  * @return {string} A string or speech representation of the conversation message.
  * @param {object} convMsg - A message conforming to Conversation Message Model.
  */
@@ -143,7 +143,7 @@ function convertRespToText(convMsg) {
  * The messageModelUtil is a set of utility functions to help deriving string or speech representation
  * of a CMM (Conversation Message Model) message.  This is used primarily to output text or speech to
  * voice and text-based channels like Alexa and SMS.
- * @module messageModelUtil
+ * @module Util/MessageModel
  */
 module.exports = {
   convertRespToText,

@@ -5,6 +5,7 @@ const Lib = require("../../lib/");
 /**
  * Create a mock request for component middleware handling.
  * Invidual properties and variables may be specified by modifying the result.
+ * @function module:Testing.MockRequest
  * @param type - channel type
  * @param properties - conversation properties (optional)
  * @param variables - conversation variables (optional)
@@ -50,10 +51,10 @@ function MockRequest(type = 'test', properties = {}, variables = {}) {
 
 /**
  * Extension for the main Conversation class with testing conveniences.
- *
- * ```javascript
- * import * as Testing from '@oracle/bots-node-sdk/testing';
- * import { MyCustomComponent } from 'path/to/custom/components';
+ * @memberof module:Testing
+ * @example
+ * const Testing = require('@oracle/bots-node-sdk/testing');
+ * const { MyCustomComponent } = require('path/to/custom/components');
  *
  * describe('MyCustomComponent', () => {
  *   it('should reply with message', done => {
@@ -66,7 +67,6 @@ function MockRequest(type = 'test', properties = {}, variables = {}) {
  *       });
  *   })
  * })
- * ```
  */
 class MockConversation extends Lib.Conversation {
   /**
@@ -78,7 +78,7 @@ class MockConversation extends Lib.Conversation {
   }
   /**
    * create conversation instance from a request
-   * @param req the component invocation request body
+   * @param {*} req - the component invocation request body
    * @return Conversation
    */
   static fromRequest(req) {

@@ -12,6 +12,7 @@ const [PARAM_COMPONENT] = ['component'];
 /**
  * ComponentMiddleware.
  * @extends MiddlewareAbstract
+ * @private
  */
 class ComponentMiddleware extends MiddlewareAbstract {
 
@@ -55,6 +56,7 @@ class ComponentMiddleware extends MiddlewareAbstract {
   /**
    * get Shell methods
    * @param registry - The registry for the invocation shell
+   * @private
    */
   __getShell(registry) {
     return Shell({
@@ -69,6 +71,7 @@ class ComponentMiddleware extends MiddlewareAbstract {
    * @param options - Middleware options reference.
    * @param req - MobileCloudRequest
    * @param res - express.Response
+   * @private
    */
   __invoke(componentName, registry, options, req, res) {
     // apply mixins and invoke component
@@ -82,6 +85,7 @@ class ComponentMiddleware extends MiddlewareAbstract {
   /**
    * convenience handler for CC invokcation
    * @param res: express.Resonse
+   * @private
    */
   __invocationCb(res) {
     return (err, data) => {

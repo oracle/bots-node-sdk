@@ -6,7 +6,7 @@ const leven = require("leven");
  * utility function to perform approximate string matching.  This is useful in cases like voice integration where the voice recognition may not
  * produce perfect text input, i.e., what the user says may not be perfectly converted into text.  In such case, an approximate matching needs to
  * be performed.
- * @function module:botUtil.approxTextMatch
+ * @function module:Util/Text.approxTextMatch
  * @return {IApproximateTextMatch} The best match if it matches above the similarity threshold provided.
  * @param {string} item - A string to be matched to a list of strings for best approximate matching.
  * @param {string[]} list - An array of strings to be matched with item.
@@ -64,8 +64,8 @@ function approxTextMatch(item, list, lowerCase, removeSpace, threshold) {
 }
 
 /**
- * The botUtil is a set of utility functions for bot integration.
- * @module textUtil
+ * Text is a set of text-based utiltiies for bot message processing.
+ * @module Util/Text
  */
 module.exports = {
   approxTextMatch,

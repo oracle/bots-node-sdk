@@ -12,10 +12,11 @@
     "docdir": "docs"
   },
   "scripts": {
-    "docs": "shx rm -rf ./docs && typedoc --options ./typedoc.js --exclude '**/*+(spec|schema|common)/**' --out $npm_package_config_docdir ./src/",
+    "docs:old": "shx rm -rf ./docs && typedoc --options ./typedoc.js --exclude '**/*+(spec|schema|common)/**' --out $npm_package_config_docdir ./src/",
+    "docs": "shx rm -rf ./docs && jsdoc lib config middleware util testing LICENSE.md --readme README.md -r -d ./$npm_package_config_docdir -t ./node_modules/docdash",
     "lint": "eslint . --ignore-pattern reports",
     "test": "istanbul cover ./spec/support/test.js",
-    "typings": "cd ts && tsc",
+    "typings": "shx rm -rf ./typings && cd ./ts && tsc",
     "prepack": "npm run lint && npm run typings"
   },
   "contributors": [
@@ -42,6 +43,7 @@
     "jasmine-spec-reporter": "^4.2.1",
     "jsdoc": "^3.5.5",
     "log4js": "^2.3.4",
+    "shx": "^0.2.2",
     "supertest": "^3.0.0",
     "typescript": "^2.7.2"
   },

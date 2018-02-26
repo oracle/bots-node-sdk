@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 
 /**
  * Body parser middleware
+ * @private
  */
 class ParserMiddleware extends MiddlewareAbstract {
   _init(router, options) {

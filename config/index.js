@@ -4,6 +4,7 @@ const { CommonProvider, PROVIDER_KEY_LOGGER } = require("../common/provider");
 
 /**
  * establish logging instance
+ * @function module:Config.setLogger
  * @param logger - logging utility
  */
 function setLogger(logger) {
@@ -13,6 +14,14 @@ function setLogger(logger) {
   });
 }
 
+/**
+ * SDK 'Config' module exposing optional configuration methods.
+ * @module Config
+ * @example
+ * import { Config } from '@oracle/bots-node-sdk';
+ * // or
+ * import * as Config from '@oracle/bots-node-sdk/config';
+ */
 module.exports = {
   setLogger
 };

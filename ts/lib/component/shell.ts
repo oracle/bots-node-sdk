@@ -2,12 +2,13 @@
 
 // External deps
 import { ComponentInvocation as SDK } from './sdk';
+import { CommonProvider } from '../../common/provider';
 
 export = function ComponentShell(config, registry) {
 
   let logger = (config ? config.logger : null);
   if (!logger) {
-    logger = console;
+    logger = CommonProvider.getLogger();
     logger.info("shell.js create console logger");
   }
 

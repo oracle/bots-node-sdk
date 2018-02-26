@@ -4,6 +4,7 @@ const { CommonProvider } = require("../common/provider");
 
 /**
  * Embedded middleware abstraction layer.
+ * @private
  */
 class MiddlewareAbstract {
   constructor(router, options) {
