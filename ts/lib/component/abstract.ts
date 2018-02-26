@@ -5,7 +5,7 @@ import { ComponentInvocation as Conversation } from './sdk';
 import { Component, IComponentMetadata } from './decorator';
 
 export interface IComponentInterface {
-  metadata?(): IComponentMetadata; // established by decorator
+  metadata(): IComponentMetadata;
   invoke(conversation: Conversation, done: ICallback): void;
 }
 
@@ -21,16 +21,13 @@ export abstract class ComponentAbstract implements IComponentInterface {
   }
 
   /**
-   * convenience getter to access decorator annotations.
-   * requires the use of @Component({ ... }) decorator
+   * component metadata method.
+   * @return - metadata property object for the custom component.
    */
-  get annotations(): Component {
-    return this['__decoratorMetadata'];
-  }
+  public abstract metadata(): IComponentMetadata
 
   /**
-   * invoke.
-   * @desc component invocation method.
+   * component invocation method.
    * @param conversation Instantiated Conversation instance
    * @param done Conversation done callback
    * @return void

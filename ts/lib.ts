@@ -40,4 +40,7 @@ export namespace Lib {
   // Conversation Message Model
   export class MessageModel extends lib.MessageModel { }
 
+  // Component Metadata interface
+  export interface IComponentMetadata extends lib.IComponentMetadata { }
+
 }
