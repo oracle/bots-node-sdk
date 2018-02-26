@@ -6,7 +6,7 @@ express environment.
 - [Installation](#installation) - Installation and usage information.
 - [Middleware](#middleware) - Configurable Bots express middleware.
 - [Utils](#utilities) - Utility functions for interfacing with Bots.
-- [Custom Components](#custom-components) - Developing your custom bot components (new vs old).
+- [Custom Components](#custom-components) - Developing your custom bot components.
 
 ---
 
@@ -36,69 +36,40 @@ Support for various Bot requests is handled by the configurable `Middleware` mod
 ### Component Middleware
 
 Initializing the component middleware includes some basic configurations. Most important
-are the `register` (common) and `autocollect` (namespaced) registry properties, which specify component
+is the `register` middleware property, which specifies component
 paths or objects and a filesystem registry path respectively.
 
 - `cwd` *string* - Top level directory to which all other paths are relative. `__dirname` is recommended.
 - `register` *(string|object(s)|function)[]* - Define *global* component registry from flexible array of the components to resolve.
   - String paths may also be directories, which are scanned and added to the registry.
-  - If used with `autocollect`, all components will be shared with the automated "root registry" derived from `autocollect`.
-- `autocollect` *string* - Relative path to a main component directory. This directory is automatically scanned to create a hierarchical registry.
-  - Any directories are considered namespaced child registries in the hierarchy called *"collections"*. Collections behave exactly like the top level registry, except they are siloed in the API as `/collection/:collection` and `/collection/:collection/:component`.
 
 > JavaScript Example
 
 ```javascript
+const express = require('express');
 const OracleBot = require('@oracle/bots-js-sdk');
 
-module.exports = function(app) {
-  app.use('/components', OracleBot.Middleware.init({
-    component: {
-      cwd: __dirname,
-      autocollect: './components',
-      register: [
-        './path/to/a/component',
-        './path/to/other/components',
-        './path/to/a/directory',
-      ]
-    }
-  }));
-};
-```
-
-> TypeScript Example
-
-```javascript
-import * as express from 'express';
-import * as OracleBot from '@oracle/bots-js-sdk';
-
-export = (app: express.Express): void => {
-  app.use('/components', OracleBot.Middleware.init({
-    component: { // component middleware options
-      cwd: __dirname, // working directory of the project runtime (defaults to process.cwd())
-      autocollect: './components', // relative directory for components in fs
-      register: [ // explicitly provide a global registry
-        './path/to/a/component',
-        './path/to/other/components',
-        './path/to/a/directory',
-      ]
-    }
-  }));
-};
+const app = express();
+app.use('/components', OracleBot.Middleware.init({
+  component: {
+    cwd: __dirname,
+    register: [
+      './path/to/a/component',
+      './path/to/other/components',
+      './path/to/a/directory',
+    ]
+  }
+}));
 ```
 
 ## Custom Components
 
 Using the `@oracle/bots-js-sdk` for Custom Component development introduces a variety of new
-features and requirements, but is **100%** compatible with existing components you may have
+features and requirements, and is **100%** compatible with existing components you may have
 already developed with the original SDK.
 
-Because this project uses [TypeScript](https://www.typescriptlang.org/index.html), we encourage,
-however **do not require**, strongly-typed component development.
-
 This SDK supports **OPTIONAL** new structures to the definition of any custom component, as well
-as full support for using legacy formats. All properties and call signatures are defined, therefore
-support typestrong progammability.
+as full support for using legacy formats.
 
 > Legacy JavaScript Example `MyCustomComponent.js`
 
@@ -123,9 +94,9 @@ Define component by exporting class(es) with the **OPTION** of extending the
 classes are instantiated as singletons.
 
 ```javascript
-const OracleBot = require('@oracle/bots-js-sdk');
+const { ComponentAbstract } = require('@oracle/bots-js-sdk/lib');
 
-module.exports = class MyCustomComponent extends OracleBot.Lib.ComponentAbstract {
+module.exports = class MyCustomComponent extends ComponentAbstract {
   metadata() {
     return {
       name: 'my.custom.component',
@@ -140,42 +111,23 @@ module.exports = class MyCustomComponent extends OracleBot.Lib.ComponentAbstract
 }
 ```
 
-> New Example Using TypeScript `MyCustomComponent.ts`
-
-```javascript
-import * as OracleBot from '@oracle/bots-js-sdk';
-
-// decorator to apply class annotations available through the class.prototype.metadata() method.
-@OracleBot.Lib.Component({
-  name: 'my.custom.component', // (optional)
-  properties: {}, // (optional)
-  supportedActions: [] // (optional)
-})
-export class MyCustomComponent extends OracleBot.Lib.ComponentAbstract { // optionally extend the ComponentAbstract for convenient iVars.
-  invoke(conversation: OracleBot.Lib.Conversation, done) {
-    conversation.reply('hello').transition();
-    done();
-  }
-}
-```
-
 ## Utilities
 
 Utility functions are available within the `Util` namespace of the main entrypoint.
 
 ```javascript
-const Util = require('@oracle/bots-js-sdk').Util;
+const { Util } = require('@oracle/bots-js-sdk');
 const Util = require('@oracle/bots-js-sdk/util');
 ```
 
 ### Webhook
 
-- Utils - `OracleBot.Util.Webhook`
+- `OracleBot.Util.Webhook` methods for webhook channel payload signature and validation.
 
 ### Message Formatting
 
 - MessageModel - `OracleBot.Lib.MessageModel` create stuctured object of a known Common Message Model message such as Text, Card, Attachment, Location, Postback, Agent or Raw type.
-- Utils - `OracleBot.Util.MessageModel` functions to help deriving string or speech representation of a Conversation Message Model payload. This is used primarily to output text or speech to voice and text-based channels like Alexa and SMS.
+- MessageModel Utils - `OracleBot.Util.MessageModel` functions to help deriving string or speech representation of a Conversation Message Model payload. This is used primarily to output text or speech to voice and text-based channels like Alexa and SMS.
 
 ## Unit Testing Harness
 

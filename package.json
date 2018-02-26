@@ -2,27 +2,19 @@
   "name": "@oracle/bots-js-sdk",
   "version": "0.0.8",
   "description": "Oracle bot custom component service middleware and utilities",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "main": "index.js",
   "engines": {
     "node": ">=6.11.3",
     "npm": ">=3.10.10"
   },
   "config": {
-    "outdir": "dist",
     "docdir": "docs"
   },
   "scripts": {
-    "build": "npm run clean && npm run build:compile",
-    "build:compile": "tsc",
-    "build:watch": "tsc -w",
-    "clean": "shx rm -rf $npm_package_config_outdir",
     "docs": "shx rm -rf ./docs && typedoc --options ./typedoc.js --exclude '**/*+(spec|schema|common)/**' --out $npm_package_config_docdir ./src/",
-    "lint": "tslint .",
-    "test": "istanbul cover ./src/spec/support/test.js",
-    "prepack": "npm run lint && npm run build",
-    "pretest": "npm run build",
-    "posttest": "node ./src/spec/support/coverage.js"
+    "lint": "eslint . --ignore-pattern reports",
+    "test": "istanbul cover ./spec/support/test.js",
+    "prepack": "npm run lint"
   },
   "contributors": [
     "Matt Vander Vliet <matthew.vander.vliet@oracle.com>",
@@ -35,9 +27,6 @@
     "util",
     "middleware",
     "testing",
-    "dist",
-    "!dist/spec/**",
-    "!dist/**/*.map",
     "Dockerfile",
     ".dockerignore",
     "LICENSE.md"
@@ -49,12 +38,8 @@
     "request": "^2.81.0"
   },
   "devDependencies": {
-    "@types/express": "^4.0.37",
-    "@types/jasmine": "^2.5.54",
-    "@types/joi": "^10.4.3",
-    "@types/leven": "^2.1.1",
-    "@types/request": "^2.0.7",
-    "@types/supertest": "^2.0.3",
+    "eslint": "^4.18.1",
+    "eslint-plugin-jasmine": "^2.9.2",
     "express": "^4.15.4",
     "istanbul": "^0.4.5",
     "jasmine": "^2.8.0",

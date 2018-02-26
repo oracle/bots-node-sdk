@@ -9,4 +9,4 @@ instrumentation:
   include-all-sources: true
 reporting:
   dir: './reports/coverage'
-  print: none
+  print: detail

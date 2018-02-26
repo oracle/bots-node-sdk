@@ -1,0 +1,18 @@
+{
+  "extends": "eslint:recommended",
+  "plugins": ["jasmine"],
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module"
+  },
+  "env": {
+    "es6": true,
+    "node": true,
+    "browser": false,
+    "jasmine": true
+  },
+  "rules": {
+    "indent": ["error", 2],
+    "no-console": "off"
+  }
+}

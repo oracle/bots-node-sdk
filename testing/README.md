@@ -1,5 +1,5 @@
 # @oracle/bots-js-sdk/testing
 
 ```javascript
-import { MockConversation, MockRequest } from '@oracle/bots-js-sdk/testing';
+const { MockConversation, MockRequest } = require('@oracle/bots-js-sdk/testing');
 ```

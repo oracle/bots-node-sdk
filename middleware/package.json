@@ -1,4 +1,0 @@
-{
-  "main": "../dist/middleware/index.js",
-  "typings": "../dist/middleware/index.d.ts"
-}
