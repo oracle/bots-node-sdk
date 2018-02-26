@@ -2,9 +2,9 @@ import * as path from 'path';
 
 /**
  * test export structure such as:
- * import { Lib } from '@oracle/bots-js-sdk';
+ * import { Lib } from '@oracle/bots-node-sdk';
  * vs.
- * import * as Lib from '@oracle/bots-js-sdk/lib';
+ * import * as Lib from '@oracle/bots-node-sdk/lib';
  */
 describe('Main module', () => {
   const top = '../../';

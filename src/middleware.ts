@@ -5,7 +5,7 @@ import * as middleware from './middleware/'; // directory index
  * Configurable middleware module.
  *
  * ```javascript
- * import * as OracleBot from '@oracle/bots-js-sdk';
+ * import * as OracleBot from '@oracle/bots-node-sdk';
  *
  * export = (app: express.Express): void => {
  *   app.use('/components', OracleBot.Middleware.init({

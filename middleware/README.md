@@ -1,11 +1,11 @@
-# @oracle/bots-js-sdk/middleware
+# @oracle/bots-node-sdk/middleware
 
 ```javascript
-const Middleware = require('@oracle/bots-js-sdk/middleware');
+const Middleware = require('@oracle/bots-node-sdk/middleware');
 ```
 
 or
 
 ```javascript
-const { Middleware } = require('@oracle/bots-js-sdk');
+const { Middleware } = require('@oracle/bots-node-sdk');
 ```

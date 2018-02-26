@@ -5,7 +5,7 @@ import { Component as _Component } from './lib/'; // decorator
  * SDK 'Lib' exposing core classes, decorators, etc.
  *
  * ```javascript
- *  import * as OracleBot from '@oracle/bots-js-sdk';
+ *  import * as OracleBot from '@oracle/bots-node-sdk';
  *
  *  @OracleBot.Lib.Component({
  *    name: 'my.custom.component',

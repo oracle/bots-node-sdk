@@ -1,4 +1,4 @@
-# Dockerfile for consuming @oracle/bots-js-sdk
+# Dockerfile for consuming @oracle/bots-node-sdk
 
 FROM node:alpine
 LABEL maintainer="adao.junior@oracle.com,matthew.vander.vliet@oracle.com"

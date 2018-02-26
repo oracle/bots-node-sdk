@@ -4,9 +4,9 @@ const path = require("path");
 
 /**
  * test export structure such as:
- * const { Lib } = require('@oracle/bots-js-sdk');
+ * const { Lib } = require('@oracle/bots-node-sdk');
  * vs.
- * const Lib = require('@oracle/bots-js-sdk/lib');
+ * const Lib = require('@oracle/bots-node-sdk/lib');
  */
 describe('Main module', () => {
   const top = '../';

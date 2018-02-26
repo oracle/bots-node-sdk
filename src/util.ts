@@ -5,9 +5,9 @@ import { IApproximateTextMatch } from './util/textUtil';
  * Util module encapsulating various utility methods, classes, etc.
  *
  * ```javascript
- * import { Util } from '@oracle/bots-js-sdk';
+ * import { Util } from '@oracle/bots-node-sdk';
  * // or
- * import * as Util from '@oracle/bots-js-sdk/util';
+ * import * as Util from '@oracle/bots-node-sdk/util';
  * ```
  */
 export namespace Util {

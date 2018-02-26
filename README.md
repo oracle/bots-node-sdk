@@ -13,7 +13,7 @@ express environment.
 ## Installation
 
 ```shell
-npm install --save @oracle/bots-js-sdk
+npm install --save @oracle/bots-node-sdk
 ```
 
 **NOTE** - This project is intended for public [GitHub](https://github.com/oracle/) and
@@ -22,7 +22,7 @@ npm install --save @oracle/bots-js-sdk
 
 ```shell
 export no_proxy=".oraclecorp.com"
-npm install --save http://artifactory-slc.oraclecorp.com/artifactory/bot-dev-local/@oracle/bots-js-sdk/latest.tgz
+npm install --save http://artifactory-slc.oraclecorp.com/artifactory/bot-dev-local/@oracle/bots-node-sdk/latest.tgz
 ```
 
 ## Documentation
@@ -47,7 +47,7 @@ paths or objects and a filesystem registry path respectively.
 
 ```javascript
 const express = require('express');
-const OracleBot = require('@oracle/bots-js-sdk');
+const OracleBot = require('@oracle/bots-node-sdk');
 
 const app = express();
 app.use('/components', OracleBot.Middleware.init({
@@ -64,7 +64,7 @@ app.use('/components', OracleBot.Middleware.init({
 
 ## Custom Components
 
-Using the `@oracle/bots-js-sdk` for Custom Component development introduces a variety of new
+Using the `@oracle/bots-node-sdk` for Custom Component development introduces a variety of new
 features and requirements, and is **100%** compatible with existing components you may have
 already developed with the original SDK.
 
@@ -94,7 +94,7 @@ Define component by exporting class(es) with the **OPTION** of extending the
 classes are instantiated as singletons.
 
 ```javascript
-const { ComponentAbstract } = require('@oracle/bots-js-sdk/lib');
+const { ComponentAbstract } = require('@oracle/bots-node-sdk/lib');
 
 module.exports = class MyCustomComponent extends ComponentAbstract {
   metadata() {
@@ -116,8 +116,8 @@ module.exports = class MyCustomComponent extends ComponentAbstract {
 Utility functions are available within the `Util` namespace of the main entrypoint.
 
 ```javascript
-const { Util } = require('@oracle/bots-js-sdk');
-const Util = require('@oracle/bots-js-sdk/util');
+const { Util } = require('@oracle/bots-node-sdk');
+const Util = require('@oracle/bots-node-sdk/util');
 ```
 
 ### Webhook
@@ -131,11 +131,11 @@ const Util = require('@oracle/bots-js-sdk/util');
 
 ## Unit Testing Harness
 
-`@oracle/bots-js-sdk` also includes unit testing facilities, which can be utilized within
+`@oracle/bots-node-sdk` also includes unit testing facilities, which can be utilized within
 your preferred test runner.
 
 ```javascript
-import * as BotTesting from '@oracle/bots-js-sdk/testing';
+import * as BotTesting from '@oracle/bots-node-sdk/testing';
 
 import { MyComponent } from '../../components/MyComponent';
 

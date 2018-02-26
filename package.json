@@ -1,5 +1,5 @@
 {
-  "name": "@oracle/bots-js-sdk",
+  "name": "@oracle/bots-node-sdk",
   "version": "0.0.8",
   "description": "Oracle bot custom component service middleware and utilities",
   "main": "index.js",
@@ -22,15 +22,6 @@
     "Henrick Yau <henrick.yau@oracle.com>"
   ],
   "license": "UPL-1.0",
-  "files": [
-    "config",
-    "util",
-    "middleware",
-    "testing",
-    "Dockerfile",
-    ".dockerignore",
-    "LICENSE.md"
-  ],
   "dependencies": {
     "body-parser": "^1.18.2",
     "joi": "^13.0.2",
@@ -46,12 +37,8 @@
     "jasmine-reporters": "^2.2.1",
     "jasmine-spec-reporter": "^4.2.1",
     "log4js": "^2.3.4",
-    "remap-istanbul": "^0.9.5",
-    "shx": "^0.2.2",
     "supertest": "^3.0.0",
-    "tslint": "^5.7.0",
-    "typedoc": "^0.9.0",
-    "typescript": "2.5.2"
+    "typedoc": "^0.9.0"
   },
   "peerDependencies": {
     "express": "^4.15.4"
