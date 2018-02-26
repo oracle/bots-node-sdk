@@ -1,7 +1,7 @@
 import { CommonProvider } from '../../common/provider';
 import { ILogger, ICallback } from '../../common/definitions';
 
-import { Conversation } from '../conversation';
+import { ComponentInvocation as Conversation } from './sdk';
 import { Component, IComponentMetadata } from './decorator';
 
 export interface IComponentInterface {

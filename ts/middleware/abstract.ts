@@ -8,11 +8,15 @@ export interface IStaticMiddlwareAbstract {
   extend(router: express.IRouter<any>, options?: any);
 }
 
+export interface IParsedRequest extends express.Request {
+  body: any;
+}
+
 /**
  * interface for extended request object in OMCe
  * @see https://docs.oracle.com/en/cloud/paas/mobile-suite/develop/calling-apis-custom-code.html
  */
-export interface IMobileCloudRequest extends express.Request {
+export interface IMobileCloudRequest extends IParsedRequest {
   oracleMobile?: { [service: string]: { [method: string]: Function } };
 }
 

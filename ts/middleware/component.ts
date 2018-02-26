@@ -3,7 +3,7 @@ import { ICallback } from '../common/definitions';
 import { express, MiddlewareAbstract, IMobileCloudRequest } from './abstract';
 import { ComponentRegistry, ComponentListItem } from '../lib/component/registry';
 
-import Shell = require('../lib/conversation/shell');
+import Shell = require('../lib/component/shell');
 
 /**
  * component middleware specific options

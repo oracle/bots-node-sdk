@@ -1,1 +1,6 @@
-src
+ts
+spec
+reports
+.istanbul.yml
+.eslintrc
+.nvmrc

@@ -1,5 +1,5 @@
 import * as lib from './lib/'; // index
-import { Component as _Component } from './lib/'; // decorator
+// import { Component as _Component } from './lib/'; // decorator
 
 /**
  * SDK 'Lib' exposing core classes, decorators, etc.
@@ -22,8 +22,8 @@ import { Component as _Component } from './lib/'; // decorator
 export namespace Lib {
 
   // Custom component @Component decorator
-  export const Component = lib.Component;
-  export type Component = lib.Component;
+  // export const Component = lib.Component;
+  // export type Component = lib.Component;
 
   // Legacy Shell (for use by swagger)
   export const ComponentShell = lib.ComponentShell;
