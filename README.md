@@ -1,6 +1,6 @@
-# Oracle Bots JavaScript SDK
+# Oracle Bots Node.js SDK
 
-This SDK is intended as the primary productivity resource for Oracle Bots development in a Node.js
+This SDK is intended as the main productivity resource for Oracle Bots development in a Node.js
 express environment.
 
 - [Installation](#installation) - Installation and usage information.
@@ -31,7 +31,7 @@ SDK documentation `npm run docs && open ./docs/index.html`
 
 ## Middleware
 
-Support for various Bot requests is handled by the configurable `Middleware` module within this SDK.
+Support for Bot requests can be handled by the configurable `Middleware` module within this SDK.
 
 ### Component Middleware
 
@@ -42,8 +42,6 @@ paths or objects and a filesystem registry path respectively.
 - `cwd` *string* - Top level directory to which all other paths are relative. `__dirname` is recommended.
 - `register` *(string|object(s)|function)[]* - Define *global* component registry from flexible array of the components to resolve.
   - String paths may also be directories, which are scanned and added to the registry.
-
-> JavaScript Example
 
 ```javascript
 const express = require('express');
@@ -71,8 +69,6 @@ already developed with the original SDK.
 This SDK supports **OPTIONAL** new structures to the definition of any custom component, as well
 as full support for using legacy formats.
 
-> Legacy JavaScript Example `MyCustomComponent.js`
-
 ```javascript
 module.exports = {
   metadata: () => ({
@@ -87,7 +83,7 @@ module.exports = {
 }
 ```
 
-> New Example Using JavaScript `MyCustomComponent.js`
+> Legacy JavaScript Custom Component Example
 
 Define component by exporting class(es) with the **OPTION** of extending the
 `ComponentAbstract` class for additional iVars and methods. **NOTE** Component
@@ -111,12 +107,15 @@ module.exports = class MyCustomComponent extends ComponentAbstract {
 }
 ```
 
+> Example Using JavaScript Classes
+
 ## Utilities
 
 Utility functions are available within the `Util` namespace of the main entrypoint.
 
 ```javascript
 const { Util } = require('@oracle/bots-node-sdk');
+// or
 const Util = require('@oracle/bots-node-sdk/util');
 ```
 
@@ -131,20 +130,20 @@ const Util = require('@oracle/bots-node-sdk/util');
 
 ## Unit Testing Harness
 
-`@oracle/bots-node-sdk` also includes unit testing facilities, which can be utilized within
+The SDK also includes unit testing facilities, which can be utilized within
 your preferred test runner.
 
 ```javascript
-import * as BotTesting from '@oracle/bots-node-sdk/testing';
+import * as Tester from '@oracle/bots-node-sdk/testing';
 
 import { MyComponent } from '../../components/MyComponent';
 
 describe('MyComponent', () => {
   it('should chat', done => {
-    const conv = BotTesting.MockConversation.any();
+    const conv = Tester.MockConversation.any();
     new MyComponent().invoke(conv, (err) => {
       expect(err).toBeFalsy();
-      expect(conv.text()).toBeDefined();
+      expect(conv.getReplies().length).toBeGreaterThan(0);
       done();
     });
   });
