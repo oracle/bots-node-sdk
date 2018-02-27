@@ -1,4 +1,3 @@
 {
-  "main": "../dist/testing/index.js",
-  "typings": "../dist/testing/index.d.ts"
+  "typings": "../typings/testing/index.d.ts"
 }

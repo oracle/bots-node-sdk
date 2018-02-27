@@ -1,11 +1,11 @@
-# @oracle/bots-js-sdk/lib
+# @oracle/bots-node-sdk/lib
 
 ```javascript
-import * as Lib from '@oracle/bots-js-sdk/lib';
+const Lib = require('@oracle/bots-node-sdk/lib');
 ```
 
 or
 
 ```javascript
-import { Lib } from '@oracle/bots-js-sdk';
+const { Lib } = require('@oracle/bots-node-sdk');
 ```

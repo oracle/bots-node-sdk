@@ -3,4 +3,4 @@ node_modules
 reports
 docs
 dist
-*.js.map
+typings

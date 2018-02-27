@@ -1,11 +1,11 @@
-# Dockerfile for consuming @oracle/bots-js-sdk
+# Dockerfile for consuming @oracle/bots-node-sdk
 
 FROM node:alpine
 LABEL maintainer="adao.junior@oracle.com,matthew.vander.vliet@oracle.com"
 LABEL description="Oracle Bots JavaScript SDK container" \
       vendor="Oracle" \
       version="1.0.0"
-LABEL com.oracle.bots.version="18.1.1"
+LABEL com.oracle.bots.version="18.2.3"
 
 RUN npm config set loglevel warn \
   && npm set progress=false \

@@ -1,11 +1,11 @@
-# @oracle/bots-js-sdk/config
+# @oracle/bots-node-sdk/config
 
 ```javascript
-import * as Config from '@oracle/bots-js-sdk/config';
+const Config = require('@oracle/bots-node-sdk/config');
 ```
 
 or
 
 ```javascript
-import { Config } from '@oracle/bots-js-sdk';
+const { Config } = require('@oracle/bots-node-sdk');
 ```
