@@ -6,12 +6,12 @@ const Lib = require("../../lib/");
  * Create a mock request for component middleware handling.
  * Invidual properties and variables may be specified by modifying the result.
  * @function module:Testing.MockRequest
- * @param {string} [type] - channel type
  * @param {*} [messagePayload] - message payload
  * @param {*} [properties] - conversation properties
  * @param {*} [variables] - conversation variables
+ * @param {string} [type] - channel type
  */
-function MockRequest(type = 'test', messagePayload = {}, properties = {}, variables = {}) {
+function MockRequest(messagePayload = {}, properties = {}, variables = {}, type = 'test') {
   function context() {
     return {
       variables: variables,
@@ -25,7 +25,7 @@ function MockRequest(type = 'test', messagePayload = {}, properties = {}, variab
   function message() {
     return {
       payload: {},
-      messagePayload: {},
+      messagePayload: messagePayload,
       retryCount: 0,
       channelConversation: {
         botId: 'mockbot',

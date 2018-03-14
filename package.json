@@ -14,7 +14,7 @@
   "scripts": {
     "docs:old": "shx rm -rf ./docs && typedoc --options ./typedoc.js --exclude '**/*+(spec|schema|common)/**' --out $npm_package_config_docdir ./src/",
     "docs": "shx rm -rf ./docs && jsdoc lib config middleware util testing LICENSE.md --readme README.md -r -d ./$npm_package_config_docdir -t ./node_modules/docdash",
-    "lint": "eslint . --ignore-pattern reports --ignore-pattern docs",
+    "lint": "eslint . --ignore-pattern reports --ignore-pattern docs && tslint --project ./ts",
     "test": "istanbul cover ./spec/support/test.js",
     "typings": "shx rm -rf ./typings && cd ./ts && tsc",
     "prepack": "npm run lint && npm run typings"
@@ -45,6 +45,7 @@
     "log4js": "^2.3.4",
     "shx": "^0.2.2",
     "supertest": "^3.0.0",
+    "tslint": "^5.9.1",
     "typescript": "^2.7.2"
   },
   "peerDependencies": {

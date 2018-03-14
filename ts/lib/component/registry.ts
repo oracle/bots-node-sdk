@@ -4,7 +4,7 @@ import * as fs from 'fs';
 import { CONSTANTS } from '../../common/constants';
 import { CommonProvider } from '../../common/provider';
 import { Type, isType, ILogger } from '../../common/definitions';
-import { Component, ComponentMetadataName, IComponentMetadata } from './decorator';
+import { ComponentMetadataName, IComponentMetadata } from './decorator';
 import { IComponentInterface } from './abstract';
 
 export type CollectionName = string;
@@ -20,6 +20,7 @@ export class ComponentRegistry {
   protected _collectionName: CollectionName;
   protected _collections = new Map<CollectionName, ComponentRegistry>();
   protected _components = new Map<ComponentMetadataName, IComponentInterface>();
+  protected _json: {[name: string]: IComponentInterface} = {};
 
   /**
    * Create a registry from a list of component references. The resulting registry
@@ -192,6 +193,7 @@ export class ComponentRegistry {
       return this._logger.warn(`Duplicate component found: ${meta.name} while attempting to register ${component['constructor'].name}`);
     } else {
       this._components.set(meta.name, component);
+      this._json[meta.name] = component;
     }
   }
 
@@ -215,11 +217,7 @@ export class ComponentRegistry {
    * @desc allows components to be resolved by `registry.components`
    */
   public get components(): {[name: string]: IComponentInterface} {
-    const c = {};
-    this.getComponents().forEach((component, name) => {
-      c[name] = component;
-    });
-    return c;
+    return this._json;
   }
 
   /**

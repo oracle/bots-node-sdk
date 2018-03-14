@@ -2,7 +2,7 @@ import { CommonProvider } from '../../common/provider';
 import { ILogger, ICallback } from '../../common/definitions';
 
 import { ComponentInvocation as Conversation } from './sdk';
-import { Component, IComponentMetadata } from './decorator';
+import { IComponentMetadata } from './decorator';
 
 export interface IComponentInterface {
   metadata(): IComponentMetadata;

@@ -1,35 +1,23 @@
-import * as Joi from 'joi';
-import { PROVIDER_KEY_JOI } from './provider';
+import * as joi from 'joi';
 
 export interface IValidationSchemaFactory {
-  (joi: any): Joi.Schema;
+  (joi: any): joi.Schema;
 }
 
-export class CommonValidator {
+const schemaCache = new Map<any, joi.Schema>();
 
-  /**
-   * static schema ref
-   */
-  private static _schemaCache = new Map<any, Joi.Schema>();
+export class CommonValidator {
 
   /**
    * static method to provide a singleton schema object reference
    * @param factory - Joi schema factory accepting a single argument, the joi validator object.
    */
-  public static getSchema(factory: IValidationSchemaFactory): Joi.Schema {
-    if (!this._schemaCache.has(factory)) {
-      let joi: any;
-      ['joi', 'joi-browser'].some(name => {
-        try { joi = require(name); } catch (e) { }
-        return joi;
-      });
-      if (!joi) {
-        throw new Error(`'${PROVIDER_KEY_JOI}' reference not provided`);
-      }
+  public static getSchema(factory: IValidationSchemaFactory): joi.Schema  {
+    if (!schemaCache.has(factory)) {
       const schema = factory(joi);
-      this._schemaCache.set(factory, schema);
+      schemaCache.set(factory, schema);
     }
-    return this._schemaCache.get(factory);
+    return schemaCache.get(factory);
   }
 
   /**
@@ -38,7 +26,7 @@ export class CommonValidator {
    * @param payload - Payload to validate against schema
    * @param options - Validation options (optional)
    */
-  public static validate(factory: IValidationSchemaFactory, payload: any, options?: Joi.ValidationOptions): Joi.ValidationResult<any> {
+  public static validate(factory: IValidationSchemaFactory, payload: any, options?: joi.ValidationOptions): joi.ValidationResult<any> {
     return this.getSchema(factory).validate(payload, options);
   }
 

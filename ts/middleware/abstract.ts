@@ -1,6 +1,6 @@
 import * as express from 'express';
 import { CommonProvider } from '../common/provider';
-import { ILogger, Type } from '../common/definitions';
+import { ILogger } from '../common/definitions';
 export { express }
 
 export interface IStaticMiddlwareAbstract {

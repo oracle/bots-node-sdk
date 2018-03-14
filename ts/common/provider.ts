@@ -1,8 +1,5 @@
-import * as Joi from 'joi';
-
 import { ILogger } from './definitions';
 
-export const PROVIDER_KEY_JOI = 'joi';
 export const PROVIDER_KEY_LOGGER = 'logger';
 
 export type ProviderKey = any;
@@ -15,12 +12,13 @@ export type Provider = ProviderDefinition | ProviderDefinition[];
 
 /**
  * CommonProvider static object reference.
- * @example
- * const Joi = require('joi');
+ * ```
+ * const log4js = require('log4js');
  *
  * CommonProvider.register([
- *   { key: PROVIDER_KEY_JOI, use: Joi }
+ *   { key: PROVIDER_KEY_LOGGER, use: log4js.getLogger() }
  * ]);
+ * ```
  */
 export class CommonProvider {
   /**

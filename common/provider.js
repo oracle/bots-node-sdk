@@ -5,13 +5,12 @@ exports.PROVIDER_KEY_LOGGER = 'logger';
 /**
  * CommonProvider static object reference.
  * 
- * ```
+ * @example
  * const log4js = require('log4js');
  *
  * CommonProvider.register([
  *   { key: PROVIDER_KEY_LOGGER, use: log4js.getLogger() }
  * ]);
- * ```
  */
 class CommonProvider {
 
