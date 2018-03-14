@@ -3,12 +3,12 @@ import { Conversation as SDK, IComponentRequestBody, MessagePayload } from '../.
 /**
  * Create a mock request for component middleware handling.
  * Invidual properties and variables may be specified by modifying the result.
- * @param {string} [type] - channel type
  * @param {*} [messagePayload] - message payload
  * @param {*} [properties] - conversation properties
  * @param {*} [variables] - conversation variables
+ * @param {string} [type] - channel type
  */
-export function MockRequest(type = 'test', messagePayload = {}, properties: any = {}, variables: any = {}): IComponentRequestBody {
+export function MockRequest(messagePayload = {}, properties: any = {}, variables: any = {}, type = 'test'): IComponentRequestBody {
   function context() {
     return {
       variables: variables,
