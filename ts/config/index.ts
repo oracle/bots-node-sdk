@@ -1,4 +1,4 @@
-import { CommonProvider, PROVIDER_KEY_JOI, PROVIDER_KEY_LOGGER } from '../common/provider';
+import { CommonProvider, PROVIDER_KEY_LOGGER } from '../common/provider';
 import { ILogger } from '../common/definitions';
 
 export { ILogger }

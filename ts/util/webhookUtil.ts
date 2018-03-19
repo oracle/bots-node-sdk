@@ -6,9 +6,7 @@ import * as request from 'request';
 import { CONSTANTS } from '../common/constants';
 
 /**
- * utility function to perform approximate string matching.  This is useful in cases like voice integration where the voice recognition may not
- * produce perfect text input, i.e., what the user says may not be perfectly converted into text.  In such case, an approximate matching needs to
- * be performed.
+ * utility function to perform webhook signature verification
  * @function module:webhookUtil.verifyMessageFormat
  * @return {boolean} true if the webhook message received from Bots is verified successfully.
  * @param {string} signature - signature included in the bot message, to be compared to calculated signature.
@@ -52,13 +50,15 @@ export function bodyParserRawMessageVerify(req, res, buf, encoding) {
   req.encoding = encoding;
 }
 
-/*
- 'buf' is a Buffer
- 'secret' is a String
+/**
+ * create the payload signature header.
+ * @function module:Util/Webhook.buildSignatureHeader
+ * @param {Buffer} - Raw payload as a Buffer, such as `Buffer.from(JSON.stringify(payload), 'utf8')`
+ * @param {string} - secret key of the channel for computing signature
  */
 function buildSignatureHeader(buf, secret) {
     return 'sha256=' + buildSignature(buf, secret);
-}
+  }
 
 function buildSignature(buf, secret) {
     const hmac = crypto.createHmac('sha256', Buffer.from(secret, 'utf8'));
@@ -147,4 +147,5 @@ export const webhookUtil = {
     messageToBotWithProperties,
     verifyMessageFromBot,
     bodyParserRawMessageVerify,
+    buildSignatureHeader,
 };

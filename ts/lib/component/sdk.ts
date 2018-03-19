@@ -7,7 +7,8 @@ import { CommonProvider } from '../../common/provider';
 import { CommonValidator } from '../../common/validator';
 import ComponentRequestSchemaFactory = require('./schema/componentRequestSchema');
 
-const sdkVersion = '1.1';
+const sdkVersion = '1.1'; //server compatibility version
+const sdkVersionTag = '1.2.0'; // sdk code version
 
 // Response template
 const RESPONSE = {
@@ -96,6 +97,10 @@ export class NLPResult {
   topIntentMatch() {
     var intentMatches = this.intentMatches();
     return (intentMatches && intentMatches.length > 0 ? intentMatches[0] : {});
+  }
+
+  query() {
+    return (this._nlpresult ? this._nlpresult.query : "");
   }
 
 };

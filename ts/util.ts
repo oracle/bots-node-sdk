@@ -1,5 +1,6 @@
 import * as util from './util/';
 import { IApproximateTextMatch } from './util/textUtil';
+export { IApproximateTextMatch }
 
 /**
  * Util module encapsulating various utility methods, classes, etc.
@@ -26,13 +27,14 @@ export namespace Util {
 
   /**
    * Webhook is a set of utility functions for bot integration via webhook channel.
-   * @alias `webhoookUtil`
+   * @alias `webhookUtil`
    */
   export const Webhook = {
     messageToBot: util.webhookUtil.messageToBot,
     messageToBotWithProperties: util.webhookUtil.messageToBotWithProperties,
     verifyMessageFromBot: util.webhookUtil.verifyMessageFromBot,
-    bodyParserRawMessageVerify: util.webhookUtil.bodyParserRawMessageVerify
+    bodyParserRawMessageVerify: util.webhookUtil.bodyParserRawMessageVerify,
+    buildSignatureHeader: util.webhookUtil.buildSignatureHeader,
   };
   export import webhookUtil = util.webhookUtil; // preferred, but not picked up by TypeDoc.
 

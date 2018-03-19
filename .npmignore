@@ -5,3 +5,4 @@ reports
 .istanbul.yml
 .eslintrc
 .nvmrc
+tslint.json
