@@ -1,6 +1,6 @@
 {
   "name": "@oracle/bots-node-sdk",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "Oracle bot custom component service middleware and utilities",
   "main": "index.js",
   "typings": "typings/index.d.ts",
