@@ -13,6 +13,18 @@ const Lib = require("../../lib/");
  */
 function MockRequest(messagePayload = {}, properties = {}, variables = {}, type = 'test') {
   function context() {
+    Object.keys(variables)
+      .forEach(k => {
+        let v = variables[k];
+        if (!(v.type && v.value)) {
+          variables[k] = {
+            entity: false,
+            type: 'object',
+            value: v,
+          }
+        }
+      });
+
     return {
       variables: variables,
     };

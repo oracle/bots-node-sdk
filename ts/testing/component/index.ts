@@ -10,6 +10,17 @@ import { Conversation as SDK, IComponentRequestBody, MessagePayload } from '../.
  */
 export function MockRequest(messagePayload = {}, properties: any = {}, variables: any = {}, type = 'test'): IComponentRequestBody {
   function context() {
+    Object.keys(variables)
+      .forEach(k => {
+        let v = variables[k];
+        if (!(v.type && v.value)) {
+          variables[k] = {
+            entity: false,
+            type: 'object',
+            value: v,
+          }
+        }
+      });
     return {
       variables: variables,
     }
