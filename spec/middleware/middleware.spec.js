@@ -34,6 +34,13 @@ describe('Middleware', () => {
     expect(router.use).toEqual(jasmine.any(Function));
   });
 
+  it('should init componentMiddleware', () => {
+    const mw = OracleBot.Middleware.customComponent();
+    expect(mw.stack).toBeDefined();
+    expect(mw.stack.length).toBeGreaterThan(0);
+    expect(mw.stack.some(layer => layer.route && layer.route.path === '/:component')).toBe(true);
+  });
+
   it('should be failure tolerant', () => {
     class BadMiddlware extends MiddlewareAbstract {
       _init() {

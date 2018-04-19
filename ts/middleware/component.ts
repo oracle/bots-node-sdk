@@ -43,12 +43,12 @@ export class ComponentMiddleware extends MiddlewareAbstract {
     };
 
     /**
-     * assemble root registry from provided `autocollect`
+     * assemble root registry from provided `register` property
      * merge explicitly provided component registry with the hierarchical fs registry.
      */
     let rootRegistry: ComponentRegistry;
     const commonRegistry = ComponentRegistry.create(opts.register, opts.cwd);
-    if (opts.autocollect) {
+    if (0 && opts.autocollect) { // disabled for now
       rootRegistry = ComponentRegistry.assemble(null, opts.autocollect, opts.cwd)
         .merge(commonRegistry, true);
     } else {
@@ -133,8 +133,8 @@ export class ComponentMiddleware extends MiddlewareAbstract {
   }
 
   /**
-   * convenience handler for CC invokcation
-   * @param res: express.Resonse
+   * convenience handler for CC invocation
+   * @param res: express.Response
    */
   private __invocationCb(res: express.Response): ICallback {
     return (err, data) => {

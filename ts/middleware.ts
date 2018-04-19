@@ -8,17 +8,14 @@ import * as middleware from './middleware/'; // directory index
  * import * as OracleBot from '@oracle/bots-node-sdk';
  *
  * export = (app: express.Express): void => {
- *   app.use('/components', OracleBot.Middleware.init({
- *     component: { // component middleware options
- *       cwd: __dirname, // root of application source
- *       autocollect: './components', // relative directory for components in fs
- *       register: [ // explicitly provide a global registry
- *         './path/to/a/component',
- *         require('./path/to/another/component'),
- *         './path/to/other/components',
- *         './path/to/a/directory',
- *       ]
- *     }
+ *   app.use('/components', OracleBot.Middleware.customComponent({
+ *     cwd: __dirname, // root of application source
+ *     register: [ // explicitly provide a global registry
+ *       './path/to/a/component',
+ *       require('./path/to/another/component'),
+ *       './path/to/other/components',
+ *       './path/to/a/directory',
+ *     ]
  *   }));
  * };
  * ```

@@ -46,3 +46,14 @@ export function getRouter(options: IParserMiddlewareOptions = {}): express.Route
     parser: options
   });
 }
+
+/**
+ * custom component middleware. Add bot custom component middleware to the app router stack.
+ * @param options - ComponentMiddlewareOptions with option for parser config.
+ */
+export function customComponent(options: IComponentMiddlewareOptions & { parser?: IParserMiddlewareOptions } = <any>{}) {
+  return init({
+    component: options,
+    parser: options.parser || {},
+  });
+}

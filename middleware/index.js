@@ -17,6 +17,7 @@ const { ComponentMiddleware } = require("./component");
  * @param {boolean} [options.parser.urlencoded=true] - Parse urlencoded body payload
  * @param {string} [options.parser.limit='5mb'] - Parser body size limit
  * @return express.Router
+ * @private
  */
 function init(options = {}) {
   const router = express.Router();
@@ -42,10 +43,29 @@ function init(options = {}) {
  * @param {boolean} [options.json=true] - Parse JSON body payload
  * @param {boolean} [options.urlencoded=true] - Parse urlencoded body payload
  * @param {string} [options.limit='5mb'] - Parser body size limit
+ * @private
  */
 function getRouter(options = {}) {
   return init({
     parser: options
+  });
+}
+
+/**
+ * custom component middleware. Add bot custom component middleware to the app router stack.
+ * @function module:Middleware.customComponent
+ * @param {Object} [options={}] - Middleware configuration options.
+ * @param {string} [options.cwd=process.cwd()] - Working directory from which any component paths are relative.
+ * @param {(string[]|Object[]|Function[])} [options.register] - Series of paths to components or directories, Objects with name=>component pairs, Objects representing a component, or Component class ctor Functions.
+ * @param {*} [options.mixins] - Any mixin properties for ComponentInvocation
+ * @param {Object} [options.parser] - Body parser middleware options.
+ * @param {boolean} [options.parser.json=true] - Parse JSON body payload
+ * @param {boolean} [options.parser.urlencoded=true] - Parse urlencoded body payload
+ */
+function customComponent(options = {}) {
+  return init({
+    component: options,
+    parser: options.parser || {},
   });
 }
 
@@ -57,19 +77,19 @@ function getRouter(options = {}) {
  * const express = require('express');
  *
  * const app = express();
- * app.use('/components', OracleBot.Middleware.init({
- *   component: { // component middleware options
- *     cwd: __dirname, // root of application source
- *     register: [ // explicitly provide a global registry
- *       './path/to/a/directory',
- *       './path/to/a/component',
- *       require('./path/to/another/component'),
- *       './path/to/other/components',
- *     ]
- *   }
+ * app.use('/components', OracleBot.Middleware.customComponent({
+ *   cwd: __dirname, // root of application source
+ *   register: [ // explicitly provide a global registry
+ *     './path/to/a/directory',
+ *     './path/to/a/component',
+ *     require('./path/to/another/component'),
+ *     './path/to/other/components',
+ *   ]
  *  }));
  */
 module.exports = {
   init,
   getRouter,
-}
+  // direct middleware methods
+  customComponent,
+};

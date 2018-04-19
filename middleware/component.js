@@ -23,17 +23,11 @@ class ComponentMiddleware extends MiddlewareAbstract {
       mixins: {}
     }, options);
     /**
-     * assemble root registry from provided `autocollect`
+     * assemble root registry from provided `register` property
      * merge explicitly provided component registry with the hierarchical fs registry.
      */
-    let rootRegistry;
-    const commonRegistry = ComponentRegistry.create(opts.register, opts.cwd);
-    if (opts.autocollect) {
-      rootRegistry = ComponentRegistry.assemble(null, opts.autocollect, opts.cwd)
-        .merge(commonRegistry, true);
-    } else {
-      rootRegistry = commonRegistry;
-    }
+    let rootRegistry = ComponentRegistry.create(opts.register, opts.cwd);
+    
     /**
      * establish component metadata index
      */
@@ -83,8 +77,8 @@ class ComponentMiddleware extends MiddlewareAbstract {
       .invokeComponentByName(componentName, req.body, mixins, this.__invocationCb(res));
   }
   /**
-   * convenience handler for CC invokcation
-   * @param res: express.Resonse
+   * convenience handler for CC invocation
+   * @param res: express.Response
    * @private
    */
   __invocationCb(res) {

@@ -111,7 +111,7 @@ export class ComponentRegistry {
    */
   private __scanDir(dir: string, withCollections?: boolean): IComponentInterface[] {
     const results = fs.readdirSync(dir) // scan directory for components
-      .filter(name => ~['', '.js'].indexOf(path.extname(name))) // js and folders
+      .filter(name => !/^\./.test(name) && ~['', '.js'].indexOf(path.extname(name))) // js and folders
       .map(name => path.join(dir, name)) // absolute path
       .sort((a, b) => {
         return fs.statSync(a).isDirectory() ? 1 : 0;
