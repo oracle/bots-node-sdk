@@ -48,15 +48,13 @@ const express = require('express');
 const OracleBot = require('@oracle/bots-node-sdk');
 
 const app = express();
-app.use('/components', OracleBot.Middleware.init({
-  component: {
-    cwd: __dirname,
-    register: [
-      './path/to/a/component',
-      './path/to/other/components',
-      './path/to/a/directory',
-    ]
-  }
+app.use('/components', OracleBot.Middleware.customComponent({
+  cwd: __dirname,
+  register: [
+    './path/to/a/component',
+    './path/to/other/components',
+    './path/to/a/directory',
+  ]
 }));
 ```
 
