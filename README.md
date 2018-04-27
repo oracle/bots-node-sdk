@@ -16,16 +16,7 @@ express environment.
 npm install --save @oracle/bots-node-sdk
 ```
 
-**NOTE** - This project is intended for public [GitHub](https://github.com/oracle/) and
-[@oracle/*](https://www.npmjs.com/org/oracle). Therefore npm installation directly from
-`git` or artifactory should be removed prior to publishing.
-
-```shell
-export no_proxy=".oraclecorp.com"
-npm install --save http://artifactory-slc.oraclecorp.com/artifactory/bot-dev-local/@oracle/bots-node-sdk/latest.tgz
-```
-
-## Documentation
+## API Documentation
 
 SDK documentation `npm run docs && open ./docs/index.html`
 
@@ -60,12 +51,12 @@ app.use('/components', OracleBot.Middleware.customComponent({
 
 ## Custom Components
 
-Using the `@oracle/bots-node-sdk` for Custom Component development introduces a variety of new
-features and requirements, and is **100%** compatible with existing components you may have
+Using the `@oracle/bots-node-sdk` for Custom Component development introduces some
+new features, and is **100%** compatible with existing components you may have
 already developed with the original SDK.
 
-This SDK supports **OPTIONAL** new structures to the definition of any custom component, as well
-as full support for using legacy formats.
+This SDK supports two structures for the definition of a custom component, one
+of which is the traditional object export.
 
 ```javascript
 module.exports = {
@@ -81,11 +72,11 @@ module.exports = {
 }
 ```
 
-> Legacy JavaScript Custom Component Example
+> Custom Component example as Object
 
-Define component by exporting class(es) with the **OPTION** of extending the
-`ComponentAbstract` class for additional iVars and methods. **NOTE** Component
-classes are instantiated as singletons.
+You may also define a component by exporting class(es) with the **OPTION** of
+extending the `ComponentAbstract` class for additional iVars and methods.
+**NOTE** Component classes are instantiated as _singletons_.
 
 ```javascript
 const { ComponentAbstract } = require('@oracle/bots-node-sdk/lib');
@@ -105,7 +96,7 @@ module.exports = class MyCustomComponent extends ComponentAbstract {
 }
 ```
 
-> Example Using JavaScript Classes
+> Custom Component example as JavaScript class
 
 ## Utilities
 
