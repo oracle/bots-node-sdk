@@ -1,8 +1,8 @@
 /* tslint:disable */
 
 // External deps
-import { ComponentInvocation as SDK } from './sdk';
 import { CommonProvider } from '../../common/provider';
+import { ComponentInvocation as SDK } from './sdk';
 
 export = function ComponentShell(config, registry) {
 
@@ -76,13 +76,13 @@ export = function ComponentShell(config, registry) {
       }
 
       // Invoke component
-      logger.info('Invoking component=' + componentName);
-      logger.debug('with reqBody=' + JSON.stringify(requestBody, null, 2));
+      // logger.info('Invoking component=' + componentName);
+      // logger.debug('with reqBody=' + JSON.stringify(requestBody, null, 2));
       try {
         // for now we check if the error is the sdk (old way of using done(sdk)) to be backward compat
         component.invoke(sdk, (componentErr) => {
           if (!componentErr || componentErr === sdk) {
-            logger.debug('Component response=' + JSON.stringify(sdk.response(), null, 2));
+            // logger.debug('Component response=' + JSON.stringify(sdk.response(), null, 2));
             callback(null, sdk.response());
           } else {
             callback(componentErr, null);

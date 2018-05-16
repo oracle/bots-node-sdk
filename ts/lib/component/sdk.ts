@@ -1,10 +1,10 @@
 /* tslint:disable */
 
-import { MessageModel } from '../message/messageModel';
-
 import { ILogger } from '../../common/definitions';
+import { ERROR } from '../../common/error';
 import { CommonProvider } from '../../common/provider';
 import { CommonValidator } from '../../common/validator';
+import { MessageModel } from '../message/messageModel';
 import ComponentRequestSchemaFactory = require('./schema/componentRequestSchema');
 
 const sdkVersion = '1.1'; //server compatibility version
@@ -24,15 +24,6 @@ const RESPONSE = {
 const VARIABLE = {
   type: "string",
   entity: false
-};
-
-// Oracle REST Standard error structure
-const ERROR = {
-  type: 'http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1',
-  title: undefined,
-  detail: undefined,
-  'o:errorCode': undefined,
-  'o:errorDetails': undefined
 };
 
 // Variable types supported by the dialog engine

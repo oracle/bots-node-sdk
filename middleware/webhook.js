@@ -1,0 +1,127 @@
+"use strict";
+
+const { MiddlewareAbstract } = require('./abstract');
+const { webhookUtil } = require('../util');
+const { CONSTANTS } = require('../common/constants');
+
+/**
+ * Secret key request callback used in webhook message validation.
+ * @callback SecretKeyCallback
+ * @param {external:ExpressRequest} req - Request object
+ * @return {string|Promise<string>} - Secret key to validate message or promise
+ * @example
+ * function getSecretKey(req) {
+ *   return new Promise(resolve => {
+ *     let key;
+ *     // ...
+ *     resolve(key);
+ *   });
+ * }
+ * const receiver = OracleBot.Middleware.webhookReceiver(getSecretKey, (err, message) => {
+ *   // ...
+ * });
+ */
+
+/**
+ * @callback WebhookReceiverCallback
+ * @param {Error} error - Webhook message validation error
+ * @param {Object} message - Validated message from bot
+ * @return {void}
+ */
+
+/**
+ * @typedef WebhookMiddlewareOptions
+ * @property {string | RegExp | Array.<string | RegExp>} [path='/'] - Route pattern to receive bot message.
+ * @property {string|SecretKeyCallback} secret - Secret key for bot message validation.
+ * @property {WebhookReceiverCallback} callback - Webhook receiver callback for validated bot message.
+ */
+
+/**
+ * WebhookMiddleware. This middleware can be initialized with or without a 
+ * router layer. If router is provided, then the receiver will automatically
+ * be applied at the path specified in options.
+ * @extends MiddlewareAbstract
+ * @property {WebhookMiddlewareOptions} options 
+ * @private
+ */
+class WebhookMiddleware extends MiddlewareAbstract {
+  /**
+   * main initialization
+   * @param {*} router 
+   * @param {*} options 
+   */
+  _init(router, options) {
+    if (router) {
+      // add message receiver
+      router.post(options.path || '/', this.receiver());
+    }
+  }
+
+  /**
+   * Webhook receiver middleware. Allows direct usage via {@link module:Middleware.webhookRecevier}
+   * @return ExpressRequestHandler
+   */
+  receiver() {
+    return (req, res, next) => {
+      this.validationHandler()(req, res, err => {
+        // respond to the webhook request.
+        if (err) {
+          this._logger.error(err);
+          // TODO: standardize response for bots platform
+          res.json({ok: false, error: err.message}); // status code is already set.
+        } else {
+          res.status(200).json({ok: true});
+        }
+        this.messageHandler(err)(req, res, next);
+      });
+    }
+  }
+
+  /**
+   * webhook request validation. supported either as middleware layer, or 
+   * receiver callback
+   */
+  validationHandler() {
+    return (req, res, cb) => {
+      const { secret } = this.options;
+      return Promise.resolve(typeof secret === 'function' ? secret(req) : secret)
+        .then(key => {
+          if (key) {
+            const body = req[CONSTANTS.PARSER_RAW_BODY]; // get original raw body
+            const encoding = req[CONSTANTS.PARSER_RAW_ENCODING]; // get original encoding
+            const signature = req.get(CONSTANTS.WEBHOOK_HEADER); // read signature header
+            if (!signature) {
+              res.status(400);
+              return Promise.reject(new Error(`${CONSTANTS.WEBHOOK_HEADER} signature not found`));
+            }
+            const valid = webhookUtil.verifyMessageFromBot(signature, body, encoding, key);
+            if (!valid) {
+              res.status(403);
+              return Promise.reject(new Error('Signature Verification Failed'));
+            }
+          } else {
+            res.status(400);
+            return Promise.reject(new Error('Missing Webhook Channel SecretKey'));
+          }
+          return;
+        })
+        .then(cb) // passing callback
+        .catch(cb); // cb with failure
+    }
+  }
+
+  /**
+   * invoke callback with validated message payload
+   * @param {*} [err] - error 
+   */
+  messageHandler(err) {
+    return (req) => {
+      const { callback } = this.options;
+      return callback && callback(err, !err && req.body);
+    }
+  }
+}
+
+module.exports = {
+  WebhookMiddleware,
+}

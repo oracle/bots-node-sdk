@@ -14,9 +14,9 @@ const { CONSTANTS } = require("../common/constants");
  * @param {string} secretKey - secretKey used to calculate message signature
  */
 function verifyMessageFromBot(signature, msgBody, encoding, secretKey) {
-  console.log('Signature:', signature);
-  console.log('Encoding:', encoding);
-  console.log('Body: \n"%s"', msgBody);
+  // console.log('Signature:', signature);
+  // console.log('Encoding:', encoding);
+  // console.log('Body: \n"%s"', msgBody);
   if (!signature) {
     console.log('Missing signature');
     return false;
@@ -29,7 +29,7 @@ function verifyMessageFromBot(signature, msgBody, encoding, secretKey) {
     console.log('Calculated sig: %s', calculatedSig);
     return false;
   }
-  console.log('Valid signature: %s', signature);
+  // console.log('Valid signature: %s', signature);
   return true;
 }
 exports.verifyMessageFromBot = verifyMessageFromBot;
@@ -45,8 +45,8 @@ exports.verifyMessageFromBot = verifyMessageFromBot;
  * @param {string} encoding - encoding of the raw message body.
  */
 function bodyParserRawMessageVerify(req, res, buf, encoding) {
-  req.rawBody = buf;
-  req.encoding = encoding;
+  req[CONSTANTS.PARSER_RAW_BODY] = buf;
+  req[CONSTANTS.PARSER_RAW_ENCODING] = encoding;
 }
 
 /**
@@ -108,7 +108,7 @@ function messageToBotWithProperties(channelUrl, channelSecretKey, userId, inMsg,
   if (additionalProperties) {
     outMsg = Object.assign(outMsg, additionalProperties);
   }
-  console.log("Send this message to bot:", outMsg);
+  
   const body = Buffer.from(JSON.stringify(outMsg), 'utf8');
   const headers = {};
   headers['Content-Type'] = 'application/json; charset=utf-8';

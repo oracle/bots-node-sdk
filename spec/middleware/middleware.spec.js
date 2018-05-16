@@ -1,8 +1,10 @@
 "use strict";
 
+const express = require("express");
 const supertest = require("supertest");
 
 const OracleBot = require("../main");
+const { CONSTANTS } = require('../../common/constants');
 const { MiddlewareAbstract } = require("../../middleware/abstract");
 const { ParserMiddleware } = require("../../middleware/parser");
 const { ComponentMiddleware } = require("../../middleware/component");
@@ -18,23 +20,13 @@ describe('Middleware', () => {
   it('should init child middleware', () => {
     let spyParserMw = spyOn(ParserMiddleware.prototype, '_init');
     let spyCompMw = spyOn(ComponentMiddleware.prototype, '_init');
-    expect(OracleBot.Middleware.init).not.toThrow();
+    expect(OracleBot.Middleware.init.bind(express())).not.toThrow();
     // individual middlewares don't get invoked without configs
-    expect(spyParserMw).toHaveBeenCalled(); // parser is required mw
+    expect(spyParserMw).toHaveBeenCalled(); // parser is always used
     expect(spyCompMw).not.toHaveBeenCalled();
   });
 
-  it('should return basic router with body parser', () => {
-    const router = OracleBot.Middleware.getRouter();
-    expect(router.stack).toBeDefined();
-    expect(router.stack.length).toBeGreaterThan(0);
-    expect(router.stack.slice().shift().name).toMatch(/parser/i);
-    expect(router.get).toEqual(jasmine.any(Function));
-    expect(router.post).toEqual(jasmine.any(Function));
-    expect(router.use).toEqual(jasmine.any(Function));
-  });
-
-  it('should init componentMiddleware', () => {
+  it('should init customComponent middleware', () => {
     const mw = OracleBot.Middleware.customComponent();
     expect(mw.stack).toBeDefined();
     expect(mw.stack.length).toBeGreaterThan(0);
@@ -50,7 +42,7 @@ describe('Middleware', () => {
     expect(BadMiddlware.extend.bind(BadMiddlware)).not.toThrow();
   });
 
-  describe('server', () => {
+  describe('Handlers', () => {
     let server;
     beforeAll(() => {
       server = require('../support/spec.server');
@@ -219,5 +211,60 @@ describe('Middleware', () => {
         });
       });
     });
+
+    describe(`configurable webhook handlers`, () => {
+      it('should error 400 without signature', done => {
+        const body = { foo: 'test' };
+        supertest(server)
+          .post(serverConf.webhookRouterUri)
+          .send(body)
+          .expect(400)
+          .end(err => err ? done.fail(err) : done());
+      });
+
+      it('should 400 without secret key', done => {
+        supertest(server)
+          .post(serverConf.webhookWithoutSecret)
+          .expect(400)
+          .end(err => err ? done.fail(err) : done());
+      });
+
+      it('should error 403 with invalid signature', done => {
+        const body = { foo: 'test' };
+        const buf = Buffer.from(JSON.stringify(body), 'utf8');
+        const signature = OracleBot.Util.Webhook.buildSignatureHeader(buf, 'wrongsecret');
+        supertest(server)
+          .post(serverConf.webhookRouterUri)
+          .set(CONSTANTS.WEBHOOK_HEADER, signature)
+          .send(body)
+          .expect(403)
+          .end(err => err ? done.fail(err) : done());
+      });
+      
+      it('should support webhook router with receiver', done => {
+        const body = { foo: 'test' };
+        const buf = Buffer.from(JSON.stringify(body), 'utf8');
+        const signature = OracleBot.Util.Webhook.buildSignatureHeader(buf, serverConf.webhookSecret);
+        supertest(server)
+          .post(serverConf.webhookReceiverUri)
+          .set(CONSTANTS.WEBHOOK_HEADER, signature)
+          .send(body)
+          .expect(200)
+          .end(err => err ? done.fail(err) : done());
+      });
+      
+      it('should support standalone webhook receiver', done => {
+        const body = { foo: 'test' };
+        const buf = Buffer.from(JSON.stringify(body), 'utf8');
+        const signature = OracleBot.Util.Webhook.buildSignatureHeader(buf, serverConf.webhookSecret);
+        supertest(server)
+          .post(serverConf.webhookRouterUri)
+          .set(CONSTANTS.WEBHOOK_HEADER, signature)
+          .send(body)
+          .expect(200)
+          .end(err => err ? done.fail(err) : done());
+      });
+    });
+
   });
 });

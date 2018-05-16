@@ -21,6 +21,5 @@ import * as middleware from './middleware/'; // directory index
  * ```
  */
 export namespace Middleware {
-  export const init = middleware.init;
-  export const getRouter = middleware.getRouter;
+  export const customComponent = middleware.customComponent;
 }

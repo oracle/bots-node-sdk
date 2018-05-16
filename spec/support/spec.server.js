@@ -3,22 +3,35 @@ const express = require("express");
 const OracleBot = require("../main");
 const CONF = require("./spec.config");
 const app = express();
-// add prefixed /component middleware
-app.use(CONF.componentPrefix, OracleBot.Middleware.init({
-  parser: CONF.parser,
-  component: {
-    cwd: __dirname,
-    // autocollect: './testing/components',
-    register: [
-      './testing/components',
-      './testing/more.components/a.component'
-    ]
-  }
+
+// apply parser at the top level
+OracleBot.init(app);
+
+// component middleware
+app.use(CONF.componentPrefix, OracleBot.Middleware.customComponent({
+  cwd: __dirname,
+  // autocollect: './testing/components',
+  register: [
+    './testing/components',
+    './testing/more.components/a.component'
+  ]
 }));
-// apply parser at the top level too.
-app.use(OracleBot.Middleware.init({
-  parser: CONF.parser
+// webhook router middlware
+app.use(CONF.webhookRouterUri, OracleBot.Middleware.webhookRouter({
+  secret: CONF.webhookSecret,
+  callback: CONF.webhookCallback,
 }));
+// standalone webhook receiver middleware
+app.post(CONF.webhookReceiverUri, OracleBot.Middleware.webhookReceiver(
+  CONF.webhookSecretGetter, // this is a function callback for the secret
+  CONF.webhookCallback // stubbable callback
+));
+// standalone webhook receiver middleware without secret
+app.post(CONF.webhookWithoutSecret, OracleBot.Middleware.webhookReceiver(
+  null,
+  CONF.webhookCallback // stubbable callback
+));
+
 // some things behind the bot MW
 app.get('/', (req, res) => {
   res.send(CONF.messages.OK);

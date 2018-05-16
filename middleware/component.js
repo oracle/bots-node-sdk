@@ -5,6 +5,14 @@ const { ComponentRegistry } = require("../lib/component/registry");
 const Shell = require("../lib/component/shell");
 
 /**
+ * Options for configuring bots custom component middleware.
+ * @typedef  {Object} ComponentMiddlewareOptions
+ * @property {string} [cwd=process.cwd()] - Working directory from which any component paths are relative.
+ * @property {(string[]|Object[]|Function[])} register - Series of paths to components or directories, Objects with name=>component pairs, Objects representing a component, or Component class ctor Functions.
+ * @property {*} [mixins] - Any mixin properties for ComponentInvocation
+ */
+
+/**
  * define req.param keys
  */
 const [PARAM_COMPONENT] = ['component'];

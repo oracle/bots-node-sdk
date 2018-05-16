@@ -1,7 +1,7 @@
 import * as express from 'express';
 import { IStaticMiddlwareAbstract } from './abstract';
-import { ParserMiddleware, IParserMiddlewareOptions } from './parser';
 import { ComponentMiddleware, IComponentMiddlewareOptions } from './component';
+import { IParserMiddlewareOptions, ParserMiddleware } from './parser';
 
 /**
  * MiddlewareOptions. Define options/configuration for Bot middleware.
@@ -35,16 +35,6 @@ export function init(options: IMiddewareOptions = {}): express.Router {
   });
 
   return router;
-}
-
-/**
- * parser function exposes a router with configurable body-parser middleware applied.
- * @param options - bodyParser middleware options
- */
-export function getRouter(options: IParserMiddlewareOptions = {}): express.Router {
-  return init({
-    parser: options
-  });
 }
 
 /**

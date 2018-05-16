@@ -16,13 +16,13 @@ express environment.
 npm install --save @oracle/bots-node-sdk
 ```
 
-## API Documentation
-
-SDK documentation `npm run docs && open ./docs/index.html`
-
 ## Middleware
 
-Support for Bot requests can be handled by the configurable `Middleware` module within this SDK.
+Support for various Bot requests can be handled by the configurable `Middleware`
+module within this SDK.
+
+- [Custom Component Middleware](#component-middleware) for integrating your data into bot flows.
+- [Webhook Middleware](#webhook-middleware) for adding custom message handling via the webhook channel.
 
 ### Component Middleware
 
@@ -48,6 +48,29 @@ app.use('/components', OracleBot.Middleware.customComponent({
   ]
 }));
 ```
+
+### Webhook Middleware
+
+The SDK also provides express middleware for Oracle Bots webhook channels. The
+middleware is designed to act as a "receiver" for messages from the platform
+webhook channel.
+
+```javascript
+const OracleBot = require('@oracle/bots-node-sdk');
+const express = require('express');
+const app = express();
+OracleBot.init(app); // must be applied upstream of the receiver for proper parsing.
+
+const secret = process.env.WEBHOOK_SECRET; // can also be callback (req => string | Promise<string>)
+app.post('/webhook/message', OracleBot.Middleware.webhookReceiver(secret, (err, message) => {
+   // Format & forward verified message to client.
+}));
+```
+
+> **NOTE** Messages sent by a client to a webhook channel are not directly
+processed by the middleware because the possible message formats, protocols, etc.
+for any given client can vary indefinitely. For this purpose, the SDK exposes
+the [Webhook Util](#webhook-util) methods.
 
 ## Custom Components
 
@@ -108,9 +131,9 @@ const { Util } = require('@oracle/bots-node-sdk');
 const Util = require('@oracle/bots-node-sdk/util');
 ```
 
-### Webhook
+### Webhook Util
 
-- `OracleBot.Util.Webhook` methods for webhook channel payload signature and validation.
+- `OracleBot.Util.Webhook` contains methods for webhook channel api, signature creation, and validation.
 
 ### Message Formatting
 
