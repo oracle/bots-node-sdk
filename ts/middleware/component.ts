@@ -1,6 +1,6 @@
 import { ICallback } from '../common/definitions';
-import { express, MiddlewareAbstract, IMobileCloudRequest } from './abstract';
-import { ComponentRegistry, ComponentListItem } from '../lib/component/registry';
+import { ComponentListItem, ComponentRegistry } from '../lib/component/registry';
+import { IMobileCloudRequest, MiddlewareAbstract, express } from './abstract';
 
 import Shell = require('../lib/component/shell');
 
@@ -73,31 +73,31 @@ export class ComponentMiddleware extends MiddlewareAbstract {
       this.__invoke(componentName, rootRegistry, opts, req, res);
     });
 
-    /**
-     * get metadata for a child component collection
-     */
-    router.get(`/collection/:${PARAM_COLLECTION}`, (req, res) => {
-      const collectionName = req.params[PARAM_COLLECTION];
-      if (rootRegistry.isCollection(collectionName)) {
-        const meta = this.__getShell(rootRegistry.getRegistry(collectionName))
-          .getAllComponentMetadata();
-        res.json(meta);
-      } else {
-        this._logger.error(`${collectionName} not found in registry`);
-        res.status(404).send(MESSAGES.NOT_FOUND);
-      }
-    });
+    // /**
+    //  * get metadata for a child component collection
+    //  */
+    // router.get(`/collection/:${PARAM_COLLECTION}`, (req, res) => {
+    //   const collectionName = req.params[PARAM_COLLECTION];
+    //   if (rootRegistry.isCollection(collectionName)) {
+    //     const meta = this.__getShell(rootRegistry.getRegistry(collectionName))
+    //       .getAllComponentMetadata();
+    //     res.json(meta);
+    //   } else {
+    //     this._logger.error(`${collectionName} not found in registry`);
+    //     res.status(404).send(MESSAGES.NOT_FOUND);
+    //   }
+    // });
 
-    /**
-     * handle component invocation by collection
-     */
-    router.post(`/collection/:${PARAM_COLLECTION}/:${PARAM_COMPONENT}`, (req, res) => {
-      const collectionName = req.params[PARAM_COLLECTION];
-      const componentName = req.params[PARAM_COMPONENT];
-      const registry = rootRegistry.getRegistry(collectionName);
-      // invoke
-      this.__invoke(componentName, registry || rootRegistry, opts, req, res);
-    });
+    // /**
+    //  * handle component invocation by collection
+    //  */
+    // router.post(`/collection/:${PARAM_COLLECTION}/:${PARAM_COMPONENT}`, (req, res) => {
+    //   const collectionName = req.params[PARAM_COLLECTION];
+    //   const componentName = req.params[PARAM_COMPONENT];
+    //   const registry = rootRegistry.getRegistry(collectionName);
+    //   // invoke
+    //   this.__invoke(componentName, registry || rootRegistry, opts, req, res);
+    // });
   }
 
   /**

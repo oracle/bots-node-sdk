@@ -11,7 +11,10 @@ module.exports = {
   webhookSecretGetter: () => { // secret as cb
     return Promise.resolve(webhookSecret);
   },
-  webhookCallback: () => { },
+  webhookCallback: (req, res) => {
+    expect(req.body).toBeDefined();
+    res.send();
+  },
   parser: {},
   messages: {
     OK: 'OK'

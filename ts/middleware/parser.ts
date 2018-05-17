@@ -1,12 +1,12 @@
-import { express, MiddlewareAbstract } from './abstract';
 import * as bodyParser from 'body-parser';
+import { MiddlewareAbstract, express } from './abstract';
 
 /**
  * concentrated parser middleware options
  */
 export interface IParserMiddlewareOptions {
-  urlencoded?: boolean;
-  json?: boolean;
+  urlencoded?: boolean|object;
+  json?: boolean|object;
   limit?: string;
 }
 

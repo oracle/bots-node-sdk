@@ -53,7 +53,7 @@ const { WebhookMiddleware } = require("./webhook");
  * }));
  * app.use('/webhook', OracleBot.Middleware.webhookRouter({
  *   secret: (req) => { ... }
- *   callback: (err, message) => { ... }
+ *   callback: (req, res, next) => { ... }x
  * }));
  */
 function init(layer, options = {}) {
@@ -122,8 +122,9 @@ function customComponent(options = {}) {
  * OracleBot.init(app); // must be applied upstream of the receiver for proper parsing.
  * 
  * const secret = process.env.WEBHOOK_SECRET; // can also be callback (req => string | Promise<string>)
- * app.post('/webhook/message', OracleBot.Middleware.webhookReceiver(secret, (err, message) => {
- *   // Forward verified message to client
+ * app.post('/webhook/message', OracleBot.Middleware.webhookReceiver(secret, (req, res, next) => {
+ *   const message = req.body;
+ *   // Forward verified message to client...
  * }));
  */
 function webhookReceiver(secret, callback) {
@@ -156,7 +157,7 @@ function webhookReceiver(secret, callback) {
  *   secret: (req) => {
  *     // resolve the secret key string|Promise<string>
  *   },
- *   callback: (err, message) => {
+ *   callback: (req, res, next) => {
  *     // format message and send to client, socket, etc... 
  *   }
  * });

@@ -17,15 +17,18 @@ const { CONSTANTS } = require('../common/constants');
  *     resolve(key);
  *   });
  * }
- * const receiver = OracleBot.Middleware.webhookReceiver(getSecretKey, (err, message) => {
+ * const receiver = OracleBot.Middleware.webhookReceiver(getSecretKey, (req, res, next) => {
  *   // ...
  * });
  */
 
 /**
+ * Callback function upon successful webhook validation. Note the importance of
+ * final res.send()
  * @callback WebhookReceiverCallback
- * @param {Error} error - Webhook message validation error
- * @param {Object} message - Validated message from bot
+ * @param {external:ExpressRequest} req - Webhook message validation error
+ * @param {external:ExpressResponse} res - Validated message from bot
+ * @param {function} next - Express NextFunction
  * @return {void}
  */
 
@@ -64,15 +67,15 @@ class WebhookMiddleware extends MiddlewareAbstract {
   receiver() {
     return (req, res, next) => {
       this.validationHandler()(req, res, err => {
-        // respond to the webhook request.
         if (err) {
+          // response to webhook with error
+          // TODO: standardize for bots platform logs
           this._logger.error(err);
-          // TODO: standardize response for bots platform
           res.json({ok: false, error: err.message}); // status code is already set.
         } else {
-          res.status(200).json({ok: true});
+          // proceed to message handler
+          this.messageHandler()(req, res, next);
         }
-        this.messageHandler(err)(req, res, next);
       });
     }
   }
@@ -82,7 +85,7 @@ class WebhookMiddleware extends MiddlewareAbstract {
    * receiver callback
    */
   validationHandler() {
-    return (req, res, cb) => {
+    return (req, res, next) => {
       const { secret } = this.options;
       return Promise.resolve(typeof secret === 'function' ? secret(req) : secret)
         .then(key => {
@@ -105,8 +108,8 @@ class WebhookMiddleware extends MiddlewareAbstract {
           }
           return;
         })
-        .then(cb) // passing callback
-        .catch(cb); // cb with failure
+        .then(next) // passing callback
+        .catch(next); // cb with failure
     }
   }
 
@@ -115,9 +118,10 @@ class WebhookMiddleware extends MiddlewareAbstract {
    * @param {*} [err] - error 
    */
   messageHandler(err) {
-    return (req) => {
+    return (req, res, next) => {
       const { callback } = this.options;
-      return callback && callback(err, !err && req.body);
+      // return callback && callback(err, !err && req.body);
+      return callback && callback(req, res, next);
     }
   }
 }
