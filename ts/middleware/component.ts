@@ -21,10 +21,11 @@ export interface IComponentMiddlewareOptions {
 /**
  * define req.param keys
  */
-const [PARAM_COLLECTION, PARAM_COMPONENT] = ['collection', 'component'];
-const MESSAGES = {
-  NOT_FOUND: 'not found',
-};
+// const [PARAM_COLLECTION, PARAM_COMPONENT] = ['collection', 'component'];
+const [PARAM_COMPONENT] = ['component'];
+// const MESSAGES = {
+//   NOT_FOUND: 'not found',
+// };
 
 /**
  * ComponentMiddleware.

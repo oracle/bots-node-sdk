@@ -119,9 +119,8 @@ class WebhookMiddleware extends MiddlewareAbstract {
 
   /**
    * invoke callback with validated message payload
-   * @param {*} [err] - error 
    */
-  messageHandler(err) {
+  messageHandler() {
     return (req, res, next) => {
       const { callback } = this.options;
       // return callback && callback(err, !err && req.body);
