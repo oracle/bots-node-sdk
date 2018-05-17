@@ -1,5 +1,4 @@
 import * as middleware from './middleware/'; // directory index
-// import { Middleware } from './middleware/';
 
 /**
  * Configurable middleware module.
@@ -21,5 +20,8 @@ import * as middleware from './middleware/'; // directory index
  * ```
  */
 export namespace Middleware {
+  export const init = middleware.init;
   export const customComponent = middleware.customComponent;
+  export const webhookReceiver = middleware.webhookReceiver;
+  export const webhookRouter = middleware.webhookRouter;
 }

@@ -125,6 +125,7 @@ function customComponent(options = {}) {
  * app.post('/webhook/message', OracleBot.Middleware.webhookReceiver(secret, (req, res, next) => {
  *   const message = req.body;
  *   // Forward verified message to client...
+ *   res.send(); // complete request
  * }));
  */
 function webhookReceiver(secret, callback) {
@@ -159,6 +160,7 @@ function webhookReceiver(secret, callback) {
  *   },
  *   callback: (req, res, next) => {
  *     // format message and send to client, socket, etc... 
+ *     res.send();
  *   }
  * });
  * 

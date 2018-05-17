@@ -4,7 +4,6 @@ import { CommonProvider } from '../common/provider';
 export { express }
 
 export interface IStaticMiddlwareAbstract {
-  required: boolean;
   extend(router: express.IRouter<any>, options?: any);
 }
 
@@ -24,7 +23,6 @@ export interface IMobileCloudRequest extends IParsedRequest {
  * Embedded middleware abstraction layer.
  */
 export abstract class MiddlewareAbstract {
-  public static required = false; // all middleware defaults to !required
   protected _logger: ILogger; // establish a namespaced logger instance
 
   /**

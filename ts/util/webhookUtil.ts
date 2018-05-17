@@ -110,7 +110,7 @@ export function messageToBotWithProperties(channelUrl, channelSecretKey, userId,
     if (additionalProperties){
       outMsg = Object.assign(outMsg, additionalProperties);
     }
-    console.log("Send this message to bot:", outMsg);
+    // console.log("Send this message to bot:", outMsg);
     const body = Buffer.from(JSON.stringify(outMsg), 'utf8');
 
     const headers = {};

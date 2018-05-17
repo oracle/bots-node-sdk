@@ -19,12 +19,15 @@ const { CONSTANTS } = require('../common/constants');
  * }
  * const receiver = OracleBot.Middleware.webhookReceiver(getSecretKey, (req, res, next) => {
  *   // ...
+ *   res.send();
  * });
  */
 
 /**
- * Callback function upon successful webhook validation. Note the importance of
- * final res.send()
+ * Callback function upon successful webhook validation. Further validations may
+ * be performed, and it is required to send the response for the webhook request.
+ * as `res.send`, `res.json`, etc. Note that this response is NOT a message back to
+ * the bot.
  * @callback WebhookReceiverCallback
  * @param {external:ExpressRequest} req - Webhook message validation error
  * @param {external:ExpressResponse} res - Validated message from bot
@@ -33,6 +36,7 @@ const { CONSTANTS } = require('../common/constants');
  */
 
 /**
+ * Webhook middleware configuration options.
  * @typedef WebhookMiddlewareOptions
  * @property {string | RegExp | Array.<string | RegExp>} [path='/'] - Route pattern to receive bot message.
  * @property {string|SecretKeyCallback} secret - Secret key for bot message validation.

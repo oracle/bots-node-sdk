@@ -14,9 +14,9 @@ export interface IWebhookSecretCallback {
  * Webhook message receiver callback. Called when a message is sent by bot to
  * the webhook endpoint.
  */
-export interface IWebhookRecieverCallback {
+export interface IWebhookRecieverCallback extends express.RequestHandler {
   /** Error if the webhook message fails validation, and message when valid */
-  (error: Error | null, message?: object): void;
+  // (error: Error | null, message?: object): void;
 }
 
 /**
@@ -58,9 +58,9 @@ export class WebhookMiddleware extends MiddlewareAbstract {
           // TODO: standardize response for bots platform
           res.json({ok: false, error: err.message}); // status code is already set.
         } else {
-          res.status(200).json({ok: true});
+          // proceed to message handler
+          this.messageHandler()(req, res, next);
         }
-        this.messageHandler(err)(req, res, next);
       });
     }
   }
@@ -70,7 +70,7 @@ export class WebhookMiddleware extends MiddlewareAbstract {
    * receiver callback
    */
   validationHandler(): express.RequestHandler {
-    return (req, res, cb) => {
+    return (req, res, next) => {
       const { secret } = this.options;
       return Promise.resolve(typeof secret === 'function' ? secret(req) : secret)
         .then(key => {
@@ -93,18 +93,19 @@ export class WebhookMiddleware extends MiddlewareAbstract {
           }
           return;
         })
-        .then(cb) // passing callback
-        .catch(cb); // cb with failure
+        .then(next) // passing callback
+        .catch(next); // cb with failure
     }
   }
 
   /**
    * invoke callback with validated message payload
    */
-  messageHandler(err?: Error) {
+  messageHandler(err?: Error): express.RequestHandler {
     return (req, res, next) => {
       const { callback } = this.options;
-      return callback && callback(err, !err && req.body);
+      // return callback && callback(err, !err && req.body);
+      return callback && callback(req, res, next);
     }
   }
 }
