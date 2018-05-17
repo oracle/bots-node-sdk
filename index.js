@@ -1,5 +1,6 @@
 "use strict";
 
+const init = require('./init/');
 const Middleware = require('./middleware/');
 const Lib = require('./lib/');
 const Util = require('./util/');
@@ -19,6 +20,7 @@ const Config = require('./config/');
  * ```
  */
 module.exports = {
+  init,
   Middleware,
   Lib,
   Util,
