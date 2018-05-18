@@ -62,8 +62,10 @@ const app = express();
 OracleBot.init(app); // must be applied upstream of the receiver for proper parsing.
 
 const secret = process.env.WEBHOOK_SECRET; // can also be callback (req => string | Promise<string>)
-app.post('/webhook/message', OracleBot.Middleware.webhookReceiver(secret, (err, message) => {
-   // Format & forward verified message to client.
+app.post('/webhook/message', OracleBot.Middleware.webhookReceiver(secret, (req, res, next) => {
+  const message = req.body;
+  // Format & forward verified message to client.
+  res.send();
 }));
 ```
 
