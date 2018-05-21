@@ -1,8 +1,8 @@
 // export namespace MM {
-export interface Message {
+export interface IMessage {
   userId: string;
   text?: string; // Simple (1.0)
-  messagePayload?: MessagePayload; // CMM (1.1)
+  messagePayload?: IMessagePayload; // CMM (1.1)
   profile?: { firstName?: string; lastName?: string; [key: string]: any };
   choices?: string[];
 };
@@ -10,36 +10,36 @@ export interface Message {
 /**
  * define message action types
  */
-export type Action = PostbackAction | UrlAction | CallAction | LocationAction | ShareAction;
-export type ActionType = 'postback' | 'url' | 'call' | 'location' | 'share';
-export interface BaseAction {
-  type: ActionType;
+export type IAction = IPostbackAction | IUrlAction | ICallAction | ILocationAction | IShareAction;
+export type IActionType = 'postback' | 'url' | 'call' | 'location' | 'share';
+export interface IBaseAction {
+  type: IActionType;
   label?: string;
   imageUrl?: string;
 }
-export interface PostbackAction extends BaseAction { type: 'postback'; postback: string | object; }
-export interface UrlAction extends BaseAction { type: 'url'; url: string; }
-export interface CallAction extends BaseAction { type: 'call'; phoneNumber: string; }
-export interface LocationAction extends BaseAction { type: 'location'; }
-export interface ShareAction extends BaseAction { type: 'share'; }
+export interface IPostbackAction extends IBaseAction { type: 'postback'; postback: string | object; }
+export interface IUrlAction extends IBaseAction { type: 'url'; url: string; }
+export interface ICallAction extends IBaseAction { type: 'call'; phoneNumber: string; }
+export interface ILocationAction extends IBaseAction { type: 'location'; }
+export interface IShareAction extends IBaseAction { type: 'share'; }
 
 /**
  * define special object types
  */
-export interface Card {
+export interface ICard {
   title: string;
   description?: string;
   imageUrl?: string;
   url?: string;
-  actions?: Action[];
+  actions?: IAction[];
 }
-export type AttachmentType = 'file' | 'image' | 'video' | 'audio';
-export interface Attachment {
-  type: AttachmentType;
+export type IAttachmentType = 'file' | 'image' | 'video' | 'audio';
+export interface IAttachment {
+  type: IAttachmentType;
   url: string;
 }
 
-export interface Location {
+export interface ILocation {
   latitude: number | string;
   longitude: number | string;
   title?: string;
@@ -49,36 +49,35 @@ export interface Location {
 /**
  * define message payload types
  */
-export type MessageType = 'text' | 'card' | 'attachment' | 'location' | 'postback' | 'raw';
-export type MessagePayload = TextMessage | CardMessage | AttachmentMessage | LocationMessage | PostbackMessage | RawMessage;
-export interface BaseMessagePayload {
-  type: MessageType;
-  actions?: Action[];
-  globalActions?: Action[];
+export type IMessageType = 'text' | 'card' | 'attachment' | 'location' | 'postback' | 'raw';
+export type IMessagePayload = ITextMessage | ICardMessage | IAttachmentMessage | ILocationMessage | IPostbackMessage | IRawMessage;
+export interface IBaseMessagePayload {
+  type: IMessageType;
+  actions?: IAction[];
+  globalActions?: IAction[];
   channelExtensions?: any;
 }
-export interface TextMessagePayload extends BaseMessagePayload { text: string }
-export interface TextMessage extends TextMessagePayload { type: 'text'; }
-export interface CardMessage extends BaseMessagePayload {
+export interface ITextMessagePayload extends IBaseMessagePayload { text: string }
+export interface ITextMessage extends ITextMessagePayload { type: 'text'; }
+export interface ICardMessage extends IBaseMessagePayload {
   type: 'card';
   layout: 'vertical' | 'horizontal',
-  cards: Card[];
+  cards: ICard[];
 }
-export interface AttachmentMessage extends BaseMessagePayload {
+export interface IAttachmentMessage extends IBaseMessagePayload {
   type: 'attachment';
-  attachment: Attachment;
+  attachment: IAttachment;
 }
-export interface LocationMessage extends BaseMessagePayload {
+export interface ILocationMessage extends IBaseMessagePayload {
   type: 'location';
   location: Location;
 }
-export interface PostbackMessage extends BaseMessagePayload {
+export interface IPostbackMessage extends IBaseMessagePayload {
   type: 'postback';
   postback: string | object;
   text?: string;
 }
-export interface RawMessage extends BaseMessagePayload {
+export interface IRawMessage extends IBaseMessagePayload {
   type: 'raw';
   payload: any;
 }
-// }

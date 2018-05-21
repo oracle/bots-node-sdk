@@ -1,6 +1,7 @@
 import { CONSTANTS } from '../common/constants';
 import { webhookUtil } from '../util/';
 import { MiddlewareAbstract, express } from './abstract';
+import { IMessage } from '../lib/message';
 
 /**
  * Secret key request callback used in webhook message validation.
@@ -11,12 +12,68 @@ export interface IWebhookSecretCallback {
 }
 
 /**
+ * Configuration details for sending messages to bots on a webhook channel.
+ */
+export interface IWebhookChannel {
+  /** webhook url issued by bots platform channel */
+  url: string;
+  /** message signature secret key used to create X-Hub-Signature */
+  secret: string;
+}
+
+/**
+ * Callback used by webhook client to obtain channel configuration information
+ * for a given request.
+ * @example
+ * function getConfigForClient(client) {
+ *   return {
+ *     url: 'https://...',  // Oracle bot webhook url specific to client
+ *     secret: '',          // webhook channel secret key
+ *   }
+ * };
+ *
+ * app.post('/webhook/:client/messages', OracleBot.Middleware.webhookClient({
+ *   config: (req) => getConfigForClient(req.params.client),
+ *   handler: (req, res, callback) => { ... },
+ * });)
+ */
+export interface IWebhookChannelConfigCallback {
+  (req: express.Request): IWebhookChannel | Promise<IWebhookChannel>;
+}
+
+/**
+ * Webhook client message handler to format a client message for Oracle Bots.
+ */
+export interface IWebhookClientHandlerCallback {
+  (req: express.Request, res: express.Response, callback: (message: IMessage | IMessage[]) => void): void;
+}
+
+/**
+ * Options to configure a webhook client endpoint where messages are forwarded
+ * to the bot on a webhook channel.
+ */
+export interface IWebhookClientOptions {
+  /** express route pattern */
+  path?: string | RegExp | (string|RegExp)[];
+  /** object or async callback to specify the webhook channel configuration details */
+  channel: IWebhookChannel | IWebhookChannelConfigCallback;
+  /** optional request handler to validate a client message before sending to bot */
+  validator?: express.RequestHandler;
+  /** request handler to receive client messages and format for Bots */
+  handler: IWebhookClientHandlerCallback;
+}
+
+/**
  * Webhook message receiver callback. Called when a message is sent by bot to
  * the webhook endpoint.
  */
 export interface IWebhookRecieverCallback extends express.RequestHandler {
   /** Error if the webhook message fails validation, and message when valid */
   // (error: Error | null, message?: object): void;
+  req: express.Request & {
+    /** req.body as verified bot message */
+    body: IMessage;
+  }
 }
 
 /**
@@ -27,6 +84,8 @@ export interface IWebhookMiddlewareOptions {
   path?: string | RegExp | (string|RegExp)[];
   secret: string | IWebhookSecretCallback;
   callback: IWebhookRecieverCallback;
+  /** Client message handler options for passing client messages to bot */
+  client?: IWebhookClientOptions;
 }
 
 /**
@@ -41,17 +100,22 @@ export class WebhookMiddleware extends MiddlewareAbstract {
    */
   _init(router: express.Router | express.Application, options: IWebhookMiddlewareOptions) {
     if (router) {
-      // add message receiver
+      // add "outgoing" message receiver
       router.post(options.path || '/', this.receiver());
+
+      // add "incoming" client handler
+      if (options.client && options.client.path) {
+        router.post(options.client.path, this.client());
+      }
     }
   }
 
   /**
    * Webhook receiver middleware. Allows direct usage via `Middleware.webhookReceiver`
    */
-  receiver(): express.RequestHandler {
+  public receiver(): express.RequestHandler {
     return (req, res, next) => {
-      this.validationHandler()(req, res, err => {
+      this.receiverValidationHandler()(req, res, err => {
         // respond to the webhook request.
         if (err) {
           this._logger.error(err);
@@ -59,7 +123,7 @@ export class WebhookMiddleware extends MiddlewareAbstract {
           res.json({ok: false, error: err.message}); // status code is already set.
         } else {
           // proceed to message handler
-          this.messageHandler()(req, res, next);
+          this.receiverMessageHandler()(req, res, next);
         }
       });
     }
@@ -69,7 +133,7 @@ export class WebhookMiddleware extends MiddlewareAbstract {
    * webhook request validation. supported either as middleware layer, or
    * receiver callback
    */
-  validationHandler(): express.RequestHandler {
+  private receiverValidationHandler(): express.RequestHandler {
     return (req, res, next) => {
       const { secret } = this.options;
       return Promise.resolve(typeof secret === 'function' ? secret(req) : secret)
@@ -101,11 +165,92 @@ export class WebhookMiddleware extends MiddlewareAbstract {
   /**
    * invoke callback with validated message payload
    */
-  messageHandler(err?: Error): express.RequestHandler {
+  private receiverMessageHandler(err?: Error): express.RequestHandler {
     return (req, res, next) => {
       const { callback } = this.options;
       // return callback && callback(err, !err && req.body);
       return callback && callback(req, res, next);
     }
+  }
+
+  /**
+   * Webhook client middleware
+   */
+  public client(): express.RequestHandler {
+    return (req, res, next) => {
+      // arbitrarily validate client message based on user-provided configuration
+      this.clientValidationHandler()(req, res, err => {
+        if (err) {
+          this._logger.error(err);
+          next(err);
+        } else {
+          // proceed to message handler
+          this.clientMessageHandler()(req, res, next);
+        }
+      });
+    }
+  }
+
+  /**
+   * Client message validation. This is generally specific to the client API
+   * specifications. If no validator is configured, then next is called directly. 
+   */
+  private clientValidationHandler(): express.RequestHandler {
+    return (req, res, next) => {
+      const { client: { validator } } = this.options;
+      return validator ? validator(req, res, next) : next();
+    }
+  }
+
+  /**
+   * get client message formatted for bot and send.
+   */
+  private clientMessageHandler(): express.RequestHandler {
+    return (req, res, next) => {
+      const { client: { handler, channel } } = this.options;
+      // invoke message handler as promise
+      return new Promise<IMessage|IMessage[]>(resolver => handler(req, res, resolver))
+      .then(result => [].concat(result) as IMessage[]) // use array of messages
+      .then(messages => {
+        // get webhook channel config & send messages
+        return Promise.resolve(typeof channel === 'function' ? channel(req) : channel)
+          .then(webhook => this.sendInSeries(webhook, messages));
+      })
+      .then(() => !res.headersSent && res.status(200).send()) // ensure response sent
+      .catch(next); // handle uncaught errors
+    }
+  }
+
+  /**
+   * send messages in series
+   * @param channel
+   * @param messages
+   */
+  private sendInSeries(channel: IWebhookChannel, messages: IMessage[]): Promise<void> {
+    const message = messages.shift();
+    return this.sendMessage(channel, message)
+      // if more messages, chain in series
+      .then(() => messages.length ? this.sendInSeries(channel, messages) : null);
+  }
+
+  /**
+   * send message to the webhook channel
+   * @param channel - channel configuration
+   * @param message - message to be sent
+   */
+  private sendMessage(channel: IWebhookChannel, message: IMessage): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      if (message) {
+        const { url, secret } = channel;
+        const { userId, messagePayload, ...extras } = message;
+        webhookUtil.messageToBotWithProperties(url, secret, userId,
+          messagePayload,
+          extras,
+          error => error ? reject(error) : resolve()
+        );
+      } else {
+        resolve();
+      }
+    });
   }
 }

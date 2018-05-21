@@ -121,7 +121,7 @@ function customComponent(options = {}) {
  * const app = express();
  * OracleBot.init(app); // must be applied upstream of the receiver for proper parsing.
  * 
- * const secret = process.env.WEBHOOK_SECRET; // can also be callback (req => string | Promise<string>)
+ * const secret = process.env.BOT_WEBHOOK_SECRET; // can also be callback (req => string | Promise<string>)
  * app.post('/webhook/message', OracleBot.Middleware.webhookReceiver(secret, (req, res, next) => {
  *   const message = req.body;
  *   // Forward verified message to client...
@@ -133,6 +133,39 @@ function webhookReceiver(secret, callback) {
     secret,
     callback,
   }).receiver();
+}
+
+/**
+ * Client middleware for receiving client messages inbound to Bots
+ * @function module:Middleware.webhookClient
+ * @param {WebhookChannel|WebhookChannelConfigCallback} channel - Webhook channel configuration or callback
+ * @param {Object} options - Client messaging configuration.
+ * @param {WebhookClientHandlerCallback} options.handler - Handler function to receive client messages and format for Bots with message callback.
+ * @param {ExpressRequestHandler} [options.validator] - Optional client message validator middleware. Callback with next(error) if invalid.
+ * @example
+ * const OracleBot = require('@oracle/bots-node-sdk');
+ * const express = require('express');
+ * const app = express();
+ * 
+ * // define webhook channel configuration.
+ * // can also be function (req => WebhookChannel | Promise<WebhookChannel>)
+ * const webhook = {
+ *   url: process.env.BOT_WEBHOOK_URL,
+ *   secret: process.env.BOT_WEBHOOK_SECRET,
+ * };
+ * app.post('/webhook/:client/message', OracleBot.Middleware.webhookClient(webhook, {
+ *   validator: (req, res, next) => next(), // perform validation and call next(error) if invalid
+ *   handler: (req, res, callback) => {
+ *     let message = {};
+ *     // assign userId, messagePayload, userProfile, etc... on message
+ *     callback(message); // send formatted message to bot inbound webhook url
+ *   }
+ * }));
+ */
+function webhookClient(channel, options) {
+  return new WebhookMiddleware(null, {
+    client: options
+  }).client();
 }
 
 /**
@@ -188,6 +221,7 @@ module.exports = {
   init,
   // direct middleware methods
   customComponent,
-  webhookRouter,
+  webhookClient,
   webhookReceiver,
+  webhookRouter,
 };
