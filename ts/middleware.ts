@@ -23,5 +23,6 @@ export namespace Middleware {
   export const init = middleware.init;
   export const customComponent = middleware.customComponent;
   export const webhookReceiver = middleware.webhookReceiver;
+  export const webhookClient = middleware.webhookClient;
   export const webhookRouter = middleware.webhookRouter;
 }

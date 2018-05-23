@@ -7,13 +7,17 @@ module.exports = {
   webhookRouterUri: '/webhook',
   webhookReceiverUri: '/webhook/standalone',
   webhookWithoutSecret: '/webhook/nosecret',
+  webhookClientUri: '/webhook/client',
   webhookSecret: webhookSecret, // secret as string
   webhookSecretGetter: () => { // secret as cb
     return Promise.resolve(webhookSecret);
   },
-  webhookCallback: (req, res) => {
+  stubWebhookReceiverCallback: () => (req, res) => {
     expect(req.body).toBeDefined();
     res.send();
+  },
+  stubWebhookClientHandler: () => (req, res, cb) => {
+    cb(new Error('stub'));
   },
   parser: {},
   messages: {

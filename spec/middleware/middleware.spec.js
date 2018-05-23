@@ -8,6 +8,8 @@ const { CONSTANTS } = require('../../common/constants');
 const { MiddlewareAbstract } = require("../../middleware/abstract");
 const { ParserMiddleware } = require("../../middleware/parser");
 const { ComponentMiddleware } = require("../../middleware/component");
+
+const { webhookUtil } = require("../../util/");
 const { MockRequest } = require("../../testing");
 // some test components
 const { MyFirstComponent } = require("../support/testing/components/one");
@@ -264,6 +266,50 @@ describe('Middleware', () => {
           .expect(200)
           .end(err => err ? done.fail(err) : done());
       });
+
+      it('should support webhook client', done => {
+        const sender = spyOn(webhookUtil, 'messageToBotWithProperties').and.callFake((...args) => {
+          const cb = args[args.length - 1];
+          cb(null);
+        });
+
+        const handler = spyOn(serverConf, 'stubWebhookClientHandler').and.callFake(() => {
+          return (req, res, callback) => {
+            expect(req.body.user).toBeDefined();
+            callback(null, {
+              userId: req.body.user,
+              messagePayload: {type: 'text', text: req.body.message}
+            });
+          }
+        });
+
+        const msg = {
+          user: 1234,
+          message: 'hello',
+        };
+
+        supertest(server)
+          .post(serverConf.webhookClientUri)
+          .send(msg)
+          .expect(200)
+          .expect(() => {
+            expect(handler).toHaveBeenCalledBefore(sender);
+            expect(sender).toHaveBeenCalled();
+          })
+          .end(err => err ? done.fail(err) : done());
+      });
+
+      it('should handle webhook client errors', done => {
+        spyOn(serverConf, 'stubWebhookClientHandler').and.callFake(() => {
+          return () => {throw new Error('Foo Bar')}
+        });
+        supertest(server)
+          .post(serverConf.webhookClientUri)
+          .send({})
+          .expect(500)
+          .end(err => err ? done.fail(err) : done());
+      });
+
     });
 
   });

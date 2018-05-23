@@ -136,16 +136,20 @@ function webhookReceiver(secret, callback) {
 }
 
 /**
- * Client middleware for receiving client messages inbound to Bots
+ * Client middleware for receiving arbitrary client messages inbound for Bots.
+ * This middleware is designed as a convenience for situations where a chat
+ * client posts outbound messages to a service where the message must be
+ * formatted and forwarded as a incoming message to the bot. Response to the client
+ * request should be made inside the handler - `res.send('ok')`
  * @function module:Middleware.webhookClient
  * @param {WebhookChannel|WebhookChannelConfigCallback} channel - Webhook channel configuration or callback
- * @param {Object} options - Client messaging configuration.
- * @param {WebhookClientHandlerCallback} options.handler - Handler function to receive client messages and format for Bots with message callback.
- * @param {ExpressRequestHandler} [options.validator] - Optional client message validator middleware. Callback with next(error) if invalid.
+ * @param {WebhookClientHandlerCallback} handler - Handler function to receive client messages and format/send to Bots via callback.
+ * @_param {ExpressRequestHandler} [options.validator] - Optional client message validator middleware. Callback with next(error) if invalid.
  * @example
  * const OracleBot = require('@oracle/bots-node-sdk');
  * const express = require('express');
  * const app = express();
+ * OracleBot.init(app); // init body parser
  * 
  * // define webhook channel configuration.
  * // can also be function (req => WebhookChannel | Promise<WebhookChannel>)
@@ -153,18 +157,18 @@ function webhookReceiver(secret, callback) {
  *   url: process.env.BOT_WEBHOOK_URL,
  *   secret: process.env.BOT_WEBHOOK_SECRET,
  * };
- * app.post('/webhook/:client/message', OracleBot.Middleware.webhookClient(webhook, {
- *   validator: (req, res, next) => next(), // perform validation and call next(error) if invalid
- *   handler: (req, res, callback) => {
- *     let message = {};
- *     // assign userId, messagePayload, userProfile, etc... on message
- *     callback(message); // send formatted message to bot inbound webhook url
- *   }
+ * app.post('/webhook/:client/message', OracleBot.Middleware.webhookClient(webhook, (req, res, callback) => {
+ *   let message = {};
+ *   // assign userId, messagePayload, userProfile, etc... on message
+ *   callback(null, message); // send formatted message to bot inbound webhook url
  * }));
  */
-function webhookClient(channel, options) {
+function webhookClient(channel, handler) {
   return new WebhookMiddleware(null, {
-    client: options
+    client: {
+      channel,
+      handler
+    }
   }).client();
 }
 
@@ -178,6 +182,7 @@ function webhookClient(channel, options) {
  * @param {string | RegExp | Array.<string | RegExp>} [options.path='/'] - Route pattern to receive bot message.
  * @param {string|SecretKeyCallback} options.secret - Secret key for bot message validation.
  * @param {WebhookReceiverCallback} options.callback - Express request handler callback for validated request.
+ * @param {WebhookClientOptions} [options.client] - Options to also configure a client message endpoint.
  * @param {ParserOptions} [options.parser] - Body parser middleware options.
  * @return {external:ExpressRouter} - Express router with parser and webhook receiver at the specified `path`.
  * @example

@@ -49,24 +49,26 @@ const { CONSTANTS } = require('../common/constants');
  * @param {external:ExpressRequest} req - The request object originally sent to the endpoint
  * @return {WebhookChannel|Promise<WebhookChannel>}
  * @example
- * function getConfigForClient(client) {
+ * function getChannelForReq(req) {
+ *   const client = req.params.client;
  *   return {
  *     url: 'https://...',  // Oracle bot webhook url specific to client
  *     secret: 'xxx',          // webhook channel secret key
  *   }
  * }
  *
- * app.post('/webhook/:client/messages', OracleBot.Middleware.webhookClient({
- *   config: (req) => getConfigForClient(req.params.client),
- *   handler: (req, res, callback) => { ... },
+ * app.post('/webhook/:client/messages', OracleBot.Middleware.webhookClient(getChannelForReq, (req, res, callback) => {
+ *   // ...
  * }));
  */
 
 /**
- * Callback function with inbound webhook messages
+ * Callback function with inbound webhook messages. If callback is invoked with
+ * error then the message will not be forwarded to bot.
  * @see {@link https://docs.oracle.com/en/cloud/paas/mobile-suite/develop/bot-channels.html#GUID-09EC7BCE-70D1-4FE5-B730-0EBAF78363CF}
  * @callback WebhookMessageCallback
- * @param {object|object[]} messages - Message object(s) to send to BOT.
+ * @param {Error|null} error - Error during processing client message. 
+ * @param {object} message - Message object to send to BOT.
  */
 
 /**
@@ -77,13 +79,12 @@ const { CONSTANTS } = require('../common/constants');
  * @param {WebhookMessageCallback} callback - Callback to invoke with Oracle Bot formatted message(s).
  * @return {void}
  * @example
- * app.post('/webhook/client', OracleBot.MiddleWare.webhookClient(config, {
- *   validator: (req, res, next) => next(),
- *   handler: (req, res, cb) => {
- *     let message = {};
- *     // assign userId, messagePayload, etc... on message
- *     cb(message); // send to bot
- *   }
+ * const channel = { ... };
+ * app.post('/webhook/client', OracleBot.MiddleWare.webhookClient(channel, (req, res, cb) => {
+ *   const clientMsg = req.body;
+ *   let message = {};
+ *   // assign userId, messagePayload, etc... on message
+ *   cb(null, message); // send to bot
  * });
  */
 
@@ -94,7 +95,7 @@ const { CONSTANTS } = require('../common/constants');
  * @property {string | RegExp | Array.<string | RegExp>} path - Route pattern to handle client (incoming) message.
  * @property {WebhookChannel | WebhookChannelConfigCallback} channel - Webhook channel configuration or callback.
  * @property {WebhookClientHandlerCallback} handler - Handler function to receive client messages and format for Bots with message callback.
- * @property {ExpressRequestHandler} [validator] - Optional client message validator. Callback with next(error) if invalid.
+ * @_property {ExpressRequestHandler} [validator] - Optional client message validator. Callback with next(error) if invalid.
  */
 
 /**
@@ -103,6 +104,7 @@ const { CONSTANTS } = require('../common/constants');
  * @property {string | RegExp | Array.<string | RegExp>} [path='/'] - Route pattern to receive bot (outgoing) message.
  * @property {string|SecretKeyCallback} secret - Secret key for bot message validation.
  * @property {WebhookReceiverCallback} callback - Webhook receiver callback for validated bot message.
+ * @property {WebhookClientOptions} [client] - Options for client message handling.
  */
 
 /**
@@ -137,7 +139,7 @@ class WebhookMiddleware extends MiddlewareAbstract {
    */
   receiver() {
     return (req, res, next) => {
-      this.receiverValidationHandler()(req, res, err => {
+      this._receiverValidationHandler()(req, res, err => {
         if (err) {
           // response to webhook with error
           // TODO: standardize for bots platform logs
@@ -145,7 +147,7 @@ class WebhookMiddleware extends MiddlewareAbstract {
           res.json({ok: false, error: err.message}); // status code is already set.
         } else {
           // proceed to message handler
-          this.receiverValidationHandler()(req, res, next);
+          this._receiverMessageHandler()(req, res, next);
         }
       });
     }
@@ -155,7 +157,7 @@ class WebhookMiddleware extends MiddlewareAbstract {
    * webhook request validation. supported either as middleware layer, or 
    * receiver callback
    */
-  receiverValidationHandler() {
+  _receiverValidationHandler() {
     return (req, res, next) => {
       const { secret } = this.options;
       return Promise.resolve(typeof secret === 'function' ? secret(req) : secret)
@@ -187,7 +189,7 @@ class WebhookMiddleware extends MiddlewareAbstract {
   /**
    * invoke callback with validated message payload
    */
-  receiverMessageHandler() {
+  _receiverMessageHandler() {
     return (req, res, next) => {
       const { callback } = this.options;
       // return callback && callback(err, !err && req.body);
@@ -199,48 +201,34 @@ class WebhookMiddleware extends MiddlewareAbstract {
    * Webhook client middleware
    */
   client() {
-    return (req, res, next) => {
-      // arbitrarily validate client message based on user-provided configuration
-      this.clientValidationHandler()(req, res, err => {
-        if (err) {
-          this._logger.error(err);
-          next(err);
-        }
-        else {
-          // proceed to message handler
-          this.clientMessageHandler()(req, res, next);
-        }
-      });
-    };
-  }
-
-  /**
-   * Client message validation. This is generally specific to the client API
-   * specifications. If no validator is configured, then next is called directly.
-   */
-  clientValidationHandler() {
-    return (req, res, next) => {
-      const { client: { validator } } = this.options;
-      return validator ? validator(req, res, next) : next();
-    };
+    return this._clientMessageHandler();
   }
 
   /**
    * get client message formatted for bot and send.
    */
-  clientMessageHandler() {
+  _clientMessageHandler() {
     return (req, res, next) => {
       const { client: { handler, channel } } = this.options;
       // invoke message handler as promise
-      return new Promise(resolver => handler(req, res, resolver))
+      return new Promise((resolve, reject) => {
+        handler(req, res, (err, message) => err ? reject(err) : resolve(message));
+      })
         .then(result => [].concat(result)) // use array of messages
         .then(messages => {
+          // TODO: validate message(s)
           // get webhook channel config & send messages
           return Promise.resolve(typeof channel === 'function' ? channel(req) : channel)
-            .then(webhook => this.sendInSeries(webhook, messages));
+            .then(webhook => this._sendInSeries(webhook, messages));
         })
-        .then(() => !res.headersSent && res.status(200).send()) // ensure response sent
-        .catch(next); // handle uncaught errors
+        .then(() => !res.headersSent && res.send()) // ensure response is sent
+        .catch(err => { // handle errors
+          this._logger.error(err);
+          if (!res.headersSent) {
+            res.status(500);
+            next(err);
+          }
+        });
     };
   }
 
@@ -249,10 +237,10 @@ class WebhookMiddleware extends MiddlewareAbstract {
    * @param channel
    * @param messages
    */
-  sendInSeries(channel, messages) {
+  _sendInSeries(channel, messages) {
     const message = messages.shift();
-    return this.sendMessage(channel, message)
-      .then(() => messages.length ? this.sendInSeries(channel, messages) : null);
+    return this._sendMessage(channel, message)
+      .then(() => messages.length ? this._sendInSeries(channel, messages) : null);
   }
 
   /**
@@ -260,14 +248,17 @@ class WebhookMiddleware extends MiddlewareAbstract {
    * @param channel - channel configuration
    * @param message - message to be sent
    */
-  sendMessage(channel, message) {
+  _sendMessage(channel, message) {
     return new Promise((resolve, reject) => {
       if (message) {
-        const { url, secret } = channel;
-        const { userId, messagePayload } = message, extras = Object.assign({}, message);
-        webhookUtil.messageToBotWithProperties(url, secret, userId, messagePayload, extras, error => error ? reject(error) : resolve());
-      }
-      else {
+        try {
+          const { url, secret } = channel;
+          const { userId, messagePayload } = message, extras = Object.assign({}, message);
+          webhookUtil.messageToBotWithProperties(url, secret, userId, messagePayload, extras, error => error ? reject(error) : resolve());
+        } catch (e) {
+          reject(e);
+        }
+      } else {
         resolve();
       }
     });
