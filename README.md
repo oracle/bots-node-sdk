@@ -148,9 +148,8 @@ The SDK also includes unit testing facilities, which can be utilized within
 your preferred test runner.
 
 ```javascript
-import * as Tester from '@oracle/bots-node-sdk/testing';
-
-import { MyComponent } from '../../components/MyComponent';
+const Tester = require('@oracle/bots-node-sdk/testing');
+const { MyComponent } = require('../../components/MyComponent');
 
 describe('MyComponent', () => {
   it('should chat', done => {
@@ -166,4 +165,4 @@ describe('MyComponent', () => {
 
 ## License
 
-Copyright (c) 2016, 2017 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0
+Copyright (c) 2017, 2018 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0
