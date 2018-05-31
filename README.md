@@ -149,7 +149,6 @@ your preferred test runner.
 
 ```javascript
 const Tester = require('@oracle/bots-node-sdk/testing');
-
 const { MyComponent } = require('../../components/MyComponent');
 
 describe('MyComponent', () => {

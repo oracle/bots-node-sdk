@@ -12,10 +12,20 @@ export = (joi: any): Joi.Schema => {
       then: joi.alternatives().try([joi.string(), joi.object()]),
       otherwise: joi.any().forbidden()
     }),
-    phoneNumber: joi.when('type', { is: 'call', then: joi.string().required(), otherwise: joi.any().forbidden() }),
-    url: joi.when('type', { is: 'url', then: joi.string().required().uri(), otherwise: joi.any().forbidden() }),
+    phoneNumber: joi.when('type', {
+      is: 'call',
+      then: joi.string().required(),
+      otherwise: joi.any().forbidden()
+    }),
+    url: joi.when('type', {
+      is: 'url',
+      then: joi.string().required().uri(),
+      otherwise: joi.any().forbidden()
+    }),
     label: joi.string().optional().trim(),
     imageUrl: joi.string().uri().optional(),
+    skipAutoNumber: joi.boolean().optional(),
+    keywords: joi.array().optional(),
     channelExtensions: joi.object().optional()
   });
   const actionsSchema = joi.array().items(actionSchema);
@@ -41,6 +51,7 @@ export = (joi: any): Joi.Schema => {
     type: joi.string().required().valid('text'),
     text: joi.string().required().trim(),
     actions: actionsSchema.optional(),
+    footerText: joi.string().optional(),
     globalActions: actionsSchema.optional(),
     channelExtensions: joi.object().optional()
   });
@@ -49,6 +60,7 @@ export = (joi: any): Joi.Schema => {
     layout: joi.string().required().valid('horizontal', 'vertical'),
     cards: joi.array().items(cardSchema).min(1),
     actions: actionsSchema.optional(),
+    footerText: joi.string().optional(),
     globalActions: actionsSchema.optional(),
     channelExtensions: joi.object().optional()
   });
@@ -56,6 +68,7 @@ export = (joi: any): Joi.Schema => {
     type: joi.string().required().valid('attachment'),
     attachment: attachmentSchema.required(),
     actions: actionsSchema.optional(),
+    footerText: joi.string().optional(),
     globalActions: actionsSchema.optional(),
     channelExtensions: joi.object().optional()
   });
@@ -79,9 +92,11 @@ export = (joi: any): Joi.Schema => {
     channelExtensions: joi.object().optional()
   });
   const agentConversationMessageSchema = joi.object().keys({
-    type: joi.string().required().valid('agentRequest', 'agentRequestResponse',
-      'agentConversationHistory', 'agentjoined', 'agentLeft', 'botConversationEnded', 'agent', 'botToAgentText')
-  }).options({ 'allowUnknown': true });
+    type: joi.string().required().valid('agentRequest', 'agentRequestResponse', 'agentConversationHistory', 'agentJoined', 'agentLeft',
+      'botConversationEnded', 'agent', 'botToAgentText')
+  }).options({
+    'allowUnknown': true
+  });
 
   const conversationMessageSchema = joi.alternatives().try(textConversationMessageSchema,
     cardConversationMessageSchema, attachmentConversationMessageSchema, locationConversationMessageSchema,

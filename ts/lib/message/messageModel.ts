@@ -114,14 +114,18 @@ export class MessageModel {
    * @return {object} A TextConversationMessage.
    * @param {string} text - The text of the message payload.
    * @param {object[]} [actions] - A list of actions related to the text.
+   * @param {string} [footerText] - The footerText to be added at the bottom of the message.
    */
-  static textConversationMessage(text, actions?) {
+  static textConversationMessage(text, actions?, footerText?) {
     var instance: any = {
       type: 'text',
       text: text
     };
     if (actions) {
       instance.actions = actions;
+    }
+    if (footerText) {
+      instance.footerText = footerText;
     }
     return instance;
 
@@ -146,10 +150,21 @@ export class MessageModel {
    * @param {string} [label] - label of the action.
    * @param {string} [imageUrl] - image to show for the action.
    * @param {object|string} postback - object or string to send as postback if action is taken.
+   * @param {string[]} [keywords] - array of keywords that can be used to trigger the postback action
+   * @param {boolean} [skipAutoNumber] - Boolean flag that can be used to exclude a postback action 
+   * from auto-numbering. Only applicable when 'autoNumberPostbackActions' context variable or
+   * 'autoNumberPostbackActions' component property is set to true.
    */
-  static postbackActionObject(label, imageUrl, postback) {
+  static postbackActionObject(label, imageUrl, postback, keywords?, skipAutoNumber?) {
     var instance = this._baseActionObject('postback', label, imageUrl);
     instance.postback = postback;
+    if (keywords) {
+      instance.keywords = keywords;
+    }
+    // since false is default for skipAutoNumber, we only need to add it when value is true
+    if (skipAutoNumber) {
+      instance.skipAutoNumber = skipAutoNumber;
+    }
     return instance;
   }
 
@@ -233,8 +248,9 @@ export class MessageModel {
    * @param {string} [layout] - 'vertical' or 'horizontal'.  Whether to display the cards horizontally or vertically.  Default is vertical.
    * @param {object[]} cards - The list of cards to be rendered.
    * @param {object[]} [actions] - A list of actions for the cardConversationMessage.
+   * @param {string} [footerText] - The footerText to be added at the bottom of the message.
    */
-  static cardConversationMessage(layout, cards, actions?) {
+  static cardConversationMessage(layout, cards, actions?, footerText?) {
     var response: any = {
       type: 'card',
       layout: layout || 'vertical',
@@ -242,6 +258,9 @@ export class MessageModel {
     };
     if (actions) {
       response.actions = actions;
+    }
+    if (footerText) {
+      response.footerText = footerText;
     }
     return response;
   }
@@ -252,8 +271,9 @@ export class MessageModel {
    * @param {string} type - type of attachment - file, image, video or audio.
    * @param {string} url - the url of the attachment.
    * @param {object[]} [actions] - A list of actions for the attachmentConversationMessage.
+   * @param {string} [footerText] - The footerText to be added at the bottom of the message.
    */
-  static attachmentConversationMessage(type, url, actions?) {
+  static attachmentConversationMessage(type, url, actions?, footerText?) {
     var attachment = {
       type: type,
       url: url
@@ -264,6 +284,9 @@ export class MessageModel {
     };
     if (actions) {
       response.actions = actions;
+    }
+    if (footerText) {
+      response.footerText = footerText;
     }
     return response;
   }
