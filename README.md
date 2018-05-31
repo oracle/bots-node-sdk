@@ -139,7 +139,7 @@ const Util = require('@oracle/bots-node-sdk/util');
 
 ### Message Formatting
 
-- MessageModel - `OracleBot.Lib.MessageModel` create stuctured object of a known Common Message Model message such as Text, Card, Attachment, Location, Postback, Agent or Raw type.
+- MessageModel - `OracleBot.Lib.MessageModel` create structured object of a known Common Message Model message such as Text, Card, Attachment, Location, Postback, Agent or Raw type.
 - MessageModel Utils - `OracleBot.Util.MessageModel` functions to help deriving string or speech representation of a Conversation Message Model payload. This is used primarily to output text or speech to voice and text-based channels like Alexa and SMS.
 
 ## Unit Testing Harness

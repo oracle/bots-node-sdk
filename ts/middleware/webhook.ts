@@ -45,7 +45,7 @@ export interface IWebhookChannelConfigCallback {
  * Webhook client message handler to format a client message for Oracle Bots.
  */
 export interface IWebhookClientHandlerCallback {
-  (req: express.Request, res: express.Response, callback: (err: Error | null, message: IMessage) => void): void;
+  (req: express.Request, res: express.Response, callback: (err?: Error | null, message?: IMessage) => void): void;
 }
 
 /**
