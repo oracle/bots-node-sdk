@@ -1,6 +1,5 @@
 ts
 spec
-docs
 reports
 .istanbul.yml
 .eslintrc
