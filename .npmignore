@@ -6,3 +6,4 @@ reports
 .eslintrc
 .nvmrc
 tslint.json
+oracle-bots-node-sdk-*.tgz

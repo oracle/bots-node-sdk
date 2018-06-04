@@ -1,6 +1,6 @@
 "use strict";
 
-const joi = require('joi');
+let joi = require('joi');
 const schemaCache = new Map();
 
 /**
@@ -19,6 +19,11 @@ class CommonValidator {
     }
     return schemaCache.get(factory);
   }
+
+  static useInBrowser() {
+    joi = require('joi-browser');
+  }
+
   /**
    * static validation method
    * @param factory - Joi schema factory (joi): Joi.Schema
