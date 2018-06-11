@@ -1,6 +1,7 @@
 "use strict";
 
-let joi = require('joi');
+const { CommonProvider, PROVIDER_KEY_JOI } = require('./provider');
+
 const schemaCache = new Map();
 
 /**
@@ -8,20 +9,35 @@ const schemaCache = new Map();
  * @private
  */
 class CommonValidator {
+
+  static _getJoi() {
+    let joi = CommonProvider.get(PROVIDER_KEY_JOI);
+    if (!joi) {
+      joi = require('joi');
+      CommonProvider.register({
+        key: PROVIDER_KEY_JOI,
+        use: joi
+      });
+    }
+    return joi;
+  }
   /**
    * static method to provide a singleton schema object reference
    * @param factory - Joi schema factory accepting a single argument, the joi validator object.
    */
   static getSchema(factory) {
     if (!schemaCache.has(factory)) {
-      const schema = factory(joi);
+      const schema = factory(this._getJoi());
       schemaCache.set(factory, schema);
     }
     return schemaCache.get(factory);
   }
 
   static useInBrowser() {
-    joi = require('joi-browser');
+    CommonProvider.register({
+      key: PROVIDER_KEY_JOI,
+      use: require('joi-browser')
+    });
   }
 
   /**

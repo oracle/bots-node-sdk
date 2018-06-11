@@ -1,6 +1,7 @@
 "use strict";
 
 exports.PROVIDER_KEY_LOGGER = 'logger';
+exports.PROVIDER_KEY_JOI = 'joi';
 
 /**
  * CommonProvider static object reference.
@@ -56,6 +57,4 @@ class CommonProvider {
  */
 CommonProvider._map = new Map();
 
-module.exports = {
-  CommonProvider,
-};
+exports.CommonProvider = CommonProvider;
