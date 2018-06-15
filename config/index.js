@@ -3,9 +3,13 @@
 const { CommonProvider, PROVIDER_KEY_LOGGER } = require("../common/provider");
 
 /**
- * establish logging instance
+ * establish logging instance.  By default, console logger is used.
  * @function module:Config.setLogger
  * @param logger - logging utility
+ * @example
+ * import { Config } from '@oracle/bots-node-sdk';
+ * const log4js = require('log4js');
+ * Config.setLogger(log4js.getLogger());
  */
 function setLogger(logger) {
   CommonProvider.register({

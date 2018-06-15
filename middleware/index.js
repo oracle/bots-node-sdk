@@ -178,11 +178,9 @@ function webhookRouter(options = {}) {
 
 /**
  * Configurable middleware for custom bot request handling.
- * This module requires {@link https://www.npmjs.com/package/express|express}
- * and {@link https://www.npmjs.com/package/body-parser|body-parser}.
+ * This module requires {@link https://www.npmjs.com/package/express|express}.
  * @module Middleware
  * @requires express
- * @requires body-parser
  */
 module.exports = {
   init,

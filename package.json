@@ -53,6 +53,7 @@
     "typescript": "^2.7.2"
   },
   "peerDependencies": {
-    "express": "^4.15.4"
+    "express": "^4.15.4",
+    "joi-browser": "^13.0.1"
   }
 }

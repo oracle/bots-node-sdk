@@ -5,3 +5,4 @@ docs
 dist
 typings
 oracle-bots-node-sdk-*.tgz
+.vscode

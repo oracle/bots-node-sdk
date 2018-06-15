@@ -12,11 +12,14 @@ const { CONSTANTS } = require("../common/constants");
  * @param {Buffer} msgBody - raw message body of the bot message.
  * @param {string} encoding - encoding of the raw message body.
  * @param {string} secretKey - secretKey used to calculate message signature
+ * @example
+ * if (webhookUtil.verifyMessageFromBot(req.get('X-Hub-Signature'), req.rawBody, req.encoding, channelSecretKey)) {
+ *   res.sendStatus(200);
+ * } else {
+ *   res.sendStatus(403);
+ * }
  */
 function verifyMessageFromBot(signature, msgBody, encoding, secretKey) {
-  // console.log('Signature:', signature);
-  // console.log('Encoding:', encoding);
-  // console.log('Body: \n"%s"', msgBody);
   if (!signature) {
     console.log('Missing signature');
     return false;
@@ -29,20 +32,27 @@ function verifyMessageFromBot(signature, msgBody, encoding, secretKey) {
     console.log('Calculated sig: %s', calculatedSig);
     return false;
   }
-  // console.log('Valid signature: %s', signature);
   return true;
 }
-exports.verifyMessageFromBot = verifyMessageFromBot;
+
 /**
  * utility function for use with expressjs route in handling the raw message body of the webhook message received from bot.
  * Instead of just letting bodyParser.json to parse the raw message to JSON, the rawMessage and its encoding is saved as properties
  * 'rawBody' and 'encoding' for use in signature verification in method verifyMessageFormat.
  * @function module:Util/Webhook.bodyParserRawMessageVerify
- * @return {boolean} true if the webhook message received from Bots is verified successfully.
  * @param {object} req - expressjs req for the POST route.
  * @param {object} res - expressjs res for the POST route.
  * @param {Buffer} buf - the raw message body.
  * @param {string} encoding - encoding of the raw message body.
+ * @example
+ *  app.post('/webhook/messages', 
+ *            bodyParser.json({
+ *              verify: webhookUtil.bodyParserRawMessageVerify
+ *            }), 
+ *            function (req, res) {
+ *              // request body is now available in req.rawBody, req.encoding is also set
+ *            }
+ *   );
  */
 function bodyParserRawMessageVerify(req, res, buf, encoding) {
   req[CONSTANTS.PARSER_RAW_BODY] = buf;
@@ -73,14 +83,16 @@ function buildSignature(buf, secret) {
  * @param {string} userId - userId is the sender of the message.
  * @param {object|string} inMsg - message to be sent to bot
  * @param {function} callback - callback function to be invoked after message is sent
+ * @deprecated use {@link module:Util/Webhook.messageToBotWithProperties} instead
  */
 function messageToBot(channelUrl, channelSecretKey, userId, inMsg, callback) {
+  console.warn("messageToBot() is deprecated in favor of messageToBotWithProperties()"); 
   messageToBotWithProperties(channelUrl, channelSecretKey, userId, inMsg, null, callback);
 }
 
 /**
  * utility function to send message to bot webhook channel, generating the right message with signature.  This function also allows additional
- * properties to be sent along to the bot.  A common use case is to add a userProfile property.
+ * properties to be sent along to the bot.  A common use case is to add a profile property.
  * @function module:Util/Webhook.messageToBotWithProperties
  * @param {string} channelUrl - send the message to this channel url
  * @param {string} channelSecretKey - secret key of the channel for computing message signature.
@@ -88,23 +100,32 @@ function messageToBot(channelUrl, channelSecretKey, userId, inMsg, callback) {
  * @param {object|string} inMsg - message to be sent to bot
  * @param {object} [additionalProperties] - additional properties like profile can be added
  * @param {function} callback - callback function to be invoked after message is sent
+ * @example
+ *    webhookUtil.messageToBotWithProperties(
+ *        channelUrl, 
+ *        channelSecretKey, 
+ *        userId, 
+ *        messagePayload, 
+ *        {
+ *           "profile": {
+ *             "firstName": 'John',
+ *             "lastName": 'Smith'
+ *             "age": 22,
+ *             "clientType": 'Alexa'
+ *           }
+ *        }, 
+ *        function (err) {
+ *           if (err) {
+ *             logger.warn("Failed sending message to Bot");
+ *           }
+ *        }
+ *   );
  */
 function messageToBotWithProperties(channelUrl, channelSecretKey, userId, inMsg, additionalProperties, callback) {
   var outMsg = {
     userId: userId,
   };
   outMsg.messagePayload = inMsg;
-  /*
-      For example, additionalProperties could be:
-      {
-        "profile": {
-          "firstName": 'John',
-          "lastName": 'Smith'
-          "age": 22,
-          "clientType": 'Alexa'
-        }
-      }
-    */
   if (additionalProperties) {
     outMsg = Object.assign(outMsg, additionalProperties);
   }
@@ -121,15 +142,10 @@ function messageToBotWithProperties(channelUrl, channelSecretKey, userId, inMsg,
     followAllRedirects: true,
     followOriginalHttpMethod: true,
     callback: function (err, response, body) {
-      if (!err) {
-        callback(null);
+      if (err) {
+        console.warn('messageToBotWithProperties error', err);    
       }
-      else {
-        console.log(response);
-        console.log(body);
-        console.log(err);
-        callback(err);
-      }
+      callback(err, response, body);
     }
   });
 }

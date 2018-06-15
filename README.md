@@ -4,9 +4,10 @@ This SDK is intended as the main productivity resource for Oracle Bots developme
 express environment.
 
 - [Installation](#installation) - Installation and usage information.
+- [Custom Components](#custom-components) - Developing your custom bot components.
 - [Middleware](#middleware) - Configurable Bots express middleware.
 - [Utils](#utilities) - Utility functions for interfacing with Bots.
-- [Custom Components](#custom-components) - Developing your custom bot components.
+- [Unit Testing Harness](#Unit-Testing-Harness) - Facility for unit testing custom components.
 
 ---
 
@@ -15,6 +16,55 @@ express environment.
 ```shell
 npm install --save @oracle/bots-node-sdk
 ```
+
+## Custom Components
+
+Using the `@oracle/bots-node-sdk` for Custom Component development introduces some
+new features, and is **100%** compatible with existing components you may have
+already developed with the original SDK.
+
+This SDK supports two structures for the definition of a custom component, one
+of which is the traditional object export.
+
+```javascript
+module.exports = {
+  metadata: () => ({
+    name: 'my.custom.component',
+    properties: {},
+    supportedActions: []
+  }),
+  invoke: (conversation, done) => {
+    conversation.reply('hello').transition();
+    done();
+  }
+}
+```
+
+> Custom Component example as Object
+
+You may also define a component by exporting class(es) with the **OPTION** of
+extending the `ComponentAbstract` class for additional iVars and methods.
+**NOTE** Component classes are instantiated as _singletons_.
+
+```javascript
+const { ComponentAbstract } = require('@oracle/bots-node-sdk/lib');
+
+module.exports = class MyCustomComponent extends ComponentAbstract {
+  metadata() {
+    return {
+      name: 'my.custom.component',
+      properties: {},
+      supportedActions: []
+    }
+  }
+  invoke(conversation, done) {
+    conversation.reply('hello').transition();
+    done();
+  }
+}
+```
+
+> Custom Component example as JavaScript class
 
 ## Middleware
 
@@ -74,55 +124,6 @@ processed by the middleware because the possible message formats, protocols, etc
 for any given client can vary indefinitely. For this purpose, the SDK exposes
 the [Webhook Util](#webhook-util) methods.
 
-## Custom Components
-
-Using the `@oracle/bots-node-sdk` for Custom Component development introduces some
-new features, and is **100%** compatible with existing components you may have
-already developed with the original SDK.
-
-This SDK supports two structures for the definition of a custom component, one
-of which is the traditional object export.
-
-```javascript
-module.exports = {
-  metadata: () => ({
-    name: 'my.custom.component',
-    properties: {},
-    supportedActions: []
-  }),
-  invoke: (conversation, done) => {
-    conversation.reply('hello').tranistion();
-    done();
-  }
-}
-```
-
-> Custom Component example as Object
-
-You may also define a component by exporting class(es) with the **OPTION** of
-extending the `ComponentAbstract` class for additional iVars and methods.
-**NOTE** Component classes are instantiated as _singletons_.
-
-```javascript
-const { ComponentAbstract } = require('@oracle/bots-node-sdk/lib');
-
-module.exports = class MyCustomComponent extends ComponentAbstract {
-  metadata() {
-    return {
-      name: 'my.custom.component',
-      properties: {},
-      supportedActions: []
-    }
-  }
-  invoke(conversation, done) {
-    conversation.reply('hello').transition();
-    done();
-  }
-}
-```
-
-> Custom Component example as JavaScript class
-
 ## Utilities
 
 Utility functions are available within the `Util` namespace of the main entrypoint.
@@ -139,8 +140,15 @@ const Util = require('@oracle/bots-node-sdk/util');
 
 ### Message Formatting
 
-- MessageModel - `OracleBot.Lib.MessageModel` create stuctured object of a known Common Message Model message such as Text, Card, Attachment, Location, Postback, Agent or Raw type.
+- MessageModel - `OracleBot.Lib.MessageModel` create stuctured object of a known Common Message Model message such as Text, Card, Attachment, Location, Postback, Agent or Raw type.  When using the Custom Components SDK, MessagModel is available via the SDK MessageModel() call. It can also be used outside of SDK.  In addition, MessageModel can also be used in browser.  When used in browser, include the package joi-browser.
 - MessageModel Utils - `OracleBot.Util.MessageModel` functions to help deriving string or speech representation of a Conversation Message Model payload. This is used primarily to output text or speech to voice and text-based channels like Alexa and SMS.
+
+```javascript
+const MessageModel = require('@oracle/bots-node-sdk').MessageModel;
+// or
+const OracleBot = require('@oracle/bots-node-sdk');
+const MessageModel = OracleBot.Lib.MessageModel;
+```
 
 ## Unit Testing Harness
 
