@@ -1,0 +1,207 @@
+{
+  "botId": "C174E54F-9A5D-4377-A34A-BD79C6DCCFC2",
+  "platformVersion": "1.1",
+  "context": {
+    "variables": {
+      "accountType": {
+        "type": {
+          "name": "AccountType",
+          "type": "ENUMVALUES",
+          "enumValues": "savings,checking,credit card",
+          "ruleParameters": null,
+          "parentEntity": null,
+          "patternExpression": null,
+          "prompts": ["Please enter AccountType"]
+        },
+        "value": "checking",
+        "entity": true
+      },
+      "txnType": {
+        "type": {
+          "name": "TransactionType",
+          "type": "ENUMVALUES",
+          "enumValues": "deposits,withdrawals,payments,checks,debits,credits",
+          "ruleParameters": null,
+          "parentEntity": null,
+          "patternExpression": null,
+          "prompts": ["Please enter TransactionType"]
+        },
+        "value": null,
+        "entity": true
+      },
+      "txnSelector": {
+        "type": {
+          "name": "TransactionSelector",
+          "type": "ENUMVALUES",
+          "enumValues": "last 2,last 3,last 4,last 5,largest,smallest",
+          "ruleParameters": null,
+          "parentEntity": null,
+          "patternExpression": null,
+          "prompts": ["Please enter TransactionSelector"]
+        },
+        "value": null,
+        "entity": true
+      },
+      "toAccount": {
+        "type": {
+          "name": "ToAccount",
+          "type": "ENUMVALUES",
+          "enumValues": "Lauren,Sasha,Mom,Chase Preferred,the babysitter",
+          "ruleParameters": null,
+          "parentEntity": null,
+          "patternExpression": null,
+          "prompts": ["Please enter ToAccount"]
+        },
+        "value": null,
+        "entity": true
+      },
+      "spendingCategory": {
+        "type": {
+          "name": "TrackSpendingCategory",
+          "type": "ENUMVALUES",
+          "enumValues": "gas,retail,travel,uber,restaurants,coffee,grocery",
+          "ruleParameters": null,
+          "parentEntity": null,
+          "patternExpression": null,
+          "prompts": ["Please enter TrackSpendingCategory"]
+        },
+        "value": null,
+        "entity": true
+      },
+      "paymentAmount": {
+        "type": {
+          "name": "CURRENCY",
+          "type": "SYSTEM",
+          "enumValues": null,
+          "ruleParameters": null,
+          "parentEntity": null,
+          "patternExpression": null
+        },
+        "value": null,
+        "entity": true
+      },
+      "iResult": {
+        "type": "nlpresult",
+        "value": {
+          "appId": "C174E54F-9A5D-4377-A34A-BD79C6DCCFC2",
+          "botName": "MJ_FinancialBot",
+          "entityMatches": { "AccountType": ["checking"] },
+          "intentMatches": {
+            "summary": [{ "intent": "Balances", "score": 1 }],
+            "detail": {
+              "final_norm": [
+                { "intent": "Balances", "score": 1, "sentence": [] }
+              ]
+            }
+          },
+          "query": "what's my balance in checking?",
+          "timeStamp": 1529013709696,
+          "trainingDataUnit": null
+        },
+        "entity": false
+      },
+      "iResult2": { "type": "nlpresult", "value": null, "entity": false },
+      "transaction": { "type": "string", "value": null, "entity": false },
+      "dispute": { "type": "string", "value": null, "entity": false },
+      "amount": { "type": "string", "value": null, "entity": false },
+      "merchant": { "type": "string", "value": null, "entity": false },
+      "date": { "type": "string", "value": null, "entity": false },
+      "description": { "type": "string", "value": null, "entity": false },
+      "system.errorState": { "type": "string", "value": null, "entity": false },
+      "system.errorAction": {
+        "type": "string",
+        "value": null,
+        "entity": false
+      },
+      "system.invalidUserInput": {
+        "type": "boolean",
+        "value": false,
+        "entity": false
+      }
+    },
+    "parent": {
+      "variables": {
+        "botsUserError": { "type": "boolean", "value": false, "entity": false }
+      },
+      "scope": "user",
+      "parent": {
+        "variables": {
+          "lastName": { "type": "string", "value": "Jabali", "entity": false },
+          "firstName": { "type": "string", "value": "Noah", "entity": false },
+          "signedUpAt": {
+            "type": "string",
+            "value": "2018-06-14T20:14:48.702Z",
+            "entity": false
+          },
+          "timezoneOffset": { "type": "int", "value": 0, "entity": false },
+          "updatedOn": {
+            "type": "string",
+            "value": "2018-06-14T20:14:50.181Z",
+            "entity": false
+          },
+          "customVariable1": {
+            "type": "string",
+            "value": "marcelo",
+            "entity": false
+          },
+          "locale": { "type": "string", "value": "en_US", "entity": false },
+          "customVariable2": {
+            "type": "string",
+            "value": "jabali",
+            "entity": false
+          },
+          "email": {
+            "type": "string",
+            "value": "marcelo@oracle.com",
+            "entity": false
+          }
+        },
+        "scope": "profile"
+      }
+    }
+  },
+  "properties": {
+    "firstName": "Noah",
+    "lastName": "Jabali",
+    "accountType": "checking",
+    "custom1": "marcelo",
+    "custom2": "jabali",
+    "_internal_componentService":
+      "{\"name\":\"BotsBankComponents\",\"url\":\"https://local-ccc-marcelo.ngrok.io/mobile/custom/bots_samples/components\",\"createdOn\":\"2018-06-14T20:10:31.806Z\",\"updatedOn\":\"2018-06-14T20:35:28.728Z\",\"id\":\"91BA1E50-1D1C-4ABA-B344-738CA59D9A25\",\"headers\":[],\"credentials\":{\"type\":\"basic\",\"username\":\"MyTestUser\",\"passwordKey\":\"557b252e-d2b2-463a-b2df-36f67edef424\"},\"version\":\"1.1\"}",
+    "email": "marcelo@oracle.com"
+  },
+  "message": {
+    "id": "fffd73e9-4f57-4c0e-aedd-f8d3aa87e019",
+    "platformVersion": "1.1",
+    "tenantId": "idcs-f4f5d14b6c0a475684a0f163f3d1079b",
+    "channelConversation": {
+      "botId": "C174E54F-9A5D-4377-A34A-BD79C6DCCFC2",
+      "channelId": "EED4CE28-1613-4508-A3F6-0D7BAE7C2480",
+      "userId": "c6f92efb64f4bab2ce26c9e3",
+      "sessionId": "c6f92efb64f4bab2ce26c9e3",
+      "type": "web"
+    },
+    "messagePayload": {
+      "type": "text",
+      "text": "what's my balance in checking?"
+    },
+    "payload": {
+      "role": "appUser",
+      "name": "Noah Jabali",
+      "received": 1529013709.548,
+      "text": "what's my balance in checking?",
+      "_id": "5b22e5cda251620022bcec3f",
+      "source": { "id": "5ad27c00136341be8ae4bda576ccb42d", "type": "web" },
+      "type": "text",
+      "authorId": "c6f92efb64f4bab2ce26c9e3"
+    },
+    "retryCount": 0,
+    "executionContext":
+      "1.0000MG0KQhSFg4O5Ijl3if1R1EEm001W27;kXhglfDW8JTTdKTP9URSoHQRZLRHLPGHVPOPZJTBaKEPp4PCo2QDZGDOo7DDq8CDXGEPl6FCaJCPl0FDt2PWp2RRoPGPUJHCr4DHp4EHh9DGp4HBo3FDrD9Gn4DGh2GHr9FGq4JG3MJGm0ZGZKSULGSPXKTPJHSRo4USpLO",
+    "createdOn": "2018-06-14T22:01:49.661Z",
+    "type": "user",
+    "stateCount": 4
+  },
+  "state": "printBalance",
+  "previousState": "askBalancesAccountType"
+}
