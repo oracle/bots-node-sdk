@@ -1,6 +1,6 @@
 "use strict";
 const MessageModel = require('./lib/message/messageModelBrowser').MessageModel;
-const Util = require('./util/');
+const messageModelUtil = require('./util/');
 /**
  * This is the top level entrypoint to this package when run in browser.  Only MessageModel (using joi-browser)
  * and Util are returned.
@@ -11,6 +11,8 @@ const Util = require('./util/');
  * ```
  */
 module.exports = {
-  MessageModel,
-  Util
+  MessageModel: MessageModel,
+  Util: {
+    messageModelUtil: messageModelUtil
+  }
 };

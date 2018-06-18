@@ -144,7 +144,7 @@ const Util = require('@oracle/bots-node-sdk/util');
 - MessageModel Utils - `OracleBot.Util.MessageModel` functions to help deriving string or speech representation of a Conversation Message Model payload. This is used primarily to output text or speech to voice and text-based channels like Alexa and SMS.
 
 ```javascript
-const MessageModel = require('@oracle/bots-node-sdk').MessageModel;
+const MessageModel = require('@oracle/bots-node-sdk/lib').MessageModel;
 // or
 const OracleBot = require('@oracle/bots-node-sdk');
 const MessageModel = OracleBot.Lib.MessageModel;
