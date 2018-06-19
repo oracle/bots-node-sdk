@@ -8,6 +8,9 @@ const { CONSTANTS } = require('../../common/constants');
 const { MiddlewareAbstract } = require("../../middleware/abstract");
 const { ParserMiddleware } = require("../../middleware/parser");
 const { ComponentMiddleware } = require("../../middleware/component");
+
+const { webhookUtil } = require("../../util/");
+const { WebhookClient, WebhookEvent } = require('../../middleware/webhook');
 const { MockRequest } = require("../../testing");
 // some test components
 const { MyFirstComponent } = require("../support/testing/components/one");
@@ -216,7 +219,7 @@ describe('Middleware', () => {
       it('should error 400 without signature', done => {
         const body = { foo: 'test' };
         supertest(server)
-          .post(serverConf.webhookRouterUri)
+          .post(serverConf.webhookReceiverUri)
           .send(body)
           .expect(400)
           .end(err => err ? done.fail(err) : done());
@@ -232,16 +235,16 @@ describe('Middleware', () => {
       it('should error 403 with invalid signature', done => {
         const body = { foo: 'test' };
         const buf = Buffer.from(JSON.stringify(body), 'utf8');
-        const signature = OracleBot.Util.Webhook.buildSignatureHeader(buf, 'wrongsecret');
+        const badSignature = OracleBot.Util.Webhook.buildSignatureHeader(buf, 'wrongsecret');
         supertest(server)
-          .post(serverConf.webhookRouterUri)
-          .set(CONSTANTS.WEBHOOK_HEADER, signature)
+          .post(serverConf.webhookReceiverUri)
+          .set(CONSTANTS.WEBHOOK_HEADER, badSignature)
           .send(body)
           .expect(403)
           .end(err => err ? done.fail(err) : done());
       });
       
-      it('should support webhook router with receiver', done => {
+      it('should support standalone webhook receiver', done => {
         const body = { foo: 'test' };
         const buf = Buffer.from(JSON.stringify(body), 'utf8');
         const signature = OracleBot.Util.Webhook.buildSignatureHeader(buf, serverConf.webhookSecret);
@@ -252,18 +255,64 @@ describe('Middleware', () => {
           .expect(200)
           .end(err => err ? done.fail(err) : done());
       });
+
       
-      it('should support standalone webhook receiver', done => {
-        const body = { foo: 'test' };
-        const buf = Buffer.from(JSON.stringify(body), 'utf8');
-        const signature = OracleBot.Util.Webhook.buildSignatureHeader(buf, serverConf.webhookSecret);
-        supertest(server)
-          .post(serverConf.webhookRouterUri)
-          .set(CONSTANTS.WEBHOOK_HEADER, signature)
-          .send(body)
-          .expect(200)
-          .end(err => err ? done.fail(err) : done());
+      it('should support webhook client', done => {
+        const sender = spyOn(webhookUtil, 'messageToBotWithProperties').and.callFake((...args) => {
+          const url = args[0];
+          const callback = args[args.length - 1];
+          callback(url ? null : new Error('foo'));
+        });
+
+        const cb = { sent: null, received: null, error: null, };
+        Object.keys(cb)
+          .forEach(key => spyOn(cb, key))
+
+        const webhook = new WebhookClient({
+          channel: {
+            url: 'https://foo.bar',
+            secret: serverConf.webhookSecret,
+          }
+        });
+
+        webhook.on(WebhookEvent.ERROR, cb.error);
+        webhook.on(WebhookEvent.MESSAGE_SENT, cb.sent);
+        webhook.on(WebhookEvent.MESSAGE_RECEIVED, cb.received);
+
+        webhook.send(null) // invoke with empty message
+          .then(() => expect(sender).not.toHaveBeenCalled())
+          .then(() => webhook.send({ // invoke with message
+            userId: 1234,
+            messagePayload: {text: 'hello'},
+          }).then(() => {
+            expect(sender).toHaveBeenCalled();
+            expect(cb.sent).toHaveBeenCalled();
+          }))
+          .then(() => webhook.send(true, {}).catch(e => { // send to invoke spy error
+            expect(e).toBeDefined();
+            expect(cb.error).toHaveBeenCalled();
+          }))
+          .then(done).catch(done.fail);
+
       });
+
+      // it('should handle webhook client errors', done => {
+      //   spyOn(serverConf, 'stubWebhookClientHandler').and.callFake(() => {
+      //     return () => {throw new Error('Foo Bar')}
+      //   });
+      //   supertest(server)
+      //     .post(serverConf.webhookClientUri)
+      //     .send({})
+      //     .expect(500)
+      //     .end(err => err ? done.fail(err) : done());
+      // });
+
+      it('should throw for invalid event subscriptions', () => {
+        const webhook = new WebhookClient();
+        expect(webhook.on.bind(webhook, 'foo')).toThrow();
+      });
+      
+
     });
 
   });

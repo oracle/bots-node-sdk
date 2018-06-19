@@ -7,6 +7,7 @@ const Shell = require("../lib/component/shell");
 /**
  * Options for configuring bots custom component middleware.
  * @typedef  {Object} ComponentMiddlewareOptions
+ * @memberof module:Middleware
  * @property {string} [cwd=process.cwd()] - Working directory from which any component paths are relative.
  * @property {(string[]|Object[]|Function[])} register - Series of paths to components or directories, Objects with name=>component pairs, Objects representing a component, or Component class ctor Functions.
  * @property {*} [mixins] - Any mixin properties for ComponentInvocation
@@ -20,6 +21,7 @@ const [PARAM_COMPONENT] = ['component'];
 /**
  * ComponentMiddleware.
  * @extends MiddlewareAbstract
+ * @memberof module:Middleware
  * @private
  */
 class ComponentMiddleware extends MiddlewareAbstract {

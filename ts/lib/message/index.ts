@@ -1,3 +1,3 @@
 // public exports
 export { MessageModel } from './messageModel';
-export * from './messageTypes'; // no objects
+export * from './messageTypes'; // type definitions only
