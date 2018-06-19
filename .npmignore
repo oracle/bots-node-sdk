@@ -1,5 +1,6 @@
 ts
 spec
+docs.js
 reports
 .istanbul.yml
 .eslintrc
