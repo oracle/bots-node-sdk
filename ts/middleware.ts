@@ -20,8 +20,11 @@ import * as middleware from './middleware/'; // directory index
  * ```
  */
 export namespace Middleware {
-  export const init = middleware.init;
+  // export const init = middleware.init;
   export const customComponent = middleware.customComponent;
+  export class WebhookClient extends middleware.WebhookClient {}
+  export import WebhookEvent = middleware.WebhookEvent;
+
   export const webhookReceiver = middleware.webhookReceiver;
-  export const webhookRouter = middleware.webhookRouter;
+
 }

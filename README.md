@@ -1,7 +1,18 @@
 # Oracle Bots Node.js SDK
 
-This SDK is intended as the main productivity resource for Oracle Bots development in a Node.js
-express environment.
+This SDK is intended as the main productivity resource for Oracle Bots development
+in a Node.js express environment. This package provides two primary solutions for
+custom implementations against the [Oracle Bots](https://docs.oracle.com/en/cloud/paas/mobile-autonomous-cloud/use-chatbot/overview1.html)
+platform: Running [Custom Component Services](https://docs.oracle.com/en/cloud/paas/mobile-autonomous-cloud/use-chatbot/bot-components.html#GUID-A93D7DAB-DCCE-42CD-8E6B-A06FB9BEE90D)
+and/or [Webhook Channels](https://docs.oracle.com/en/cloud/paas/mobile-autonomous-cloud/use-chatbot/bot-channels.html#GUID-96CCA06D-0432-4F20-8CDD-E60161F46680).
+
+- [Installation](#installation) - Installation and usage information.
+- [Custom Component](#custom-components) - Services to enrich a conversation flow with custom logic, API integrations, messages, and more.
+- [Webhook](#webhook) - Integrate with custom messaging channels using incoming/outgoing webhook.
+
+---
+
+> TODO: remove
 
 - [Installation](#installation) - Installation and usage information.
 - [Custom Components](#custom-components) - Developing your custom bot components.
@@ -13,8 +24,18 @@ express environment.
 
 ## Installation
 
-```shell
+```text
 npm install --save @oracle/bots-node-sdk
+```
+
+Install this project as a dependency to a Node.js express project.
+
+```javascript
+const express = require('express');
+const OracleBot = require('@oracle/bots-node-sdk');
+
+const app = express();
+OracleBot.init(app);
 ```
 
 ## Custom Components
@@ -111,18 +132,39 @@ const express = require('express');
 const app = express();
 OracleBot.init(app); // must be applied upstream of the receiver for proper parsing.
 
-const secret = process.env.WEBHOOK_SECRET; // can also be callback (req => string | Promise<string>)
-app.post('/webhook/message', OracleBot.Middleware.webhookReceiver(secret, (req, res, next) => {
+const { WebhookClient, WebhookEvent } = OracleBot.Middleware;
+
+const channel = { // also supports callback (req => ({url: string, secret: string}) | Promise<{url: string, secret: string}>)
+  url: process.env.BOT_WEBHOOK_URL,
+  secret: process.env.BOT_WEBHOOK_SECRET
+};
+const webhook = new WebhookClient({ channel: channel });
+webhook.on(WebhookEvent.ERROR, console.error);
+
+// receive bot messages
+app.post('/bot/message', webhook.receiver((req, res, next) => {
   const message = req.body;
   // Format & forward verified message to client.
   res.send();
 }));
+
+// OR use events and forego callback (res is sent automatically)
+app.post('/bot/message', webhook.receiver());
+webhook.on(WebhookEvent.MESSAGE_RECEIVED, message => {
+  // ...
+});
+
+// also integrate with other webhooks
+app.post('/user/message', (req, res) => {
+  let message = {};
+  // assign userId, messagePayload, etc and send.
+  webhook.send(message, channel) // returns promise
+    .then(() => res.send('ok'), e => res.status(400).send()));
+});
 ```
 
-> **NOTE** Messages sent by a client to a webhook channel are not directly
-processed by the middleware because the possible message formats, protocols, etc.
-for any given client can vary indefinitely. For this purpose, the SDK exposes
-the [Webhook Util](#webhook-util) methods.
+> **NOTE** `WebhookClient.send` supports an optional channel configuration as its
+second argument, thereby supporting request specific channel determination.
 
 ## Utilities
 
@@ -171,6 +213,24 @@ describe('MyComponent', () => {
 });
 ```
 
+## Using TypeScript
+
+This package includes `types`, and can therefore be used directly with TypeScript.
+
+```typescript
+import { Lib } from '@oracle/bots-node-sdk';
+
+class MyCustomComponent implements Lib.IComponentInterface {
+  public metadata(): Lib.IComponentMetadata {
+    return { name: 'my.custom.component' }
+  }
+  public invoke(conversation: Lib.Conversation, done: () => void): void {
+    // ...
+  }
+}
+```
+
 ## License
 
-Copyright (c) 2017, 2018 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0
+Copyright (c) 2017, 2018 Oracle and/or its affiliates The Universal Permissive
+License (UPL), Version 1.0

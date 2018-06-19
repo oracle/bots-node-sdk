@@ -1,99 +1,276 @@
 "use strict";
 
-const { MiddlewareAbstract } = require('./abstract');
 const { webhookUtil } = require('../util');
 const { CONSTANTS } = require('../common/constants');
 
 /**
- * Secret key request callback used in webhook message validation.
- * @callback SecretKeyCallback
- * @param {external:ExpressRequest} req - Request object
- * @return {string|Promise<string>} - Secret key to validate message or promise
+ * Options to configure a webhook client endpoint where messages are forwarded
+ * to the bot on a webhook channel.
+ * @typedef WebhookClientOptions
+ * @alias WebhookClientOptions
+ * @memberof module:Middleware.WebhookClient
+ * @property {WebhookChannel | WebhookChannelCallback} [channel] - Webhook channel configuration or callback.
+ */
+
+/**
+ * Configuration details for sending messages to bots on a webhook channel.
+ * @typedef {Object} WebhookChannel
+ * @alias WebhookChannel
+ * @memberof module:Middleware.WebhookClient
+ * @property {string} url - Webhook url issued by bots platform channel
+ * @property {string} secret - Message signature secret key used to create <code>X-Hub-Signature</code>
+ */
+
+/**
+ * Callback used by webhook client to obtain channel configuration information
+ * for a given request.
+ * @callback WebhookChannelCallback
+ * @alias WebhookChannelCallback
+ * @memberof module:Middleware.WebhookClient
+ * @param {external:ExpressRequest} [req] - The request object originally sent to the endpoint
+ * @return {WebhookChannel|Promise<WebhookChannel>}
  * @example
- * function getSecretKey(req) {
- *   return new Promise(resolve => {
- *     let key;
- *     // ...
- *     resolve(key);
- *   });
+ * const { WebhookClient, WebhookEvent } = require('@oracle/bots-node-sdk').Middleware;
+ * 
+ * function getChannelForReq(req) {
+ *   const client = req.params.client;
+ *   return {
+ *     url: 'https://...',  // Oracle bot webhook url specific to client
+ *     secret: '...',       // webhook channel secret key
+ *   }
  * }
- * const receiver = OracleBot.Middleware.webhookReceiver(getSecretKey, (req, res, next) => {
- *   // ...
- *   res.send();
+ * 
+ * const webhook = new WebhookClient({
+ *   channel: getChannelForReq,
  * });
+ * 
+ * app.post('/bot/messages', webhook.receiver());
+ * webhook.on(WebhookEvent.MESSAGE_RECEIVED, message => {
+ *   const { userId, messagePayload } = message;
+ *   // format and send to user.
+ * });
+ */
+
+/**
+ * WebhookEvent enum for WebhookClient event subscriptions
+ * @typedef WebhookEvent
+ * @alias WebhookEvent
+ * @memberof module:Middleware.WebhookClient
+ * @example
+ * const { WebhookClient, WebhookEvent } = require('@oracle/bots-node-sdk').Middleware;
+ *
+ * const webhook = new WebhookClient({
+ *   channel: // ...
+ * });
+ * //... 
+ * webhook.on(WebhookEvent.ERROR, error => {
+ *   // webhook error
+ *   console.error(error);
+ * });
+ * webhook.on(WebhookEvent.MESSAGE_RECEIVED, message => {
+ *   // message received from bot. 
+ *   // Format and send to user...
+ * });
+ * webhook.on(WebhookEvent.MESSAGE_SENT, message => {
+ *   // message was sent to bot.
+ * });
+ */
+var WebhookEvent = {};
+WebhookEvent[WebhookEvent["ERROR"] = 1] = "ERROR";
+WebhookEvent[WebhookEvent["MESSAGE_SENT"] = 2] = "MESSAGE_SENT";
+WebhookEvent[WebhookEvent["MESSAGE_RECEIVED"] = 3] = "MESSAGE_RECEIVED";
+
+/**
+ * Callback handler for WebhookClient event emitter.
+ * @callback WebhookEventHandler
+ * @alias WebhookEventHandler
+ * @memberof module:Middleware.WebhookClient
+ * @param {*} detail - Event detail payload.
+ * @return {void}
  */
 
 /**
  * Callback function upon successful webhook validation. Further validations may
  * be performed, and it is required to send the response for the webhook request.
- * as `res.send`, `res.json`, etc. Note that this response is NOT a message back to
- * the bot.
- * @callback WebhookReceiverCallback
- * @param {external:ExpressRequest} req - Webhook message validation error
- * @param {external:ExpressResponse} res - Validated message from bot
+ * as <code>res.send</code>, <code>res.json</code>, etc. Note that this response is
+ * NOT a message back to the bot.
+ * @callback WebhookReceiverMiddleware
+ * @alias WebhookReceiverMiddleware
+ * @memberof module:Middleware.WebhookClient
+ * @param {external:ExpressRequest} req - Request with validated req.body
+ * @param {external:ExpressResponse} res - Response to bots webhook request
  * @param {function} next - Express NextFunction
  * @return {void}
  */
 
 /**
- * Webhook middleware configuration options.
- * @typedef WebhookMiddlewareOptions
- * @property {string | RegExp | Array.<string | RegExp>} [path='/'] - Route pattern to receive bot message.
- * @property {string|SecretKeyCallback} secret - Secret key for bot message validation.
- * @property {WebhookReceiverCallback} callback - Webhook receiver callback for validated bot message.
+ * Webhook class for custom messaging implementations.
+ * @memberof module:Middleware
+ * @see https://docs.oracle.com/en/cloud/paas/mobile-autonomous-cloud/use-chatbot/bot-channels.html#GUID-96CCA06D-0432-4F20-8CDD-E60161F46680
+ * @example <caption>Simple client for sending and receivinng messages.</caption>
+ * const OracleBot = require('@oracle/bots-node-sdk');
+ * const express = require('express');
+ * const app = express();
+ * OracleBot.init(app); // init main application layer
+ * 
+ * // define webhook channel configuration.
+ * // can also be function (req => WebhookChannel | Promise<WebhookChannel>)
+ * const channel = {
+ *   url: process.env.BOT_WEBHOOK_URL,
+ *   secret: process.env.BOT_WEBHOOK_SECRET
+ * };
+ * const webhook = new OracleBot.Middleware.WebhookClient({ channel });
+ * 
+ * // receive messages from bot and forward to user
+ * app.post('/webhook/receiver', webhook.receiver((req, res) => {
+ *   const { userId, messagePayload } = req.body;
+ *   // Message was received and validated from bot. Forward to user accordingly...
+ * }))
+ * 
+ * // receive messages from a client webhook and forward to bot
+ * app.post('/webhook/:client/message', (req, res) => {
+ *   let message = {};
+ *   // assign userId, messagePayload, profile, etc... on message and send
+ *   webhook.send(message);
+ *    .then(() => res.send('ok'), e => res.status(400).send())
+ * });
  */
-
-/**
- * WebhookMiddleware. This middleware can be initialized with or without a 
- * router layer. If router is provided, then the receiver will automatically
- * be applied at the path specified in options.
- * @extends MiddlewareAbstract
- * @property {WebhookMiddlewareOptions} options 
- * @private
- */
-class WebhookMiddleware extends MiddlewareAbstract {
+class WebhookClient {
   /**
-   * main initialization
-   * @param {*} router 
-   * @param {*} options 
+   * @constructor
+   * @param {WebhookClientOptions} [options]
    */
-  _init(router, options) {
-    if (router) {
-      // add message receiver
-      router.post(options.path || '/', this.receiver());
-    }
+  constructor(options) {
+    this._subscriptions = new Map();
+    this._options = options || {};
+    // prepare event subscription map
+    Object.keys(WebhookEvent)
+      .filter(key => ~~key) // non-zero integer only
+      .forEach((eventType) => {
+        this._subscriptions.set(`${eventType}`, new Set());
+      });
   }
 
   /**
-   * Webhook receiver middleware. Allows direct usage via {@link module:Middleware.webhookRecevier}
-   * @return ExpressRequestHandler
+   * get event subscriptions
+   * @param {WebhookEvent} event 
+   * @private
    */
-  receiver() {
-    return (req, res, next) => {
-      this.validationHandler()(req, res, err => {
-        if (err) {
-          // response to webhook with error
-          // TODO: standardize for bots platform logs
-          this._logger.error(err);
-          res.json({ok: false, error: err.message}); // status code is already set.
+  _getSubscriptions(event) {
+    const subs = this._subscriptions.get(`${event}`);
+    if (!subs) {
+      throw new Error(`Unrecognized webhook event type, '${event}'`);
+    }
+    return subs;
+  }
+
+  /**
+   * dispatch event to subscribers
+   * @param {WebhookEvent} event 
+   * @param {*} args
+   * @private
+   */
+  _dispatch(event, args) {
+    this._getSubscriptions(event)
+      .forEach(handler => handler.apply(handler, [].concat(args)));
+  }
+
+  /**
+   * get channel configuration
+   * @param {external:ExpressRequest} [req]
+   * @private
+   */
+  _getChannelConfig(req) {
+    const { channel } = this._options;
+    return Promise.resolve(typeof channel === 'function' ? channel(req) : channel)
+      .then(config => {
+        // ensure backwards compatibility with webhookReceiver configuration (secret only callback)
+        return typeof config === 'object' ? config : {
+          url: null,
+          secret: config
+        };
+      });
+  }
+
+  /**
+   * Subscribe to WebhookClient events
+   * @param {WebhookEvent} event - Event type to subscribe
+   * @param {WebhookEventHandler} handler - Event handler
+   * @return {WebhookClient}
+   */
+  on(event, handler) {
+    this._getSubscriptions(event).add(handler);
+    return this;
+  }
+
+  /**
+   * Send client message to bot
+   * @see https://docs.oracle.com/en/cloud/paas/mobile-autonomous-cloud/use-chatbot/bot-channels.html#GUID-96CCA06D-0432-4F20-8CDD-E60161F46680
+   * @param {object} message - Complete payload to send
+   * @param {WebhookChannel} [channel] - Webhook channel configuration to use (if different than that in the instance options)
+   */
+  send(message, channel) {
+    return Promise.resolve(channel || this._getChannelConfig())
+      .then(webhook => new Promise((resolve, reject) => {
+        if (message) {
+          try {
+            const { url, secret } = webhook;
+            const { userId, messagePayload } = message, extras = Object.assign({}, message);
+            webhookUtil.messageToBotWithProperties(url, secret, userId, messagePayload, extras, error => error ? reject(error) : resolve(true));
+          } catch (e) {
+            reject(e);
+          }
         } else {
-          // proceed to message handler
-          this.messageHandler()(req, res, next);
+          resolve();
+        }
+      }))
+      .then(sent => sent && this._dispatch(WebhookEvent.MESSAGE_SENT, message))
+      .catch(e => {
+        // dispatch errors
+        this._dispatch(WebhookEvent.ERROR, e);
+        return Promise.reject(e);
+      });
+  }
+
+  /**
+   * Receiver middleware to handle messages incoming from bot. If used without
+   * callback, messages will be dispatched to any subscribers to the
+   * <code>WebhookEvent.MESSAGE_RECEIVED</code> event.
+   * @param {WebhookReceiverCallback} [callback] - Optional callback for received messages from bot.
+   * @return {WebhookReceiverMiddleware}
+   */
+  receiver(callback) {
+    return (req, res, next) => {
+      // Validate message from bot
+      this._receiverValidationHandler()(req, res, err => {
+        // respond to the webhook request.
+        if (err) {
+          this._dispatch(WebhookEvent.ERROR, err);
+          // TODO: standardize response for bots platform
+          res.json({ ok: false, error: err.message }); // status code is already set.
+        } else {
+          // fire callback or dispatch to bot response subscribers
+          if (callback) {
+            callback(req, res, next);
+          } else {
+            this._dispatch(WebhookEvent.MESSAGE_RECEIVED, req.body);
+            res.json({ ok: true });
+          }
         }
       });
-    }
+    };
   }
 
   /**
-   * webhook request validation. supported either as middleware layer, or 
+   * webhook request validation. supported either as middleware layer, or
    * receiver callback
+   * @private
    */
-  validationHandler() {
-    return (req, res, next) => {
-      const { secret } = this.options;
-      return Promise.resolve(typeof secret === 'function' ? secret(req) : secret)
-        .then(key => {
-          if (key) {
+  _receiverValidationHandler() {
+    return (req, res, cb) => {
+      return this._getChannelConfig(req)
+        .then(channel => {
+          if (channel) {
             const body = req[CONSTANTS.PARSER_RAW_BODY]; // get original raw body
             const encoding = req[CONSTANTS.PARSER_RAW_ENCODING]; // get original encoding
             const signature = req.get(CONSTANTS.WEBHOOK_HEADER); // read signature header
@@ -101,7 +278,7 @@ class WebhookMiddleware extends MiddlewareAbstract {
               res.status(400);
               return Promise.reject(new Error(`${CONSTANTS.WEBHOOK_HEADER} signature not found`));
             }
-            const valid = webhookUtil.verifyMessageFromBot(signature, body, encoding, key);
+            const valid = webhookUtil.verifyMessageFromBot(signature, body, encoding, channel.secret);
             if (!valid) {
               res.status(403);
               return Promise.reject(new Error('Signature Verification Failed'));
@@ -112,23 +289,13 @@ class WebhookMiddleware extends MiddlewareAbstract {
           }
           return;
         })
-        .then(next) // passing callback
-        .catch(next); // cb with failure
-    }
-  }
-
-  /**
-   * invoke callback with validated message payload
-   */
-  messageHandler() {
-    return (req, res, next) => {
-      const { callback } = this.options;
-      // return callback && callback(err, !err && req.body);
-      return callback && callback(req, res, next);
-    }
+        .then(cb) // passing callback
+        .catch(cb); // cb with failure
+    };
   }
 }
 
 module.exports = {
-  WebhookMiddleware,
+  WebhookEvent,
+  WebhookClient,
 }

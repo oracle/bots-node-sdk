@@ -27,9 +27,9 @@ function verifyMessageFromBot(signature, msgBody, encoding, secretKey) {
   //const body = Buffer.from(JSON.stringify(msgBody), encoding);
   const calculatedSig = buildSignatureHeader(msgBody, secretKey);
   if (signature !== calculatedSig) {
-    console.log('Invalid signature:', signature);
+    // console.log('Invalid signature:', signature);
     //console.log('Body: \n"%s"', body);
-    console.log('Calculated sig: %s', calculatedSig);
+    // console.log('Calculated sig: %s', calculatedSig);
     return false;
   }
   return true;
@@ -152,6 +152,8 @@ function messageToBotWithProperties(channelUrl, channelSecretKey, userId, inMsg,
 
 /**
  * The webhookUtil is a set of utility functions for bot integration via webhook channel.
+ * While most use cases are accommodated through the {@link module.Middleware.WebhookClient|WebhookClient}
+ * instance methods and options, direct use of these methods is also possible.
  * @module Util/Webhook
  */
 module.exports = {

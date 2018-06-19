@@ -1,10 +1,19 @@
 {
   "name": "@oracle/bots-node-sdk",
-  "version": "0.0.14",
+  "version": "0.0.16",
   "description": "Oracle bot custom component service middleware and utilities",
   "main": "index.js",
   "browser": "index-browser.js",
   "typings": "typings/index.d.ts",
+  "keywords": [
+    "oracle",
+    "bots",
+    "node",
+    "express",
+    "sdk",
+    "custom components",
+    "webhook"
+  ],
   "engines": {
     "node": ">=6.11.3",
     "npm": ">=3.10.10"
