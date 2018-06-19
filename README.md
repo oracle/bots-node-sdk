@@ -61,18 +61,39 @@ const express = require('express');
 const app = express();
 OracleBot.init(app); // must be applied upstream of the receiver for proper parsing.
 
-const secret = process.env.WEBHOOK_SECRET; // can also be callback (req => string | Promise<string>)
-app.post('/webhook/message', OracleBot.Middleware.webhookReceiver(secret, (req, res, next) => {
+const { WebhookClient, WebhookEvent } = OracleBot.Middleware;
+
+const channel = { // also supports callback (req => ({url: string, secret: string}) | Promise<{url: string, secret: string}>)
+  url: process.env.BOT_WEBHOOK_URL,
+  secret: process.env.BOT_WEBHOOK_SECRET
+};
+const webhook = new WebhookClient({ channel: channel });
+webhook.on(WebhookEvent.ERROR, console.error);
+
+// receive bot messages
+app.post('/bot/message', webhook.receiver((req, res, next) => {
   const message = req.body;
   // Format & forward verified message to client.
   res.send();
 }));
+
+// OR use events and forego callback (res is sent automatically)
+app.post('/bot/message', webhook.receiver());
+webhook.on(WebhookEvent.MESSAGE_RECEIVED, message => {
+  // ...
+});
+
+// also integrate with other webhooks
+app.post('/user/message', (req, res) => {
+  let message = {};
+  // assign userId, messagePayload, etc and send.
+  webhook.send(message, channel) // returns promise
+    .then(() => res.send('ok'), e => res.status(400).send()));
+});
 ```
 
-> **NOTE** Messages sent by a client to a webhook channel are not directly
-processed by the middleware because the possible message formats, protocols, etc.
-for any given client can vary indefinitely. For this purpose, the SDK exposes
-the [Webhook Util](#webhook-util) methods.
+> **NOTE** `WebhookClient.send` supports an optional channel configuration as its
+second argument, therfore supporting request specific channel determination.
 
 ## Custom Components
 
@@ -163,6 +184,24 @@ describe('MyComponent', () => {
 });
 ```
 
+## Using TypeScript
+
+This package includes `types`, and can therefore be used directly with TypeScript.
+
+```typescript
+import { Lib } from '@oracle/bots-node-sdk';
+
+class MyCustomComponent implements Lib.IComponentInterface {
+  public metadata(): Lib.IComponentMetadata {
+    return { name: 'my.custom.component' }
+  }
+  public invoke(conversation: Lib.Conversation, done: () => void): void {
+    // ...
+  }
+}
+```
+
 ## License
 
-Copyright (c) 2017, 2018 Oracle and/or its affiliates The Universal Permissive License (UPL), Version 1.0
+Copyright (c) 2017, 2018 Oracle and/or its affiliates The Universal Permissive
+License (UPL), Version 1.0

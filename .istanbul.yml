@@ -3,6 +3,8 @@ instrumentation:
     '*.js',
     'docs/**',
     'reports',
+    'typings',
+    'ts/*',
     'node_modules',
     '**/spec/**',
   ]

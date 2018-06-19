@@ -4,7 +4,7 @@ const webhookSecret = '8e34e25f71aa447e87e065300cf305f0';
 module.exports = {
   port: 4111,
   componentPrefix: '/bot',
-  webhookRouterUri: '/webhook',
+  // webhookRouterUri: '/webhook',
   webhookReceiverUri: '/webhook/standalone',
   webhookWithoutSecret: '/webhook/nosecret',
   webhookClientUri: '/webhook/client',

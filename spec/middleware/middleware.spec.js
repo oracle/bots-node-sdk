@@ -218,7 +218,7 @@ describe('Middleware', () => {
       it('should error 400 without signature', done => {
         const body = { foo: 'test' };
         supertest(server)
-          .post(serverConf.webhookRouterUri)
+          .post(serverConf.webhookReceiverUri)
           .send(body)
           .expect(400)
           .end(err => err ? done.fail(err) : done());
@@ -234,16 +234,28 @@ describe('Middleware', () => {
       it('should error 403 with invalid signature', done => {
         const body = { foo: 'test' };
         const buf = Buffer.from(JSON.stringify(body), 'utf8');
-        const signature = OracleBot.Util.Webhook.buildSignatureHeader(buf, 'wrongsecret');
+        const badSignature = OracleBot.Util.Webhook.buildSignatureHeader(buf, 'wrongsecret');
         supertest(server)
-          .post(serverConf.webhookRouterUri)
-          .set(CONSTANTS.WEBHOOK_HEADER, signature)
+          .post(serverConf.webhookReceiverUri)
+          .set(CONSTANTS.WEBHOOK_HEADER, badSignature)
           .send(body)
           .expect(403)
           .end(err => err ? done.fail(err) : done());
       });
       
-      it('should support webhook router with receiver', done => {
+      // it('should support webhook router with receiver', done => {
+      //   const body = { foo: 'test' };
+      //   const buf = Buffer.from(JSON.stringify(body), 'utf8');
+      //   const signature = OracleBot.Util.Webhook.buildSignatureHeader(buf, serverConf.webhookSecret);
+      //   supertest(server)
+      //     .post(serverConf.webhookReceiverUri)
+      //     .set(CONSTANTS.WEBHOOK_HEADER, signature)
+      //     .send(body)
+      //     .expect(200)
+      //     .end(err => err ? done.fail(err) : done());
+      // });
+      
+      it('should support standalone webhook receiver', done => {
         const body = { foo: 'test' };
         const buf = Buffer.from(JSON.stringify(body), 'utf8');
         const signature = OracleBot.Util.Webhook.buildSignatureHeader(buf, serverConf.webhookSecret);
@@ -254,19 +266,9 @@ describe('Middleware', () => {
           .expect(200)
           .end(err => err ? done.fail(err) : done());
       });
-      
-      it('should support standalone webhook receiver', done => {
-        const body = { foo: 'test' };
-        const buf = Buffer.from(JSON.stringify(body), 'utf8');
-        const signature = OracleBot.Util.Webhook.buildSignatureHeader(buf, serverConf.webhookSecret);
-        supertest(server)
-          .post(serverConf.webhookRouterUri)
-          .set(CONSTANTS.WEBHOOK_HEADER, signature)
-          .send(body)
-          .expect(200)
-          .end(err => err ? done.fail(err) : done());
-      });
 
+      /**
+       * 
       it('should support webhook client', done => {
         const sender = spyOn(webhookUtil, 'messageToBotWithProperties').and.callFake((...args) => {
           const cb = args[args.length - 1];
@@ -309,6 +311,7 @@ describe('Middleware', () => {
           .expect(500)
           .end(err => err ? done.fail(err) : done());
       });
+      */
 
     });
 

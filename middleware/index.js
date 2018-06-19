@@ -3,7 +3,7 @@
 const express = require("express");
 const { ParserMiddleware } = require("./parser");
 const { ComponentMiddleware } = require("./component");
-const { WebhookMiddleware } = require("./webhook");
+const { WebhookClient, WebhookEvent } = require("./webhook");
 
 /**
  * @external ExpressRouter
@@ -42,6 +42,7 @@ const { WebhookMiddleware } = require("./webhook");
  * @param {ComponentMiddlewareOptions} [options.component] - Custom component middleware options.
  * @param {WebhookMiddlewareOptions} [options.webhook] - Webhook middleware options as router.
  * @return {(external:ExpressRouter|external.ExpressApplication)} - Application layer with middleware applied
+ * @private
  * @example
  * const OracleBot = require('@oracle/bots-node-sdk');
  * const express = require('express');
@@ -51,16 +52,11 @@ const { WebhookMiddleware } = require("./webhook");
  * app.use('/components', OracleBot.Middleware.customComponent({
  *   register: ['./components'],
  * }));
- * app.use('/webhook', OracleBot.Middleware.webhookRouter({
- *   secret: (req) => { ... }
- *   callback: (req, res, next) => { ... }x
- * }));
  */
 function init(layer, options = {}) {
   // create iterable map
   const mwMap = new Map([
     ['component', ComponentMiddleware],
-    ['webhook', WebhookMiddleware],
   ]);
   // apply body-parser for every type unless false
   if (options.parser !== false) {
@@ -92,7 +88,7 @@ function init(layer, options = {}) {
  * const app = express();
  * app.use('/components', OracleBot.Middleware.customComponent({
  *   cwd: __dirname, // root of application source
- *   register: [ // explicitly provide a global registry
+ *   register: [ // provide components and paths to register
  *     './path/to/a/directory',
  *     './path/to/a/component',
  *     require('./path/to/another/component'),
@@ -115,6 +111,7 @@ function customComponent(options = {}) {
  * @function module:Middleware.webhookReceiver
  * @param {string|SecretKeyCallback} secret - Secret key for bot message validation
  * @param {WebhookReceiverCallback} callback - Callback upon successful webhook message
+ * @deprecated in favor of {@link module:Middleware.WebhookClient|WebhookClient.receiver()}
  * @example
  * const OracleBot = require('@oracle/bots-node-sdk');
  * const express = require('express');
@@ -129,89 +126,9 @@ function customComponent(options = {}) {
  * }));
  */
 function webhookReceiver(secret, callback) {
-  return new WebhookMiddleware(null, {
-    secret,
-    callback,
-  }).receiver();
-}
-
-/**
- * Client middleware for receiving arbitrary client messages inbound for Bots.
- * This middleware is designed as a convenience for situations where a chat
- * client posts outbound messages to a service where the message must be
- * formatted and forwarded as a incoming message to the bot. Response to the client
- * request should be made inside the handler - `res.send('ok')`
- * @function module:Middleware.webhookClient
- * @param {WebhookChannel|WebhookChannelConfigCallback} channel - Webhook channel configuration or callback
- * @param {WebhookClientHandlerCallback} handler - Handler function to receive client messages and format/send to Bots via callback.
- * @_param {ExpressRequestHandler} [options.validator] - Optional client message validator middleware. Callback with next(error) if invalid.
- * @example
- * const OracleBot = require('@oracle/bots-node-sdk');
- * const express = require('express');
- * const app = express();
- * OracleBot.init(app); // init body parser
- * 
- * // define webhook channel configuration.
- * // can also be function (req => WebhookChannel | Promise<WebhookChannel>)
- * const webhook = {
- *   url: process.env.BOT_WEBHOOK_URL,
- *   secret: process.env.BOT_WEBHOOK_SECRET,
- * };
- * app.post('/webhook/:client/message', OracleBot.Middleware.webhookClient(webhook, (req, res, callback) => {
- *   let message = {};
- *   // assign userId, messagePayload, userProfile, etc... on message
- *   callback(null, message); // send formatted message to bot inbound webhook url
- * }));
- */
-function webhookClient(channel, handler) {
-  return new WebhookMiddleware(null, {
-    client: {
-      channel,
-      handler
-    }
-  }).client();
-}
-
-/**
- * Create a router for webhook messaging. A webhook {@link module:Middleware.webhookReceiver|receiver}
- * is automatically added to the router stack at the specified `path`. Note that
- * if body-parser is applied to the app, then {@link init|OracleBot.init(app)} 
- * must also be called.
- * @function module:Middleware.webhookRouter
- * @param {Object} options - Middleware configuration options.
- * @param {string | RegExp | Array.<string | RegExp>} [options.path='/'] - Route pattern to receive bot message.
- * @param {string|SecretKeyCallback} options.secret - Secret key for bot message validation.
- * @param {WebhookReceiverCallback} options.callback - Express request handler callback for validated request.
- * @param {WebhookClientOptions} [options.client] - Options to also configure a client message endpoint.
- * @param {ParserOptions} [options.parser] - Body parser middleware options.
- * @return {external:ExpressRouter} - Express router with parser and webhook receiver at the specified `path`.
- * @example
- * const OracleBot = require('@oracle/bots-node-sdk');
- * const express = require('express');
- * const app = express();
- * 
- * // define a new express.Router for webhook messages.
- * const router = OracleBot.Middleware.webhookRouter({
- *   path: '/webhook/messages',
- *   secret: (req) => {
- *     // resolve the secret key string|Promise<string>
- *   },
- *   callback: (req, res, next) => {
- *     // format message and send to client, socket, etc... 
- *     res.send();
- *   }
- * });
- * 
- * // add any other routes as necessary (for example from the chat client).
- * router.post('/user/messages', (req, res, next) => { ... })
- * app.use(router);
- */
-function webhookRouter(options = {}) {
-  const router = express.Router();
-  return init(router, {
-    webhook: options,
-    parser: options.parser,
-  });
+  console.warn('Deprecated webhookReceiver. Please use WebhookClient.receiver() instead.');
+  return new WebhookClient({ channel: secret })
+    .receiver(callback);
 }
 
 /**
@@ -223,10 +140,9 @@ function webhookRouter(options = {}) {
  * @requires body-parser
  */
 module.exports = {
-  init,
+  init, // for for tests
   // direct middleware methods
   customComponent,
-  webhookClient,
-  webhookReceiver,
-  webhookRouter,
+  webhookReceiver, // deprecated
+  WebhookClient, WebhookEvent,
 };

@@ -16,11 +16,7 @@ app.use(CONF.componentPrefix, OracleBot.Middleware.customComponent({
     './testing/more.components/a.component'
   ]
 }));
-// webhook router middlware
-app.use(CONF.webhookRouterUri, OracleBot.Middleware.webhookRouter({
-  secret: CONF.webhookSecret,
-  callback: (...args) => CONF.stubWebhookReceiverCallback()(...args),
-}));
+
 // standalone webhook receiver middleware
 app.post(CONF.webhookReceiverUri, OracleBot.Middleware.webhookReceiver(
   CONF.webhookSecretGetter, // this is a function callback for the secret
@@ -30,10 +26,6 @@ app.post(CONF.webhookReceiverUri, OracleBot.Middleware.webhookReceiver(
 app.post(CONF.webhookWithoutSecret, OracleBot.Middleware.webhookReceiver(
   null,
   (...args) => CONF.stubWebhookReceiverCallback()(...args) // stubbable callback
-));
-// webhook client middleware
-app.post(CONF.webhookClientUri, OracleBot.Middleware.webhookClient({},
-  (...args) => CONF.stubWebhookClientHandler()(...args)
 ));
 
 // some things behind the bot MW

@@ -24,9 +24,9 @@ function verifyMessageFromBot(signature, msgBody, encoding, secretKey) {
   //const body = Buffer.from(JSON.stringify(msgBody), encoding);
   const calculatedSig = buildSignatureHeader(msgBody, secretKey);
   if (signature !== calculatedSig) {
-    console.log('Invalid signature:', signature);
+    // console.log('Invalid signature:', signature);
     //console.log('Body: \n"%s"', body);
-    console.log('Calculated sig: %s', calculatedSig);
+    // console.log('Calculated sig: %s', calculatedSig);
     return false;
   }
   // console.log('Valid signature: %s', signature);
