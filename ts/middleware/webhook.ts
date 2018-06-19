@@ -78,7 +78,11 @@ export class WebhookClient {
   }
 
   private _getSubscriptions(event: WebhookEvent): Set<any> {
-    return this._subscriptions.get(<any>`${event}`);
+    const subs = this._subscriptions.get(<any>`${event}`);
+    if (!subs) {
+      throw new Error(`Invalid webhook event type, '${event}'`);
+    }
+    return subs;
   }
 
   private _dispatch(event: WebhookEvent, args: any): void {

@@ -167,7 +167,11 @@ class WebhookClient {
    * @private
    */
   _getSubscriptions(event) {
-    return this._subscriptions.get(`${event}`);
+    const subs = this._subscriptions.get(`${event}`);
+    if (!subs) {
+      throw new Error(`Unrecognized webhook event type, '${event}'`);
+    }
+    return subs;
   }
 
   /**
