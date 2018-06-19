@@ -9,7 +9,7 @@ import MessageModelSchemaFactory = require('./schema/messageModelSchema');
  * be used independently of the SDK.
  *
  * This utility can be used in a server side Nodejs environment, or in the browser.
- * When used in Nodejs, require the module 'joi' use it to initialize the class.  When used in browser, require the module 'joi-browser' instead.
+ * When used in Nodejs, require the module 'joi' use it to initialize the class.  When used in browser, require the module <code>joi-browser</code> instead.
  *
  * A MessageModel class instance can be instantiated using the constructor taking the payload
  * that represents the message.  The payload is then parsed and validated.

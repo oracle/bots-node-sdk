@@ -12,16 +12,6 @@ and/or [Webhook Channels](https://docs.oracle.com/en/cloud/paas/mobile-autonomou
 
 ---
 
-> TODO: remove
-
-- [Installation](#installation) - Installation and usage information.
-- [Custom Components](#custom-components) - Developing your custom bot components.
-- [Middleware](#middleware) - Configurable Bots express middleware.
-- [Utils](#utilities) - Utility functions for interfacing with Bots.
-- [Unit Testing Harness](#Unit-Testing-Harness) - Facility for unit testing custom components.
-
----
-
 ## Installation
 
 ```text
@@ -186,13 +176,13 @@ const Util = require('@oracle/bots-node-sdk/util');
 - MessageModel Utils - `OracleBot.Util.MessageModel` functions to help deriving string or speech representation of a Conversation Message Model payload. This is used primarily to output text or speech to voice and text-based channels like Alexa and SMS.
 
 ```javascript
-const MessageModel = require('@oracle/bots-node-sdk/lib').MessageModel;
+const { MessageModel } = require('@oracle/bots-node-sdk/lib');
 // or
 const OracleBot = require('@oracle/bots-node-sdk');
-const MessageModel = OracleBot.Lib.MessageModel;
+const { MessageModel } = OracleBot.Lib;
 ```
 
-## Unit Testing Harness
+## Unit Testing
 
 The SDK also includes unit testing facilities, which can be utilized within
 your preferred test runner.

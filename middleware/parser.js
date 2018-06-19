@@ -11,6 +11,8 @@ const { CONSTANTS } = require('../common/constants');
  * general options, consider using the {@link module:Util/Webhook.bodyParserRawMessageVerify}
  * function in your middleware configuration.
  * @typedef ParserOptions
+ * @alias ParserOptions
+ * @memberof module:Middleware
  * @property {boolean|Object} [json=true] - Parse json body payloads
  * @property {boolean|Object} [urlencoded=true] - Parse urlencoded body payloads
  * @property {string} [limit='5mb'] - Parser body size limit

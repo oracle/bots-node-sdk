@@ -1,7 +1,7 @@
 "use strict";
 const MessageModel = require('./lib/message/messageModelBrowser').MessageModel;
 /**
- * This is the top level entrypoint to this package when run in browser.  Only MessageModel (using joi-browser)
+ * This is the top level entrypoint to this package when run in browser.  Only MessageModel (using <code>joi-browser</code>)
  * is returned.
  *
  * ```javascript

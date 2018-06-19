@@ -6,6 +6,9 @@
 /**
  * Custom logger interface if using a custom logging utility.
  * @typedef {Object} CustomLogger
+ * @memberof module:Config
+ * @alias CustomLogger
+ * @alias CustomLogger
  * @property {Function} trace - trace method
  * @property {Function} debug - debug method
  * @property {Function} info - info method

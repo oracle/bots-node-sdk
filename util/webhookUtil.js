@@ -46,13 +46,13 @@ function verifyMessageFromBot(signature, msgBody, encoding, secretKey) {
  * @param {string} encoding - encoding of the raw message body.
  * @example
  *  app.post('/webhook/messages', 
- *            bodyParser.json({
- *              verify: webhookUtil.bodyParserRawMessageVerify
- *            }), 
- *            function (req, res) {
- *              // request body is now available in req.rawBody, req.encoding is also set
- *            }
- *   );
+ *    bodyParser.json({
+ *      verify: webhookUtil.bodyParserRawMessageVerify
+ *    }), 
+ *    function (req, res) {
+ *      // request body is now available in req.rawBody, req.encoding is also set
+ *    }
+ *  );
  */
 function bodyParserRawMessageVerify(req, res, buf, encoding) {
   req[CONSTANTS.PARSER_RAW_BODY] = buf;
@@ -101,25 +101,25 @@ function messageToBot(channelUrl, channelSecretKey, userId, inMsg, callback) {
  * @param {object} [additionalProperties] - additional properties like profile can be added
  * @param {function} callback - callback function to be invoked after message is sent
  * @example
- *    webhookUtil.messageToBotWithProperties(
- *        channelUrl, 
- *        channelSecretKey, 
- *        userId, 
- *        messagePayload, 
- *        {
- *           "profile": {
- *             "firstName": 'John',
- *             "lastName": 'Smith'
- *             "age": 22,
- *             "clientType": 'Alexa'
- *           }
- *        }, 
- *        function (err) {
- *           if (err) {
- *             logger.warn("Failed sending message to Bot");
- *           }
- *        }
- *   );
+ * webhookUtil.messageToBotWithProperties(
+ *   channelUrl, 
+ *   channelSecretKey, 
+ *   userId, 
+ *   messagePayload, 
+ *   {
+ *     "profile": {
+ *       "firstName": 'John',
+ *       "lastName": 'Smith'
+ *       "age": 22,
+ *       "clientType": 'Alexa'
+ *     }
+ *   },
+ *   function (err) {
+ *     if (err) {
+ *       logger.warn("Failed sending message to Bot");
+ *     }
+ *   }
+ * );
  */
 function messageToBotWithProperties(channelUrl, channelSecretKey, userId, inMsg, additionalProperties, callback) {
   var outMsg = {
@@ -142,10 +142,7 @@ function messageToBotWithProperties(channelUrl, channelSecretKey, userId, inMsg,
     followAllRedirects: true,
     followOriginalHttpMethod: true,
     callback: function (err, response, body) {
-      if (err) {
-        console.warn('messageToBotWithProperties error', err);    
-      }
-      callback(err, response, body);
+      callback(err, body);
     }
   });
 }

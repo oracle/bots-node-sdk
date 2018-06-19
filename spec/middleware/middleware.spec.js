@@ -55,14 +55,14 @@ describe('Middleware', () => {
     });
 
     describe('arbitrary routing', () => {
-      xit('should DENY `/` without auth', done => {
-        supertest(server)
-          .get('/')
-          .expect(401)
-          .end(err => {
-            return err ? done.fail(err) : done();
-          });
-      });
+      // xit('should DENY `/` without auth', done => {
+      //   supertest(server)
+      //     .get('/')
+      //     .expect(401)
+      //     .end(err => {
+      //       return err ? done.fail(err) : done();
+      //     });
+      // });
       it('should allow / WITH auth', done => {
         supertest(server)
           .get('/')
@@ -144,7 +144,7 @@ describe('Middleware', () => {
       });
       
       // presently disabled
-      xdescribe('collections', () => {
+      /* xdescribe('collections', () => {
         it('should 404 invalid collection', done => {
           supertest(server)
             .get(`${serverConf.componentPrefix}/collection/foo`)
@@ -182,7 +182,7 @@ describe('Middleware', () => {
               return err ? done.fail(err) : done();
             });
         });
-      });
+      });*/
 
       // error handling
       describe('error handling', () => {

@@ -23,6 +23,8 @@ const { WebhookClient, WebhookEvent } = require("./webhook");
 /**
  * Secret key request callback used in webhook message validation.
  * @callback ExpressRequestHandler
+ * @alias ExpressRequestHandler
+ * @memberof module:Middleware
  * @param {external:ExpressRequest} req - Express request object
  * @param {external:ExpressResponse} res - Express response object
  * @param {Function} [next] - Express middleware next function
