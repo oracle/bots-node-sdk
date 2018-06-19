@@ -136,6 +136,8 @@ function messageToBotWithProperties(channelUrl, channelSecretKey, userId, inMsg,
 
 /**
  * The webhookUtil is a set of utility functions for bot integration via webhook channel.
+ * While most use cases are accommodated through the {@link module.Middleware.WebhookClient|WebhookClient}
+ * instance methods and options, direct use of these methods is also possible.
  * @module Util/Webhook
  */
 module.exports = {

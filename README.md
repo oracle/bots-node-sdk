@@ -1,7 +1,18 @@
 # Oracle Bots Node.js SDK
 
-This SDK is intended as the main productivity resource for Oracle Bots development in a Node.js
-express environment.
+This SDK is intended as the main productivity resource for Oracle Bots development
+in a Node.js express environment. This package provides two primary solutions for
+custom implementations against the [Oracle Bots](https://docs.oracle.com/en/cloud/paas/mobile-autonomous-cloud/use-chatbot/overview1.html)
+platform: Running [Custom Component Services](https://docs.oracle.com/en/cloud/paas/mobile-autonomous-cloud/use-chatbot/bot-components.html#GUID-A93D7DAB-DCCE-42CD-8E6B-A06FB9BEE90D)
+and/or [Webhook Channels](https://docs.oracle.com/en/cloud/paas/mobile-autonomous-cloud/use-chatbot/bot-channels.html#GUID-96CCA06D-0432-4F20-8CDD-E60161F46680).
+
+- [Installation](#installation) - Installation and usage information.
+- [Custom Component](#custom-components) - Services to enrich a conversation flow with custom logic, API integrations, messages, and more.
+- [Webhook](#webhook) - Integrate with custom messaging channels using incoming/outgoing webhook.
+
+---
+
+> TODO: remove
 
 - [Installation](#installation) - Installation and usage information.
 - [Middleware](#middleware) - Configurable Bots express middleware.
@@ -12,8 +23,18 @@ express environment.
 
 ## Installation
 
-```shell
+```text
 npm install --save @oracle/bots-node-sdk
+```
+
+Install this project as a dependency to a Node.js express project.
+
+```javascript
+const express = require('express');
+const OracleBot = require('@oracle/bots-node-sdk');
+
+const app = express();
+OracleBot.init(app);
 ```
 
 ## Middleware
@@ -93,7 +114,7 @@ app.post('/user/message', (req, res) => {
 ```
 
 > **NOTE** `WebhookClient.send` supports an optional channel configuration as its
-second argument, therfore supporting request specific channel determination.
+second argument, thereby supporting request specific channel determination.
 
 ## Custom Components
 
@@ -118,7 +139,7 @@ module.exports = {
 }
 ```
 
-> Custom Component example as Object
+> Custom Component example as `Object`
 
 You may also define a component by exporting class(es) with the **OPTION** of
 extending the `ComponentAbstract` class for additional iVars and methods.

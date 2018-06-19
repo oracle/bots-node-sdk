@@ -4,47 +4,29 @@ const { webhookUtil } = require('../util');
 const { CONSTANTS } = require('../common/constants');
 
 /**
- * Secret key request callback used in webhook message validation.
- * @callback SecretKeyCallback
- * @param {external:ExpressRequest} req - Request object
- * @return {string|Promise<string>} - Secret key to validate message or promise
- * @example
- * function getSecretKey(req) {
- *   return new Promise(resolve => {
- *     let key;
- *     // ...
- *     resolve(key);
- *   });
- * }
- * const receiver = OracleBot.Middleware.webhookReceiver(getSecretKey, (req, res, next) => {
- *   // ...
- *   res.send();
- * });
- */
-
-/**
- * Callback function upon successful webhook validation. Further validations may
- * be performed, and it is required to send the response for the webhook request.
- * as `res.send`, `res.json`, etc. Note that this response is NOT a message back to
- * the bot.
- * @callback WebhookReceiverMiddleware
- * @param {external:ExpressRequest} req - Request with validated req.body
- * @param {external:ExpressResponse} res - Response to bots webhook request
- * @param {function} next - Express NextFunction
- * @return {void}
+ * Options to configure a webhook client endpoint where messages are forwarded
+ * to the bot on a webhook channel.
+ * @typedef WebhookClientOptions
+ * @alias WebhookClientOptions
+ * @memberof module:Middleware.WebhookClient
+ * @property {WebhookChannel | WebhookChannelCallback} [channel] - Webhook channel configuration or callback.
  */
 
 /**
  * Configuration details for sending messages to bots on a webhook channel.
  * @typedef {Object} WebhookChannel
+ * @alias WebhookChannel
+ * @memberof module:Middleware.WebhookClient
  * @property {string} url - Webhook url issued by bots platform channel
- * @property {string} secret - Message signature secret key used to create X-Hub-Signature
+ * @property {string} secret - Message signature secret key used to create <code>X-Hub-Signature</code>
  */
 
 /**
  * Callback used by webhook client to obtain channel configuration information
  * for a given request.
  * @callback WebhookChannelCallback
+ * @alias WebhookChannelCallback
+ * @memberof module:Middleware.WebhookClient
  * @param {external:ExpressRequest} [req] - The request object originally sent to the endpoint
  * @return {WebhookChannel|Promise<WebhookChannel>}
  * @example
@@ -69,22 +51,11 @@ const { CONSTANTS } = require('../common/constants');
  * });
  */
 
-
-/**
- * Options to configure a webhook client endpoint where messages are forwarded
- * to the bot on a webhook channel.
- * @typedef WebhookClientOptions
- * @property {WebhookChannel | WebhookChannelCallback} [channel] - Webhook channel configuration or callback.
- */
-
-/**
- * @callback WebhookEventHandler
- * @param {*} detail - Event detail payload.
- */
-
 /**
  * WebhookEvent enum for WebhookClient event subscriptions
  * @typedef WebhookEvent
+ * @alias WebhookEvent
+ * @memberof module:Middleware.WebhookClient
  * @example
  * const { WebhookClient, WebhookEvent } = require('@oracle/bots-node-sdk').Middleware;
  *
@@ -105,13 +76,32 @@ const { CONSTANTS } = require('../common/constants');
  * });
  */
 var WebhookEvent = {};
-/** Error event */
 WebhookEvent[WebhookEvent["ERROR"] = 1] = "ERROR";
-/** Event dispatched when message is sent to bot */
 WebhookEvent[WebhookEvent["MESSAGE_SENT"] = 2] = "MESSAGE_SENT";
-/** Event dispatched when message is received from bot */
 WebhookEvent[WebhookEvent["MESSAGE_RECEIVED"] = 3] = "MESSAGE_RECEIVED";
 
+/**
+ * Callback handler for WebhookClient event emitter.
+ * @callback WebhookEventHandler
+ * @alias WebhookEventHandler
+ * @memberof module:Middleware.WebhookClient
+ * @param {*} detail - Event detail payload.
+ * @return {void}
+ */
+
+/**
+ * Callback function upon successful webhook validation. Further validations may
+ * be performed, and it is required to send the response for the webhook request.
+ * as <code>res.send</code>, <code>res.json</code>, etc. Note that this response is
+ * NOT a message back to the bot.
+ * @callback WebhookReceiverMiddleware
+ * @alias WebhookReceiverMiddleware
+ * @memberof module:Middleware.WebhookClient
+ * @param {external:ExpressRequest} req - Request with validated req.body
+ * @param {external:ExpressResponse} res - Response to bots webhook request
+ * @param {function} next - Express NextFunction
+ * @return {void}
+ */
 
 /**
  * Webhook class for custom messaging implementations.
@@ -245,7 +235,7 @@ class WebhookClient {
   /**
    * Receiver middleware to handle messages incoming from bot. If used without
    * callback, messages will be dispatched to any subscribers to the
-   * `WebhookEvent.MESSAGE_RECEIVED` event.
+   * <code>WebhookEvent.MESSAGE_RECEIVED</code> event.
    * @param {WebhookReceiverCallback} [callback] - Optional callback for received messages from bot.
    * @return {WebhookReceiverMiddleware}
    */
