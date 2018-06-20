@@ -10,6 +10,7 @@ const { ParserMiddleware } = require("../../middleware/parser");
 const { ComponentMiddleware } = require("../../middleware/component");
 
 const { webhookUtil } = require("../../util/");
+const { MessageModel } = require("../../lib/message");
 const { WebhookClient, WebhookEvent } = require('../../middleware/webhook');
 const { MockRequest } = require("../../testing");
 // some test components
@@ -215,7 +216,14 @@ describe('Middleware', () => {
       });
     });
 
-    describe(`configurable webhook handlers`, () => {
+    describe(`WebhookClient`, () => {
+      
+      it('should export MessageModel', () => {
+        const client = serverConf.webhookClient;
+        expect(client.MessageModel).toEqual(jasmine.any(Function));
+        expect(client.MessageModel()).toEqual(MessageModel);
+      });
+
       it('should error 400 without signature', done => {
         const body = { foo: 'test' };
         supertest(server)
