@@ -1,6 +1,6 @@
 import { CONSTANTS } from '../common/constants';
 import { webhookUtil } from '../util/';
-import { MiddlewareAbstract, express } from './abstract';
+import { express } from './abstract';
 import { IMessage } from '../lib/message';
 
 
