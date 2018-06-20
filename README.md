@@ -58,7 +58,7 @@ Most important is the `register` option, which specifies component
 paths or component objects - telling the service where Custom Component sources
 are located within your project.
 
-- `cwd` *string* - Top level directory to which all other paths are relative. `__dirname` is recommended.
+- `cwd` **string** - Top level directory to which all other paths are relative. `__dirname` is recommended.
 - `register` **(string|object(s)|function)[]** - Defines component registry from array of the paths to resolve.
   - String paths may also be directories, which are scanned recursively and added to the registry.
   - Multiple components may also be exported from a single file.
