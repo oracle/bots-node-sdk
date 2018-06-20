@@ -266,7 +266,7 @@ describe('MyComponent', () => {
       // check replies
       expect(conv.getReplies().length).toBeGreaterThan(0);
       // check transition
-      expect(conversation.response().transition).toBeDefined();
+      expect(conversation.response().transition).toBe(true);
       // check variables
       expect(conversation.variable('abc')).toEqual('xyz');
       done();
