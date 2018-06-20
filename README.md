@@ -227,6 +227,8 @@ const { MessageModel } = OracleBot.Lib;
 
 > **TIP:** Use `conversation.MessageModel()` to access from within a Custom
 Component invoke method.
+> **TIP:** Use `webhook.MessageModel()` to access from within a `WebhookClient`
+instance.
 
 | Method | Purpose | Usage |
 |--|--|--|
