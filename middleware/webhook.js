@@ -1,6 +1,7 @@
 "use strict";
 
 const { webhookUtil } = require('../util');
+const { MessageModel } = require('../lib');
 const { CONSTANTS } = require('../common/constants');
 
 /**
@@ -292,6 +293,15 @@ class WebhookClient {
         .then(cb) // passing callback
         .catch(cb); // cb with failure
     };
+  }
+
+  /**
+   * Returns the MessageModel class for creating or validating messages to or from bots.
+   *
+   * @return {MessageModel} The MessageModel class
+   */
+  MessageModel() {
+    return MessageModel;
   }
 }
 

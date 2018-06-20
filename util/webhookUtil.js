@@ -122,6 +122,18 @@ function messageToBot(channelUrl, channelSecretKey, userId, inMsg, callback) {
  * );
  */
 function messageToBotWithProperties(channelUrl, channelSecretKey, userId, inMsg, additionalProperties, callback) {
+  if (!channelUrl) {
+    callback(new Error('Channel URL is required'));
+    return;
+  }
+  if (!channelSecretKey) {
+    callback(new Error('Channel Secret Key is required'));
+    return;
+  }
+  if (!userId) {
+    callback(new Error('userId is required'));
+    return;
+  }
   var outMsg = {
     userId: userId,
   };

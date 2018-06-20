@@ -184,7 +184,7 @@ webhook.on(WebhookEvent.MESSAGE_RECEIVED, message => {
 app.post('/user/message', (req, res) => {
   let message = {/* ... */}; // format according to MessageModel
   webhook.send(message)
-    .then(() => res.send('ok'), e => res.status(400).end()));
+    .then(() => res.send('ok'), e => res.status(400).end());
 });
 ```
 
