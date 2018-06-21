@@ -4,7 +4,7 @@ This SDK is the main productivity resource for Oracle Bots custom development
 in a Node.js express environment. This package provides two primary solutions for
 custom implementations against the [Oracle Bots](https://docs.oracle.com/en/cloud/paas/mobile-autonomous-cloud/use-chatbot/overview1.html)
 platform: Running [Custom Component Services](https://docs.oracle.com/en/cloud/paas/mobile-autonomous-cloud/use-chatbot/bot-components.html)
-and/or [Webhook Channels](https://docs.oracle.com/en/cloud/paas/mobile-autonomous-cloud/use-chatbot/bot-channels.html#GUID-96CCA06D-0432-4F20-8CDD-E60161F46680).
+and/or [Webhook Channels](https://docs.oracle.com/en/cloud/paas/mobile-autonomous-cloud/use-chatbot/bot-channels.html).
 
 - [Installation](#installation) - Installation and usage information.
 - [Custom Component](#custom-components) - Services to enrich a conversation flow with custom logic, API integrations, messages, and more.
@@ -209,7 +209,7 @@ webhookUtil.messageToBotWithProperties(url, secret, userId, messsage, extras, (e
 ## Message Formatting
 
 The Oracle Bots platform supports several
-[message formats](https://docs.oracle.com/en/cloud/paas/mobile-autonomous-cloud/use-chatbot/bot-channels.html#GUID-96CCA06D-0432-4F20-8CDD-E60161F46680),
+[message formats](https://docs.oracle.com/en/cloud/paas/mobile-autonomous-cloud/use-chatbot/bot-channels.html),
 as defined by the `MessageModel` class.
 
 The class provides several static methods used to create a stuctured object of a

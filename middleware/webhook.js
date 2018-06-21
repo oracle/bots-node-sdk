@@ -107,7 +107,7 @@ WebhookEvent[WebhookEvent["MESSAGE_RECEIVED"] = 3] = "MESSAGE_RECEIVED";
 /**
  * Webhook class for custom messaging implementations.
  * @memberof module:Middleware
- * @see https://docs.oracle.com/en/cloud/paas/mobile-autonomous-cloud/use-chatbot/bot-channels.html#GUID-96CCA06D-0432-4F20-8CDD-E60161F46680
+ * @see https://docs.oracle.com/en/cloud/paas/mobile-autonomous-cloud/use-chatbot/bot-channels.html
  * @example <caption>Simple client for sending and receivinng messages.</caption>
  * const OracleBot = require('@oracle/bots-node-sdk');
  * const express = require('express');
@@ -206,7 +206,7 @@ class WebhookClient {
 
   /**
    * Send client message to bot
-   * @see https://docs.oracle.com/en/cloud/paas/mobile-autonomous-cloud/use-chatbot/bot-channels.html#GUID-96CCA06D-0432-4F20-8CDD-E60161F46680
+   * @see https://docs.oracle.com/en/cloud/paas/mobile-autonomous-cloud/use-chatbot/bot-channels.html
    * @param {object} message - Complete payload to send
    * @param {WebhookChannel} [channel] - Webhook channel configuration to use (if different than that in the instance options)
    */
