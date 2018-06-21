@@ -91,22 +91,22 @@ export function messageToBot(channelUrl, channelSecretKey, userId, inMsg, callba
  */
 
 export function messageToBotWithProperties(channelUrl, channelSecretKey, userId, inMsg, additionalProperties, callback) {
+    if (!channelUrl) {
+        callback(new Error('Channel URL is required'));
+        return;
+    }
+    if (!channelSecretKey) {
+        callback(new Error('Channel Secret Key is required'));
+        return;
+    }
+    if (!userId) {
+        callback(new Error('userId is required'));
+        return;
+    }
     var outMsg: any = {
         userId: userId,
-//        text: inMsg
     };
     outMsg.messagePayload = inMsg;
-    /*
-      For example, additionalProperties could be:
-      {
-        "profile": {
-          "firstName": 'John',
-          "lastName": 'Smith'
-          "age": 22,
-          "clientType": 'Alexa'
-        }
-      }
-    */
     if (additionalProperties){
       outMsg = Object.assign(outMsg, additionalProperties);
     }

@@ -1,7 +1,7 @@
 import { CONSTANTS } from '../common/constants';
 import { webhookUtil } from '../util/';
 import { express } from './abstract';
-import { IMessage } from '../lib/message';
+import { IMessage, MessageModel } from '../lib/message';
 
 
 /**
@@ -201,6 +201,13 @@ export class WebhookClient {
         .then(cb) // passing callback
         .catch(cb); // cb with failure
     }
+  }
+
+  /**
+   * Returns the MessageModel class for creating or validating messages to or from bots.
+   */
+  public MessageModel() {
+    return MessageModel;
   }
 
 }
