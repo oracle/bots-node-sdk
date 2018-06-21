@@ -25,7 +25,7 @@
     "docs:old": "shx rm -rf ./docs && typedoc --options ./typedoc.js --exclude '**/*+(spec|schema|common)/**' --out $npm_package_config_docdir ./src/",
     "docs": "shx rm -rf ./docs && jsdoc init lib config middleware util testing LICENSE.md --readme README.md -r -d ./$npm_package_config_docdir -t ./node_modules/docdash",
     "postdocs": "node ./docs.js",
-    "lint": "eslint . --ignore-pattern reports --ignore-pattern docs && tslint --project ./ts",
+    "lint": "eslint . --ignore-pattern reports --ignore-pattern examples --ignore-pattern docs && tslint --project ./ts",
     "test": "istanbul cover ./spec/support/test.js",
     "typings": "shx rm -rf ./typings && cd ./ts && tsc",
     "prepack": "npm run lint && npm run typings"
