@@ -1,5 +1,5 @@
 import { Type, Primitive } from '../../common/definitions';
-import { IComponentInterface } from './abstract';
+import { IComponent } from './abstract';
 
 export type ComponentMetadataName = string;
 
@@ -10,12 +10,13 @@ export interface IComponentMetadata {
   name?: ComponentMetadataName;
   supportedActions?: string[];
   properties?: {
-    [property: string]: {
+    [name: string]: {
       type: Primitive,
       required?: boolean,
     }
   };
 }
+
 export interface Component extends IComponentMetadata { }
 
 /**
@@ -40,12 +41,12 @@ export interface Component extends IComponentMetadata { }
  * ```
  */
 export const Component = (annotations: Component = {}): Function => { // decorator factory
-  return <T extends Type<IComponentInterface>>(ctor: T) => { // class decorator
+  return <T extends Type<IComponent>>(ctor: T) => { // class decorator
     // assert annotation component name.
     annotations.name = annotations.name ||
       ctor.prototype.constructor.name.replace(/([a-z-]+)([A-Z])/g, '$1.$2').toLowerCase();
 
-    return class extends ctor implements IComponentInterface {
+    return class extends ctor implements IComponent {
       private readonly __decoratorMetadata = {...annotations};
 
       // auto-implement the interface methods

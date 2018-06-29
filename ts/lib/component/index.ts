@@ -1,6 +1,6 @@
 // export * from './decorator'; // not supported presently
 export { IComponentMetadata } from './decorator';
-export { ComponentAbstract, IComponentInterface } from './abstract';
+export { ComponentAbstract, IComponent } from './abstract';
 export { ComponentRegistry } from './registry';
 
 export { IComponentRequestBody } from './request';

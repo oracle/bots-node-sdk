@@ -1,6 +1,6 @@
 # Oracle Bots Node.js SDK
 
-This SDK is the main productivity resource for Oracle Bots custom development
+This SDK is the main developer resource for Oracle Bots integrations
 in a Node.js express environment. This package provides two primary solutions for
 custom implementations against the [Oracle Bots](https://docs.oracle.com/en/cloud/paas/mobile-autonomous-cloud/use-chatbot/overview1.html)
 platform: Running [Custom Component Services](https://docs.oracle.com/en/cloud/paas/mobile-autonomous-cloud/use-chatbot/bot-components.html)
@@ -9,6 +9,9 @@ and/or [Webhook Channels](https://docs.oracle.com/en/cloud/paas/mobile-autonomou
 - [Installation](#installation) - Installation and usage information.
 - [Custom Component](#custom-components) - Services to enrich a conversation flow with custom logic, API integrations, messages, and more.
 - [Webhook](#webhook) - Integrate with custom messaging channels using incoming/outgoing webhook.
+<!--[nodoc]-->
+- [Documentation](https://oracle.github.io/bots-node-sdk) - Full SDK documentation.
+<!--[/nodoc]-->
 
 ---
 
@@ -284,7 +287,7 @@ This package includes `types`, and can therefore be used directly with TypeScrip
 ```typescript
 import { Lib } from '@oracle/bots-node-sdk';
 
-class MyCustomComponent implements Lib.IComponentInterface {
+class MyCustomComponent implements Lib.IComponent {
   public metadata(): Lib.IComponentMetadata {
     return { name: 'my.custom.component' }
   }

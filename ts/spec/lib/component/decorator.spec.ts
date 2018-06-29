@@ -1,6 +1,6 @@
 import {
   Lib,
-  IComponentInterface,
+  IComponent,
 } from '../../main';
 
 describe('@Component Decorator', () => {
@@ -36,7 +36,7 @@ describe('@Component Decorator', () => {
    * the decorator creates one allowing calls to the method.
    */
   it('should callback with error on improper implementation', done => {
-    const c = <IComponentInterface>new TestInvalidComponent();
+    const c = <IComponent>new TestInvalidComponent();
     c.invoke(null, (err) => {
       expect(err).toBeDefined();
       done();
