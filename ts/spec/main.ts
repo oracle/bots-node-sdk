@@ -1,9 +1,12 @@
-// configure logger for testing
-const log4js = require('log4js');
 import { Config } from '../index';
 
-(log4js['setGlobalLogLevel'] || (() => {}))('OFF');
-Config.setLogger(log4js.getLogger());
+// configure logger for testing
+const logger = ['log', 'debug', 'warn', 'error', 'fatal', 'trace', 'info']
+  .reduce((obj, method) => {
+    obj[method] = () => {};
+    return obj;
+  }, {} as any);
+Config.setLogger(logger);
 
 // export main dist entrypoint
 export * from '../index';

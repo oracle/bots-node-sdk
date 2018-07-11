@@ -33,16 +33,15 @@
     "prepack": "npm run lint && npm run typings"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "body-parser": "^1.18.2",
     "joi": "^13.0.2",
-    "leven": "^2.1.0",
-    "request": "^2.83.0"
+    "leven": "^2.1.0"
   },
   "devDependencies": {
     "@types/body-parser": "^1.17.0",
     "@types/express": "^4.16.0",
     "@types/joi": "^13.3.0",
-    "@types/request": "^2.47.1",
     "docdash": "^0.4.0",
     "eslint": "^4.19.1",
     "eslint-plugin-jasmine": "^2.10.1",
@@ -52,7 +51,6 @@
     "jasmine-reporters": "^2.3.1",
     "jasmine-spec-reporter": "^4.2.1",
     "jsdoc": "^3.5.5",
-    "log4js": "^2.10.0",
     "shx": "^0.2.2",
     "supertest": "^3.1.0",
     "tslint": "^5.10.0",
