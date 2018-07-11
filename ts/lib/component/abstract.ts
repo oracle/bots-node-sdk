@@ -4,7 +4,7 @@ import { ILogger, ICallback } from '../../common/definitions';
 import { ComponentInvocation as Conversation } from './sdk';
 import { IComponentMetadata } from './decorator';
 
-export interface IComponentInterface {
+export interface IComponent {
   metadata(): IComponentMetadata;
   invoke(conversation: Conversation, done: ICallback): void;
 }
@@ -14,7 +14,7 @@ export interface IComponentInterface {
  * @preferred
  * @example export class MyCustomComponent extends ComponentAbstract { ... }
  */
-export abstract class ComponentAbstract implements IComponentInterface {
+export abstract class ComponentAbstract implements IComponent {
   protected readonly logger: ILogger; // establish a logger instance
   constructor() {
     this.logger = CommonProvider.getLogger();

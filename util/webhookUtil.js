@@ -1,7 +1,7 @@
 "use strict";
 
 const crypto = require("crypto");
-const request = require("request");
+const axios = require("axios");
 const { CONSTANTS } = require("../common/constants");
 
 /**
@@ -146,17 +146,12 @@ function messageToBotWithProperties(channelUrl, channelSecretKey, userId, inMsg,
   const headers = {};
   headers['Content-Type'] = 'application/json; charset=utf-8';
   headers[CONSTANTS.WEBHOOK_HEADER] = buildSignatureHeader(body, channelSecretKey);
-  request.post({
-    uri: channelUrl,
-    headers: headers,
-    body: body,
+  
+  axios.post(channelUrl, body, {
+    headers,
     timeout: 60000,
-    followAllRedirects: true,
-    followOriginalHttpMethod: true,
-    callback: function (err, response, body) {
-      callback(err, body);
-    }
-  });
+  }).then(response => callback(response.data))
+    .catch(err => callback(new Error(err.message)));
 }
 
 /**

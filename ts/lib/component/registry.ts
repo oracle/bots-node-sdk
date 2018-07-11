@@ -5,22 +5,22 @@ import { CONSTANTS } from '../../common/constants';
 import { CommonProvider } from '../../common/provider';
 import { Type, isType, ILogger } from '../../common/definitions';
 import { ComponentMetadataName, IComponentMetadata } from './decorator';
-import { IComponentInterface } from './abstract';
+import { IComponent } from './abstract';
 
 export type CollectionName = string;
 
 /**
  * Define accepted type for component initialization objects.
  */
-export type ComponentListItem = string | Type<IComponentInterface> | {[key: string]: Type<IComponentInterface>};
+export type ComponentListItem = string | Type<IComponent> | {[key: string]: Type<IComponent>};
 
 export class ComponentRegistry {
   public static readonly COMPONENT_DIR = CONSTANTS.DEFAULT_COMPONENT_DIR;
   private _logger: ILogger;
   protected _collectionName: CollectionName;
   protected _collections = new Map<CollectionName, ComponentRegistry>();
-  protected _components = new Map<ComponentMetadataName, IComponentInterface>();
-  protected _json: {[name: string]: IComponentInterface} = {};
+  protected _components = new Map<ComponentMetadataName, IComponent>();
+  protected _json: {[name: string]: IComponent} = {};
 
   /**
    * Create a registry from a list of component references. The resulting registry
@@ -109,7 +109,7 @@ export class ComponentRegistry {
    * @param dir - directory to scan for components
    * @param withCollections - group subdirectories as collections
    */
-  private __scanDir(dir: string, withCollections?: boolean): IComponentInterface[] {
+  private __scanDir(dir: string, withCollections?: boolean): IComponent[] {
     const results = fs.readdirSync(dir) // scan directory for components
       .filter(name => !/^\./.test(name) && ~['', '.js'].indexOf(path.extname(name))) // js and folders
       .map(name => path.join(dir, name)) // absolute path
@@ -126,7 +126,7 @@ export class ComponentRegistry {
    * @param filePath - absolute path to a component resource or directory
    * @param withCollections - consider directories as separate registry collections.
    */
-  private __digestPath(filePath: string, withCollections?: boolean): IComponentInterface[] {
+  private __digestPath(filePath: string, withCollections?: boolean): IComponent[] {
     // consider case where manual registry is used and contain files references without extensions
     filePath = fs.existsSync(filePath) ? filePath : `${filePath}.js`;
     const stat = fs.statSync(filePath);
@@ -178,7 +178,7 @@ export class ComponentRegistry {
    * component instantiation factory.
    * @param mod - component reference (class|object)
    */
-  private __componentFactory(mod: Type<IComponentInterface>): IComponentInterface {
+  private __componentFactory(mod: Type<IComponent>): IComponent {
     const ctor = makeCtor(mod);
     return new ctor();
   }
@@ -187,7 +187,7 @@ export class ComponentRegistry {
    * register an instantiated component in
    * @param component - instantiated bot component class
    */
-  private __register(component: IComponentInterface): void {
+  private __register(component: IComponent): void {
     const meta = component.metadata();
     if (this.isComponent(meta.name)) {
       return this._logger.warn(`Duplicate component found: ${meta.name} while attempting to register ${component['constructor'].name}`);
@@ -216,7 +216,7 @@ export class ComponentRegistry {
    * Legacy conversation shell compatability "components" property accessor
    * @desc allows components to be resolved by `registry.components`
    */
-  public get components(): {[name: string]: IComponentInterface} {
+  public get components(): {[name: string]: IComponent} {
     return this._json;
   }
 
@@ -251,7 +251,7 @@ export class ComponentRegistry {
   /**
    * get component map for this registry
    */
-  public getComponents(): Map<ComponentMetadataName, IComponentInterface> {
+  public getComponents(): Map<ComponentMetadataName, IComponent> {
     return this._components;
   }
 
@@ -259,7 +259,7 @@ export class ComponentRegistry {
    * get component from map by name
    * @param name - component name
    */
-  public getComponent(name: ComponentMetadataName): IComponentInterface {
+  public getComponent(name: ComponentMetadataName): IComponent {
     return this._components.get(name);
   }
 
@@ -314,7 +314,7 @@ function fullPath(cwd: string, dirname: string): string {
  * @desc converts module.exports = {} to a prototyped object
  * @param type - component reference object
  */
-function makeCtor(type: Type<IComponentInterface>): any {
+function makeCtor(type: Type<IComponent>): any {
   return (isType(type) && type) || (function LegacyComponentWrapper() {
     return type;
   });
@@ -325,7 +325,7 @@ function makeCtor(type: Type<IComponentInterface>): any {
  * @param ref class or object from exports.
  * @todo create a decorator factory to test annotations against instanceof
  */
-function isComponent(ref: any): ref is Type<IComponentInterface> {
+function isComponent(ref: any): ref is Type<IComponent> {
   return (isType(ref) /*&& isType(ref.prototype.metadata)*/ && isType(ref.prototype.invoke)) || // class usage
     (typeof ref === 'object' && isType(ref.metadata) && isType(ref.invoke)); // legacy
 }

@@ -4,10 +4,13 @@ function __export(m) {
 }
 
 // configure logger for testing
-const log4js = require('log4js');
 const { Config } = require("../index");
-(log4js['setGlobalLogLevel'] || (() => { }))('OFF');
-Config.setLogger(log4js.getLogger());
+const logger = ['log', 'debug', 'warn', 'error', 'fatal', 'trace', 'info']
+  .reduce((obj, method) => {
+    obj[method] = () => {};
+    return obj;
+  }, {});
+Config.setLogger(logger);
 
 // export main dist entrypoint
 __export(require("../index"));

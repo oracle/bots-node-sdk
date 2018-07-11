@@ -140,7 +140,7 @@ function webhookReceiver(secret, callback) {
  * @requires express
  */
 module.exports = {
-  init, // for for tests
+  init, // for tests
   // direct middleware methods
   customComponent,
   webhookReceiver, // deprecated
