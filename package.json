@@ -35,7 +35,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "body-parser": "^1.18.2",
-    "joi": "^13.0.2",
+    "joi": "^13.1.2",
     "leven": "^2.1.0"
   },
   "devDependencies": {
@@ -57,7 +57,7 @@
     "typescript": "^2.9.2"
   },
   "peerDependencies": {
-    "express": "^4.15.4"
+    "express": "^4.16.3"
   },
   "optionalDependencies": {
     "joi-browser": "^13.0.1"
