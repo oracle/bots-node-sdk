@@ -1,7 +1,7 @@
 /* tslint:disable */
 
 import * as crypto from 'crypto';
-import * as request from 'request';
+import axios from 'axios';
 import { CONSTANTS } from '../common/constants';
 
 /**
@@ -117,24 +117,11 @@ export function messageToBotWithProperties(channelUrl, channelSecretKey, userId,
     headers['Content-Type'] = 'application/json; charset=utf-8';
     headers[CONSTANTS.WEBHOOK_HEADER] = buildSignatureHeader(body, channelSecretKey);
 
-    request.post({
-        uri: channelUrl,
-        headers: headers,
-        body: body,
-        timeout: 60000,
-        followAllRedirects: true,
-        followOriginalHttpMethod: true,
-        callback: function(err, response, body) {
-            if (!err) {
-                callback(null);
-            } else {
-                console.log(response);
-                console.log(body);
-                console.log(err);
-                callback(err);
-            }
-        }
-    });
+    axios.post(channelUrl, body, {
+      headers,
+      timeout: 60000,
+    }).then(response => callback(response.data))
+      .catch(err => callback(new Error(err.message)));
 }
 
 /**
