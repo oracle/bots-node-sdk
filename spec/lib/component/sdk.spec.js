@@ -19,7 +19,7 @@ describe('Component Conversation SDK', () => {
   });
   it('should fail with expected error without context', done => {
     try {
-      const sdk = new Lib.Conversation(Mock.req.nocontext);
+      const sdk = new Lib.Conversation(Mock().req.nocontext);
       expect(sdk).not.toBeDefined();
       done.fail('sdk did not throw error');
     }
@@ -29,12 +29,18 @@ describe('Component Conversation SDK', () => {
     }
   });
   it('should build instance with no variables', () => {
-    const sdk = new Lib.Conversation(Mock.req.novars);
+    const sdk = new Lib.Conversation(Mock().req.novars);
     expect(sdk).not.toBeNull();
     expect(sdk.properties().minAge).toBeDefined();
   });
+  it('should handle system variables', () => {
+    const sdk = new Lib.Conversation(Mock().req.complete);
+    expect(sdk.variable('system.invalidUserInput')).not.toBeDefined();
+    sdk.variable('system.invalidUserInput', true);
+    expect(sdk.variable('system.invalidUserInput')).toEqual(true);
+  });
   it('should read and write to response (variables, action, etc)', () => {
-    const sdk = new Lib.Conversation(Mock.req.complete);
+    const sdk = new Lib.Conversation(Mock().req.complete);
     expect(sdk).not.toBeNull();
     expect(sdk.response().modifyContext).toEqual(false);
     expect(sdk.variable('name')).toEqual('Joe');
@@ -56,10 +62,10 @@ describe('Component Conversation SDK', () => {
     expect(sdk.variable('hungry')).toEqual(false);
     expect(sdk.response().modifyContext).toEqual(true); // wrote to context
     sdk.action('eatpizza').done(true);
-    expect(sdk.response()).toEqual(Mock.res.complete, 'Unexpected response');
+    expect(sdk.response()).toEqual(Mock().res.complete, 'Unexpected response');
   });
   it('should read botId, text, and properties from DE requiest', () => {
-    const sdk = new Lib.Conversation(Mock.req.complete);
+    const sdk = new Lib.Conversation(Mock().req.complete);
     const props = sdk.properties();
     expect(sdk.botId()).toEqual('963B57F7-CFE6-439D-BB39-2E342AD4EC92');
     expect(sdk.text()).toEqual('22');
