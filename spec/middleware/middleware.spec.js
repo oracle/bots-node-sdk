@@ -32,9 +32,7 @@ describe('Middleware', () => {
 
   it('should init customComponent middleware', () => {
     const mw = OracleBot.Middleware.customComponent();
-    expect(mw.stack).toBeDefined();
-    expect(mw.stack.length).toBeGreaterThan(0);
-    expect(mw.stack.some(layer => layer.route && layer.route.path === '/:component')).toBe(true);
+    expect(mw).toEqual(jasmine.any(Function));
   });
 
   it('should be failure tolerant', () => {

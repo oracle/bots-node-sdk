@@ -45,7 +45,7 @@ class ParserMiddleware extends MiddlewareAbstract {
    * @param {function} parser - body parser middleware
    */
   _addParser(app, parser) {
-    let stack = (app._router || app).stack || [];
+    let stack = (app && (app['_router'] || app).stack) || [];
     let replaced = false;
 
     // find/replace in stack
@@ -57,7 +57,7 @@ class ParserMiddleware extends MiddlewareAbstract {
 
     // add to stack if not already replaced
     if (!replaced) {
-      app.use(parser);
+      this._addHandler('use', null, parser);
     }
   }
 

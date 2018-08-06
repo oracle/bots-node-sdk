@@ -11,6 +11,10 @@
     "Matt Vander Vliet <matthew.vander.vliet@oracle.com>",
     "Henrick Yau <henrick.yau@oracle.com>"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/oracle/bots-node-sdk"
+  },
   "keywords": [
     "oracle",
     "bots",
@@ -55,9 +59,6 @@
     "supertest": "^3.1.0",
     "tslint": "^5.10.0",
     "typescript": "^2.9.2"
-  },
-  "peerDependencies": {
-    "express": "^4.16.3"
   },
   "optionalDependencies": {
     "joi-browser": "^13.0.1"

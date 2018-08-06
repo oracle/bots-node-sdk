@@ -1,6 +1,6 @@
 "use strict";
 
-const express = require("express");
+const { getStackHandler } = require("./abstract");
 const { ParserMiddleware } = require("./parser");
 const { ComponentMiddleware } = require("./component");
 const { WebhookClient, WebhookEvent } = require("./webhook");
@@ -60,18 +60,21 @@ function init(layer, options = {}) {
   const mwMap = new Map([
     ['component', ComponentMiddleware],
   ]);
+  let mwStack = [];
+
   // apply body-parser for every type unless false
   if (options.parser !== false) {
-    ParserMiddleware.extend(layer, options.parser);
+    mwStack.push(ParserMiddleware.extend(layer, options.parser));
   }
   // iterate and apply the middleware layers
   // middleware without options is ignored
   Object.keys(options).forEach(key => {
     if (mwMap.has(key)) {
-      mwMap.get(key).extend(layer, options[key]);
+      mwStack.push(mwMap.get(key).extend(layer, options[key]));
     }
   });
-  return layer;
+  return getStackHandler.apply(null, mwStack);
+  // return layer;
 }
 
 /**
@@ -99,8 +102,7 @@ function init(layer, options = {}) {
  * }));
  */
 function customComponent(options = {}) {
-  const router = express.Router();
-  return init(router, {
+  return init(null, {
     component: options,
     parser: options.parser,
   });

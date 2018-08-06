@@ -32,6 +32,7 @@ class ComponentMiddleware extends MiddlewareAbstract {
       register: [],
       mixins: {}
     }, options);
+
     /**
      * assemble root registry from provided `register` property
      * merge explicitly provided component registry with the hierarchical fs registry.
@@ -41,15 +42,16 @@ class ComponentMiddleware extends MiddlewareAbstract {
     /**
      * establish component metadata index
      */
-    router.get('/', (req, res) => {
+    this._addHandler('get', '/', (req, res) => {
       const meta = this.__getShell(rootRegistry)
         .getAllComponentMetadata();
       res.json(meta);
     });
+
     /**
      * handle root component invocation
      */
-    router.post(`/:${PARAM_COMPONENT}`, (req, res) => {
+    this._addHandler('post', `/:${PARAM_COMPONENT}`, (req, res) => {
       const componentName = req.params[PARAM_COMPONENT];
       // invoke
       this.__invoke(componentName, rootRegistry, opts, req, res);

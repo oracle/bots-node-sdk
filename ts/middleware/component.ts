@@ -59,7 +59,8 @@ export class ComponentMiddleware extends MiddlewareAbstract {
     /**
      * establish component metadata index
      */
-    router.get('/', (req, res) => {
+    this._addHandler('get', '/', (req, res) => {
+    // router.get('/', (req, res) => {
       const meta = this.__getShell(rootRegistry)
         .getAllComponentMetadata();
       res.json(meta);
@@ -68,37 +69,12 @@ export class ComponentMiddleware extends MiddlewareAbstract {
     /**
      * handle root component invocation
      */
-    router.post(`/:${PARAM_COMPONENT}`, (req, res) => {
+    this._addHandler('post', `/:${PARAM_COMPONENT}`, (req, res) => {
+    // router.post(`/:${PARAM_COMPONENT}`, (req, res) => {
       const componentName = req.params[PARAM_COMPONENT];
       // invoke
       this.__invoke(componentName, rootRegistry, opts, req, res);
     });
-
-    // /**
-    //  * get metadata for a child component collection
-    //  */
-    // router.get(`/collection/:${PARAM_COLLECTION}`, (req, res) => {
-    //   const collectionName = req.params[PARAM_COLLECTION];
-    //   if (rootRegistry.isCollection(collectionName)) {
-    //     const meta = this.__getShell(rootRegistry.getRegistry(collectionName))
-    //       .getAllComponentMetadata();
-    //     res.json(meta);
-    //   } else {
-    //     this._logger.error(`${collectionName} not found in registry`);
-    //     res.status(404).send(MESSAGES.NOT_FOUND);
-    //   }
-    // });
-
-    // /**
-    //  * handle component invocation by collection
-    //  */
-    // router.post(`/collection/:${PARAM_COLLECTION}/:${PARAM_COMPONENT}`, (req, res) => {
-    //   const collectionName = req.params[PARAM_COLLECTION];
-    //   const componentName = req.params[PARAM_COMPONENT];
-    //   const registry = rootRegistry.getRegistry(collectionName);
-    //   // invoke
-    //   this.__invoke(componentName, registry || rootRegistry, opts, req, res);
-    // });
   }
 
   /**

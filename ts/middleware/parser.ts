@@ -44,7 +44,7 @@ export class ParserMiddleware extends MiddlewareAbstract {
    * @param parser - body parser middleware
    */
   private _addParser(app: express.Application|express.Router, parser: express.RequestHandler) {
-    let stack = (app['_router'] || app).stack || [];
+    let stack = (app && (app['_router'] || app).stack) || [];
     let replaced = false;
 
     // find/replace in stack
@@ -56,7 +56,7 @@ export class ParserMiddleware extends MiddlewareAbstract {
 
     // add to stack if not already replaced
     if (!replaced) {
-      app.use(parser);
+      this._addHandler('use', null, parser);
     }
   }
 
