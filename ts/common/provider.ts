@@ -11,6 +11,20 @@ export type ProviderDefinition = {
 export type Provider = ProviderDefinition | ProviderDefinition[];
 
 /**
+ * polyfill basic method implementations with noop
+ * @param logger
+ */
+function polyfillLogger(logger: any): ILogger {
+  const noop = () => {};
+  ['log', 'trace', 'info', 'debug', 'warn', 'error']
+    .filter(method => !logger[method])
+    .forEach(method => logger[method] = noop) // noop unknown methods
+  return logger as ILogger;
+}
+
+const _DEFAULT_LOGGER: ILogger = polyfillLogger({ });
+
+/**
  * CommonProvider static object reference.
  * ```
  * const log4js = require('log4js');
@@ -57,12 +71,8 @@ export class CommonProvider {
    * @return logger interface object
    */
   public static getLogger(): ILogger {
-    const logger = this.get(PROVIDER_KEY_LOGGER) || console;
-    // polyfill basic method implementations with noop
-    ['log', 'trace', 'info', 'debug', 'warn', 'error'].forEach(method => {
-      logger[method] = logger[method] || (() => {}); // noop unknown methods.
-    });
-    return logger;
+    const logger = this.get(PROVIDER_KEY_LOGGER) || _DEFAULT_LOGGER;
+    return polyfillLogger(logger);
   }
 
 }

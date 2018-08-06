@@ -32,6 +32,17 @@ OracleBot.init(app);
 // implement custom bot services... (see below)
 ```
 
+### Custom Logging
+
+If verbose logging details are desired, you may configure a logging utility of
+your choice, and initialize the SDK accordingly.
+
+```javascript
+OracleBot.init(app, {
+  logger: console,
+});
+```
+
 ## Custom Components
 
 Each state within a Bot flow calls a component to perform actions ranging
