@@ -85,10 +85,6 @@ function getStackHandler(...layers) {
 
 /**
  * handler stack executor
- * @param {*} stack 
- * @param {*} req 
- * @param {*} res 
- * @param {*} next 
  * @private
  */
 function runHandlerStack(stack, req, res, next) {

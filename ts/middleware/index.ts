@@ -21,7 +21,7 @@ export interface IMiddewareOptions {
  * init middleware function. Add bot middleware to the app router stack.
  * @param layer - the layer to apply middleware onto.
  * @param options  options to configure the middleware.
- * @return express.Router
+ * @return request handler
  * @todo add webhook middleware
  */
 export function init(layer: express.Router | express.Application, options: IMiddewareOptions = {}): express.RequestHandler {

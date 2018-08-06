@@ -85,7 +85,7 @@ function init(layer, options = {}) {
  * @param {(string[]|Object[]|Function[])} options.register - Series of paths to components or directories, Objects with name=>component pairs, Objects representing a component, or Component class ctor Functions.
  * @param {*} [options.mixins] - Any mixin properties for ComponentInvocation
  * @param {boolean|ParserOptions} [options.parser={}] - Body parser middleware options. If false, parser will be ignored.
- * @return {external:ExpressRouter} - Express router with custom component handlers.
+ * @return {ExpressRequestHandler} - Request handler for custom component services.
  * @example
  * const OracleBot = require('@oracle/bots-node-sdk');
  * const express = require('express');

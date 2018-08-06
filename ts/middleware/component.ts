@@ -60,7 +60,6 @@ export class ComponentMiddleware extends MiddlewareAbstract {
      * establish component metadata index
      */
     this._addHandler('get', '/', (req, res) => {
-    // router.get('/', (req, res) => {
       const meta = this.__getShell(rootRegistry)
         .getAllComponentMetadata();
       res.json(meta);
@@ -70,7 +69,6 @@ export class ComponentMiddleware extends MiddlewareAbstract {
      * handle root component invocation
      */
     this._addHandler('post', `/:${PARAM_COMPONENT}`, (req, res) => {
-    // router.post(`/:${PARAM_COMPONENT}`, (req, res) => {
       const componentName = req.params[PARAM_COMPONENT];
       // invoke
       this.__invoke(componentName, rootRegistry, opts, req, res);
