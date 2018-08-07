@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>lib/message/messageModel.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Conversation.html">Conversation</a><ul class='methods'><li data-type='method'><a href="Conversation.html#.sdkVersion">sdkVersion</a></li><li data-type='method'><a href="Conversation.html#attachment">attachment</a></li><li data-type='method'><a href="Conversation.html#botId">botId</a></li><li data-type='method'><a href="Conversation.html#channelType">channelType</a></li><li data-type='method'><a href="Conversation.html#error">error</a></li><li data-type='method'><a href="Conversation.html#keepTurn">keepTurn</a></li><li data-type='method'><a href="Conversation.html#location">location</a></li><li data-type='method'><a href="Conversation.html#logger">logger</a></li><li data-type='method'><a href="Conversation.html#MessageModel">MessageModel</a></li><li data-type='method'><a href="Conversation.html#messagePayload">messagePayload</a></li><li data-type='method'><a href="Conversation.html#nlpResult">nlpResult</a></li><li data-type='method'><a href="Conversation.html#platformVersion">platformVersion</a></li><li data-type='method'><a href="Conversation.html#postback">postback</a></li><li data-type='method'><a href="Conversation.html#properties">properties</a></li><li data-type='method'><a href="Conversation.html#rawPayload">rawPayload</a></li><li data-type='method'><a href="Conversation.html#releaseTurn">releaseTurn</a></li><li data-type='method'><a href="Conversation.html#reply">reply</a></li><li data-type='method'><a href="Conversation.html#request">request</a></li><li data-type='method'><a href="Conversation.html#sessionId">sessionId</a></li><li data-type='method'><a href="Conversation.html#text">text</a></li><li data-type='method'><a href="Conversation.html#transition">transition</a></li><li data-type='method'><a href="Conversation.html#userId">userId</a></li><li data-type='method'><a href="Conversation.html#variable">variable</a></li></ul></li><li><a href="module-Lib.MessageModel.html">MessageModel</a><ul class='methods'><li data-type='method'><a href="module-Lib.MessageModel.html#.addChannelExtensions">addChannelExtensions</a></li><li data-type='method'><a href="module-Lib.MessageModel.html#.addGlobalActions">addGlobalActions</a></li><li data-type='method'><a href="module-Lib.MessageModel.html#.attachmentConversationMessage">attachmentConversationMessage</a></li><li data-type='method'><a href="module-Lib.MessageModel.html#.callActionObject">callActionObject</a></li><li data-type='method'><a href="module-Lib.MessageModel.html#.cardConversationMessage">cardConversationMessage</a></li><li data-type='method'><a href="module-Lib.MessageModel.html#.cardObject">cardObject</a></li><li data-type='method'><a href="module-Lib.MessageModel.html#.locationActionObject">locationActionObject</a></li><li data-type='method'><a href="module-Lib.MessageModel.html#.locationConversationMessage">locationConversationMessage</a></li><li data-type='method'><a href="module-Lib.MessageModel.html#.postbackActionObject">postbackActionObject</a></li><li data-type='method'><a href="module-Lib.MessageModel.html#.postbackConversationMessage">postbackConversationMessage</a></li><li data-type='method'><a href="module-Lib.MessageModel.html#.rawConversationMessage">rawConversationMessage</a></li><li data-type='method'><a href="module-Lib.MessageModel.html#.shareActionObject">shareActionObject</a></li><li data-type='method'><a href="module-Lib.MessageModel.html#.textConversationMessage">textConversationMessage</a></li><li data-type='method'><a href="module-Lib.MessageModel.html#.urlActionObject">urlActionObject</a></li><li data-type='method'><a href="module-Lib.MessageModel.html#.validateConversationMessage">validateConversationMessage</a></li><li data-type='method'><a href="module-Lib.MessageModel.html#isValid">isValid</a></li><li data-type='method'><a href="module-Lib.MessageModel.html#messagePayload">messagePayload</a></li><li data-type='method'><a href="module-Lib.MessageModel.html#rawPayload">rawPayload</a></li><li data-type='method'><a href="module-Lib.MessageModel.html#validationError">validationError</a></li></ul></li><li><a href="module-Middleware.WebhookClient.html">WebhookClient</a><ul class='methods'><li data-type='method'><a href="module-Middleware.WebhookClient.html#MessageModel">MessageModel</a></li><li data-type='method'><a href="module-Middleware.WebhookClient.html#on">on</a></li><li data-type='method'><a href="module-Middleware.WebhookClient.html#receiver">receiver</a></li><li data-type='method'><a href="module-Middleware.WebhookClient.html#send">send</a></li></ul></li><li><a href="module-Testing.MockConversation.html">MockConversation</a><ul class='methods'><li data-type='method'><a href="module-Testing.MockConversation.html#.any">any</a></li><li data-type='method'><a href="module-Testing.MockConversation.html#.fromRequest">fromRequest</a></li><li data-type='method'><a href="module-Testing.MockConversation.html#getReplies">getReplies</a></li></ul></li><li><a href="NLPResult.html">NLPResult</a><ul class='methods'><li data-type='method'><a href="NLPResult.html#entityMatches">entityMatches</a></li><li data-type='method'><a href="NLPResult.html#intentMatches">intentMatches</a></li><li data-type='method'><a href="NLPResult.html#topIntentMatch">topIntentMatch</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-Config.html">Config</a><ul class='methods'><li data-type='method'><a href="module-Config.html">setLogger</a></li></ul></li><li><a href="module-Lib.html">Lib</a></li><li><a href="module-Middleware.html">Middleware</a><ul class='methods'><li data-type='method'><a href="module-Middleware.html#.customComponent">customComponent</a></li><li data-type='method'><a href="module-Middleware.html#.webhookReceiver">webhookReceiver</a></li></ul></li><li><a href="module-Testing.html">Testing</a><ul class='methods'><li data-type='method'><a href="module-Testing.html#.MockRequest">MockRequest</a></li></ul></li><li><a href="module-Util.html">Util</a></li><li><a href="module-Util_MessageModel.html">Util/MessageModel</a><ul class='methods'><li data-type='method'><a href="module-Util_MessageModel.html#.cardToText">cardToText</a></li><li data-type='method'><a href="module-Util_MessageModel.html#.convertRespToText">convertRespToText</a></li></ul></li><li><a href="module-Util_Text.html">Util/Text</a><ul class='methods'><li data-type='method'><a href="module-Util_Text.html#.approxTextMatch">approxTextMatch</a></li></ul></li><li><a href="module-Util_Webhook.html">Util/Webhook</a><ul class='methods'><li data-type='method'><a href="module-Util_Webhook.html#.bodyParserRawMessageVerify">bodyParserRawMessageVerify</a></li><li data-type='method'><a href="module-Util_Webhook.html#.buildSignatureHeader">buildSignatureHeader</a></li><li data-type='method'><a href="module-Util_Webhook.html#.messageToBot">messageToBot</a></li><li data-type='method'><a href="module-Util_Webhook.html#.messageToBotWithProperties">messageToBotWithProperties</a></li><li data-type='method'><a href="module-Util_Webhook.html#.verifyMessageFormat">verifyMessageFormat</a></li></ul></li></ul><h3>Externals</h3><ul><li><a href="external-ExpressApplication.html">ExpressApplication</a></li><li><a href="external-ExpressRequest.html">ExpressRequest</a></li><li><a href="external-ExpressResponse.html">ExpressResponse</a></li><li><a href="external-ExpressRouter.html">ExpressRouter</a></li></ul><h3>Global</h3><ul><li><a href="global.html#init">init</a></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">lib/message/messageModel.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict";
+
+const { CommonValidator } = require("../../common/validator");
+const MessageModelSchemaFactory = require("./schema/messageModelSchema");
+
+/**
+ * The Bots MessageModel is a class for creating and validating a message structure based on the
+ * Conversation Message Model (CMM), representing a message to or from a bot.  This class is used 
+ * by the Bots Custom Components Conversation SDK, and can also be used independently of the SDK.
+ * &lt;p>
+ * This class can be used in a server side Nodejs environment, or in the browser.
+ * &lt;/p>
+ * A MessageModel class instance can be instantiated using the constructor taking the payload
+ * that represents the message.  The payload is then parsed and validated.
+ * @memberof module:Lib
+ */
+class MessageModel {
+  /**
+   * To create a MessageModel object using a javascript object representing the conversation message, 
+   * or a string for plain text message.
+   * &lt;p>
+   * The object is of Conversation Message Model (CMM) message type such as Text, Card, Attachment, 
+   * Location, Postback, or Raw type.  This message object may be created using the static methods 
+   * in this class.  Or the message object may be received from a sender, and a MessageModel
+   * can then be created to validate the message object.
+   * &lt;/p>
+   * &lt;p>
+   * The payload will be validated.  If it is a valid message, messagePayload() will return the valid 
+   * message object.  If not, the message content can be retrieved via payload().
+   * &lt;/p>
+   * To support older message format, the object can also be of the 'choice' type.
+   * @constructor
+   * @param {string|object} payload - The payload to be parsed into a MessageModel object
+   */
+  constructor(payload) {
+    this._payload = payload;
+    this._messagePayload = null;
+    this._validationError = null;
+    this._parse();
+  }
+
+  _parse() {
+    if (this._payload) {
+      if (this._payload.type) {
+        if (this._payload.type === 'choice') {
+          this._payload = MessageModel._parseLegacyChoice(this._payload);
+        }
+      } else {
+        if (typeof this._payload === 'string') {
+          this._payload = MessageModel.textConversationMessage(this._payload);
+        } else {
+          if (this._payload.choices) {
+            this._payload = MessageModel._parseLegacyChoice(this._payload);
+          } else if (this._payload.text &amp;&amp; Object.keys(this._payload).length === 1) {
+            this._payload = MessageModel.textConversationMessage(this._payload.text);
+          }
+        }
+      }
+
+      var result = MessageModel.validateConversationMessage(this._payload);
+      if (result === true) {
+        this._messagePayload = Object.assign({}, this._payload);
+      } else {
+        this._validationError = result;
+      }
+    }
+  }
+
+  /**
+   * Retrieves the validated common message model payload.
+   * @return {object} The common message model payload
+   */
+  messagePayload() {
+    return this._messagePayload;
+  }
+
+  /**
+   * If messagePayload() returns null or if isValid() is false, this method can be used to 
+   * retrieve the payload that could not be converted to a Conversation Message Model (CMM) payload.
+   * @return {object} The payload which may not comply to Conversation Message Model (CMM)
+   */
+  rawPayload() {
+    return this._payload;
+  }
+
+  /**
+   * returns if the instance contains a valid message according to Conversation Message Model (CMM)
+   * @return {boolean} if the message conforms to Conversation Message Model (CMM)
+   */
+  isValid() {
+    return (!!this._messagePayload);
+  }
+
+  /**
+   * Retrieves the validation error messages, if any.  Use if messagePayload() returns null or 
+   * isValid() is false, signifying validation errors.
+   * @return {object} The validation error encountered when converting the payload to the 
+   * Conversation Message Model (CMM).  The validation error object is produced by joi.
+   */
+  validationError() {
+    return this._validationError;
+  }
+
+  static _parseLegacyChoice(payload) {
+    if (payload.choices &amp;&amp; payload.choices instanceof Array &amp;&amp; payload.choices.length > 0) {
+      var postbacks = payload.choices.map(function (choice) {
+        return MessageModel.postbackActionObject(choice, null, choice);
+      });
+      return MessageModel.textConversationMessage(payload.text, postbacks);
+    } else {
+      return payload;
+    }
+  }
+
+  /**
+   * Static method to create a TextConversationMessage.
+   * @return {object} A TextConversationMessage.
+   * @param {string} text - The text of the message payload.
+   * @param {object[]} [actions] - A list of actions related to the text.
+   * @param {string} [footerText] - The footerText to be added at the bottom of the message.
+   */
+  static textConversationMessage(text, actions, footerText) {
+    var instance = {
+      type: 'text',
+      text: text
+    };
+    if (actions) {
+      instance.actions = actions;
+    }
+    if (footerText) {
+      instance.footerText = footerText;
+    }
+    return instance;
+
+  }
+
+  static _baseActionObject(type, label, imageUrl) {
+    var instance = {
+      type: type
+    };
+    if (label) {
+      instance.label = label;
+    }
+    if (imageUrl) {
+      instance.imageUrl = imageUrl;
+    }
+    return instance;
+  }
+
+  /**
+   * Static method to create a postback Action.  A label or an imageUrl is required.
+   * @return {object} A postbackActionObject.
+   * @param {string} [label] - label of the action.
+   * @param {string} [imageUrl] - image to show for the action.
+   * @param {object|string} postback - object or string to send as postback if action is taken.
+   * @param {string[]} [keywords] - array of keywords that can be used to trigger the postback action.
+   * @param {boolean} [skipAutoNumber] - Boolean flag that can be used to exclude a postback action 
+   * from auto-numbering. Only applicable when 'autoNumberPostbackActions' context variable or
+   * 'autoNumberPostbackActions' component property is set to true.
+   */
+  static postbackActionObject(label, imageUrl, postback, keywords, skipAutoNumber){
+    var instance = this._baseActionObject('postback', label, imageUrl);
+    instance.postback = postback;
+    if (keywords) {
+      instance.keywords = keywords;
+    }
+    // since false is default for skipAutoNumber, we only need to add it when value is true
+    if (skipAutoNumber) {
+      instance.skipAutoNumber = skipAutoNumber;
+    }
+    return instance;
+  }
+
+  /**
+   * Static method to create a url Action.  A label or an imageUrl is required.
+   * @return {object} A urlActionObject.
+   * @param {string} [label] - label of the action.
+   * @param {string} [imageUrl] - image to show for the action.
+   * @param {string} url - url to open if action is taken.
+   */
+  static urlActionObject(label, imageUrl, url) {
+    var instance = this._baseActionObject('url', label, imageUrl);
+    instance.url = url;
+    return instance;
+  }
+
+  /**
+   * Static method to create a call Action.  A label or an imageUrl is required.
+   * @return {object} A callActionObject.
+   * @param {string} [label] - label of the action.
+   * @param {string} [imageUrl] - image to show for the action.
+   * @param {string} phoneNumber - phoneNumber to call if action is taken.
+   */
+  static callActionObject(label, imageUrl, phoneNumber) {
+    var instance = this._baseActionObject('call', label, imageUrl);
+    instance.phoneNumber = phoneNumber;
+    return instance;
+  }
+
+  /**
+   * Static method to create a location Action.  A label or an imageUrl is required.
+   * @return {object} A locationActionObject.
+   * @param {string} [label] - label of the action.
+   * @param {string} [imageUrl] - image to show for the action.
+   */
+  static locationActionObject(label, imageUrl) {
+    return this._baseActionObject('location', label, imageUrl);
+  }
+
+  /**
+   * Static method to create a share Action.  A label or an imageUrl is required.
+   * @return {object} A shareActionObject.
+   * @param {string} [label] - label of the action.
+   * @param {string} [imageUrl] - image to show for the action.
+   */
+  static shareActionObject(label, imageUrl) {
+    return this._baseActionObject('share', label, imageUrl);
+  }
+
+  /**
+   * Static method to create a card object for CardConversationMessage.
+   * @return {object} A Card.
+   * @param {string} title - The title of the card.
+   * @param {string} [description] - The description of the card.
+   * @param {string} [imageUrl] - URL of the image.
+   * @param {string} [url] - URL for a hyperlink of the card.
+   * @param {object[]} [actions] - A list of actions available for this card.
+   */
+  static cardObject(title, description, imageUrl, url, actions) {
+    var instance = {
+      title: title
+    };
+    if (description) {
+      instance.description = description;
+    }
+    if (imageUrl) {
+      instance.imageUrl = imageUrl;
+    }
+    if (url) {
+      instance.url = url;
+    }
+    if (actions) {
+      instance.actions = actions;
+    }
+    return instance;
+  }
+
+  /**
+   * Static method to create a CardConversationMessage.
+   * @return {object} A CardConversationMessage.
+   * @param {string} [layout] - 'vertical' or 'horizontal'.  Whether to display the cards 
+   * horizontally or vertically.  Default is vertical.
+   * @param {object[]} cards - The list of cards to be rendered.
+   * @param {object[]} [actions] - A list of actions for the cardConversationMessage.
+   * @param {string} [footerText] - The footerText to be added at the bottom of the message.
+   */
+  static cardConversationMessage(layout, cards, actions, footerText) {
+    var response = {
+      type: 'card',
+      layout: layout || 'vertical',
+      cards: cards
+    };
+    if (actions) {
+      response.actions = actions;
+    }
+    if (footerText) {
+      response.footerText = footerText;
+    }
+    return response;
+  }
+
+  /**
+   * Static method to create an AttachmentConversationMessage
+   * @return {object} An AttachmentConversationMessage.
+   * @param {string} type - type of attachment - file, image, video or audio.
+   * @param {string} url - the url of the attachment.
+   * @param {object[]} [actions] - A list of actions for the attachmentConversationMessage.
+   * @param {string} [footerText] - The footerText to be added at the bottom of the message.
+   */
+  static attachmentConversationMessage(type, url, actions, footerText) {
+    var attachment = {
+      type: type,
+      url: url
+    };
+    var response = {
+      type: 'attachment',
+      attachment: attachment
+    };
+    if (actions) {
+      response.actions = actions;
+    }
+    if (footerText) {
+      response.footerText = footerText;
+    }
+    return response;
+  }
+
+  /**
+   * Static method to create a LocationConversationMessage.
+   * @return {object} A LocationConversationMessage.
+   * @param {number} latitude - The latitude.
+   * @param {number} longitude - The longitude.
+   * @param {string} [title] - The title for the location.
+   * @param {string} [url] - A url for displaying a map of the location.
+   * @param {object[]} [actions] - A list of actions for the locationConversationMessage.
+   */
+  static locationConversationMessage(latitude, longitude, title, url, actions) {
+    var location = {
+      latitude: latitude,
+      longitude: longitude
+    };
+    if (title) {
+      location.title = title;
+    }
+    if (url) {
+      location.url = url;
+    }
+    var response = {
+      type: 'location',
+      location: location
+    };
+    if (actions) {
+      response.actions = actions;
+    }
+    return response;
+  }
+
+  /**
+   * Static method to create a postackConversationMessage
+   * @return {object} A PostbackConversationMessage.
+   * @param {object|string} postback - object or string to send as postback.
+   * @param {string} [label] - The label associated with the postback.
+   * @param {object[]} [actions] - A list of actions for the postbackConversationMessage.
+   */
+  static postbackConversationMessage(postback, label, actions) {
+    var response = {
+      type: 'postback',
+      postback: postback
+    };
+    if (label) {
+      response.text = label;
+    }
+    if (actions) {
+      response.actions = actions;
+    }
+    return response;
+  }
+
+  /**
+   * Static method to create a RawConversationMessage.
+   * @return {object} A RawConversationMessage.
+   * @param {object} payload - The raw (channel-specific) payload,
+   */
+  static rawConversationMessage(payload) {
+    return {
+      type: 'raw',
+      payload: payload
+    };
+  }
+
+  /**
+   * Static method to add channel extensions to a payload object.
+   * @return {object} A ConversationMessage with channel extensions.
+   * @param {object} message - The message to add channel extensions to.
+   * @param {string} channel - The channel type ('facebook', 'webhook', etc) to set extensions on.
+   * @param {object} extensions - The channel-specific extensions to be added.
+   */
+  static addChannelExtensions(message, channel, extensions) {
+    if (message &amp;&amp; channel &amp;&amp; extensions) {
+      if (!message.channelExensions) {
+        message.channelExtensions = {};
+      }
+      message.channelExtensions[channel] = (message.channelExtensions[channel] ? Object.assign(message.channelExtensions[channel], extensions) : extensions);
+    }
+    return message;
+  }
+
+  /**
+   * Static method to add global actions to a payload object.
+   * @return {object} A ConversationMessage with global actions.
+   * @param {object} message - The message to add global actions to.
+   * @param {object} globalActions - The global actions to be added.
+   */
+  static addGlobalActions(message, globalActions) {
+    if (message &amp;&amp; globalActions) {
+      message.globalActions = globalActions;
+    }
+    return message;
+  }
+
+  /**
+   * Static method to validate a common ConversationMessage
+   * @return {boolean|object} true if valid; return Validation Error object (error &amp; value) if invalid
+   * @param {object} payload - The payload object to be verified
+   */
+  static validateConversationMessage(payload) {
+    const result = CommonValidator.validate(MessageModelSchemaFactory, payload);
+    if (result &amp;&amp; !result.error) {
+      return true;
+    } else {
+      return result;
+    }
+  }
+}
+
+module.exports = {
+  MessageModel,
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

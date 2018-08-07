@@ -21,20 +21,13 @@ const serverConf = require("../support/spec.config");
 
 describe('Middleware', () => {
 
-  it('should init child middleware', () => {
-    let spyParserMw = spyOn(ParserMiddleware.prototype, '_init');
-    let spyCompMw = spyOn(ComponentMiddleware.prototype, '_init');
-    expect(OracleBot.Middleware.init.bind(express())).not.toThrow();
-    // individual middlewares don't get invoked without configs
-    expect(spyParserMw).toHaveBeenCalled(); // parser is always used
-    expect(spyCompMw).not.toHaveBeenCalled();
-  });
-
   it('should init customComponent middleware', () => {
-    const mw = OracleBot.Middleware.customComponent();
-    expect(mw.stack).toBeDefined();
-    expect(mw.stack.length).toBeGreaterThan(0);
-    expect(mw.stack.some(layer => layer.route && layer.route.path === '/:component')).toBe(true);
+    const app = express();
+    const spyParser = spyOn(ParserMiddleware.prototype, '_init').and.callThrough();
+    const spyCC = spyOn(ComponentMiddleware.prototype, '_init').and.callThrough();
+    const mw = OracleBot.Middleware.customComponent(app);
+    expect(mw).toEqual(jasmine.any(Function));
+    expect(spyParser).toHaveBeenCalledBefore(spyCC);
   });
 
   it('should be failure tolerant', () => {

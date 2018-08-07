@@ -7,13 +7,14 @@ const { CommonProvider } = require("../common/provider");
  * @private
  */
 class MiddlewareAbstract {
-  constructor(layer, options) {
+  constructor(service, options) {
+    this.options = options;
     // setup additional iVars.
     this._logger = CommonProvider.getLogger();
-    this.options = options;
+    this._service = service;
     // init middleware
     try {
-      this._init(layer, options);
+      this._init(service, options);
     } catch (e) {
       this._logger.error(`Failed to init ${this.constructor.name}`, e);
     }
@@ -21,16 +22,15 @@ class MiddlewareAbstract {
 
   /**
    * extend static method. Instantiate the middleware class on the provided router.
-   * @param {external:ExpressRouter|external:ExpressApplication} layer: express.Router - main namespace router.
+   * @param {external:ExpressRouter|external:ExpressApplication} service: express.Router - main namespace router.
    * @param {*} options: any - Channel specific middleware options.
    * @return instantiated class.
    */
-  static extend(layer, options = {}) {
-    const THIS = this; // bypass "Cannot create instance of abstract class error"
-    return new THIS(layer, options);
+  static extend(service, options = {}) {
+    return new this(service, options);
   }
 }
 
 module.exports = {
-  MiddlewareAbstract
+  MiddlewareAbstract,
 };
