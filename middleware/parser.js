@@ -27,7 +27,7 @@ const { CONSTANTS } = require('../common/constants');
 class ParserMiddleware extends MiddlewareAbstract {
   /**
    * initialize the body-parser middleware on the application service
-   * @param {external:ExpressRouter|external.ExpressApplication} service
+   * @param {external.ExpressApplication} service
    * @param {ParserOptions} options 
    */
   _init(service, options) {
@@ -41,7 +41,7 @@ class ParserMiddleware extends MiddlewareAbstract {
 
   /**
    * add/replace parser to the application or router stack.
-   * @param {external:ExpressRouter|external.ExpressApplication} service 
+   * @param {external.ExpressApplication} service 
    * @param {function} parser - body parser middleware
    */
   _addParser(service, parser) {

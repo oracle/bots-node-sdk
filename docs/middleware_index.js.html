@@ -74,14 +74,14 @@ const { WebhookClient, WebhookEvent } = require("./webhook");
 /**
  * Create router middleware for custom component request handling.
  * @function module:Middleware.customComponent
- * @param {(external:ExpressRouter|external.ExpressApplication)} service - Application or router to attach custom component endpoints.
+ * @param {external.ExpressApplication} service - Application or router to attach custom component endpoints.
  * @param {Object} options - Middleware configuration options.
  * @param {string} [options.baseUrl='/'] - Base url for custom component endpoints
  * @param {string} [options.cwd=process.cwd()] - Working directory from which any component paths are relative.
  * @param {(string[]|Object[]|Function[])} options.register - Series of paths to components or directories, Objects with name=>component pairs, Objects representing a component, or Component class ctor Functions.
  * @param {*} [options.mixins] - Any mixin properties for ComponentInvocation
  * @param {boolean|ParserOptions} [options.parser={}] - Body parser middleware options. If false, parser will be ignored.
- * @return {ExpressRequestHandler} - Request handler for custom component services.
+ * @return {external.ExpressApplication} - Application with service endpoints.
  * @example
  * const OracleBot = require('@oracle/bots-node-sdk');
  * const express = require('express');
