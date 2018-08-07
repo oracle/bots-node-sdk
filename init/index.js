@@ -28,8 +28,6 @@
  * @param {CustomLogger} [options.logger=console] - Specify alternate logging utility
  * @param {ParserOptions} [options.parser] - Body parser middleware options.
  * @return {external:ExpressApplication} - Initialized application
- * @requires express
- * @requires body-parser
  * @example
  * const express = require('express');
  * const OracleBot = require('@oracle/bots-node-sdk');

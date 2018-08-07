@@ -139,7 +139,6 @@ function webhookReceiver(secret, callback) {
  * Configurable middleware for custom bot request handling.
  * This module requires {@link https://www.npmjs.com/package/express|express}.
  * @module Middleware
- * @requires express
  */
 module.exports = {
   init, // for tests
