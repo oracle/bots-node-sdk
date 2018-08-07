@@ -1,6 +1,6 @@
 import * as bodyParser from 'body-parser';
 import { CONSTANTS } from '../common/constants';
-import { MiddlewareAbstract, express } from './abstract';
+import { MiddlewareAbstract, express, IServiceInstance } from './abstract';
 
 /**
  * concentrated parser middleware options
@@ -29,22 +29,22 @@ export interface IParsedRequest extends express.Request {
  */
 export class ParserMiddleware extends MiddlewareAbstract {
 
-  protected _init(app: express.Router|express.Application, options: IParserMiddlewareOptions): void {
+  protected _init(service: IServiceInstance, options: IParserMiddlewareOptions): void {
     if (options.urlencoded || options.urlencoded == null) {
-      this._addParser(app, bodyParser.urlencoded(this._getOptions({ extended: true }, options.urlencoded)));
+      this._addParser(service, bodyParser.urlencoded(this._getOptions({ extended: true }, options.urlencoded)));
     }
     if (options.json || options.json == null) {
-      this._addParser(app, bodyParser.json(this._getOptions({}, options.json)));
+      this._addParser(service, bodyParser.json(this._getOptions({}, options.json)));
     }
   }
 
   /**
    * add/replace parser to the application or router stack.
-   * @param app - application or router layer to add
+   * @param service - application or router layer to add
    * @param parser - body parser middleware
    */
-  private _addParser(app: express.Application|express.Router, parser: express.RequestHandler) {
-    let stack = (app && (app['_router'] || app).stack) || [];
+  private _addParser(service: IServiceInstance, parser: express.RequestHandler) {
+    let stack = (service && (service['_router'] || service).stack) || [];
     let replaced = false;
 
     // find/replace in stack
@@ -56,7 +56,7 @@ export class ParserMiddleware extends MiddlewareAbstract {
 
     // add to stack if not already replaced
     if (!replaced) {
-      this._addHandler('use', null, parser);
+      service.use(parser);
     }
   }
 

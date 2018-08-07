@@ -1,6 +1,6 @@
 import { ICallback } from '../common/definitions';
 import { ComponentListItem, ComponentRegistry } from '../lib/component/registry';
-import { IMobileCloudRequest, MiddlewareAbstract, express } from './abstract';
+import { IMobileCloudRequest, MiddlewareAbstract, express, IServiceInstance } from './abstract';
 
 import Shell = require('../lib/component/shell');
 
@@ -8,8 +8,10 @@ import Shell = require('../lib/component/shell');
  * component middleware specific options
  */
 export interface IComponentMiddlewareOptions {
+  /** base url for custom component endpoints (defaults to '/') */
+  baseUrl?: string;
   /** working directory of the project runtime (defaults to process.cwd()) */
-  cwd: string;
+  cwd?: string;
   /** list of components to register, these will be considered 'global' */
   register?: ComponentListItem[];
   /** base directory for component registry scan into collections */
@@ -23,9 +25,6 @@ export interface IComponentMiddlewareOptions {
  */
 // const [PARAM_COLLECTION, PARAM_COMPONENT] = ['collection', 'component'];
 const [PARAM_COMPONENT] = ['component'];
-// const MESSAGES = {
-//   NOT_FOUND: 'not found',
-// };
 
 /**
  * ComponentMiddleware.
@@ -33,10 +32,11 @@ const [PARAM_COMPONENT] = ['component'];
  */
 export class ComponentMiddleware extends MiddlewareAbstract {
 
-  protected _init(router: express.Router, options: IComponentMiddlewareOptions): void {
+  protected _init(service: IServiceInstance, options: IComponentMiddlewareOptions): void {
     const opts: IComponentMiddlewareOptions = {
       // option defaults
       // autocollect: ComponentRegistry.COMPONENT_DIR,
+      baseUrl: '/',
       register: [ ],
       mixins: { },
       // user options
@@ -56,10 +56,12 @@ export class ComponentMiddleware extends MiddlewareAbstract {
       rootRegistry = commonRegistry;
     }
 
+    const { baseUrl } = opts;
+
     /**
      * establish component metadata index
      */
-    this._addHandler('get', '/', (req, res) => {
+    service.get(this.__endpoint(baseUrl, '/'), (req, res) => {
       const meta = this.__getShell(rootRegistry)
         .getAllComponentMetadata();
       res.json(meta);
@@ -68,11 +70,15 @@ export class ComponentMiddleware extends MiddlewareAbstract {
     /**
      * handle root component invocation
      */
-    this._addHandler('post', `/:${PARAM_COMPONENT}`, (req, res) => {
+    service.post(this.__endpoint(baseUrl, `/:${PARAM_COMPONENT}`), (req, res) => {
       const componentName = req.params[PARAM_COMPONENT];
       // invoke
       this.__invoke(componentName, rootRegistry, opts, req, res);
     });
+  }
+
+  private __endpoint(base: string, url: string): string {
+    return `${base.replace(/\/$/, '')}${url}`;
   }
 
   /**

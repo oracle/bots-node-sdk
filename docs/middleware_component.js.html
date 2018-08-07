@@ -47,6 +47,7 @@ const Shell = require("../lib/component/shell");
  * Options for configuring bots custom component middleware.
  * @typedef  {Object} ComponentMiddlewareOptions
  * @memberof module:Middleware
+ * @property {string} [baseUrl='/'] - Base url for custom component endpoints
  * @property {string} [cwd=process.cwd()] - Working directory from which any component paths are relative.
  * @property {(string[]|Object[]|Function[])} register - Series of paths to components or directories, Objects with name=>component pairs, Objects representing a component, or Component class ctor Functions.
  * @property {*} [mixins] - Any mixin properties for ComponentInvocation
@@ -65,9 +66,10 @@ const [PARAM_COMPONENT] = ['component'];
  */
 class ComponentMiddleware extends MiddlewareAbstract {
 
-  _init(router, options) {
+  _init(service, options) {
     const opts = Object.assign({
       // option defaults
+      baseUrl: '/',
       register: [],
       mixins: {}
     }, options);
@@ -78,10 +80,11 @@ class ComponentMiddleware extends MiddlewareAbstract {
      */
     let rootRegistry = ComponentRegistry.create(opts.register, opts.cwd);
     
+    const { baseUrl } = opts;
     /**
      * establish component metadata index
      */
-    this._addHandler('get', '/', (req, res) => {
+    service.get(this.__endpoint(baseUrl, '/'), (req, res) => {
       const meta = this.__getShell(rootRegistry)
         .getAllComponentMetadata();
       res.json(meta);
@@ -90,12 +93,16 @@ class ComponentMiddleware extends MiddlewareAbstract {
     /**
      * handle root component invocation
      */
-    this._addHandler('post', `/:${PARAM_COMPONENT}`, (req, res) => {
+    service.post(this.__endpoint(baseUrl, `/:${PARAM_COMPONENT}`), (req, res) => {
       const componentName = req.params[PARAM_COMPONENT];
       // invoke
       this.__invoke(componentName, rootRegistry, opts, req, res);
     });
 
+  }
+
+  __endpoint(base, url) {
+    return `${base.replace(/\/$/, '')}${url}`;
   }
 
   /**

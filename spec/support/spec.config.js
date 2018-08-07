@@ -16,7 +16,7 @@ const webhook = new WebhookClient({
 const CONF = {
   port: 4111,
   noop: () => {},
-  componentPrefix: '/bot',
+  componentPrefix: '/bot/components',
   // webhookRouterUri: '/webhook',
   webhookReceiverUri: '/webhook/standalone',
   webhookWithoutSecret: '/webhook/nosecret',

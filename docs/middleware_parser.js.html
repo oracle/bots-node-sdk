@@ -66,25 +66,25 @@ const { CONSTANTS } = require('../common/constants');
 class ParserMiddleware extends MiddlewareAbstract {
   /**
    * initialize the body-parser middleware on the application service
-   * @param {external:ExpressRouter|external.ExpressApplication} app
+   * @param {external:ExpressRouter|external.ExpressApplication} service
    * @param {ParserOptions} options 
    */
-  _init(app, options) {
+  _init(service, options) {
     if (options.urlencoded || options.urlencoded == null) {
-      this._addParser(app, bodyParser.urlencoded(this._getOptions({ extended: true }, options.urlencoded)));
+      this._addParser(service, bodyParser.urlencoded(this._getOptions({ extended: true }, options.urlencoded)));
     }
     if (options.json || options.json == null) {
-      this._addParser(app, bodyParser.json(this._getOptions({}, options.json)));
+      this._addParser(service, bodyParser.json(this._getOptions({}, options.json)));
     }
   }
 
   /**
    * add/replace parser to the application or router stack.
-   * @param {external:ExpressRouter|external.ExpressApplication} app 
+   * @param {external:ExpressRouter|external.ExpressApplication} service 
    * @param {function} parser - body parser middleware
    */
-  _addParser(app, parser) {
-    let stack = (app &amp;&amp; (app['_router'] || app).stack) || [];
+  _addParser(service, parser) {
+    let stack = (service &amp;&amp; (service['_router'] || service).stack) || [];
     let replaced = false;
 
     // find/replace in stack
@@ -96,7 +96,7 @@ class ParserMiddleware extends MiddlewareAbstract {
 
     // add to stack if not already replaced
     if (!replaced) {
-      this._addHandler('use', null, parser);
+      service.use(parser);
     }
   }
 

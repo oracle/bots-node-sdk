@@ -104,14 +104,15 @@ const app = express();
 OracleBot.init(app);
 
 // implement custom component api
-app.use('/components', OracleBot.Middleware.customComponent({
+OracleBot.Middleware.customComponent(app, {
+  baseUrl: '/components',
   cwd: __dirname,
   register: [
     './path/to/a/component',
     './path/to/other/components',
     './path/to/a/directory',
   ]
-}));</code></pre><h3 id="custom-component-code">Custom Component Code</h3><p>Using the <code>@oracle/bots-node-sdk</code> for Custom Component development supports a
+});</code></pre><h3 id="custom-component-code">Custom Component Code</h3><p>Using the <code>@oracle/bots-node-sdk</code> for Custom Component development supports a
 flexible approach to authoring components. This means that many structures for
 the implementation of a Custom Component are possible. Whatever the approach, the
 fundamental interface is required as follows:</p>

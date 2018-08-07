@@ -85,14 +85,15 @@ const app = express();
 OracleBot.init(app);
 
 // implement custom component api
-app.use('/components', OracleBot.Middleware.customComponent({
+OracleBot.Middleware.customComponent(app, {
+  baseUrl: '/components',
   cwd: __dirname,
   register: [
     './path/to/a/component',
     './path/to/other/components',
     './path/to/a/directory',
   ]
-}));
+});
 ```
 
 ### Custom Component Code

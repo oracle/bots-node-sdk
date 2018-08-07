@@ -8,14 +8,14 @@ const app = express();
 OracleBot.init(app);
 
 // component middleware
-app.use(CONF.componentPrefix, OracleBot.Middleware.customComponent({
+OracleBot.Middleware.customComponent(app, {
+  baseUrl: CONF.componentPrefix,
   cwd: __dirname,
-  // autocollect: './testing/components',
   register: [
     './testing/components',
     './testing/more.components/a.component'
   ]
-}));
+});
 
 // standalone webhook receiver middleware
 app.post(CONF.webhookReceiverUri, OracleBot.Middleware.webhookReceiver(

@@ -32,7 +32,7 @@
     "docs": "shx rm -rf ./docs && jsdoc -c jsdoc.json -d ./docs",
     "postdocs": "node ./docshim.js",
     "lint": "eslint . --ignore-pattern reports --ignore-pattern examples --ignore-pattern docs && tslint --project ./ts",
-    "test": "istanbul cover ./spec/support/test.js",
+    "test": "istanbul cover jasmine",
     "typings": "shx rm -rf ./typings && cd ./ts && tsc",
     "prepack": "npm run lint && npm run typings"
   },

@@ -64,7 +64,7 @@ This module requires <a href="https://www.npmjs.com/package/express">express</a>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="middleware_index.js.html">middleware/index.js</a>, <a href="middleware_index.js.html#line138">line 138</a>
+        <a href="middleware_index.js.html">middleware/index.js</a>, <a href="middleware_index.js.html#line97">line 97</a>
     </li></ul></dd>
     
 
@@ -158,7 +158,7 @@ This module requires <a href="https://www.npmjs.com/package/express">express</a>
 
     
 
-    <h4 class="name" id=".customComponent"><span class="type-signature">(static) </span>customComponent<span class="signature">(options)</span><span class="type-signature"> &rarr; {<a href="module-Middleware.html#ExpressRequestHandler">ExpressRequestHandler</a>}</span></h4>
+    <h4 class="name" id=".customComponent"><span class="type-signature">(static) </span>customComponent<span class="signature">(service, options)</span><span class="type-signature"> &rarr; {<a href="module-Middleware.html#ExpressRequestHandler">ExpressRequestHandler</a>}</span></h4>
 
     
 
@@ -170,7 +170,7 @@ This module requires <a href="https://www.npmjs.com/package/express">express</a>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="middleware_index.js.html">middleware/index.js</a>, <a href="middleware_index.js.html#line80">line 80</a>
+        <a href="middleware_index.js.html">middleware/index.js</a>, <a href="middleware_index.js.html#line35">line 35</a>
     </li></ul></dd>
     
 
@@ -227,7 +227,8 @@ This module requires <a href="https://www.npmjs.com/package/express">express</a>
 const express = require('express');
 
 const app = express();
-app.use('/components', OracleBot.Middleware.customComponent({
+OracleBot.Middleware.customComponent(app, {
+  baseUrl: '/components', // base url to attach endpoints
   cwd: __dirname, // root of application source
   register: [ // provide components and paths to register
     './path/to/a/directory',
@@ -235,7 +236,7 @@ app.use('/components', OracleBot.Middleware.customComponent({
     require('./path/to/another/component'),
     './path/to/other/components',
   ]
-}));</code></pre>
+});</code></pre>
 
 
 
@@ -261,6 +262,32 @@ app.use('/components', OracleBot.Middleware.customComponent({
     </thead>
 
     <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>service</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="external-ExpressRouter.html">external:ExpressRouter</a></span>
+|
+
+<span class="param-type">external.ExpressApplication</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Application or router to attach custom component endpoints.</td>
+        </tr>
+
     
 
         <tr>
@@ -307,6 +334,45 @@ app.use('/components', OracleBot.Middleware.customComponent({
     </thead>
 
     <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>baseUrl</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>'/'</code>
+                
+                </td>
+            
+
+            <td class="description last">Base url for custom component endpoints</td>
+        </tr>
+
     
 
         <tr>
@@ -531,7 +597,7 @@ app.use('/components', OracleBot.Middleware.customComponent({
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="middleware_index.js.html">middleware/index.js</a>, <a href="middleware_index.js.html#line111">line 111</a>
+        <a href="middleware_index.js.html">middleware/index.js</a>, <a href="middleware_index.js.html#line70">line 70</a>
     </li></ul></dd>
     
 
@@ -715,7 +781,7 @@ app.post('/webhook/message', OracleBot.Middleware.webhookReceiver(secret, (req, 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="middleware_index.js.html">middleware/index.js</a>, <a href="middleware_index.js.html#line23">line 23</a>
+        <a href="middleware_index.js.html">middleware/index.js</a>, <a href="middleware_index.js.html#line22">line 22</a>
     </li></ul></dd>
     
 
@@ -987,6 +1053,43 @@ app.get('/', (req, res, next) => {})</code></pre>
     </thead>
 
     <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>baseUrl</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>'/'</code>
+                
+                </td>
+            
+
+            <td class="description last">Base url for custom component endpoints</td>
+        </tr>
+
     
 
         <tr>
