@@ -1,4 +1,4 @@
-import { IStaticMiddlwareAbstract, express, MiddlewareAbstract, IServiceInstance } from './abstract';
+import { express, IServiceInstance } from './abstract';
 import { ComponentMiddleware, IComponentMiddlewareOptions } from './component';
 import { IParserMiddlewareOptions, ParserMiddleware } from './parser';
 import {
