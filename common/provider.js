@@ -4,6 +4,20 @@ exports.PROVIDER_KEY_LOGGER = 'logger';
 exports.PROVIDER_KEY_JOI = 'joi';
 
 /**
+ * polyfill basic method implementations with noop
+ * @param {*} logger 
+ */
+function polyfillLogger(logger) {
+  const noop = () => {};
+  ['log', 'trace', 'info', 'debug', 'warn', 'error']
+    .filter(method => !logger[method])
+    .forEach(method => logger[method] = noop) // noop unknown methods
+  return logger;
+}
+
+const _DEFAULT_LOGGER = polyfillLogger({ });
+
+/**
  * CommonProvider static object reference.
  * 
  * @example
@@ -44,12 +58,8 @@ class CommonProvider {
    * @return logger interface object
    */
   static getLogger() {
-    const logger = this.get(exports.PROVIDER_KEY_LOGGER) || console;
-    // polyfill basic method implementations with noop
-    ['log', 'trace', 'info', 'debug', 'warn', 'error'].forEach(method => {
-      logger[method] = logger[method] || (() => {}); // noop unknown methods.
-    });
-    return logger;
+    const logger = this.get(exports.PROVIDER_KEY_LOGGER) || _DEFAULT_LOGGER;
+    return polyfillLogger(logger);
   }
 }
 /**

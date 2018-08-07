@@ -3,8 +3,11 @@ import { ILogger } from '../common/definitions';
 import { CommonProvider } from '../common/provider';
 export { express }
 
+export type IServiceInstance = express.Application | express.Router;
+
 export interface IStaticMiddlwareAbstract {
-  extend(router: express.IRouter<any>, options?: any);
+  extend(service: IServiceInstance, options?: any);
+  new (service: IServiceInstance, options: any): MiddlewareAbstract
 }
 
 export interface IParsedRequest extends express.Request {
@@ -24,24 +27,25 @@ export interface IMobileCloudRequest extends IParsedRequest {
  */
 export abstract class MiddlewareAbstract {
   protected _logger: ILogger; // establish a namespaced logger instance
+  protected _service: IServiceInstance;
 
   /**
    * extend static method. Instantiate the middleware class.
-   * @param router: express.Router - main namespace router.
+   * @param service: express.Router - main namespace router.
    * @param options: any - Channel specific middleware options.
    * @return instantiated class.
    */
-  public static extend(router: express.IRouter<any>, options: any = {}): MiddlewareAbstract {
-    const THIS: any = this; // bypass "Cannot create instance of abstract class error"
-    return new THIS(router, options);
+  public static extend(service: IServiceInstance, options: any = {}): MiddlewareAbstract {
+    return new (<any>this)(service, options);
   }
 
-  constructor(router: express.IRouter<any>, protected options?: any) {
+  constructor(service: IServiceInstance, protected options?: any) {
     // setup additional iVars.
     this._logger = CommonProvider.getLogger();
+    this._service = service;
     // init middleware
     try {
-      this._init(router, options);
+      this._init(service, options);
       // this._logger.info(`Initialized`);
     } catch (e) {
       this._logger.error(`Failed to init ${this.constructor.name}`, e);
@@ -50,9 +54,9 @@ export abstract class MiddlewareAbstract {
 
   /**
    * abstract _init. to be implemented by implementation classes.
-   * @param router: express.Router main namespace router.
+   * @param service: application service router
    * @param options: any channel specific middleware options.
    */
-  protected abstract _init(router: express.IRouter<any>, options: any): void;
+  protected abstract _init(service: IServiceInstance, options: any): void;
 
 }

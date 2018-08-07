@@ -1,6 +1,5 @@
 "use strict";
 
-const express = require("express");
 const { ParserMiddleware } = require("./parser");
 const { ComponentMiddleware } = require("./component");
 const { WebhookClient, WebhookEvent } = require("./webhook");
@@ -34,61 +33,23 @@ const { WebhookClient, WebhookEvent } = require("./webhook");
  */
 
 /**
- * Init middleware function. Configure bot middleware to the app router stack.
- * This is similar to the {@link init} function and can be called with either an
- * express app, or router to initialize message handling middleware.
- * @function module:Middleware.init
- * @param {(external:ExpressRouter|external.ExpressApplication)} layer - Application layer to initialize
- * @param {Object} [options={}] - Middleware configuration options.
- * @param {ParserOptions} [options.parser] - Body parser middleware options.
- * @param {ComponentMiddlewareOptions} [options.component] - Custom component middleware options.
- * @param {WebhookMiddlewareOptions} [options.webhook] - Webhook middleware options as router.
- * @return {(external:ExpressRouter|external.ExpressApplication)} - Application layer with middleware applied
- * @private
- * @example
- * const OracleBot = require('@oracle/bots-node-sdk');
- * const express = require('express');
- * const app = express();
- * 
- * OracleBot.Middleware.init(app); // adds necessary body-parser to app middleware.
- * app.use('/components', OracleBot.Middleware.customComponent({
- *   register: ['./components'],
- * }));
- */
-function init(layer, options = {}) {
-  // create iterable map
-  const mwMap = new Map([
-    ['component', ComponentMiddleware],
-  ]);
-  // apply body-parser for every type unless false
-  if (options.parser !== false) {
-    ParserMiddleware.extend(layer, options.parser);
-  }
-  // iterate and apply the middleware layers
-  // middleware without options is ignored
-  Object.keys(options).forEach(key => {
-    if (mwMap.has(key)) {
-      mwMap.get(key).extend(layer, options[key]);
-    }
-  });
-  return layer;
-}
-
-/**
  * Create router middleware for custom component request handling.
  * @function module:Middleware.customComponent
+ * @param {external.ExpressApplication} service - Application or router to attach custom component endpoints.
  * @param {Object} options - Middleware configuration options.
+ * @param {string} [options.baseUrl='/'] - Base url for custom component endpoints
  * @param {string} [options.cwd=process.cwd()] - Working directory from which any component paths are relative.
  * @param {(string[]|Object[]|Function[])} options.register - Series of paths to components or directories, Objects with name=>component pairs, Objects representing a component, or Component class ctor Functions.
  * @param {*} [options.mixins] - Any mixin properties for ComponentInvocation
  * @param {boolean|ParserOptions} [options.parser={}] - Body parser middleware options. If false, parser will be ignored.
- * @return {external:ExpressRouter} - Express router with custom component handlers.
+ * @return {external.ExpressApplication} - Application with service endpoints.
  * @example
  * const OracleBot = require('@oracle/bots-node-sdk');
  * const express = require('express');
  *
  * const app = express();
- * app.use('/components', OracleBot.Middleware.customComponent({
+ * OracleBot.Middleware.customComponent(app, {
+ *   baseUrl: '/components', // base url to attach endpoints
  *   cwd: __dirname, // root of application source
  *   register: [ // provide components and paths to register
  *     './path/to/a/directory',
@@ -96,14 +57,14 @@ function init(layer, options = {}) {
  *     require('./path/to/another/component'),
  *     './path/to/other/components',
  *   ]
- * }));
+ * });
  */
-function customComponent(options = {}) {
-  const router = express.Router();
-  return init(router, {
-    component: options,
-    parser: options.parser,
-  });
+function customComponent(service, options = {}) {
+  if (options.parser !== false) {
+    ParserMiddleware.extend(service, options.parser);
+  }
+  ComponentMiddleware.extend(service, options);
+  return service;
 }
 
 /**
@@ -137,11 +98,8 @@ function webhookReceiver(secret, callback) {
  * Configurable middleware for custom bot request handling.
  * This module requires {@link https://www.npmjs.com/package/express|express}.
  * @module Middleware
- * @requires express
  */
 module.exports = {
-  init, // for tests
-  // direct middleware methods
   customComponent,
   webhookReceiver, // deprecated
   WebhookClient, WebhookEvent,

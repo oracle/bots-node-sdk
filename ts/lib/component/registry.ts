@@ -170,7 +170,7 @@ export class ComponentRegistry {
       }
     } catch (e) {
       this._logger.error(e);
-      return [];
+      throw new Error(`Invalid component path: ${filePath}`);
     }
   }
 

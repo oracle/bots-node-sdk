@@ -34,9 +34,9 @@ describe('ComponentRegistry', () => {
       expect(reg.getComponent('more.c')).toBeTruthy();
     });
 
-    it('should be resilient to bad paths', () => {
+    it('should be unforgiving to bad paths', () => {
       const reg = new ComponentRegistry(null);
-      expect(reg['__resolveComponents'].bind(reg, '../funkypath')).not.toThrow();
+      expect(reg['__resolveComponents'].bind(reg, '../funkypath')).toThrow();
     });
   });
 

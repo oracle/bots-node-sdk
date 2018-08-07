@@ -1,8 +1,6 @@
 .DS_Store
+.vscode
 node_modules
 reports
-docs
-dist
 typings
 oracle-bots-node-sdk-*.tgz
-.vscode

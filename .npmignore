@@ -1,9 +1,12 @@
-ts
-spec
-docs.js
-reports
 .istanbul.yml
 .eslintrc
 .nvmrc
+spec
+reports
+docs
+docshim.js
+jsdoc.json
+ts
 tslint.json
+THIRDPARTY.md
 oracle-bots-node-sdk-*.tgz

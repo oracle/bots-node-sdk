@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>util/messageModelUtil.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Conversation.html">Conversation</a><ul class='methods'><li data-type='method'><a href="Conversation.html#.sdkVersion">sdkVersion</a></li><li data-type='method'><a href="Conversation.html#attachment">attachment</a></li><li data-type='method'><a href="Conversation.html#botId">botId</a></li><li data-type='method'><a href="Conversation.html#channelType">channelType</a></li><li data-type='method'><a href="Conversation.html#error">error</a></li><li data-type='method'><a href="Conversation.html#keepTurn">keepTurn</a></li><li data-type='method'><a href="Conversation.html#location">location</a></li><li data-type='method'><a href="Conversation.html#logger">logger</a></li><li data-type='method'><a href="Conversation.html#MessageModel">MessageModel</a></li><li data-type='method'><a href="Conversation.html#messagePayload">messagePayload</a></li><li data-type='method'><a href="Conversation.html#nlpResult">nlpResult</a></li><li data-type='method'><a href="Conversation.html#platformVersion">platformVersion</a></li><li data-type='method'><a href="Conversation.html#postback">postback</a></li><li data-type='method'><a href="Conversation.html#properties">properties</a></li><li data-type='method'><a href="Conversation.html#rawPayload">rawPayload</a></li><li data-type='method'><a href="Conversation.html#releaseTurn">releaseTurn</a></li><li data-type='method'><a href="Conversation.html#reply">reply</a></li><li data-type='method'><a href="Conversation.html#request">request</a></li><li data-type='method'><a href="Conversation.html#sessionId">sessionId</a></li><li data-type='method'><a href="Conversation.html#text">text</a></li><li data-type='method'><a href="Conversation.html#transition">transition</a></li><li data-type='method'><a href="Conversation.html#userId">userId</a></li><li data-type='method'><a href="Conversation.html#variable">variable</a></li></ul></li><li><a href="module-Lib.MessageModel.html">MessageModel</a><ul class='methods'><li data-type='method'><a href="module-Lib.MessageModel.html#.addChannelExtensions">addChannelExtensions</a></li><li data-type='method'><a href="module-Lib.MessageModel.html#.addGlobalActions">addGlobalActions</a></li><li data-type='method'><a href="module-Lib.MessageModel.html#.attachmentConversationMessage">attachmentConversationMessage</a></li><li data-type='method'><a href="module-Lib.MessageModel.html#.callActionObject">callActionObject</a></li><li data-type='method'><a href="module-Lib.MessageModel.html#.cardConversationMessage">cardConversationMessage</a></li><li data-type='method'><a href="module-Lib.MessageModel.html#.cardObject">cardObject</a></li><li data-type='method'><a href="module-Lib.MessageModel.html#.locationActionObject">locationActionObject</a></li><li data-type='method'><a href="module-Lib.MessageModel.html#.locationConversationMessage">locationConversationMessage</a></li><li data-type='method'><a href="module-Lib.MessageModel.html#.postbackActionObject">postbackActionObject</a></li><li data-type='method'><a href="module-Lib.MessageModel.html#.postbackConversationMessage">postbackConversationMessage</a></li><li data-type='method'><a href="module-Lib.MessageModel.html#.rawConversationMessage">rawConversationMessage</a></li><li data-type='method'><a href="module-Lib.MessageModel.html#.shareActionObject">shareActionObject</a></li><li data-type='method'><a href="module-Lib.MessageModel.html#.textConversationMessage">textConversationMessage</a></li><li data-type='method'><a href="module-Lib.MessageModel.html#.urlActionObject">urlActionObject</a></li><li data-type='method'><a href="module-Lib.MessageModel.html#.validateConversationMessage">validateConversationMessage</a></li><li data-type='method'><a href="module-Lib.MessageModel.html#isValid">isValid</a></li><li data-type='method'><a href="module-Lib.MessageModel.html#messagePayload">messagePayload</a></li><li data-type='method'><a href="module-Lib.MessageModel.html#rawPayload">rawPayload</a></li><li data-type='method'><a href="module-Lib.MessageModel.html#validationError">validationError</a></li></ul></li><li><a href="module-Middleware.WebhookClient.html">WebhookClient</a><ul class='methods'><li data-type='method'><a href="module-Middleware.WebhookClient.html#MessageModel">MessageModel</a></li><li data-type='method'><a href="module-Middleware.WebhookClient.html#on">on</a></li><li data-type='method'><a href="module-Middleware.WebhookClient.html#receiver">receiver</a></li><li data-type='method'><a href="module-Middleware.WebhookClient.html#send">send</a></li></ul></li><li><a href="module-Testing.MockConversation.html">MockConversation</a><ul class='methods'><li data-type='method'><a href="module-Testing.MockConversation.html#.any">any</a></li><li data-type='method'><a href="module-Testing.MockConversation.html#.fromRequest">fromRequest</a></li><li data-type='method'><a href="module-Testing.MockConversation.html#getReplies">getReplies</a></li></ul></li><li><a href="NLPResult.html">NLPResult</a><ul class='methods'><li data-type='method'><a href="NLPResult.html#entityMatches">entityMatches</a></li><li data-type='method'><a href="NLPResult.html#intentMatches">intentMatches</a></li><li data-type='method'><a href="NLPResult.html#topIntentMatch">topIntentMatch</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-Config.html">Config</a><ul class='methods'><li data-type='method'><a href="module-Config.html">setLogger</a></li></ul></li><li><a href="module-Lib.html">Lib</a></li><li><a href="module-Middleware.html">Middleware</a><ul class='methods'><li data-type='method'><a href="module-Middleware.html#.customComponent">customComponent</a></li><li data-type='method'><a href="module-Middleware.html#.webhookReceiver">webhookReceiver</a></li></ul></li><li><a href="module-Testing.html">Testing</a><ul class='methods'><li data-type='method'><a href="module-Testing.html#.MockRequest">MockRequest</a></li></ul></li><li><a href="module-Util.html">Util</a></li><li><a href="module-Util_MessageModel.html">Util/MessageModel</a><ul class='methods'><li data-type='method'><a href="module-Util_MessageModel.html#.cardToText">cardToText</a></li><li data-type='method'><a href="module-Util_MessageModel.html#.convertRespToText">convertRespToText</a></li></ul></li><li><a href="module-Util_Text.html">Util/Text</a><ul class='methods'><li data-type='method'><a href="module-Util_Text.html#.approxTextMatch">approxTextMatch</a></li></ul></li><li><a href="module-Util_Webhook.html">Util/Webhook</a><ul class='methods'><li data-type='method'><a href="module-Util_Webhook.html#.bodyParserRawMessageVerify">bodyParserRawMessageVerify</a></li><li data-type='method'><a href="module-Util_Webhook.html#.buildSignatureHeader">buildSignatureHeader</a></li><li data-type='method'><a href="module-Util_Webhook.html#.messageToBot">messageToBot</a></li><li data-type='method'><a href="module-Util_Webhook.html#.messageToBotWithProperties">messageToBotWithProperties</a></li><li data-type='method'><a href="module-Util_Webhook.html#.verifyMessageFormat">verifyMessageFormat</a></li></ul></li></ul><h3>Externals</h3><ul><li><a href="external-ExpressApplication.html">ExpressApplication</a></li><li><a href="external-ExpressRequest.html">ExpressRequest</a></li><li><a href="external-ExpressResponse.html">ExpressResponse</a></li><li><a href="external-ExpressRouter.html">ExpressRouter</a></li></ul><h3>Global</h3><ul><li><a href="global.html#init">init</a></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">util/messageModelUtil.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict";
+
+function trailingPeriod(text) {
+  if (!text || (typeof text != 'string'))
+    return "";
+  return ((text.trim().endsWith('.') || text.trim().endsWith('?') || text.trim().endsWith(',')) ? text.trim() + ' ' : text.trim() + '. ');
+}
+
+function actionToText(action, actionPrefix) {
+  var actionText = (actionPrefix ? actionPrefix + ' ' : "");
+  if (action.label) {
+    return actionText + action.label;
+  }
+  else {
+    switch (action.type) {
+    case 'postback':
+      break;
+    case 'call':
+      actionText += 'Call the phone number ' + action.phoneNumber;
+      break;
+    case 'url':
+      actionText += 'Open the Url ' + action.url;
+      break;
+    case 'share':
+      actionText += 'Share the message';
+      break;
+    case 'location':
+      actionText += 'Share the location';
+      break;
+    default:
+      break;
+    }
+  }
+  return actionText;
+}
+
+function actionsToText(actions, prompt, actionPrefix) {
+  var actionsText = prompt || 'You can choose from the following actions: ';
+  actions.forEach(function (action, index) {
+    actionsText = actionsText + actionToText(action, actionPrefix);
+    if (index &lt; actions.length - 1) {
+      actionsText = actionsText + ', ';
+    }
+  });
+  return trailingPeriod(actionsText);
+}
+
+function textMessageToText(resp) {
+  var result = "";
+  result = trailingPeriod(resp.text);
+  if (resp.actions &amp;&amp; resp.actions.length > 0) {
+    result = result + actionsToText(resp.actions, 'You can choose from the following options: ');
+  }
+  if (resp.globalActions &amp;&amp; resp.globalActions.length > 0) {
+    result = result + actionsToText(resp.globalActions, 'The following global actions are available: ');
+  }
+  return result;
+}
+
+/**
+ * utility function to derive a string representation of a card within a conversation message for use with speech or text based channels like Alexa and SMS.
+ * @function module:Util/MessageModel.cardToText
+ * @return {string} A string or speech representation of the card.
+ * @param {object} card - A card (as defined in Conversation Message Model)
+ * @param {string} [cardPrefix] - A string prefix used before the card content, for example 'Card'
+ */
+function cardToText(card, cardPrefix) {
+  var cardText = trailingPeriod((cardPrefix ? cardPrefix + ' ' : '') + card.title);
+  if (card.description) {
+    cardText = trailingPeriod(cardText + card.description);
+  }
+  if (card.actions &amp;&amp; card.actions.length > 0) {
+    cardText = cardText + actionsToText(card.actions, 'The following actions are available for this card: ');
+    cardText = cardText + ' Or choose Return';
+  }
+  else {
+    cardText = cardText + ' You could choose Return';
+  }
+  return cardText;
+}
+
+function cardsSummaryToText(cards, prompt) {
+  var cardsText = prompt || 'You can choose from the following cards for more information: ';
+  cards.forEach(function (card, index) {
+    cardsText = cardsText + 'Card ' + card.title;
+    if (index &lt; cards.length - 1) {
+      cardsText = cardsText + ', ';
+    }
+  });
+  return trailingPeriod(cardsText);
+}
+
+function cardMessageToText(resp) {
+  var result = "";
+  result = trailingPeriod(resp.text);
+  if (resp.cards &amp;&amp; resp.cards.length > 0) {
+    result = result + cardsSummaryToText(resp.cards);
+  }
+  if (resp.actions &amp;&amp; resp.actions.length > 0) {
+    result = result + actionsToText(resp.actions, 'The following options are available: ');
+  }
+  return trailingPeriod(result);
+}
+
+function attachmentMessageToText(resp) {
+  var result = "";
+  if (resp.actions &amp;&amp; resp.actions.length > 0) {
+    result = result + actionsToText(resp.actions, 'You can choose from the following options: ');
+  }
+  if (resp.globalActions &amp;&amp; resp.globalActions.length > 0) {
+    result = result + actionsToText(resp.globalActions, 'The following global actions are available: ');
+  }
+  return trailingPeriod(result);
+}
+/**
+ * utility function to derive a string representation of a Conversation Message for use with speech or text based channels like Alexa and SMS.
+ * @function module:Util/MessageModel.convertRespToText
+ * @return {string} A string or speech representation of the conversation message.
+ * @param {object} convMsg - A message conforming to Conversation Message Model.
+ */
+function convertRespToText(convMsg) {
+  var sentence = "";
+  if (convMsg.type) {
+    switch (convMsg.type) {
+    case 'text':
+      sentence = textMessageToText(convMsg);
+      break;
+    case 'card':
+      sentence = cardMessageToText(convMsg);
+      break;
+    case 'attachment':
+      sentence = attachmentMessageToText(convMsg);
+      break;
+    case 'location':
+      sentence = attachmentMessageToText(convMsg);
+      break;
+    }
+  }
+  return sentence;
+}
+
+/**
+ * The messageModelUtil is a set of utility functions to help deriving string or speech representation
+ * of a CMM (Conversation Message Model) message.  This is used primarily to output text or speech to
+ * voice and text-based channels like Alexa and SMS.
+ * @module Util/MessageModel
+ */
+module.exports = {
+  convertRespToText,
+  cardToText,
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>
