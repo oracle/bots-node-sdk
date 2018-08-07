@@ -29,8 +29,8 @@
     "npm": ">=3.10.10"
   },
   "scripts": {
-    "docs": "shx rm -rf ./docs && jsdoc init lib config middleware util testing LICENSE.md --readme README.md -r -d ./docs -t ./node_modules/docdash",
-    "postdocs": "node ./docs.js",
+    "docs": "shx rm -rf ./docs && jsdoc -c jsdoc.json -d ./docs",
+    "postdocs": "node ./docshim.js",
     "lint": "eslint . --ignore-pattern reports --ignore-pattern examples --ignore-pattern docs && tslint --project ./ts",
     "test": "istanbul cover ./spec/support/test.js",
     "typings": "shx rm -rf ./typings && cd ./ts && tsc",
