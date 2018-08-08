@@ -309,6 +309,14 @@ class MyCustomComponent implements Lib.IComponent {
 }
 ```
 
+<!--[nodoc]-->
+## Contributing
+
+`@oracle/bots-node-sdk` is an open source project. See
+[CONTRIBUTING]('./CONTRIBUTING.md') for details.
+
+<!--[/nodoc]-->
+
 ## License
 
 Copyright © 2018, Oracle and/or its affiliates. All rights reserved.
