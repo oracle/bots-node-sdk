@@ -313,7 +313,7 @@ class MyCustomComponent implements Lib.IComponent {
 ## Contributing
 
 `@oracle/bots-node-sdk` is an open source project. See
-[CONTRIBUTING]('./CONTRIBUTING.md') for details.
+[CONTRIBUTING](./CONTRIBUTING.md) for details.
 
 <!--[/nodoc]-->
 
