@@ -1,12 +1,16 @@
 .istanbul.yml
 .eslintrc
 .nvmrc
+.npm
+.config
 spec
 reports
+examples
 docs
 docshim.js
 jsdoc.json
 ts
 tslint.json
 THIRDPARTY.md
+CONTRIBUTING.md
 oracle-bots-node-sdk-*.tgz
