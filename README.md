@@ -8,8 +8,7 @@ and/or [Webhook Channels](https://docs.oracle.com/en/cloud/paas/mobile-autonomou
 
 - [Installation](#installation) - Installation and usage information.
 - [Custom Component](#custom-components) - Services to enrich a conversation flow with custom logic, API integrations, messages, and more.
-- [Webhook](#webhook) - Integrate with custom messaging channels using incoming/outgoing webhook.
-<!--[nodoc]-->
+- [Webhook](#webhook) - Integrate with custom messaging channels using incoming/outgoing webhook.<!--[nodoc]-->
 - [Documentation](https://oracle.github.io/bots-node-sdk) - Full SDK documentation.
 <!--[/nodoc]-->
 
@@ -312,9 +311,7 @@ class MyCustomComponent implements Lib.IComponent {
 ## Contributing
 
 `@oracle/bots-node-sdk` is an open source project. See
-[CONTRIBUTING](./CONTRIBUTING.md) for details.
-
-<!--[/nodoc]-->
+[CONTRIBUTING](./CONTRIBUTING.md) for details.<!--[/nodoc]-->
 
 ## License
 
