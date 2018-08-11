@@ -471,6 +471,24 @@ export class ComponentInvocation {
   }
 
   /**
+   * Call this method if the input is not understood, and this would allow the bots runtime to 
+   * handle the issue.  The bots runtime may just display the message to the user and execute the same component again, or
+   * it may try to interpret the input and process differently.
+   * @param {object|string|MessageModel} [r] - optional payload to be sent to user.  payload could also be a string for text response
+   */
+  invalidUserInput(r) {
+    this.variable("system.invalidUserInput", true);
+    this.reply(r||'Input not understood.  Please try again');
+    return this;
+  }
+  
+  _resetInvalidUserInput() {
+    if (this.variable("system.invalidUserInput") === true) {
+      this.variable("system.invalidUserInput", false);
+    }
+  }
+
+  /**
    * Set "exit" to true when your component has replies it wants to send to
    * the client.
    *
