@@ -2,7 +2,7 @@
 
 ## Custom Components
 
-- [starter](./custom-components/starter)
+- [component package starter](./custom-components/starter)
 
 ## Webhook Integration
 
