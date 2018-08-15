@@ -62,8 +62,15 @@ class ComponentMiddleware extends MiddlewareAbstract {
 
   }
 
+  /**
+   * construct an endpoint from base and url
+   * @param {string} base - base url
+   * @param {string} url - endpoint url
+   */
   __endpoint(base, url) {
-    return `${base.replace(/\/$/, '')}${url}`;
+    return '/' + [base, url].map(part => part.replace(/^\/|\/$/g, ''))
+      .filter(part => !!part)
+      .join('/');
   }
 
   /**
