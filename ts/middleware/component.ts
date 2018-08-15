@@ -76,9 +76,15 @@ export class ComponentMiddleware extends MiddlewareAbstract {
       this.__invoke(componentName, rootRegistry, opts, req, res);
     });
   }
-
+  /**
+   * construct an endpoint from base and url
+   * @param base - base url
+   * @param url - endpoint url
+   */
   private __endpoint(base: string, url: string): string {
-    return `${base.replace(/\/$/, '')}${url}`;
+    return '/' + [base, url].map(part => part.replace(/^\/|\/$/g, ''))
+      .filter(part => !!part)
+      .join('/');
   }
 
   /**

@@ -80,7 +80,18 @@ describe('Middleware', () => {
       });
     });
 
-    describe(`configurable '${serverConf.componentPrefix}' component routes`, () => {
+    describe(`Custom Component`, () => {
+
+      it('should construct endpoints consistently', () => {
+        const app = express.Router();
+        const mw = new ComponentMiddleware(app, {});
+        expect(mw.__endpoint('/components', '/')).toEqual('/components');
+        expect(mw.__endpoint('components', '')).toEqual('/components');
+        expect(mw.__endpoint('components', '/')).toEqual('/components');
+        expect(mw.__endpoint('components/', '/')).toEqual('/components');
+        expect(mw.__endpoint('/components/', '/')).toEqual('/components');
+      });
+
       it('should get root metadata', done => {
         supertest(server)
           .get(`${serverConf.componentPrefix}`)
