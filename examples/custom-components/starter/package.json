@@ -1,12 +1,17 @@
 {
-  "name": "oracle-bot-custom-components",
-  "version": "1.0.0",
-  "description": "Getting started app with Oracle Bot Custom Component service",
-  "main": "service.js",
-  "author": "",
-  "license": "",
+  "name": "bots-express-service-wrapper",
+  "version": "2.0.0",
+  "description": "Bots Express-based component service wrapper",
+  "main": "index.js",
+  "repository": {},
+  "license": "ISC",
   "dependencies": {
-    "@oracle/bots-node-sdk": "^1.0.0",
-    "express": "^4.15.4"
+    "@oracle/bots-node-sdk": "^2.0.0",
+    "express": "^4.13.4"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "pack:cc": "cd cc_package && npm pack",
+    "postinstall": "cd cc_package && npm install --production"
   }
 }
