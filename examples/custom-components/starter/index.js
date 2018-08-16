@@ -14,7 +14,7 @@
 const fs = require("fs");
 const path = require("path");
 let port = process.env.BOTS_CC_PORT || 3000; 
-let servicePathPrefix = process.env.BOTS_CC_PATH || '';
+let servicePathPrefix = process.env.BOTS_CC_PATH || '/components';
 
 /**
  * Validate the component package in cc_package directory
