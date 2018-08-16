@@ -6,7 +6,7 @@
   "author": "",
   "license": "",
   "dependencies": {
-    "@oracle/bots-node-sdk": "^1.0.0",
+    "@oracle/bots-node-sdk": "^2.0.0",
     "express": "^4.15.4"
   }
 }
