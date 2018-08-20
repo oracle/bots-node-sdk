@@ -11,6 +11,9 @@ and/or [Webhook Channels](https://docs.oracle.com/en/cloud/paas/mobile-autonomou
 - [Webhook](#webhook) - Integrate with custom messaging channels using incoming/outgoing webhook.<!--[nodoc]-->
 - [Documentation](https://oracle.github.io/bots-node-sdk) - Full SDK documentation.
 <!--[/nodoc]-->
+<!--[nodoc]-->
+[![wercker status](https://app.wercker.com/status/39bb567cbcdc92b7dcbb3a78f144102d/s/master "wercker status")](https://app.wercker.com/project/byKey/39bb567cbcdc92b7dcbb3a78f144102d)
+<!--[/nodoc]-->
 
 ---
 
