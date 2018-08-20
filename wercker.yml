@@ -1,0 +1,26 @@
+box: node:alpine
+build:
+  steps:
+    # print node environment information
+    - script:
+        name: print nodejs information
+        code: |
+          echo "node version $(node -v) running"
+          echo "npm version $(npm -v) running"
+    # install dependencies with `npm ci`
+    - mvandervliet/npm-ci
+    # test
+    - npm-test
+
+prepare:
+  steps:
+    # run package.json prepack (lint & types)
+    - script:
+        name: dryrun for npm packaging
+        code: |
+          npm run build
+
+publish:
+  steps:
+    # publish to npm registry via NPM_TOKEN
+    - mariosant/npm-publish

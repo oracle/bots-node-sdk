@@ -3,6 +3,7 @@
 .nvmrc
 .npm
 .config
+.wercker
 spec
 reports
 examples
