@@ -2,6 +2,7 @@ import { Type, Primitive } from '../../common/definitions';
 import { IComponent } from './abstract';
 
 export type ComponentMetadataName = string;
+const logger = console;
 
 /**
  * Component metadata defintion
@@ -52,7 +53,7 @@ export const Component = (annotations: Component = {}): Function => { // decorat
       // auto-implement the interface methods
       metadata(): IComponentMetadata {
         if (!!super.metadata) {
-          console.warn(`${ctor.prototype.constructor.name} used decorator, but has metadata() defined. Ignoring annotations.`);
+          logger.warn(`${ctor.prototype.constructor.name} used decorator, but has metadata() defined. Ignoring annotations.`);
           return super.metadata();
         }
         return this.__decoratorMetadata;

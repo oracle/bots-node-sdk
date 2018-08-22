@@ -1,6 +1,7 @@
 import { ILogger } from './definitions';
 
 export const PROVIDER_KEY_LOGGER = 'logger';
+export const PROVIDER_KEY_JOI = 'joi';
 
 export type ProviderKey = any;
 export type ProviderRef = any;
@@ -15,10 +16,11 @@ export type Provider = ProviderDefinition | ProviderDefinition[];
  * @param logger
  */
 function polyfillLogger(logger: any): ILogger {
-  const noop = () => {};
+  const noop = () => { /*noop log*/ };
+  // noop unknown methods
   ['log', 'trace', 'info', 'debug', 'warn', 'error']
     .filter(method => !logger[method])
-    .forEach(method => logger[method] = noop) // noop unknown methods
+    .forEach(method => logger[method] = noop);
   return logger as ILogger;
 }
 
@@ -46,7 +48,8 @@ export class CommonProvider {
    */
   public static register(...references: Provider[]): void {
     references
-      .map(provider => Array.isArray(provider) ? provider : [provider]) // normalize to ProviderDefinition[] form
+      // normalize to ProviderDefinition[] form
+      .map(provider => Array.isArray(provider) ? provider : [provider])
       .forEach(providers => {
         providers.forEach(provider => {
           if (!this._map.has(provider.key)) {

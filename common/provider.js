@@ -5,13 +5,14 @@ exports.PROVIDER_KEY_JOI = 'joi';
 
 /**
  * polyfill basic method implementations with noop
- * @param {*} logger 
+ * @param {*} logger
  */
 function polyfillLogger(logger) {
-  const noop = () => {};
+  const noop = () => { /*noop log*/ };
+  // noop unknown methods
   ['log', 'trace', 'info', 'debug', 'warn', 'error']
     .filter(method => !logger[method])
-    .forEach(method => logger[method] = noop) // noop unknown methods
+    .forEach(method => logger[method] = noop);
   return logger;
 }
 
@@ -19,7 +20,7 @@ const _DEFAULT_LOGGER = polyfillLogger({ });
 
 /**
  * CommonProvider static object reference.
- * 
+ *
  * @example
  * const log4js = require('log4js');
  *
@@ -35,7 +36,8 @@ class CommonProvider {
    */
   static register(...references) {
     references
-      .map(provider => Array.isArray(provider) ? provider : [provider]) // normalize to ProviderDefinition[] form
+      // normalize to ProviderDefinition[] form
+      .map(provider => Array.isArray(provider) ? provider : [provider])
       .forEach(providers => {
         providers.forEach(provider => {
           if (!this._map.has(provider.key)) {

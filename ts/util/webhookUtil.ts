@@ -14,22 +14,13 @@ import { CONSTANTS } from '../common/constants';
  * @param {string} secretKey - secretKey used to calculate message signature
  */
 export function verifyMessageFromBot(signature, msgBody, encoding, secretKey) {
-    // console.log('Signature:', signature);
-    // console.log('Encoding:', encoding);
-    // console.log('Body: \n"%s"', msgBody);
     if (!signature) {
-        console.log('Missing signature');
         return false;
     }
-    //const body = Buffer.from(JSON.stringify(msgBody), encoding);
     const calculatedSig = buildSignatureHeader(msgBody, secretKey);
     if (signature !== calculatedSig) {
-        // console.log('Invalid signature:', signature);
-        //console.log('Body: \n"%s"', body);
-        // console.log('Calculated sig: %s', calculatedSig);
         return false;
     }
-    // console.log('Valid signature: %s', signature);
     return true;
 }
 
@@ -52,15 +43,16 @@ export function bodyParserRawMessageVerify(req, res, buf, encoding) {
 /**
  * create the payload signature header.
  * @function module:Util/Webhook.buildSignatureHeader
- * @param {Buffer} - Raw payload as a Buffer, such as `Buffer.from(JSON.stringify(payload), 'utf8')`
- * @param {string} - secret key of the channel for computing signature
+ * @param {Buffer} buf - Raw payload as a Buffer, such as `Buffer.from(JSON.stringify(payload), 'utf8')`
+ * @param {string} secret - secret key of the channel for computing signature
+ * @param {string} [encoding] - secret key of the channel for computing signature
  */
-function buildSignatureHeader(buf, secret) {
-    return 'sha256=' + buildSignature(buf, secret);
+function buildSignatureHeader(buf, secret, encoding?) {
+    return 'sha256=' + buildSignature(buf, secret, encoding);
 }
 
-function buildSignature(buf, secret) {
-    const hmac = crypto.createHmac('sha256', Buffer.from(secret, 'utf8'));
+function buildSignature(buf, secret, encoding?) {
+    const hmac = crypto.createHmac('sha256', Buffer.from(secret, encoding || 'utf8'));
     hmac.update(buf);
     return hmac.digest('hex');
 }

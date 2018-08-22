@@ -72,7 +72,7 @@ class ComponentRegistry {
    * @param cwd - working directory
    */
   static create(components, cwd = process.cwd()) {
-    return new this(null)
+    return new ComponentRegistry(null)
       .__buildFromItems(components, cwd);
   }
   /**
@@ -87,7 +87,7 @@ class ComponentRegistry {
     // verify absolute component dir
     componentDir = fullPath(cwd, componentDir);
     // instantiate and scan the fs
-    return new this(parent)
+    return new ComponentRegistry(parent)
       .__buildFromFs(componentDir, !parent);
   }
   /**
@@ -241,11 +241,11 @@ class ComponentRegistry {
     return this;
   }
   /**
-   * Legacy conversation shell compatability "components" property accessor
+   * Legacy conversation shell compatability "components" property getter
    * @desc allows components to be resolved by `registry.components`
    */
   get components() {
-    return this._json;
+    return Object.assign({}, this._json);
   }
   /**
    * test if registry is valid.
