@@ -29,7 +29,7 @@ export class ComponentRegistry {
    * @param cwd - working directory
    */
   public static create(components: ComponentListItem[], cwd: string = process.cwd()): ComponentRegistry {
-    return new this(null)
+    return new ComponentRegistry(null)
       .__buildFromItems(components, cwd);
   }
 
@@ -48,7 +48,7 @@ export class ComponentRegistry {
     // verify absolute component dir
     componentDir = fullPath(cwd, componentDir);
     // instantiate and scan the fs
-    return new this(parent)
+    return new ComponentRegistry(parent)
       .__buildFromFs(componentDir, !parent);
   }
 
@@ -213,11 +213,11 @@ export class ComponentRegistry {
   }
 
   /**
-   * Legacy conversation shell compatability "components" property accessor
+   * Legacy conversation shell compatability "components" property getter
    * @desc allows components to be resolved by `registry.components`
    */
   public get components(): {[name: string]: IComponent} {
-    return this._json;
+    return {...this._json};
   }
 
   /**

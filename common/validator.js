@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 const { CommonProvider, PROVIDER_KEY_JOI } = require('./provider');
 

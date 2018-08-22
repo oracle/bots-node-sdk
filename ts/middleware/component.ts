@@ -47,14 +47,7 @@ export class ComponentMiddleware extends MiddlewareAbstract {
      * assemble root registry from provided `register` property
      * merge explicitly provided component registry with the hierarchical fs registry.
      */
-    let rootRegistry: ComponentRegistry;
-    const commonRegistry = ComponentRegistry.create(opts.register, opts.cwd);
-    if (0 && opts.autocollect) { // disabled for now
-      rootRegistry = ComponentRegistry.assemble(null, opts.autocollect, opts.cwd)
-        .merge(commonRegistry, true);
-    } else {
-      rootRegistry = commonRegistry;
-    }
+    let rootRegistry: ComponentRegistry = ComponentRegistry.create(opts.register, opts.cwd);
 
     const { baseUrl } = opts;
 

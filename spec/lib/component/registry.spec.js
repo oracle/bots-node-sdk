@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 const { ComponentRegistry } = require("../../../lib/");
 const { ComponentA } = require("../../support/testing/more.components/a.component");

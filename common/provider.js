@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 exports.PROVIDER_KEY_LOGGER = 'logger';
 exports.PROVIDER_KEY_JOI = 'joi';

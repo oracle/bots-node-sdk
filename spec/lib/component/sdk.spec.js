@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 const { Lib } = require("../../main");
 const { Mock } = require("./mock.payload");

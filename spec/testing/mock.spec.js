@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 const { Conversation } = require("../main");
 const Testing = require("../../testing");

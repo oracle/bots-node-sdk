@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 /**
  * Common constants used within the project

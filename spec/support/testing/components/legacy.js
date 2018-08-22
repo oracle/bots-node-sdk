@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 module.exports = {
   metadata: () => ({
     name: 'legacy.style'

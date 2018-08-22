@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 const { WebhookClient } = require('../main').Middleware;
 const webhookSecret = '8e34e25f71aa447e87e065300cf305f0';
 

@@ -1,10 +1,10 @@
-"use strict";
+'use strict';
 
 const Lib = require("../../lib/");
 
 /**
  * Create a mock request for component middleware handling.
- * Invidual properties and variables may be specified by modifying the result.
+ * Individual properties and variables may be specified by modifying the result.
  * @function module:Testing.MockRequest
  * @param {*} [messagePayload] - message payload
  * @param {*} [properties] - conversation properties
@@ -95,7 +95,7 @@ class MockConversation extends Lib.Conversation {
    * @return Conversation
    */
   static fromRequest(req) {
-    return new this(req);
+    return new MockConversation(req);
   }
   /**
    * get conversation reply messages

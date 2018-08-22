@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 /**
  * custom component service that leverages a custom component package

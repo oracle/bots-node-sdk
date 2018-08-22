@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 const messageModelUtil = require('./messageModelUtil');
 const webhookUtil = require('./webhookUtil');

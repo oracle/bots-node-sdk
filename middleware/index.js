@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 const { ParserMiddleware } = require("./parser");
 const { ComponentMiddleware } = require("./component");
