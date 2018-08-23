@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 /**
  * Copyright © 2018, Oracle and/or its affiliates. All rights reserved.
  * 

@@ -398,4 +398,4 @@ export class MessageModel {
     }
   }
 
-};
+}

@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 const { CommonProvider, PROVIDER_KEY_JOI } = require('./provider');
 
@@ -16,7 +16,7 @@ class CommonValidator {
       joi = require('joi');
       CommonProvider.register({
         key: PROVIDER_KEY_JOI,
-        use: joi
+        use: joi,
       });
     }
     return joi;
@@ -36,7 +36,7 @@ class CommonValidator {
   static useInBrowser() {
     CommonProvider.register({
       key: PROVIDER_KEY_JOI,
-      use: require('joi-browser')
+      use: require('joi-browser'),
     });
   }
 

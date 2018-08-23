@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 const OracleBot = require("../main");
 const CONF = require("../support/spec.config");

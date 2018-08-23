@@ -7,6 +7,8 @@ import {
 
 export { WebhookClient, WebhookEvent, IWebhookClientOptions };
 
+const logger = console;
+
 /**
  * custom component middleware. Add bot custom component middleware to the app router stack.
  * @param service Application or router to bind custom component services
@@ -67,7 +69,7 @@ export function customComponent(
  * ```
  */
 export function webhookReceiver(channel: IWebhookChannelOption, callback: IWebhookRecieverCallback): express.RequestHandler {
-  console.warn('Deprecated webhookReceiver. Please use WebhookClient.receiver() instead.');
+  logger.warn('Deprecated webhookReceiver. Please use WebhookClient.receiver() instead.');
   return new WebhookClient({
     channel
   }).receiver(callback);

@@ -2,7 +2,7 @@ import { Conversation as SDK, IComponentRequestBody, IMessagePayload } from '../
 
 /**
  * Create a mock request for component middleware handling.
- * Invidual properties and variables may be specified by modifying the result.
+ * Individual properties and variables may be specified by modifying the result.
  * @param {*} [messagePayload] - message payload
  * @param {*} [properties] - conversation properties
  * @param {*} [variables] - conversation variables
@@ -92,7 +92,7 @@ export class MockConversation extends SDK {
    * @return Conversation
    */
   public static fromRequest(req: IComponentRequestBody): MockConversation {
-    return new this(req);
+    return new MockConversation(req);
   }
 
   /**

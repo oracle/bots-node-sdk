@@ -30,13 +30,20 @@ export abstract class MiddlewareAbstract {
   protected _service: IServiceInstance;
 
   /**
+   * static getter for class constructor
+   */
+  private static get ctor(): IStaticMiddlwareAbstract {
+    return this as any;
+  }
+
+  /**
    * extend static method. Instantiate the middleware class.
    * @param service: express.Router - main namespace router.
    * @param options: any - Channel specific middleware options.
    * @return instantiated class.
    */
   public static extend(service: IServiceInstance, options: any = {}): MiddlewareAbstract {
-    return new (<any>this)(service, options);
+    return new this.ctor(service, options);
   }
 
   constructor(service: IServiceInstance, protected options?: any) {
