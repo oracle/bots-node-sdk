@@ -1,4 +1,5 @@
 import * as joi from 'joi';
+import { CommonProvider, PROVIDER_KEY_JOI } from './provider';
 
 export interface IValidationSchemaFactory {
   (joi: any): joi.Schema;
@@ -8,16 +9,35 @@ const schemaCache = new Map<any, joi.Schema>();
 
 export class CommonValidator {
 
+  private static _getJoi(): any {
+    let Joi = CommonProvider.get(PROVIDER_KEY_JOI);
+    if (!Joi) {
+      Joi = require('joi');
+      CommonProvider.register({
+        key: PROVIDER_KEY_JOI,
+        use: Joi,
+      });
+    }
+    return Joi;
+  }
+
   /**
    * static method to provide a singleton schema object reference
    * @param factory - Joi schema factory accepting a single argument, the joi validator object.
    */
   public static getSchema(factory: IValidationSchemaFactory): joi.Schema  {
     if (!schemaCache.has(factory)) {
-      const schema = factory(joi);
+      const schema = factory(this._getJoi());
       schemaCache.set(factory, schema);
     }
     return schemaCache.get(factory);
+  }
+
+  static useInBrowser() {
+    CommonProvider.register({
+      key: PROVIDER_KEY_JOI,
+      use: require('joi-browser'),
+    });
   }
 
   /**

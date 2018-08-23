@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 /**
  * Check if a reference variable is Type.

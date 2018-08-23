@@ -2,8 +2,11 @@ const OracleBot = require('@oracle/bots-node-sdk');
 const { WebhookClient, WebhookEvent } = OracleBot.Middleware;
 
 module.exports = (app) => {
+  const logger = console;
   // initialize the application with OracleBot
-  OracleBot.init(app);
+  OracleBot.init(app, {
+    logger,
+  });
 
   // add webhook integration
   const webhook = new WebhookClient({
@@ -14,11 +17,11 @@ module.exports = (app) => {
   });
   // Add webhook event handlers (optional)
   webhook
-    .on(WebhookEvent.ERROR, err => console.error('Error:', err.message))
-    .on(WebhookEvent.MESSAGE_SENT, message => console.log('Message to bot:', message))
+    .on(WebhookEvent.ERROR, err => logger.error('Error:', err.message))
+    .on(WebhookEvent.MESSAGE_SENT, message => logger.info('Message to bot:', message))
     .on(WebhookEvent.MESSAGE_RECEIVED, message => {
       // message was received from bot. forward to messaging client.
-      console.log('Message from bot:', message);
+      logger.info('Message from bot:', message);
       // TODO: implement send to client...
     });
 

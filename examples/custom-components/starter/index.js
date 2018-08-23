@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 /**
  * custom component service that leverages a custom component package
@@ -11,10 +11,11 @@
  * component code is in the package directory.
  * 
  */
-const fs = require("fs");
-const path = require("path");
+const fs = require('fs');
+const path = require('path');
 let port = process.env.BOTS_CC_PORT || 3000; 
 let servicePathPrefix = process.env.BOTS_CC_PATH || '/components';
+const logger = console;
 
 /**
  * Validate the component package in cc_package directory
@@ -42,11 +43,11 @@ try {
     sdkVersionSpec = (pkgJson.peerDependencies ? pkgJson.peerDependencies["@oracle/bots-node-sdk"] : null);
   }
   if (!sdkVersionSpec) {
-    console.warn("Component package does not list bots-node-sdk as dev or peer dependency.  It may not be portable to other runtime environments.")
+    logger.warn("Component package does not list bots-node-sdk as dev or peer dependency.  It may not be portable to other runtime environments.")
   }
 } catch (e) {
-  console.error(e);
-  console.error("Invalid cc_package/package.json");
+  logger.error(e);
+  logger.error("Invalid cc_package/package.json");
   throw e;
 }
 
@@ -59,7 +60,7 @@ const service = require('./service');
 service(app, servicePathPrefix);
 
 const server = app.listen(port, () => {
-  console.log(`${pkgJson.name} service online with url prefix of '${servicePathPrefix}' and port ${port}`);
+  logger.info(`${pkgJson.name} service online with url prefix of '${servicePathPrefix}' and port ${port}`);
 });
 
 module.exports = server;

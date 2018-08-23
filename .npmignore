@@ -1,9 +1,6 @@
-.istanbul.yml
-.eslintrc
-.nvmrc
-.npm
-.config
-.wercker
+.*
+*.properties
+wercker.yml
 spec
 reports
 examples

@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 const { CommonProvider } = require("../common/provider");
 
@@ -21,13 +21,20 @@ class MiddlewareAbstract {
   }
 
   /**
+   * static getter for class constructor
+   */
+  static get ctor() {
+    return this;
+  }
+
+  /**
    * extend static method. Instantiate the middleware class on the provided router.
    * @param {external:ExpressRouter|external:ExpressApplication} service: express.Router - main namespace router.
    * @param {*} options: any - Channel specific middleware options.
    * @return instantiated class.
    */
   static extend(service, options = {}) {
-    return new this(service, options);
+    return new this.ctor(service, options);
   }
 }
 

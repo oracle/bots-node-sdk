@@ -94,7 +94,7 @@ export class NLPResult {
     return (this._nlpresult ? this._nlpresult.query : "");
   }
 
-};
+}
 
 /**
  * The Bots JS SDK exports a class that wraps an invocation to the custom component.

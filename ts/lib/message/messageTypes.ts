@@ -5,7 +5,7 @@ export interface IMessage {
   messagePayload?: IMessagePayload; // CMM (1.1)
   profile?: { firstName?: string; lastName?: string; [key: string]: any };
   choices?: string[];
-};
+}
 
 /**
  * define message action types

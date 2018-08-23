@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 function trailingPeriod(text) {
   if (!text || (typeof text != 'string'))

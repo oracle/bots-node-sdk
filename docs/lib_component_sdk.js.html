@@ -37,7 +37,7 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>"use strict";
+            <pre class="prettyprint source linenums"><code>'use strict';
 
 const { MessageModel } = require("../message/messageModel");
 const { CommonProvider } = require("../../common/provider");
@@ -129,7 +129,7 @@ const NLPResult = class {
     return (this._nlpresult ? this._nlpresult.query : "");
   }
 
-};
+}
 
 /**
  * The Bots Node SDK uses this class to receive bot requests, which is provided
@@ -404,7 +404,7 @@ const ComponentInvocation = class {
    * The first form:
    * variable(name);
    * reads the variable called "name", returning its value.
-   * The name could be in the form of &lt;scope>.&lt;variableName>.  For example, a variable firstName in the
+   * The name could be in the form of &amp;lt;scope&amp;gt;.&amp;lt;variableName&amp;gt;.  For example, a variable firstName in the
    * profile scope needs to be retrieved as variable("profile.firstName").
    * &lt;/p>
    * The second form:

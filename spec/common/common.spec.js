@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 const { CONSTANTS } = require("../../common/constants");
 const { isType } = require("../../common/definitions");
