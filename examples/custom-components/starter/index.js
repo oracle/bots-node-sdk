@@ -13,8 +13,6 @@
  */
 const fs = require('fs');
 const path = require('path');
-const port = process.env.BOTS_CC_PORT || 3000;
-const servicePathPrefix = process.env.BOTS_CC_PATH || '/components';
 const logger = console;
 
 /**
@@ -58,6 +56,10 @@ try {
   logger.error('Invalid project. ' + e.message);
   throw e;
 }
+
+const defaultPort = 3000;
+const port = process.env.BOTS_CC_PORT || defaultPort;
+const servicePathPrefix = process.env.BOTS_CC_PATH || '/components';
 
 /**
  * The custom component service is initialized in service.js

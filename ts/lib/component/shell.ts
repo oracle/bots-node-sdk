@@ -77,7 +77,7 @@ export = function ComponentShell(config, registry) {
       try {
         sdk = Object.assign(new SDK(requestBody), sdkMixin || {});
       } catch (err) {
-        logger.error('Error in request, details=' + JSON.stringify(err.details, null, 2));
+        logger.error('Error in request', JSON.stringify(err.details, null, 2));
         callback(err);
         return;
       }

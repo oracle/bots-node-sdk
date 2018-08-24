@@ -479,14 +479,14 @@ export class ComponentInvocation {
    * @param {object|string|MessageModel} [r] - optional payload to be sent to user.  payload could also be a string for text response
    */
   invalidUserInput(r) {
-    this.variable("system.invalidUserInput", true);
-    this.reply(r||'Input not understood.  Please try again');
+    this.variable(CONST.SYSTEM_INVALID_USER_INPUT, true);
+    this.reply(r || 'Input not understood.  Please try again');
     return this;
   }
   
   _resetInvalidUserInput() {
-    if (this.variable("system.invalidUserInput") === true) {
-      this.variable("system.invalidUserInput", false);
+    if (this.variable(CONST.SYSTEM_INVALID_USER_INPUT) === true) {
+      this.variable(CONST.SYSTEM_INVALID_USER_INPUT, false);
     }
   }
 
