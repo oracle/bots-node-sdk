@@ -27,8 +27,10 @@ const VARIABLE = {
 };
 
 // Variable types supported by the dialog engine
-const PRIMITIVE_TYPES = ['int', 'float', 'double', 'boolean', 'string', 'map', 'list'];
-const NLPRESULT_TYPE = 'nlpresult';
+const CONST = {
+  NLPRESULT_TYPE: 'nlpresult',
+  SYSTEM_INVALID_USER_INPUT: 'system.invalidUserInput',
+};
 
 /**
  * Wrapper object for accessing nlpresult
@@ -105,8 +107,8 @@ export class NLPResult {
  * as well as changing variables and sending results back to the diaog engine.
  */
 export class ComponentInvocation {
-  private _request: any;
-  private _response: any;
+  private readonly _request: any;
+  private readonly _response: any;
   /**
    * @param {object} requestBody - The request body
    * @private
@@ -114,7 +116,7 @@ export class ComponentInvocation {
   constructor(requestBody) {
     const validationResult = validateRequestBody(requestBody);
     if (validationResult.error) {
-      let err: any = new Error('Request body malformed');
+      const err: any = new Error('Request body malformed');
       err.name = 'badRequest';
       err.details = createErrorDetails('Request body malformed',
         JSON.stringify(validationResult.error),
@@ -283,7 +285,7 @@ export class ComponentInvocation {
       if (messagePayload.text) {
         text = messagePayload.text;
       } else {
-        var postback = this.postback();
+        const postback = this.postback();
         if (postback && typeof postback === 'string') {
           text = postback;
         }
@@ -428,7 +430,7 @@ export class ComponentInvocation {
   nlpResult(nlpVariableName?) {
     if (nlpVariableName === undefined) {
       for (let name in this._response.context.variables) {
-        if (this._response.context.variables[name].type === NLPRESULT_TYPE) {
+        if (this._response.context.variables[name].type === CONST.NLPRESULT_TYPE) {
           logger().info('SDK: using implicitly found nlpresult=' + name);
           nlpVariableName = name;
           break;
@@ -445,7 +447,7 @@ export class ComponentInvocation {
       throw new Error('SDK: undefined var=' + nlpVariableName);
     }
 
-    if (this._response.context.variables[nlpVariableName].type !== NLPRESULT_TYPE) {
+    if (this._response.context.variables[nlpVariableName].type !== CONST.NLPRESULT_TYPE) {
       throw new Error('SDK: var=' + nlpVariableName + ' not of type nlpresult');
     }
 

@@ -1,6 +1,7 @@
 import { ICallback } from '../common/definitions';
 import { ComponentListItem, ComponentRegistry } from '../lib/component/registry';
 import { IMobileCloudRequest, MiddlewareAbstract, express, IServiceInstance } from './abstract';
+import { STATUS_CODE } from './codes';
 
 import Shell = require('../lib/component/shell');
 
@@ -47,7 +48,7 @@ export class ComponentMiddleware extends MiddlewareAbstract {
      * assemble root registry from provided `register` property
      * merge explicitly provided component registry with the hierarchical fs registry.
      */
-    let rootRegistry: ComponentRegistry = ComponentRegistry.create(opts.register, opts.cwd);
+    const rootRegistry: ComponentRegistry = ComponentRegistry.create(opts.register, opts.cwd);
 
     const { baseUrl } = opts;
 
@@ -120,21 +121,21 @@ export class ComponentMiddleware extends MiddlewareAbstract {
     return (err, data) => {
       // direct port from components.js
       if (!err) {
-        res.status(200).json(data);
+        res.status(STATUS_CODE.OK).json(data);
       } else {
         switch (err.name) {
-          case 'unknownComponent':
-            res.status(404).send(err.message);
-            break;
-          case 'badRequest':
-            res.status(400).json(err.message);
-            break;
-          default:
-            res.status(500).json(err.message);
-            break;
+        case 'unknownComponent':
+          res.status(STATUS_CODE.NOT_FOUND).send(err.message);
+          break;
+        case 'badRequest':
+          res.status(STATUS_CODE.BAD_REQUEST).json(err.message);
+          break;
+        default:
+          res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json(err.message);
+          break;
         }
       }
-    }
+    };
   }
 
 }

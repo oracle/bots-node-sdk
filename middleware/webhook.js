@@ -3,6 +3,7 @@
 const { webhookUtil } = require('../util');
 const { MessageModel } = require('../lib');
 const { CONSTANTS } = require('../common/constants');
+const { STATUS_CODE } = require('./codes');
 
 /**
  * Options to configure a webhook client endpoint where messages are forwarded
@@ -276,16 +277,16 @@ class WebhookClient {
             const encoding = req[CONSTANTS.PARSER_RAW_ENCODING]; // get original encoding
             const signature = req.get(CONSTANTS.WEBHOOK_HEADER); // read signature header
             if (!signature) {
-              res.status(400);
+              res.status(STATUS_CODE.BAD_REQUEST);
               return Promise.reject(new Error(`${CONSTANTS.WEBHOOK_HEADER} signature not found`));
             }
             const valid = webhookUtil.verifyMessageFromBot(signature, body, encoding, channel.secret);
             if (!valid) {
-              res.status(403);
+              res.status(STATUS_CODE.FORBIDDEN);
               return Promise.reject(new Error('Signature Verification Failed'));
             }
           } else {
-            res.status(400);
+            res.status(STATUS_CODE.BAD_REQUEST);
             return Promise.reject(new Error('Missing Webhook Channel SecretKey'));
           }
           return;

@@ -3,6 +3,7 @@
 const { MiddlewareAbstract } = require("./abstract");
 const { ComponentRegistry } = require("../lib/component/registry");
 const Shell = require("../lib/component/shell");
+const { STATUS_CODE } = require('./codes');
 
 /**
  * Options for configuring bots custom component middleware.
@@ -39,7 +40,7 @@ class ComponentMiddleware extends MiddlewareAbstract {
      * assemble root registry from provided `register` property
      * merge explicitly provided component registry with the hierarchical fs registry.
      */
-    let rootRegistry = ComponentRegistry.create(opts.register, opts.cwd);
+    const rootRegistry = ComponentRegistry.create(opts.register, opts.cwd);
     
     const { baseUrl } = opts;
     /**
@@ -110,17 +111,17 @@ class ComponentMiddleware extends MiddlewareAbstract {
   __invocationCb(res) {
     return (err, data) => {
       if (!err) {
-        res.status(200).json(data);
+        res.status(STATUS_CODE.OK).json(data);
       } else {
         switch (err.name) {
         case 'unknownComponent':
-          res.status(404).send(err.message);
+          res.status(STATUS_CODE.NOT_FOUND).send(err.message);
           break;
         case 'badRequest':
-          res.status(400).json(err.message);
+          res.status(STATUS_CODE.BAD_REQUEST).json(err.message);
           break;
         default:
-          res.status(500).json(err.message);
+          res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json(err.message);
           break;
         }
       }
