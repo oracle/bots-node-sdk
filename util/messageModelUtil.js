@@ -1,8 +1,9 @@
 'use strict';
 
 function trailingPeriod(text) {
-  if (!text || (typeof text != 'string'))
+  if (!text || (typeof text !== 'string')) {
     return "";
+  }
   return ((text.trim().endsWith('.') || text.trim().endsWith('?') || text.trim().endsWith(',')) ? text.trim() + ' ' : text.trim() + '. ');
 }
 

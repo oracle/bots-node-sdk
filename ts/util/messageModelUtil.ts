@@ -1,7 +1,9 @@
 /* tslint:disable */
 
 function trailingPeriod(text) {
-  if (!text || (typeof text != 'string')) return "";
+  if (!text || (typeof text !== 'string')) {
+    return "";
+  }
   return ((text.trim().endsWith('.') || text.trim().endsWith('?') || text.trim().endsWith(',')) ? text.trim() + ' ' : text.trim() + '. ');
 }
 
