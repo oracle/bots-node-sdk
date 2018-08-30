@@ -77,7 +77,7 @@ export = function ComponentShell(config, registry) {
       try {
         sdk = Object.assign(new SDK(requestBody), sdkMixin || {});
       } catch (err) {
-        logger.error('Error in request', JSON.stringify(err.details, null, 2));
+        logger.error('Invocation construct error: ' + err.message);
         callback(err);
         return;
       }
@@ -94,7 +94,7 @@ export = function ComponentShell(config, registry) {
           }
         });
       } catch (err) {
-        logger.error(err);
+        logger.error('Invocation error: ' + err.message);
         callback(err);
       }
     }
