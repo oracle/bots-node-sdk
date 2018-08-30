@@ -1,7 +1,9 @@
 'use strict';
 
-const { Lib } = require("../../main");
-const { Mock } = require("./mock.payload");
+const { Lib } = require('../../main');
+const { Mock } = require('./mock.payload');
+const { MockConversation } = require('../../../testing');
+const { CommonProvider } = require('../../../common/provider');
 /**
  * migrated unit tests from source sdk.
  */
@@ -72,4 +74,13 @@ describe('Component Conversation SDK', () => {
     expect(props).toBeTruthy();
     expect(props.minAge).toEqual(18);
   });
+
+  it('should reuse single logger', () => {
+    spyOn(CommonProvider, 'getLogger').and.callThrough();
+    const sdk = MockConversation.any();
+    expect(sdk.logger()).toBeDefined();
+    expect(sdk.logger()).toBeDefined();
+    expect(CommonProvider.getLogger).toHaveBeenCalledTimes(1);
+  });
+
 });
