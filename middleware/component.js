@@ -29,6 +29,9 @@ const [PARAM_COMPONENT] = ['component'];
 class ComponentMiddleware extends MiddlewareAbstract {
 
   _init(service, options) {
+    if (!(service && service.hasOwnProperty('get') && service.hasOwnProperty('post'))) {
+      throw new Error('Cannot initialize component middleware: service is required as first argument');
+    }
     const opts = Object.assign({
       // option defaults
       baseUrl: '/',
