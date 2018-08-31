@@ -21,7 +21,7 @@ describe('Component Shell', () => {
       metadata: () => ({
         name: 'foo'
       }),
-      invoke: (conv, cb) => {
+      invoke: () => {
         throw new Error('nasty code');
       },
     };
@@ -42,8 +42,7 @@ describe('Component Shell', () => {
       shell.invokeComponentByName('bar', null, null, err => {
         resolve(expect(err).toMatch(/unknown/i));
       });
-    }))
-    .then(done).catch(done.fail);
+    })).then(done).catch(done.fail);
   });
 
 });
