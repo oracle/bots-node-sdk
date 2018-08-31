@@ -14,5 +14,5 @@ const MessageModel = require('./lib/message/messageModelBrowser').MessageModel;
  * ```
  */
 module.exports = {
-  MessageModel: MessageModel,
+  MessageModel: MessageModel
 };
