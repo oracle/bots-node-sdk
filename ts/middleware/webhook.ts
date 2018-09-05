@@ -44,11 +44,10 @@ export interface IWebhookClientOptions {
  */
 export interface IWebhookRecieverCallback extends express.RequestHandler {
   /** Error if the webhook message fails validation, and message when valid */
-  // (error: Error | null, message?: object): void;
-  req: express.Request & {
+  (req: express.Request & {
     /** req.body as verified bot message */
     body: IMessage;
-  }
+  }, res: express.Response, next: express.NextFunction): void;
 }
 
 export enum WebhookEvent {

@@ -10,7 +10,7 @@ exports.PROVIDER_KEY_JOI = 'joi';
 function polyfillLogger(logger) {
   const noop = () => { /*noop log*/ };
   // noop unknown methods
-  ['log', 'trace', 'info', 'debug', 'warn', 'error']
+  ['log', 'trace', 'info', 'debug', 'warn', 'error', 'fatal']
     .filter(method => !logger[method])
     .forEach(method => logger[method] = noop);
   return logger;
