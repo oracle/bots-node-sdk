@@ -42,6 +42,7 @@
 const { ParserMiddleware } = require("./parser");
 const { ComponentMiddleware } = require("./component");
 const { WebhookClient, WebhookEvent } = require("./webhook");
+const logger = console;
 
 /**
  * @external ExpressRouter
@@ -128,7 +129,7 @@ function customComponent(service, options = {}) {
  * }));
  */
 function webhookReceiver(secret, callback) {
-  console.warn('Deprecated webhookReceiver. Please use WebhookClient.receiver() instead.');
+  logger.warn('Deprecated webhookReceiver. Please use WebhookClient.receiver() instead.');
   return new WebhookClient({ channel: secret })
     .receiver(callback);
 }

@@ -43,6 +43,8 @@ const crypto = require("crypto");
 const axios = require("axios");
 const { CONSTANTS } = require("../common/constants");
 
+const logger = console;
+
 /**
  * utility function to perform webhook signature verification
  * @function module:Util/Webhook.verifyMessageFormat
@@ -60,15 +62,10 @@ const { CONSTANTS } = require("../common/constants");
  */
 function verifyMessageFromBot(signature, msgBody, encoding, secretKey) {
   if (!signature) {
-    console.log('Missing signature');
     return false;
   }
-  //const body = Buffer.from(JSON.stringify(msgBody), encoding);
-  const calculatedSig = buildSignatureHeader(msgBody, secretKey);
+  const calculatedSig = buildSignatureHeader(msgBody, secretKey, encoding);
   if (signature !== calculatedSig) {
-    // console.log('Invalid signature:', signature);
-    //console.log('Body: \n"%s"', body);
-    // console.log('Calculated sig: %s', calculatedSig);
     return false;
   }
   return true;
@@ -101,15 +98,16 @@ function bodyParserRawMessageVerify(req, res, buf, encoding) {
 /**
  * create the payload signature header.
  * @function module:Util/Webhook.buildSignatureHeader
- * @param {Buffer} - Raw payload as a Buffer, such as `Buffer.from(JSON.stringify(payload), 'utf8')`
- * @param {string} - secret key of the channel for computing signature
+ * @param {Buffer} buf - Raw payload as a Buffer, such as `Buffer.from(JSON.stringify(payload), 'utf8')`
+ * @param {string} secret - secret key of the channel for computing signature
+ * @param {string} [encoding] - secret key of the channel for computing signature
  */
-function buildSignatureHeader(buf, secret) {
-  return 'sha256=' + buildSignature(buf, secret);
+function buildSignatureHeader(buf, secret, encoding) {
+  return 'sha256=' + buildSignature(buf, secret, encoding);
 }
 
-function buildSignature(buf, secret) {
-  const hmac = crypto.createHmac('sha256', Buffer.from(secret, 'utf8'));
+function buildSignature(buf, secret, encoding) {
+  const hmac = crypto.createHmac('sha256', Buffer.from(secret, encoding || 'utf8'));
   hmac.update(buf);
   return hmac.digest('hex');
 }
@@ -125,7 +123,7 @@ function buildSignature(buf, secret) {
  * @deprecated use {@link module:Util/Webhook.messageToBotWithProperties} instead
  */
 function messageToBot(channelUrl, channelSecretKey, userId, inMsg, callback) {
-  console.warn("messageToBot() is deprecated in favor of messageToBotWithProperties()"); 
+  logger.warn("messageToBot() is deprecated in favor of messageToBotWithProperties()"); 
   messageToBotWithProperties(channelUrl, channelSecretKey, userId, inMsg, null, callback);
 }
 
@@ -180,12 +178,12 @@ function messageToBotWithProperties(channelUrl, channelSecretKey, userId, inMsg,
   if (additionalProperties) {
     outMsg = Object.assign(outMsg, additionalProperties);
   }
-  
+
   const body = Buffer.from(JSON.stringify(outMsg), 'utf8');
   const headers = {};
   headers['Content-Type'] = 'application/json; charset=utf-8';
   headers[CONSTANTS.WEBHOOK_HEADER] = buildSignatureHeader(body, channelSecretKey);
-  
+
   axios.post(channelUrl, body, {
     headers,
     timeout: 60000,
