@@ -199,7 +199,9 @@ class MessageModel {
    */
   static postbackActionObject(label, imageUrl, postback, keywords, skipAutoNumber){
     var instance = this._baseActionObject('postback', label, imageUrl);
-    instance.postback = postback;
+    if (~['string', 'object'].indexOf(typeof postback)) {
+      instance.postback = postback;
+    }
     if (keywords) {
       instance.keywords = keywords;
     }
@@ -267,7 +269,7 @@ class MessageModel {
    */
   static cardObject(title, description, imageUrl, url, actions) {
     var instance = {
-      title: title
+      title: title || ''
     };
     if (description) {
       instance.description = description;

@@ -124,7 +124,7 @@ class ComponentRegistry {
    * @private
    */
   __buildFromFs(baseDir, withCollections) {
-    const dir = path.resolve(baseDir);
+    const dir = path.resolve(typeof baseDir === 'string' ? baseDir : '');
     if (fs.existsSync(dir)) {
       this.__scanDir(dir, withCollections)
         .forEach(component => this.__register(component));
@@ -232,12 +232,14 @@ class ComponentRegistry {
    * @param recursive - Recursively merge into child collections.
    */
   merge(registry, recursive) {
-    registry.getComponents().forEach(component => {
-      this.__register(component);
-      if (recursive) {
-        this._collections.forEach(collection => collection.__register(component));
-      }
-    });
+    if (registry &amp;&amp; registry instanceof ComponentRegistry &amp;&amp; registry.isValid()) {
+      registry.getComponents().forEach(component => {
+        this.__register(component);
+        if (recursive) {
+          this._collections.forEach(collection => collection.__register(component));
+        }
+      });
+    }
     return this;
   }
   /**
