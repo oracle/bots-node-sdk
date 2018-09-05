@@ -27,8 +27,10 @@ const VARIABLE = {
 };
 
 // Variable types supported by the dialog engine
-const PRIMITIVE_TYPES = ['int', 'float', 'double', 'boolean', 'string', 'map', 'list'];
-const NLPRESULT_TYPE = 'nlpresult';
+const CONST = {
+  NLPRESULT_TYPE: 'nlpresult',
+  SYSTEM_INVALID_USER_INPUT: 'system.invalidUserInput',
+};
 
 /**
  * Wrapper object for accessing nlpresult
@@ -76,8 +78,7 @@ export class NLPResult {
     if (this._nlpresult.intentMatches && Array.isArray(this._nlpresult.intentMatches.summary) && this._nlpresult.intentMatches.summary.length > 0) {
       return this._nlpresult.intentMatches.summary;
     } else {
-      logger().info('nlpResult structure', this._nlpresult);
-      throw new Error('Unexpected nlpResult structure');
+      return null;
     }
   }
 
@@ -105,8 +106,9 @@ export class NLPResult {
  * as well as changing variables and sending results back to the diaog engine.
  */
 export class ComponentInvocation {
-  private _request: any;
-  private _response: any;
+  private readonly _request: any;
+  private readonly _response: any;
+  private readonly _logger: ILogger;
   /**
    * @param {object} requestBody - The request body
    * @private
@@ -114,12 +116,13 @@ export class ComponentInvocation {
   constructor(requestBody) {
     const validationResult = validateRequestBody(requestBody);
     if (validationResult.error) {
-      let err: any = new Error('Request body malformed');
+      const err: any = new Error('Request body malformed');
       err.name = 'badRequest';
       err.details = createErrorDetails('Request body malformed',
         JSON.stringify(validationResult.error),
-        'BOTS-1000',
-        { requestBody: requestBody });
+        'BOTS-1000', { 
+          requestBody: requestBody
+        });
       throw err;
     }
 
@@ -131,6 +134,11 @@ export class ComponentInvocation {
     this._response.platformVersion = this._request.platformVersion;
     this._response.context = Object.assign({}, this._request.context);
     this._response.context.variables = this._response.context.variables || {};
+
+    // Reset system.invalidUserInput variable if set to true.  Requested by runtime to do this in sdk
+    this._resetInvalidUserInput();
+
+    this._logger = logger();
   }
 
   /**
@@ -167,10 +175,10 @@ export class ComponentInvocation {
 
   /**
    * Retrieves the logger so the component can use the shared logger for logging.  The shared logger should support the methods log, info, warn, error and trace.
-   * @return {object} The logger().
+   * @return {object} The logger.
    */
   logger(): ILogger {
-    return logger();
+    return this._logger;
   }
 
   /**
@@ -196,7 +204,7 @@ export class ComponentInvocation {
    * @private
    */
   payload() {
-    logger().warn("conversation SDK payload() is deprecated in favor of messagePayload()"); 
+    this.logger().warn("conversation SDK payload() is deprecated in favor of messagePayload()"); 
     return this.rawPayload();
   }
 
@@ -250,7 +258,6 @@ export class ComponentInvocation {
     if (!postback) {
       postback = this._postback10();
     }
-    logger().info('SDK: Retrieving request postback=' + postback);
     return postback;
   }
 
@@ -283,7 +290,7 @@ export class ComponentInvocation {
       if (messagePayload.text) {
         text = messagePayload.text;
       } else {
-        var postback = this.postback();
+        const postback = this.postback();
         if (postback && typeof postback === 'string') {
           text = postback;
         }
@@ -292,7 +299,6 @@ export class ComponentInvocation {
     if (!text) {
       text = this._text10();
     }
-    logger().info('SDK: Retrieving request text=' + text);
     return text;
   }
 
@@ -308,7 +314,6 @@ export class ComponentInvocation {
     if (messagePayload && messagePayload.attachment) {
       attachment = messagePayload.attachment;
     }
-    logger().info('SDK: Retrieving request attachment=' + attachment);
     return attachment;
   }
 
@@ -324,7 +329,6 @@ export class ComponentInvocation {
     if (messagePayload && messagePayload.location) {
       location = messagePayload.location;
     }
-    logger().info('SDK: Retrieving request location=' + location);
     return location;
   }
 
@@ -392,20 +396,20 @@ export class ComponentInvocation {
       }
       return context.variables[nameToUse].value;
     } else {
-      logger().info('SDK: About to set variable ' + name);
+      this.logger().debug('SDK: About to set variable ' + name);
 
       if (!context.variables) {
         context.variables = {};
       }
       if (!context.variables[nameToUse]) {
-        logger().info('SDK: Creating new variable ' + nameToUse);
+        this.logger().debug('SDK: Creating new variable ' + nameToUse);
         context.variables[nameToUse] = Object.assign({}, VARIABLE);
       }
 
       context.variables[nameToUse].value = value;
       this._response.modifyContext = true;
 
-      logger().info('SDK: Setting variable ' + JSON.stringify(context.variables[nameToUse]));
+      this.logger().debug('SDK: Setting variable ' + JSON.stringify(context.variables[nameToUse]));
       return this;
     }
   }
@@ -428,8 +432,8 @@ export class ComponentInvocation {
   nlpResult(nlpVariableName?) {
     if (nlpVariableName === undefined) {
       for (let name in this._response.context.variables) {
-        if (this._response.context.variables[name].type === NLPRESULT_TYPE) {
-          logger().info('SDK: using implicitly found nlpresult=' + name);
+        if (this._response.context.variables[name].type === CONST.NLPRESULT_TYPE) {
+          this.logger().debug('SDK: using implicitly found nlpresult=' + name);
           nlpVariableName = name;
           break;
         }
@@ -445,7 +449,7 @@ export class ComponentInvocation {
       throw new Error('SDK: undefined var=' + nlpVariableName);
     }
 
-    if (this._response.context.variables[nlpVariableName].type !== NLPRESULT_TYPE) {
+    if (this._response.context.variables[nlpVariableName].type !== CONST.NLPRESULT_TYPE) {
       throw new Error('SDK: var=' + nlpVariableName + ' not of type nlpresult');
     }
 
@@ -461,7 +465,7 @@ export class ComponentInvocation {
    * @private
    */
   action(a) {
-    logger().warn("conversation SDK action() is deprecated in favor of transition(action)"); 
+    this.logger().warn("conversation SDK action() is deprecated in favor of transition(action)"); 
     if (a === undefined) {
       return this._response.action;
     }
@@ -477,14 +481,14 @@ export class ComponentInvocation {
    * @param {object|string|MessageModel} [r] - optional payload to be sent to user.  payload could also be a string for text response
    */
   invalidUserInput(r) {
-    this.variable("system.invalidUserInput", true);
-    this.reply(r||'Input not understood.  Please try again');
+    this.variable(CONST.SYSTEM_INVALID_USER_INPUT, true);
+    this.reply(r || 'Input not understood.  Please try again');
     return this;
   }
   
   _resetInvalidUserInput() {
-    if (this.variable("system.invalidUserInput") === true) {
-      this.variable("system.invalidUserInput", false);
+    if (this.variable(CONST.SYSTEM_INVALID_USER_INPUT) === true) {
+      this.variable(CONST.SYSTEM_INVALID_USER_INPUT, false);
     }
   }
 
@@ -500,7 +504,7 @@ export class ComponentInvocation {
    * @private
    */
   exit(e) {
-    logger().warn("conversation SDK exit() is deprecated in favor of keepTurn(boolean)"); 
+    this.logger().warn("conversation SDK exit() is deprecated in favor of keepTurn(boolean)"); 
     this._response.keepTurn = !e;
     return this;
   }
@@ -549,7 +553,7 @@ export class ComponentInvocation {
   * @private
   */
   done(d) {
-    logger().warn("conversation SDK done() is deprecated in favor of transition()"); 
+    this.logger().warn("conversation SDK done() is deprecated in favor of transition()"); 
     this._response.transition = !!d;
     return this;
   }
@@ -606,26 +610,26 @@ export class ComponentInvocation {
 
     var messageModel;
     if (payload instanceof MessageModel) {
-      logger().info('messageModel payload provided', payload);
+      this.logger().debug('messageModel payload provided');
       messageModel = payload;
     } else {
-      logger().info('creating messageModel with payload:', payload);
+      this.logger().debug('creating messageModel with payload');
       messageModel = new MessageModel(payload);
     }
     if (messageModel.isValid()) {
-      logger().info('valid messageModel');
+      this.logger().debug('valid messageModel');
       response.messagePayload = messageModel.messagePayload();
     } else {
-      logger().info('message model validation error:', messageModel.validationError());
-      logger().info('using rawPayload');
+      this.logger().debug('message model validation error:', messageModel.validationError());
+      this.logger().debug('using rawPayload');
       var rawMessagePayload = MessageModel.rawConversationMessage(payload);
       messageModel = new MessageModel(rawMessagePayload);
       if (messageModel.isValid()) {
-        logger().info('valid messageModel for rawMessagePayload');
+        this.logger().debug('valid messageModel for rawMessagePayload');
         response.messagePayload = messageModel.messagePayload();
       } else {
-        logger().info('message model validation error:', messageModel.validationError());
-        logger().info('using payload instead of messagePayload');
+        this.logger().debug('message model validation error:', messageModel.validationError());
+        this.logger().debug('using payload instead of messagePayload');
         response.payload = messageModel.rawPayload();
       }
     }

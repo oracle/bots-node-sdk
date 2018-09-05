@@ -1,12 +1,14 @@
 /* tslint:disable */
 
 function trailingPeriod(text) {
-  if (!text || (typeof text != 'string')) return "";
+  if (!text || (typeof text !== 'string')) {
+    return '';
+  }
   return ((text.trim().endsWith('.') || text.trim().endsWith('?') || text.trim().endsWith(',')) ? text.trim() + ' ' : text.trim() + '. ');
 }
 
 function actionToText(action, actionPrefix) {
-  var actionText = (actionPrefix ? actionPrefix + ' ' : "");
+  var actionText = (actionPrefix ? actionPrefix + ' ' : '');
   if (action.label) {
     return actionText + action.label;
   } else {

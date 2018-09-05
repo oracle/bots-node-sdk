@@ -98,7 +98,7 @@ export class MessageModel {
     return this._validationError;
   }
 
-  static _parseLegacyChoice(payload) {
+  private static _parseLegacyChoice(payload) {
     if (payload.choices && payload.choices instanceof Array && payload.choices.length > 0) {
       var postbacks = payload.choices.map(function (choice) {
         return MessageModel.postbackActionObject(choice, null, choice);
@@ -116,7 +116,7 @@ export class MessageModel {
    * @param {object[]} [actions] - A list of actions related to the text.
    * @param {string} [footerText] - The footerText to be added at the bottom of the message.
    */
-  static textConversationMessage(text, actions?, footerText?) {
+  public static textConversationMessage(text, actions?, footerText?) {
     var instance: any = {
       type: 'text',
       text: text
@@ -155,9 +155,11 @@ export class MessageModel {
    * from auto-numbering. Only applicable when 'autoNumberPostbackActions' context variable or
    * 'autoNumberPostbackActions' component property is set to true.
    */
-  static postbackActionObject(label, imageUrl, postback, keywords?, skipAutoNumber?) {
+  public static postbackActionObject(label, imageUrl, postback, keywords?, skipAutoNumber?) {
     var instance = this._baseActionObject('postback', label, imageUrl);
-    instance.postback = postback;
+    if (~['string', 'object'].indexOf(typeof postback)) {
+      instance.postback = postback;
+    }
     if (keywords) {
       instance.keywords = keywords;
     }
@@ -175,7 +177,7 @@ export class MessageModel {
    * @param {string} [imageUrl] - image to show for the action.
    * @param {string} url - url to open if action is taken.
    */
-  static urlActionObject(label, imageUrl, url) {
+  public static urlActionObject(label, imageUrl, url) {
     var instance = this._baseActionObject('url', label, imageUrl);
     instance.url = url;
     return instance;
@@ -188,7 +190,7 @@ export class MessageModel {
    * @param {string} [imageUrl] - image to show for the action.
    * @param {string} phoneNumber - phoneNumber to call if action is taken.
    */
-  static callActionObject(label, imageUrl, phoneNumber) {
+  public static callActionObject(label, imageUrl, phoneNumber) {
     var instance = this._baseActionObject('call', label, imageUrl);
     instance.phoneNumber = phoneNumber;
     return instance;
@@ -200,7 +202,7 @@ export class MessageModel {
    * @param {string} [label] - label of the action.
    * @param {string} [imageUrl] - image to show for the action.
    */
-  static locationActionObject(label?, imageUrl?) {
+  public static locationActionObject(label?, imageUrl?) {
     return this._baseActionObject('location', label, imageUrl);
   }
 
@@ -210,7 +212,7 @@ export class MessageModel {
    * @param {string} [label] - label of the action.
    * @param {string} [imageUrl] - image to show for the action.
    */
-  static shareActionObject(label?, imageUrl?) {
+  public static shareActionObject(label?, imageUrl?) {
     return this._baseActionObject('share', label, imageUrl);
   }
 
@@ -223,9 +225,9 @@ export class MessageModel {
    * @param {string} [url] - URL for a hyperlink of the card.
    * @param {object[]} [actions] - A list of actions available for this card.
    */
-  static cardObject(title, description?, imageUrl?, url?, actions?) {
+  public static cardObject(title, description?, imageUrl?, url?, actions?) {
     var instance: any = {
-      title: title
+      title: title || ''
     };
     if (description) {
       instance.description = description;
@@ -250,7 +252,7 @@ export class MessageModel {
    * @param {object[]} [actions] - A list of actions for the cardConversationMessage.
    * @param {string} [footerText] - The footerText to be added at the bottom of the message.
    */
-  static cardConversationMessage(layout, cards, actions?, footerText?) {
+  public static cardConversationMessage(layout, cards, actions?, footerText?) {
     var response: any = {
       type: 'card',
       layout: layout || 'vertical',
@@ -273,7 +275,7 @@ export class MessageModel {
    * @param {object[]} [actions] - A list of actions for the attachmentConversationMessage.
    * @param {string} [footerText] - The footerText to be added at the bottom of the message.
    */
-  static attachmentConversationMessage(type, url, actions?, footerText?) {
+  public static attachmentConversationMessage(type, url, actions?, footerText?) {
     var attachment = {
       type: type,
       url: url
@@ -300,7 +302,7 @@ export class MessageModel {
    * @param {string} [url] - A url for displaying a map of the location.
    * @param {object[]} [actions] - A list of actions for the locationConversationMessage.
    */
-  static locationConversationMessage(latitude, longitude, title?, url?, actions?) {
+  public static locationConversationMessage(latitude, longitude, title?, url?, actions?) {
     var location: any = {
       latitude: latitude,
       longitude: longitude
@@ -328,7 +330,7 @@ export class MessageModel {
    * @param {string} [label] - The label associated with the postback.
    * @param {object[]} [actions] - A list of actions for the postbackConversationMessage.
    */
-  static postbackConversationMessage(postback, label?, actions?) {
+  public static postbackConversationMessage(postback, label?, actions?) {
     var response: any = {
       type: 'postback',
       postback: postback
@@ -347,7 +349,7 @@ export class MessageModel {
    * @return {object} A RawConversationMessage.
    * @param {object} payload - The raw (channel-specific) payload to send.
    */
-  static rawConversationMessage(payload) {
+  public static rawConversationMessage(payload) {
     return {
       type: 'raw',
       payload: payload
@@ -361,7 +363,7 @@ export class MessageModel {
    * @param {string} channel - The channel type ('facebook', 'webhook', etc) to set extensions on
    * @param {object} extensions - The channel-specific extensions to be added.
    */
-  static addChannelExtensions(message, channel, extensions) {
+  public static addChannelExtensions(message, channel, extensions) {
     if (message && channel && extensions) {
       if (!message.channelExensions) {
         message.channelExtensions = {};
@@ -377,7 +379,7 @@ export class MessageModel {
    * @param {object} message - The message to add global actions to.
    * @param {object} globalActions - The global actions to be added.
    */
-  static addGlobalActions(message, globalActions) {
+  public static addGlobalActions(message, globalActions) {
     if (message && globalActions) {
       message.globalActions = globalActions;
     }
@@ -389,7 +391,7 @@ export class MessageModel {
    * @return {boolean|object} true if valid; return Validation Error object (error & value) if invalid
    * @param {object} payload - The payload object to be verified
    */
-  static validateConversationMessage(payload) {
+  public static validateConversationMessage(payload) {
     const result = CommonValidator.validate(MessageModelSchemaFactory, payload);
     if (result && !result.error) {
       return true;

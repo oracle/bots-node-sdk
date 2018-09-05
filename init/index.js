@@ -31,7 +31,7 @@
  * @example
  * const express = require('express');
  * const OracleBot = require('@oracle/bots-node-sdk');
- * 
+ *
  * const app = express();
  * OracleBot.init(app, {
  *   // options...

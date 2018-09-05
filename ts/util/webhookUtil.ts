@@ -14,10 +14,10 @@ import { CONSTANTS } from '../common/constants';
  * @param {string} secretKey - secretKey used to calculate message signature
  */
 export function verifyMessageFromBot(signature, msgBody, encoding, secretKey) {
-    if (!signature) {
+    if (!signature || !msgBody || !secretKey) {
         return false;
     }
-    const calculatedSig = buildSignatureHeader(msgBody, secretKey);
+    const calculatedSig = buildSignatureHeader(msgBody, secretKey, encoding);
     if (signature !== calculatedSig) {
         return false;
     }
@@ -36,8 +36,10 @@ export function verifyMessageFromBot(signature, msgBody, encoding, secretKey) {
  * @param {string} encoding - encoding of the raw message body.
  */
 export function bodyParserRawMessageVerify(req, res, buf, encoding) {
-    req[CONSTANTS.PARSER_RAW_BODY] = buf;
-    req[CONSTANTS.PARSER_RAW_ENCODING] = encoding;
+    if (req) {
+        req[CONSTANTS.PARSER_RAW_BODY] = buf;
+        req[CONSTANTS.PARSER_RAW_ENCODING] = encoding;
+    }
 }
 
 /**
@@ -52,8 +54,10 @@ function buildSignatureHeader(buf, secret, encoding?) {
 }
 
 function buildSignature(buf, secret, encoding?) {
-    const hmac = crypto.createHmac('sha256', Buffer.from(secret, encoding || 'utf8'));
-    hmac.update(buf);
+    const hmac = crypto.createHmac('sha256', Buffer.from(secret || '', encoding || 'utf8'));
+    if (buf) {
+        hmac.update(buf);
+    }
     return hmac.digest('hex');
 }
 

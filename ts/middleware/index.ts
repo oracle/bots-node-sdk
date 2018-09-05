@@ -68,10 +68,10 @@ export function customComponent(
  * }));
  * ```
  */
-export function webhookReceiver(channel: IWebhookChannelOption, callback: IWebhookRecieverCallback): express.RequestHandler {
+export function webhookReceiver(secret: IWebhookChannelOption, callback: IWebhookRecieverCallback): express.RequestHandler {
   logger.warn('Deprecated webhookReceiver. Please use WebhookClient.receiver() instead.');
   return new WebhookClient({
-    channel
+    channel: secret,
   }).receiver(callback);
 }
 

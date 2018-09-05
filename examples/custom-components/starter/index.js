@@ -13,43 +13,53 @@
  */
 const fs = require('fs');
 const path = require('path');
-let port = process.env.BOTS_CC_PORT || 3000; 
-let servicePathPrefix = process.env.BOTS_CC_PATH || '/components';
 const logger = console;
 
 /**
  * Validate the component package in cc_package directory
  */
+let ccPkgJson;
 try {
-  let pkgJsonPath = path.join(__dirname, 'cc_package', 'package.json');
-  var pkgJson = JSON.parse(fs.readFileSync(pkgJsonPath));
-  let mainExp = require(path.join(__dirname, 'cc_package'));
+  const ccPkg = path.resolve('./cc_package');
+  if (!fs.existsSync(ccPkg)) {
+    throw new Error('cc_package does not exist');
+  }
+  const pkgJsonPath = path.join(ccPkg, 'package.json');
+  if (!fs.existsSync(pkgJsonPath)) {
+    throw new Error('cc_package must contain a package.json file');
+  }
+  ccPkgJson = JSON.parse(fs.readFileSync(pkgJsonPath));
+
+  const mainExp = require(ccPkg);
   if (!mainExp.components) {
-    throw new Error("Invalid project.  cc_package does not export components");
+    throw new Error('cc_package does not export components');
   }
   if (Array.isArray(mainExp.components)) {
     if (mainExp.components.length < 1) {
-      throw new Error("Invalid project.  cc_package should export 1 or more components");
+      throw new Error('cc_package should export 1 or more components');
     }
   } else if (typeof mainExp.components === 'object')  {
     if (Object.keys(mainExp.components).length === 0) {
-      throw new Error("Invalid project.  cc_package should export 1 or more components");
+      throw new Error('cc_package should export 1 or more components');
     }
   } else if (typeof mainExp.components !== 'string'){
-    throw new Error("Invalid project.  cc_package should export components as an array or object");
+    throw new Error('cc_package should export components as an array or object');
   }
-  let sdkVersionSpec = (pkgJson.devDependencies ? pkgJson.devDependencies["@oracle/bots-node-sdk"] : null);
+  let sdkVersionSpec = (ccPkgJson.devDependencies ? ccPkgJson.devDependencies['@oracle/bots-node-sdk'] : null);
   if (!sdkVersionSpec) {
-    sdkVersionSpec = (pkgJson.peerDependencies ? pkgJson.peerDependencies["@oracle/bots-node-sdk"] : null);
+    sdkVersionSpec = (ccPkgJson.peerDependencies ? ccPkgJson.peerDependencies['@oracle/bots-node-sdk'] : null);
   }
   if (!sdkVersionSpec) {
-    logger.warn("Component package does not list bots-node-sdk as dev or peer dependency.  It may not be portable to other runtime environments.")
+    logger.warn('Component package does not list bots-node-sdk as dev or peer dependency. It may not be portable to other runtime environments.');
   }
 } catch (e) {
-  logger.error(e);
-  logger.error("Invalid cc_package/package.json");
+  logger.error('Invalid project. ' + e.message);
   throw e;
 }
+
+const defaultPort = 3000;
+const port = process.env.BOTS_CC_PORT || defaultPort;
+const servicePathPrefix = process.env.BOTS_CC_PATH || '/components';
 
 /**
  * The custom component service is initialized in service.js
@@ -60,7 +70,7 @@ const service = require('./service');
 service(app, servicePathPrefix);
 
 const server = app.listen(port, () => {
-  logger.info(`${pkgJson.name} service online with url prefix of '${servicePathPrefix}' and port ${port}`);
+  logger.info(`${ccPkgJson.name} service online with url prefix of '${servicePathPrefix}' and port ${port}`);
 });
 
 module.exports = server;

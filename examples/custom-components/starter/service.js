@@ -8,11 +8,11 @@ const path = require('path');
  * @param {object} config - additional config parameters
  */
 module.exports = (app, urlPath, config) => {
-  var logger = (config && config.logger ? config.logger : console);
+  const logger = (config && config.logger ? config.logger : console);
 
   try {
-    let pkgDirPath = path.join(__dirname, 'cc_package');
-    var cc_package = require(pkgDirPath);
+    const ccPath = path.resolve('./cc_package');
+    const ccPkg = require(ccPath);
 
     // initialize the application with OracleBot
     OracleBot.init(app, {
@@ -20,14 +20,14 @@ module.exports = (app, urlPath, config) => {
     });
     OracleBot.Middleware.customComponent(app, {
       baseUrl: urlPath,
-      cwd: cc_package.cwd || pkgDirPath,
-      register: cc_package.components
+      cwd: ccPkg.cwd || ccPath,
+      register: ccPkg.components
     });
 
-    logger.info('Express server: component server created at context path=' + urlPath);
+    logger.info('Component service created at context path=' + urlPath);
 
   } catch (e) {
-    logger.error(e);
+    logger.error(e.message);
     throw e;
   }
 };

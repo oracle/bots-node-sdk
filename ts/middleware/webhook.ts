@@ -2,6 +2,7 @@ import { CONSTANTS } from '../common/constants';
 import { webhookUtil } from '../util/';
 import { express } from './abstract';
 import { IMessage, MessageModel } from '../lib/message';
+import { STATUS_CODE } from './codes';
 
 
 /**
@@ -43,11 +44,10 @@ export interface IWebhookClientOptions {
  */
 export interface IWebhookRecieverCallback extends express.RequestHandler {
   /** Error if the webhook message fails validation, and message when valid */
-  // (error: Error | null, message?: object): void;
-  req: express.Request & {
+  (req: express.Request & {
     /** req.body as verified bot message */
     body: IMessage;
-  }
+  }, res: express.Response, next: express.NextFunction): void;
 }
 
 export enum WebhookEvent {
@@ -184,16 +184,16 @@ export class WebhookClient {
             const encoding = req[CONSTANTS.PARSER_RAW_ENCODING]; // get original encoding
             const signature = req.get(CONSTANTS.WEBHOOK_HEADER); // read signature header
             if (!signature) {
-              res.status(400);
+              res.status(STATUS_CODE.BAD_REQUEST);
               return Promise.reject(new Error(`${CONSTANTS.WEBHOOK_HEADER} signature not found`));
             }
             const valid = webhookUtil.verifyMessageFromBot(signature, body, encoding, channel.secret);
             if (!valid) {
-              res.status(403);
+              res.status(STATUS_CODE.FORBIDDEN);
               return Promise.reject(new Error('Signature Verification Failed'));
             }
           } else {
-            res.status(400);
+            res.status(STATUS_CODE.BAD_REQUEST);
             return Promise.reject(new Error('Missing Webhook Channel SecretKey'));
           }
           return;
