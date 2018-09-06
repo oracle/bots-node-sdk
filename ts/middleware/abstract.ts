@@ -53,9 +53,9 @@ export abstract class MiddlewareAbstract {
     // init middleware
     try {
       this._init(service, options);
-      // this._logger.info(`Initialized`);
     } catch (e) {
       this._logger.error(`Failed to init ${this.constructor.name}`, e);
+      throw e;
     }
   }
 

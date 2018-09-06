@@ -17,6 +17,7 @@ class MiddlewareAbstract {
       this._init(service, options);
     } catch (e) {
       this._logger.error(`Failed to init ${this.constructor.name}`, e);
+      throw e;
     }
   }
 

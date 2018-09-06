@@ -39,13 +39,13 @@ describe('Middleware', () => {
     expect(router.use).toEqual(jasmine.any(Function));
   });
 
-  it('should be failure tolerant', () => {
+  it('should be failure intolerant', () => {
     class BadMiddlware extends MiddlewareAbstract {
       _init() {
         throw new Error('bad news bears');
       }
     }
-    expect(BadMiddlware.extend.bind(BadMiddlware)).not.toThrow();
+    expect(BadMiddlware.extend.bind(BadMiddlware)).toThrow();
   });
 
   describe('server', () => {
