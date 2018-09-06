@@ -30,13 +30,13 @@ describe('Middleware', () => {
     expect(spyParser).toHaveBeenCalledBefore(spyCC);
   });
 
-  it('should be failure tolerant', () => {
+  it('should be failure intolerant', () => {
     class BadMiddlware extends MiddlewareAbstract {
       _init() {
         throw new Error('bad news bears');
       }
     }
-    expect(BadMiddlware.extend.bind(BadMiddlware)).not.toThrow();
+    expect(BadMiddlware.extend.bind(BadMiddlware)).toThrow();
   });
 
   describe('Handlers', () => {
@@ -81,6 +81,16 @@ describe('Middleware', () => {
     });
 
     describe(`Custom Component`, () => {
+
+      it('should properly assert service types', () => {
+        const getCM = (service) => {
+          return new ComponentMiddleware(service);
+        };
+
+        expect(getCM).toThrow();
+        expect(getCM.bind(null, express())).not.toThrow();
+        expect(getCM.bind(null, express.Router())).not.toThrow();
+      });
 
       it('should construct endpoints consistently', () => {
         const app = express.Router();

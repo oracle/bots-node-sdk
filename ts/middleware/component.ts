@@ -34,8 +34,8 @@ const [PARAM_COMPONENT] = ['component'];
 export class ComponentMiddleware extends MiddlewareAbstract {
 
   protected _init(service: IServiceInstance, options: IComponentMiddlewareOptions): void {
-    if (!(service && service.hasOwnProperty('get') && service.hasOwnProperty('post'))) {
-      throw new Error('Cannot initialize component middleware: service is required as first argument');
+    if (!service || typeof service.get !== 'function' || typeof service.post !== 'function') {
+      throw new Error('Cannot initialize component middleware: service argument is required');
     }
     const opts: IComponentMiddlewareOptions = {
       // option defaults
