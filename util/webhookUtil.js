@@ -3,6 +3,7 @@
 const crypto = require("crypto");
 const axios = require("axios");
 const { CONSTANTS } = require("../common/constants");
+const { httpClient } = require("../common/http");
 
 const logger = console;
 
@@ -149,10 +150,12 @@ function messageToBotWithProperties(channelUrl, channelSecretKey, userId, inMsg,
   headers['Content-Type'] = 'application/json; charset=utf-8';
   headers[CONSTANTS.WEBHOOK_HEADER] = buildSignatureHeader(body, channelSecretKey);
 
-  axios.post(channelUrl, body, {
+  const client = httpClient({
     headers,
-    timeout: 60000,
-  }).then(response => callback(response.data))
+    timeout: 60000
+  });
+  client.post(channelUrl, body)
+    .then(response => callback(response.data))
     .catch(err => callback(new Error(err.message)));
 }
 
