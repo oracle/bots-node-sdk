@@ -68,7 +68,7 @@ Custom Components into your Bot dialog.
 <!--[nodoc]-->
 ### QuickStart for Custom Components
 
-[Component Package Starter Example](https://github.com/oracle/bots-node-sdk/blob/master/examples/custom-components/starter/README.md)
+[Component Package Starter Example](https://github.com/oracle/bots-node-sdk/blob/master/examples/custom-components/starter)
 <!--[/nodoc]-->
 
 ### Custom Component Service
@@ -178,7 +178,7 @@ receiving messages. This package includes these necessary integration tools.
 <!--[nodoc]-->
 ### QuickStart for Webhook
 
-[Webhook Starter Example](https://github.com/oracle/bots-node-sdk/blob/master/examples/webhook/starter/README.md)
+[Webhook Starter Example](https://github.com/oracle/bots-node-sdk/blob/master/examples/webhook/starter)
 <!--[/nodoc]-->
 
 ### Webhook Client
