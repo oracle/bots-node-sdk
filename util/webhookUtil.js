@@ -1,8 +1,8 @@
 'use strict';
 
 const crypto = require("crypto");
-const axios = require("axios");
 const { CONSTANTS } = require("../common/constants");
+const { httpClient } = require("../common/http");
 
 const logger = console;
 
@@ -149,10 +149,15 @@ function messageToBotWithProperties(channelUrl, channelSecretKey, userId, inMsg,
   headers['Content-Type'] = 'application/json; charset=utf-8';
   headers[CONSTANTS.WEBHOOK_HEADER] = buildSignatureHeader(body, channelSecretKey);
 
-  axios.post(channelUrl, body, {
+  // use http client to post webhook message
+  const request = httpClient();
+  request(channelUrl, {
+    method: 'POST',
+    body,
     headers,
     timeout: 60000,
-  }).then(response => callback(response.data))
+    redirect: 'follow',
+  }).then(() => callback())
     .catch(err => callback(new Error(err.message)));
 }
 

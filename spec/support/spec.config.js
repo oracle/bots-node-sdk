@@ -6,7 +6,7 @@ const stubWebhookChannel = () => () => {
   return Promise.resolve({
     url: 'https://foo/bar',
     secret: webhookSecret,
-  })
+  });
 }
 
 const webhook = new WebhookClient({
@@ -34,6 +34,10 @@ const CONF = {
   parser: {},
   messages: {
     OK: 'OK'
+  },
+  connector: {
+    postRedirect: '/messages/bounce',
+    postUrl: '/messages',
   }
 }
 
