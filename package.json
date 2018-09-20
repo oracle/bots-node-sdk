@@ -38,10 +38,10 @@
     "prepack": "npm run build"
   },
   "dependencies": {
-    "axios": "^0.18.0",
     "body-parser": "^1.18.2",
     "joi": "^13.1.2",
-    "leven": "^2.1.0"
+    "leven": "^2.1.0",
+    "node-fetch": "^2.2.0"
   },
   "devDependencies": {
     "@types/body-parser": "^1.17.0",

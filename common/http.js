@@ -1,18 +1,19 @@
 'use strict';
 
-const axios = require('axios');
+const fetch = require('node-fetch');
 
 /**
  * Get a new http client instance
- * @param {object} [options] Axios request options
+ * @see https://www.npmjs.com/package/node-fetch
+ * @returns {(url: string, options?: any) => Promise<Response>}
  */
-function httpClient(options) {
-  const instance = axios.default.create(options);
-  // Workaround for https://github.com/axios/axios/issues/1158
-  instance.interceptors.request.use(config => (Object.assign({}, config, {
-    method: config.method && config.method.toUpperCase()
-  })));
-  return instance;
+function httpClient() {
+  return (url, options) => {
+    return fetch(url, options)
+      .then((res) => {
+        return res.ok ? res : Promise.reject(new Error(`${res.status}: ${res.statusText}`));
+      });
+  };
 }
 
 module.exports = {

@@ -12,12 +12,13 @@ OracleBot.init(app);
 
 // endpoint to redirect to alternate post
 app.post(CONF.connector.postRedirect, (req, res) => {
-  res.redirect(307, `http://${req.headers.host}${CONF.connector.postUrl}`);
+  const code = ~~req.query.status || 302;
+  res.redirect(code, `http://${req.headers.host}${CONF.connector.postUrl}`);
 });
 
 app.post(CONF.connector.postUrl, (req, res) => {
   // simulate created
-  const code = req.headers['x-hub-signature'] ? 202 : 403;
+  const code = req.headers['x-hub-signature'] ? 202 : 401;
   res.status(code).end();
 });
 

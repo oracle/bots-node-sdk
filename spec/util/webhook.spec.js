@@ -39,8 +39,12 @@ describe("Webhook Utilities", () => {
     beforeAll(() => server = require('../support/connector.server'));
     afterAll(done => server.close(done));
 
+    const connectorUri = (url) => {
+      return `http://localhost:${server.address().port}${url}`;
+    }
+
     it('should message to bot', done => {
-      const url = `http://localhost:${server.address().port}${CONF.connector.postUrl}`;
+      const url = connectorUri(CONF.connector.postUrl);
       OracleBot.Util.Webhook.messageToBotWithProperties(
         url, CONF.webhookSecret, "12345", "Hello?", null, (err) => {
           expect(err).toBeFalsy();
@@ -49,14 +53,28 @@ describe("Webhook Utilities", () => {
       );
     });
 
-    it('should follow redirect on post', done => {
-      const url = `http://localhost:${server.address().port}${CONF.connector.postRedirect}`;
-      OracleBot.Util.Webhook.messageToBotWithProperties(
-        url, CONF.webhookSecret, "12345", "Hello?", null, (err) => {
-          expect(err).toBeFalsy();
-          done();
-        }
-      );
+    [301, 302, 303].forEach(code => {
+      it(`should not follow ${code} redirect on post`, done => {
+        const url = connectorUri(`${CONF.connector.postRedirect}?status=${code}`);
+        OracleBot.Util.Webhook.messageToBotWithProperties(
+          url, CONF.webhookSecret, "12345", "Hello?", null, (err) => {
+            expect(err).toBeTruthy();
+            done();
+          }
+        );
+      });
+    });
+
+    [307, 308].forEach(code => {
+      it(`should follow ${code} redirect on post`, done => {
+        const url = connectorUri(`${CONF.connector.postRedirect}?status=${code}`);
+        OracleBot.Util.Webhook.messageToBotWithProperties(
+          url, CONF.webhookSecret, "12345", "Hello?", null, (err) => {
+            expect(err).toBeFalsy();
+            done();
+          }
+        );
+      });
     });
 
   });

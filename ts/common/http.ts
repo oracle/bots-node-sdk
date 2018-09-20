@@ -1,12 +1,13 @@
-import axios, { AxiosRequestConfig, AxiosInstance } from 'axios';
+import fetch from 'node-fetch';
 
 /**
  * Get a new http client instance
- * @param options Axios request options
  */
-export function httpClient(options?: AxiosRequestConfig): AxiosInstance {
-  const instance = axios.create(options);
-  // Workaround for https://github.com/axios/axios/issues/1158
-  instance.interceptors.request.use(config => ({...config, method: config.method && config.method.toUpperCase()}));
-  return instance;
+export function httpClient(): (url: string, options?: Request) => Promise<Response> {
+  return (url: string, options?: any): Promise<Response> => {
+    return fetch(url, options)
+      .then((res: Response) => {
+        return res.ok ? res : Promise.reject(new Error(`${res.status}: ${res.statusText}`))
+      });
+  }
 }

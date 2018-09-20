@@ -1,7 +1,6 @@
 /* tslint:disable */
 
 import * as crypto from 'crypto';
-import axios from 'axios';
 import { CONSTANTS } from '../common/constants';
 import { httpClient } from '../common/http';
 
@@ -114,12 +113,15 @@ export function messageToBotWithProperties(channelUrl, channelSecretKey, userId,
     headers['Content-Type'] = 'application/json; charset=utf-8';
     headers[CONSTANTS.WEBHOOK_HEADER] = buildSignatureHeader(body, channelSecretKey);
     
-    const client = httpClient({
+    // use http client to post webhook message
+    const request = httpClient();
+    request(channelUrl, <any>{
+      method: 'POST',
+      body,
       headers,
-      timeout: 60000
-    });
-    client.post(channelUrl, body)
-      .then(response => callback(response.data))
+      timeout: 60000,
+      redirect: 'follow',
+    }).then(() => callback())
       .catch(err => callback(new Error(err.message)));
 }
 
