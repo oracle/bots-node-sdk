@@ -35,7 +35,11 @@
     "lint": "eslint . --ignore-pattern reports --ignore-pattern examples --ignore-pattern docs && tslint --project ./ts",
     "test": "istanbul cover jasmine",
     "typings": "shx rm -rf ./typings && cd ./ts && tsc",
-    "prepack": "npm run build"
+    "prepack": "npm run build",
+    "cc": "node ./bin/cc.js init"
+  },
+  "bin": {
+    "cc": "bin/cc.js"
   },
   "dependencies": {
     "body-parser": "^1.18.2",

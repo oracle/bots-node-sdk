@@ -9,8 +9,8 @@ function camelize(str) {
 }
 
 const REG = {
-  OPT_MATCH: /^(--?[a-z_-]+)(?:=["']?(.+)["']?)?/,
-  OPT_FLAGS: /--?([a-z_-]+)/g,
+  OPT_MATCH: /^(--?[a-z_-]+)(?:=["']?(.+)["']?)?/i,
+  OPT_FLAGS: /--?([a-z_-]+)/ig,
   OPT_SYNTAX: /--?[a-z_-]+(?:[\s=]?([<[])(\w+)[>\]])?$/,
   OPT_DASH: /^-+/,
 };
@@ -27,6 +27,7 @@ class Command extends EventEmitter {
     this.name = name;
     this._description = description;
     this._handler = handler;
+    this._project = {};
 
     // pre-parsed configurations
     this._config = {
@@ -40,6 +41,14 @@ class Command extends EventEmitter {
     this.commands = new Map();
     this.options = {};
     this.arguments = [];
+  }
+
+  project(project) {
+    if (project) {
+      this._project = project;
+      return this;
+    }
+    return this._project;
   }
 
   withHelp() {
@@ -83,13 +92,14 @@ class Command extends EventEmitter {
   }
 
   handler(cb) {
-    this.handler = cb;
+    this._handler = cb;
     return this;
   }
 
   subcommand(name, description, handler) {
     const command = new Command(name, description, handler);
     command.parent = this;
+    command.project(this.project());
     this.commands.set(name, command);
     return command;
   }
@@ -122,15 +132,21 @@ class Command extends EventEmitter {
       }
 
       resolve({
+        command,
         args: command.arguments,
         options: command.options,
       });
 
     }).then(result => {
-      if (this.handler) {
-        this.handler.apply(this.handler, [result.options].concat(result.args));
+      const { command } = result;
+      // console.log(command.name, command._handler);
+      if (command._handler) {
+        command._handler.apply(command._handler, [result.options].concat(result.args));
       }
       return result;
+    }).catch(e => {
+      this.ui.output(`ERROR: ${e.message}`);
+      process.exit(1);
     });
   }
 
@@ -145,7 +161,9 @@ class Command extends EventEmitter {
   _inherit(config) {
     const { options } = config;
     
+    // reset options and combine with parent first
     const own = this._config.options.splice(0);
+    this._config.flags = new Map();
     [options, own].forEach(group => {
       group.forEach(opt => this.option(opt.syntax, opt.description, opt.defaultValue, opt.handler));
     });
@@ -181,7 +199,7 @@ class Command extends EventEmitter {
         }
 
         if (!val && opt.valRequired) {
-          this._err(`Option ${name} requires a value: ${opt.valName}`);
+          this._err(`Option '${name}' requires a value: '${opt.valName}'`);
         }
 
         // call handler with current val and previous
@@ -284,6 +302,29 @@ class Command extends EventEmitter {
 Command.HELP = 'help';
 Command.VERSION = 'version';
 
+/**
+ * basic abstract for subcommand implementations
+ */
+class ChildCommand {
+  /**
+   * extend the root command
+   * @param {*} root 
+   */
+  static extend(root) {
+    return new this(root);
+  }
+
+  constructor(root, name, desciption) {
+    this.command = root.subcommand(name, desciption, this.run.bind(this));
+  }
+
+  run() {
+    throw new Error('Child command must implement "run" method');
+  }
+
+}
+
 module.exports = {
   Command,
+  ChildCommand,
 }
