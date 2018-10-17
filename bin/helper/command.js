@@ -25,8 +25,8 @@ class Command extends EventEmitter {
     super();
     this.ui = new UI();
     this.name = name;
-    this.description = description;
-    this.handler = handler;
+    this._description = description;
+    this._handler = handler;
 
     // pre-parsed configurations
     this._config = {
@@ -43,11 +43,16 @@ class Command extends EventEmitter {
   }
 
   withHelp() {
-    return this.option('-h, --help', 'Display help and usage information');
+    return this.option('-h --help', 'Display help and usage information');
   }
 
   description(desc) {
-    this.description = desc;
+    this._description = desc;
+  }
+
+  version(ver) {
+    this._version = ver;
+    return this.option('-v --version', 'Print version information');
   }
 
   argument(name, description, required) {
@@ -61,7 +66,6 @@ class Command extends EventEmitter {
 
   option(syntax, description, defaultValue, handler) {
     const flag = this._flag(syntax, defaultValue, handler);
-    // console.log(flag);
     // map all flags to the flag definition
     flag.flags.forEach(f => {
       this._config.flags.set(f, flag);
@@ -73,6 +77,7 @@ class Command extends EventEmitter {
       description,
       isBool: flag.isBool,
       defaultValue,
+      handler,
     });
     return this;
   }
@@ -98,16 +103,22 @@ class Command extends EventEmitter {
         return resolve(this.parent.parse(argv));
       }
       const all = argv.slice(2);
+      // resolve the command from the args
       const command = this._resolveCommand(all);
+      const hasArgs = all.length > 0;
+      // intake all args/options
       while (all.length) {
         const next = all.shift();
         command._ingest(next, all);
       }
-
+      // fill with defaults
       command._defaults();
 
-      if (command.options.help) {
+      if (command.options.help || !hasArgs) {
         return command._renderHelp();
+      }
+      if (command.options.version) {
+        return this._renderVersion();
       }
 
       resolve({
@@ -131,11 +142,21 @@ class Command extends EventEmitter {
     });
   }
 
+  _inherit(config) {
+    const { options } = config;
+    
+    const own = this._config.options.splice(0);
+    [options, own].forEach(group => {
+      group.forEach(opt => this.option(opt.syntax, opt.description, opt.defaultValue, opt.handler));
+    });
+  }
+
   _resolveCommand(args) {
     const next = args[0];
     const command = this.commands.get(next);
     if (command) {
       args.shift();
+      command._inherit(this._config);
       return command._resolveCommand(args);
     }
     return this;
@@ -206,33 +227,52 @@ class Command extends EventEmitter {
     return !this.parent;
   }
 
+  _commandPath() {
+    let command = this;
+    const paths = [this.name];
+    while (!command._isRoot()) {
+      command = command.parent;
+      paths.unshift(command.name);
+    }
+    return paths.join(' ');
+  }
+
+  _renderDescription() {
+    if (this._description) {
+      this.ui.output(this._description).output('');
+    }
+  }
+
+  _renderVersion() {
+    this.ui.output(`Version: ${this._version}`);
+    this.emit(Command.VERSION);
+  }
+
   _renderHelp() {
     const { args, options } = this._config;
     
-    if (this.description) {
-      this.ui.output(this.description).output('');
-    }
+    this._renderDescription();
 
     // usage
-    this.ui.output(['Usage:', this.name, (this.commands.size ? '<subcommand>' : null), '[options]']
+    this.ui.output(['Usage:', this._commandPath(), (this.commands.size ? '[options] <subcommand>' : null), '[options]']
       .concat(args.map(a => `${a.requied?'<':'['}${a.name}${a.requied?'>':']'}`))
       .filter(p => !!p).join(' '));
 
     if (args.length) {
-      this.ui.outputSection(`Arguments`, this.ui.grid([['Name:', 'Description:', 'Required:']].concat(args.map(arg => {
-        return [arg.name, arg.description, arg.required ? 'true' : 'false']
-      }))));
+      this.ui.outputSection(`Arguments`, this.ui.grid(args.map(arg => {
+        return [arg.name, arg.description, arg.required ? '(required)' : '']
+      })));
     }
 
     if (options.length) {
-      this.ui.outputSection(`Options`, this.ui.grid([['Flag:', 'Description:', 'Default:']].concat(options.map(opt => {
-        return [opt.syntax, opt.description, opt.defaultValue ? opt.defaultValue : '' ]
-      }))));
+      this.ui.outputSection(`Options`, this.ui.grid(options.map(opt => {
+        return [opt.syntax, opt.description, opt.defaultValue ? opt.defaultValue + ' (default)' : '' ]
+      })));
     }
 
     if (this.commands.size) {
       const grid = [];
-      this.commands.forEach(cmd => grid.push([cmd.name, cmd.description]));
+      this.commands.forEach(cmd => grid.push([cmd.name, cmd._description]));
       this.ui.outputSection(`Subcommands`, this.ui.grid(grid));
     }
 
@@ -242,6 +282,7 @@ class Command extends EventEmitter {
 
 // specific events
 Command.HELP = 'help';
+Command.VERSION = 'version';
 
 module.exports = {
   Command,
