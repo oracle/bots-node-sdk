@@ -1,3 +1,5 @@
+'use strict';
+
 const { EOL } = require('os');
 
 const TAB = '  ';
@@ -21,6 +23,15 @@ class UI  {
     this.stream.write(EOL);
     return this;
   }
+
+  /**
+   * Append text to existing line
+   * @param  {...any} msgs
+   */
+  append(...msgs) {
+    msgs.forEach((msg, i) => this.stream.write(`${i ? TAB : ''}${msg}`));
+    return this;
+  }
   
   /**
    * Print messages to the ui stream
@@ -28,6 +39,10 @@ class UI  {
    */
   output(...msg) {
     return this.write(...msg);
+  }
+
+  paragraph(body, tab = 0) {
+    return this.output().outputLines(body, tab).output();
   }
   /**
    * Print a section to the ui with heading.
@@ -42,7 +57,7 @@ class UI  {
    * @param body message to print
    * @param tabs indentation tabs (1 tab = 2 spaces)
    */
-  outputLines(body, tabs = 2) {
+  outputLines(body, tabs = 1) {
     return this.write(this._indentLines(body, tabs));
   }
   /**
@@ -50,8 +65,8 @@ class UI  {
    * @param table matrix of rows/cols
    * @param spacing spacing between items
    */
-  outputGrid(table, spacing = 2) {
-    return this.outputLines(this.grid(table, spacing));
+  outputGrid(table, spacing = 2, tabs = 1) {
+    return this.outputLines(this.grid(table, spacing), tabs);
   }
   /**
    * Create an aligned grid of the text matrix. Very basic for the time-being
@@ -113,7 +128,7 @@ class UI  {
    * @param tabs
    */
   _indentLines(text, tabs = 1) {
-    return this._lines(text).map(line => `${this._indent(tabs)}${line.trim()}`).join(EOL);
+    return this._lines(text).map(line => `${this._indent(tabs)}${line}`).join(EOL);
   }
   /**
    * Lineify text

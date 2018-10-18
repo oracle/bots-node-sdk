@@ -284,27 +284,8 @@ messageModelUtil.convertRespToText(message);
 ## Unit Testing
 
 The SDK also includes unit testing facilities, which can be utilized within
-your preferred test runner.
-
-```javascript
-const Tester = require('@oracle/bots-node-sdk/testing');
-const { MyComponent } = require('../../components/MyComponent');
-
-describe('MyComponent', () => {
-  it('should chat', done => {
-    const conv = Tester.MockConversation.any();
-    new MyComponent().invoke(conv, () => {
-      // check replies
-      expect(conv.getReplies().length).toBeGreaterThan(0);
-      // check transition
-      expect(conversation.response().transition).toBe(true);
-      // check variables
-      expect(conversation.variable('abc')).toEqual('xyz');
-      done();
-    });
-  });
-});
-```
+your preferred test runner. Details may be found
+[here](https://github.com/oracle/bots-node-sdk/blob/master/testing/README.md).
 
 ## Using TypeScript
 

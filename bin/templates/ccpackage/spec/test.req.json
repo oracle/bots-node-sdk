@@ -1,0 +1,27 @@
+{
+  "botId": "xyz",
+  "platformVersion": "1.1",
+  "context": {
+    "variables": {}
+  },
+  "properties": {
+    "human": "Bot Developer"
+  },
+  "message": {
+    "payload": {},
+    "messagePayload": {},
+    "retryCount": 0,
+    "channelConversation": {
+      "botId": "xyz",
+      "sessionId": "1234",
+      "type": "test",
+      "userId": "1234",
+      "channelId": "sample"
+    },
+    "componentResponse": {},
+    "executionContext": "any",
+    "tenantId": "1234",
+    "createdOn": "2018-06-20T20:24:33.151Z",
+    "id": "1234"
+  }
+}

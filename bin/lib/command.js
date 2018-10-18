@@ -1,3 +1,5 @@
+'use strict';
+
 const { EventEmitter } = require('events');
 const { UI } = require('./ui');
 
@@ -24,12 +26,14 @@ class Command extends EventEmitter {
   constructor(name, description, handler) {
     super();
     this.ui = new UI();
-    this.name = name;
+    this._name = name;
     this._description = description;
     this._handler = handler;
     this._project = {};
+    this._parent = null;
 
     // pre-parsed configurations
+    this.commands = new Map();
     this._config = {
       flags: new Map(), // map flag syntax to an option
       options: [],
@@ -37,8 +41,6 @@ class Command extends EventEmitter {
     };
 
     // parsed results
-    this.parent = null;
-    this.commands = new Map();
     this.options = {};
     this.arguments = [];
   }
@@ -55,8 +57,14 @@ class Command extends EventEmitter {
     return this.option('-h --help', 'Display help and usage information');
   }
 
+  name(name) {
+    this._name = name || this._name;
+    return this;
+  }
+
   description(desc) {
-    this._description = desc;
+    this._description = desc || this._description;
+    return this;
   }
 
   version(ver) {
@@ -76,11 +84,17 @@ class Command extends EventEmitter {
   option(syntax, description, defaultValue, handler) {
     const flag = this._flag(syntax, defaultValue, handler);
     // map all flags to the flag definition
+    let dupe = false;
     flag.flags.forEach(f => {
-      this._config.flags.set(f, flag);
+      dupe = this._config.flags.has(f);
+      return this._config.flags.set(f, flag);
     });
     // capture in options for help
-    this._config.options.push({
+    const { options } = this._config;
+    if (dupe) {
+      options.forEach((o, i) => o.name === flag.name && options.splice(i, 1));
+    }
+    options.push({
       name: flag.name,
       syntax,
       description,
@@ -96,10 +110,35 @@ class Command extends EventEmitter {
     return this;
   }
 
+  /**
+   * @param {typeof CommandDelegate} delegate 
+   * @param {string} [child] - use subcommand in delegate
+   * @returns {Command}
+   */
+  delegate(delegate, child) {
+    if (delegate.prototype instanceof CommandDelegate) {
+      return delegate.init(child ? this.subcommand(child) : this).command;
+    }
+    this.ui.output(`WARN: Ignoring unrecognized delegate ${delegate}`);
+    return this;
+  }
+
+  /**
+   * set/get parent command
+   * @param {Command} parent 
+   */
+  parent(parent) {
+    if (parent && parent instanceof Command) {
+      this._parent = parent;
+      return this;
+    }
+    return this._parent;
+  }
+
   subcommand(name, description, handler) {
-    const command = new Command(name, description, handler);
-    command.parent = this;
-    command.project(this.project());
+    const command = new Command(name, description, handler)
+      .parent(this)
+      .project(this.project());
     this.commands.set(name, command);
     return command;
   }
@@ -110,7 +149,7 @@ class Command extends EventEmitter {
   parse(argv) {
     return new Promise(resolve => {
       if (!this._isRoot()) {
-        return resolve(this.parent.parse(argv));
+        return resolve(this.parent().parse(argv));
       }
       const all = argv.slice(2);
       // resolve the command from the args
@@ -124,30 +163,33 @@ class Command extends EventEmitter {
       // fill with defaults
       command._defaults();
 
-      if (command.options.help || !hasArgs) {
+      if (command.options.help || (!hasArgs && !command._handler)) {
         return command._renderHelp();
       }
       if (command.options.version) {
         return this._renderVersion();
       }
-
+      
       resolve({
         command,
         args: command.arguments,
         options: command.options,
       });
 
-    }).then(result => {
-      const { command } = result;
-      // console.log(command.name, command._handler);
-      if (command._handler) {
-        command._handler.apply(command._handler, [result.options].concat(result.args));
-      }
-      return result;
-    }).catch(e => {
-      this.ui.output(`ERROR: ${e.message}`);
-      process.exit(1);
-    });
+    })
+      .then(result => result.command._run(result.options, result.args))
+      .then(() => this.emit(Command.RAN))
+      .catch(e => {
+        this.ui.output(`ERROR: ${e.message}`);
+        process.exit(1);
+      });
+  }
+
+  _run(options, args) {
+    if (this._handler) {
+      return this._handler.apply(this._handler, [options].concat(args));
+    }
+    return { args, options };
   }
 
   _defaults() {
@@ -162,8 +204,8 @@ class Command extends EventEmitter {
     const { options } = config;
     
     // reset options and combine with parent first
-    const own = this._config.options.splice(0);
     this._config.flags = new Map();
+    const own = this._config.options.splice(0);
     [options, own].forEach(group => {
       group.forEach(opt => this.option(opt.syntax, opt.description, opt.defaultValue, opt.handler));
     });
@@ -209,6 +251,8 @@ class Command extends EventEmitter {
       }
 
       this.options[name] = val;
+      this.emit(Command.OPTION, name, val);
+      this.emit(`${Command.OPTION}:${name}`, val);
     } else { // assume argument
       this.arguments.push(current);
     }
@@ -242,15 +286,15 @@ class Command extends EventEmitter {
   }
 
   _isRoot() {
-    return !this.parent;
+    return !this._parent;
   }
 
   _commandPath() {
     let command = this;
-    const paths = [this.name];
+    const paths = [this._name];
     while (!command._isRoot()) {
-      command = command.parent;
-      paths.unshift(command.name);
+      command = command.parent();
+      paths.unshift(command._name);
     }
     return paths.join(' ');
   }
@@ -290,7 +334,7 @@ class Command extends EventEmitter {
 
     if (this.commands.size) {
       const grid = [];
-      this.commands.forEach(cmd => grid.push([cmd.name, cmd._description]));
+      this.commands.forEach(cmd => grid.push([cmd._name, cmd._description]));
       this.ui.outputSection(`Subcommands`, this.ui.grid(grid));
     }
 
@@ -301,30 +345,65 @@ class Command extends EventEmitter {
 // specific events
 Command.HELP = 'help';
 Command.VERSION = 'version';
+Command.OPTION = 'option';
+Command.RAN = 'ran';
 
 /**
  * basic abstract for subcommand implementations
  */
-class ChildCommand {
+class CommandDelegate {
   /**
-   * extend the root command
-   * @param {*} root 
+   * init command
+   * @param {Command} cmd 
    */
-  static extend(root) {
-    return new this(root);
+  static init(cmd) {
+    return new this(cmd);
   }
 
-  constructor(root, name, desciption) {
-    this.command = root.subcommand(name, desciption, this.run.bind(this));
+  /**
+   * @param {Command} cmd 
+   * @param {string} [description] 
+   */
+  constructor(cmd, description) {
+    this.command = cmd
+      .description(description)
+      .handler(this.run.bind(this));
+    this.ui = this.command.ui;
   }
 
   run() {
-    throw new Error('Child command must implement "run" method');
+    this._err(`"${this.command.name()}" command must implement a "run" method`);
+  }
+
+  _delay(msg, delay) {
+    return new Promise(resolve=> {
+      const line = this.ui.append(msg);
+      const i = setInterval(() => line.append('.'), 500);
+      const deferred = ok => {
+        clearInterval(i);
+        clearTimeout(t);
+        t = null;
+        line.output();
+        return ok !== false && resolve();
+      };
+      let t = setTimeout(deferred, delay);
+      process.on('SIGINT', () => {
+        if (t) {
+          line.append('[CANCEL]');
+          deferred(false);
+        }
+        process.exit(2);
+      });
+    });
+  }
+
+  _err(msg) {
+    throw new Error(msg);
   }
 
 }
 
 module.exports = {
   Command,
-  ChildCommand,
-}
+  CommandDelegate,
+};
