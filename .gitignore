@@ -4,6 +4,7 @@
 .sonar*
 .scanner*
 node_modules
+docs
 reports
 typings
 oracle-bots-node-sdk-*.tgz

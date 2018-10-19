@@ -13,7 +13,9 @@ function writeTemplates(from, to, vars) {
       const stat = fs.statSync(src);
       const dest = path.join(to, filename.replace(/^_+/, ''));
       if (stat.isDirectory()) {
-        fs.mkdirSync(dest);
+        if (!fs.existsSync(dest)) {
+          fs.mkdirSync(dest);
+        }
         return writeTemplates(src, dest, vars);
       }
       return writeTemplate(src, dest, vars);
@@ -22,7 +24,7 @@ function writeTemplates(from, to, vars) {
 
 function writeTemplate(src, dest, vars) {
   if (fs.existsSync(dest)) {
-    console.log(`File already exists: ${dest}`);
+    console.warn(`WARN: ${dest} already exists`);
     return;
   }
   console.log(`Writing file: ${dest}`);
@@ -43,8 +45,8 @@ class CCInit extends CommandDelegate {
       .argument('dest', 'Path where project should be created (cwd if omitted)')
       .option('-s --skip-install', 'Skip npm install')
       .option('-r --run', 'Start service when init completes (with defaults)')
-      .option('-n --name <name>', 'Specify a name for the new project', null, name => name.replace(/[^\w_-]/g, ''))
-      .option('-c --component-name <name>', 'Name for the first custom component', 'hello.world', name => name.replace(/[^\w_-]/g, ''));
+      .option('-n --name <name>', 'Specify a name for the new project', null, name => name.replace(/[^\w._-]/g, ''))
+      .option('-c --component-name <name>', 'Name for the first custom component', 'hello.world', name => name.replace(/[^\w._-]/g, ''));
 
     this.command.delegate(CCInitComponent, 'component');
     this.templateRoot = path.resolve(__dirname, '..', 'templates', 'ccpackage');
@@ -55,10 +57,51 @@ class CCInit extends CommandDelegate {
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir);
     }
-    if (fs.readdirSync(dir).length) {
-      this._err(`Project target directory '${path.basename(dir)}' is not empty`);
+    const contents = fs.readdirSync(dir);
+    if (contents.length) {
+      this.ui.output(`Will update contents in directory '${path.basename(dir)}'`);
+      if (~contents.indexOf('package.json')) {
+        this.flagUpdate();
+      }
     }
     return dir;
+  }
+
+  flagUpdate() {
+    this._update = true;
+  }
+
+  update(dir) {
+    if (this._update) {
+      const SDK = this.command.project();
+      const binName = this.command.root()._name;
+      const pkgFile = path.join(dir, 'package.json');
+      try {
+        const pkgJson = require(pkgFile);
+        let { scripts, devDependencies } = pkgJson;
+        // inject modifications
+        scripts = Object.assign(scripts || {}, {
+          [binName]: binName,
+          help: `npm run ${binName} -- --help`,
+          prepack: `npm run ${binName} -- --pack --dry-run`,
+          start: `npm run ${binName} -- --service .`,
+        });
+        devDependencies = Object.assign(devDependencies || {}, {
+          [SDK.name]: `^${SDK.version}`,
+          express: SDK.devDependencies.express,
+        });
+        // update and write
+        Object.assign(pkgJson, {
+          main: 'main.js',
+          scripts,
+          devDependencies
+        });
+        fs.writeFileSync(pkgFile, JSON.stringify(pkgJson, null, 2));
+      } catch (e) {
+        this.ui.banner(e.message);
+        this._err(`Failed to update existing project`);
+      }
+    }
   }
 
   run(options, dir) {
@@ -66,28 +109,28 @@ class CCInit extends CommandDelegate {
     const SDK = this.command.project();
 
     dir = dir || name || process.cwd();
+    this.ui.sep();
     const outDir = this._initDir(dir);
     const outDirName = path.basename(outDir);
     const outDirComponent = path.join(outDir, 'components');
-    this.ui.sep();
     return this._delay(`Create component package in directory '${outDirName}'`, 3e3)
       .then(() => this.ui.sep())
-      // write package templates
-      .then(() => {
+      .then(() => { // write package templates
         this.ui.paragraph('Writing files...');
         return writeTemplates(this.templateRoot, outDir, {
           name: name || 'my-custom-component',
           sdkName: SDK.name,
           sdkVersion: SDK.version,
           sdkBin: this.command.root()._name,
+          expressVersion: SDK.devDependencies.express,
         });
-      // run component code generator
-      }).then(() => {
+      }).then(() => { // run component code generator
         return CCInitComponent.init(this.command).quiet().run({
           name: componentName
         }, outDirComponent);
-      // run npm install
-      }).then(() => {
+      }).then(() => { // perform updates (existing package.json)
+        return this.update(outDir);
+      }).then(() => { // run npm install
         if (!skipInstall) {
           this.ui.paragraph('Installing dependencies...');
           return ChildPromise.spawn('npm', ['install', '--loglevel=error'], {
@@ -123,7 +166,7 @@ class CCInitComponent extends CommandDelegate {
     this.command
       .ignore('componentName').ignore('run').ignore('skipInstall') // inherited from parent
       .argument('dest', 'Destination directory where component should be added', true)
-      .option('-n --name <name>', 'Specify a name for the Custom Component', null, name => name.replace(/[^\w_-]/g, ''));
+      .option('-n --name <name>', 'Specify a name for the Custom Component', null, name => name.replace(/[^\w._-]/g, ''));
 
     this.templateRoot = path.resolve(__dirname, '..', 'templates', 'component');
   }
@@ -157,7 +200,7 @@ class CCInitComponent extends CommandDelegate {
       if (!this._quiet) {
         this.ui.banner(`Added Custom Component: '${name}'`);
       }
-    } else {
+    } else if (!this._quiet) {
       this._err(`Component '${name}' already exists`);
     }
   }

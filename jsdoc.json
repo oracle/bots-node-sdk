@@ -1,7 +1,7 @@
 {
   "plugins": [],
   "source": {
-    "include": ["init", "lib", "config", "middleware", "util", "testing"]
+    "include": ["init", "lib", "config", "middleware", "util", "testing", "bin/sdk.js"]
   },
   "sourceType": "module",
   "opts": {

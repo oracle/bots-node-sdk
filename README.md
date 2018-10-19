@@ -304,6 +304,34 @@ class MyCustomComponent implements Lib.IComponent {
 }
 ```
 
+## CLI
+
+```shell
+
+shbot
+obot-cc
+Oracle Bots Node SDK
+obns
+oskill
+bots-node-sdk
+obots-sdk
+// obot-sdk
+
+npm init
+npm install -D @oracle/bots-node-sdk
+$(npm bin)/obot-cc init
+$(npm bin)/obot-wh init
+
+# or
+
+npm install -g @oracle/bots-node-sdk
+obot-cc init
+
+# or 
+
+npx ... obot-cc init
+```
+
 <!--[nodoc]-->
 ## Contributing
 

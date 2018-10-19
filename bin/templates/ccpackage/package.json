@@ -4,7 +4,7 @@
   "description": "Oracle Bots Custom Component Package",
   "main": "main.js",
   "scripts": {
-    "{{sdkBin}}": "node $(npm bin)/{{sdkBin}}",
+    "{{sdkBin}}": "{{sdkBin}}",
     "help": "npm run {{sdkBin}} -- --help",
     "prepack": "npm run {{sdkBin}} -- pack --dry-run",
     "start": "npm run {{sdkBin}} -- service ."
@@ -13,6 +13,6 @@
   "dependencies": {},
   "devDependencies": {
     "{{sdkName}}": "^{{sdkVersion}}",
-    "express": "^4.16.4"
+    "express": "{{expressVersion}}"
   }
 }

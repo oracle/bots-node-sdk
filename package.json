@@ -39,7 +39,7 @@
     "cc": "node ./bin/cc.js init"
   },
   "bin": {
-    "cc": "bin/cc.js"
+    "bots-node-sdk": "bin/sdk.js"
   },
   "dependencies": {
     "body-parser": "^1.18.2",
