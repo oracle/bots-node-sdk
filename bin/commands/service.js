@@ -96,8 +96,10 @@ class CCServiceCommand extends CommandDelegate {
     // start the service
     app.listen(port, () => {
       this.ui
-        .paragraph(`Component Service loaded on http://localhost:${port}${options.route}`)
-        .outputGrid(components.map(cc => [cc.ref, '=>', cc.cnames.join('\n')]), 2, 1);
+        .banner(`Component Service Ready
+        http://localhost:${port}${options.route}`)
+        .outputGrid(components.map(cc => [cc.ref, '=>', cc.cnames.join('\n')]), 2, 0)
+        .output();
     });
   }
 }

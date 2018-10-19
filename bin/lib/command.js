@@ -36,6 +36,7 @@ class Command extends EventEmitter {
     this.commands = new Map();
     this._config = {
       flags: new Map(), // map flag syntax to an option
+      ignore: [],
       options: [],
       args: [],
     };
@@ -105,6 +106,11 @@ class Command extends EventEmitter {
     return this;
   }
 
+  ignore(name) {
+    this._config.ignore.push(name);
+    return this;
+  }
+
   handler(cb) {
     this._handler = cb;
     return this;
@@ -133,6 +139,14 @@ class Command extends EventEmitter {
       return this;
     }
     return this._parent;
+  }
+
+  root() {
+    let command = this;
+    while (!command._isRoot()) {
+      command = command.parent();
+    }
+    return command;
   }
 
   subcommand(name, description, handler) {
@@ -202,12 +216,15 @@ class Command extends EventEmitter {
 
   _inherit(config) {
     const { options } = config;
+    const { ignore } = this._config;
     
     // reset options and combine with parent first
     this._config.flags = new Map();
     const own = this._config.options.splice(0);
     [options, own].forEach(group => {
-      group.forEach(opt => this.option(opt.syntax, opt.description, opt.defaultValue, opt.handler));
+      group
+        .filter(opt => !~ignore.indexOf(opt.name))
+        .forEach(opt => this.option(opt.syntax, opt.description, opt.defaultValue, opt.handler));
     });
   }
 
@@ -315,14 +332,18 @@ class Command extends EventEmitter {
     
     this._renderDescription();
 
+    const argFormat = arg => {
+      return  `${arg.required?'<':'['}${arg.name}${arg.required?'>':']'}`;
+    }
+
     // usage
     this.ui.output(['Usage:', this._commandPath(), (this.commands.size ? '[options] <subcommand>' : null), '[options]']
-      .concat(args.map(a => `${a.requied?'<':'['}${a.name}${a.requied?'>':']'}`))
+      .concat(args.map(a => argFormat(a)))
       .filter(p => !!p).join(' '));
 
     if (args.length) {
       this.ui.outputSection(`Arguments`, this.ui.grid(args.map(arg => {
-        return [arg.name, arg.description, arg.required ? '(required)' : '']
+        return [argFormat(arg), arg.description, arg.required ? '(required)' : '']
       })));
     }
 
@@ -377,8 +398,8 @@ class CommandDelegate {
 
   _delay(msg, delay) {
     return new Promise(resolve=> {
-      const line = this.ui.append(msg);
-      const i = setInterval(() => line.append('.'), 500);
+      const line = this.ui.append(msg).append('.');
+      const i = setInterval(() => line.append('.'), 1e3);
       const deferred = ok => {
         clearInterval(i);
         clearTimeout(t);

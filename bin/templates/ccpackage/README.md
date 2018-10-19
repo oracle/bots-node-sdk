@@ -18,7 +18,7 @@ runtime environments.
     └── ...
 ```
 
-|| Description |
+| | Description |
 |--|--|
 | `.npmignore` | Ignore files when packaging as `npm` module |
 | `components` | Directory _(default)_ where Component implementations are added |
@@ -33,8 +33,10 @@ gives the project some valuable command line functionality.
 ```text
 npm start
 # or
-npm run cc -- service .
+npm run {{sdkBin}} -- service .
 ```
+
+> **TIP:** Run `npm run {{sdkBin}}` for full help and usage information.
 
 ## Deployment
 
@@ -44,5 +46,5 @@ wrapper, simply `npm pack` and deploy the resulting tarball.
 ```text
 npm pack
 # or
-npm run cc -- pack .
+npm run {{sdkBin}} -- pack .
 ```

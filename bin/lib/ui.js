@@ -3,6 +3,7 @@
 const { EOL } = require('os');
 
 const TAB = '  ';
+const SEP = new Array(70).join('-');
 
 function cleanText(text) {
   // eslint-disable-next-line
@@ -44,6 +45,15 @@ class UI  {
   paragraph(body, tab = 0) {
     return this.output().outputLines(body, tab).output();
   }
+
+  banner(body, tab = 0) {
+    return this.sep().outputLines(body, tab).sep();
+  }
+
+  sep() {
+    return this.output(SEP);
+  }
+
   /**
    * Print a section to the ui with heading.
    * @param heading section heading
@@ -57,8 +67,8 @@ class UI  {
    * @param body message to print
    * @param tabs indentation tabs (1 tab = 2 spaces)
    */
-  outputLines(body, tabs = 1) {
-    return this.write(this._indentLines(body, tabs));
+  outputLines(body, tabs = 0, trim = true) {
+    return this.write(this._indentLines(body, tabs, trim));
   }
   /**
    * Output an aligned grid of the text matrix
@@ -66,7 +76,7 @@ class UI  {
    * @param spacing spacing between items
    */
   outputGrid(table, spacing = 2, tabs = 1) {
-    return this.outputLines(this.grid(table, spacing), tabs);
+    return this.outputLines(this.grid(table, spacing), tabs, false);
   }
   /**
    * Create an aligned grid of the text matrix. Very basic for the time-being
@@ -119,16 +129,15 @@ class UI  {
    * @param tabs
    */
   _indent(tabs = 1) {
-    return new Array(tabs + 1)
-      .join(TAB);
+    return new Array(tabs + 1).join(TAB);
   }
   /**
    * format text with same indent for each line
    * @param text
    * @param tabs
    */
-  _indentLines(text, tabs = 1) {
-    return this._lines(text).map(line => `${this._indent(tabs)}${line}`).join(EOL);
+  _indentLines(text, tabs = 1, trim = true) {
+    return this._lines(text).map(line => `${this._indent(tabs)}${trim ? line.trim() : line}`).join(EOL);
   }
   /**
    * Lineify text

@@ -4,10 +4,11 @@
   "description": "Oracle Bots Custom Component Package",
   "main": "main.js",
   "scripts": {
-    "cc": "node $(npm bin)/cc",
-    "start": "npm run cc -- service .",
-    "start:help": "npm run cc -- service --help"
+    "{{sdkBin}}": "node $(npm bin)/{{sdkBin}}",
+    "start": "npm run {{sdkBin}} -- service .",
+    "start:help": "npm run {{sdkBin}} -- service --help"
   },
+  "repository": {},
   "dependencies": {},
   "devDependencies": {
     "@oracle/bots-node-sdk": "^{{sdkVersion}}",

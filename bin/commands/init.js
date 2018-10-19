@@ -11,7 +11,7 @@ function writeTemplates(from, to, vars) {
     .forEach(filename => {
       const src = path.join(from, filename);
       const stat = fs.statSync(src);
-      const dest = path.join(to, filename);
+      const dest = path.join(to, filename.replace(/^_+/, ''));
       if (stat.isDirectory()) {
         fs.mkdirSync(dest);
         return writeTemplates(src, dest, vars);
@@ -42,7 +42,7 @@ class CCInit extends CommandDelegate {
     this.command
       .argument('dest', 'Path where project should be created (cwd if omitted)')
       .option('-s --skip-install', 'Skip npm install')
-      .option('-r --run', 'Start service on complete (with defaults)')
+      .option('-r --run', 'Start service when init completes (with defaults)')
       .option('-n --name <name>', 'Specify a name for the new project', null, name => name.replace(/[^\w_-]/g, ''))
       .option('-c --component-name <name>', 'Name for the first custom component', 'hello.world', name => name.replace(/[^\w_-]/g, ''));
 
@@ -56,7 +56,7 @@ class CCInit extends CommandDelegate {
       fs.mkdirSync(dir);
     }
     if (fs.readdirSync(dir).length) {
-      this._err(`Directory ${path.basename(dir)} must be empty`);
+      this._err(`Project target directory '${path.basename(dir)}' is not empty`);
     }
     return dir;
   }
@@ -69,29 +69,36 @@ class CCInit extends CommandDelegate {
     const outDir = this._initDir(dir);
     const outDirName = path.basename(outDir);
     const outDirComponent = path.join(outDir, 'components');
-    return this._delay(`Will create component package in directory: '${outDirName}'`, 3e3)
+    this.ui.sep();
+    return this._delay(`Create component package in directory '${outDirName}'`, 3e3)
+      .then(() => this.ui.sep())
+      // write package templates
       .then(() => {
         this.ui.paragraph('Writing files...');
         return writeTemplates(this.templateRoot, outDir, {
           name: name || 'my-custom-component',
           sdkVersion: version,
+          sdkBin: this.command.root()._name,
         });
+      // run component code generator
       }).then(() => {
-        return CCInitComponent.init(this.command).run({
+        return CCInitComponent.init(this.command).quiet().run({
           name: componentName
         }, outDirComponent);
-        
+      // run npm install
       }).then(() => {
         if (!skipInstall) {
           this.ui.paragraph('Installing dependencies...');
-          return ChildPromise.spawn('npm', ['install'], {
+          return ChildPromise.spawn('npm', ['install', '--loglevel=error'], {
             cwd: outDir,
             stdio: 'inherit',
           });
         }
       }).then(() => {
-        this.ui.paragraph(`Custom Component package '${outDir}' created successfully`);
+        this.ui.banner(`Custom Component package '${outDirName}' created successfully!`);
+      }).then(() => {
         if (options.run && !skipInstall) {
+          this.ui.output();
           return CCServiceCommand.init(this.command).run({
             route: '/components',
             project: [outDir],
@@ -113,10 +120,16 @@ class CCInitComponent extends CommandDelegate {
   constructor(cmd) {
     super(cmd, 'Add a Custom Component to your package');
     this.command
+      .ignore('componentName').ignore('run').ignore('skipInstall') // inherited from parent
       .argument('dest', 'Destination directory where component should be added', true)
       .option('-n --name <name>', 'Specify a name for the Custom Component', null, name => name.replace(/[^\w_-]/g, ''));
 
     this.templateRoot = path.resolve(__dirname, '..', 'templates', 'component');
+  }
+
+  quiet() {
+    this._quiet = true;
+    return this;
   }
 
   run(opts, dir) {
@@ -138,8 +151,14 @@ class CCInitComponent extends CommandDelegate {
     // write file
     const from = path.join(this.templateRoot, 'custom.js');
     const to = path.join(dest, `${name}.js`);
-    writeTemplate(from, to, { name });
-    this.ui.output(`Initialized custom component: '${name}'`);
+    if (!fs.existsSync(to)) {
+      writeTemplate(from, to, { name });
+      if (!this._quiet) {
+        this.ui.banner(`Added Custom Component: '${name}'`);
+      }
+    } else {
+      this._err(`Component '${name}' already exists`);
+    }
   }
 }
 

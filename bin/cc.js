@@ -13,9 +13,9 @@ command
   .withHelp()
   .version(self.version)
   // add subcommand delegates
-  .delegate(CCInit, 'init').parent()
-  .delegate(CCServiceCommand, 'service').parent()
-  .delegate(CCPack, 'pack').parent()
+  .delegate(CCInit, 'init').root()
+  .delegate(CCServiceCommand, 'service').root()
+  .delegate(CCPack, 'pack').root()
   // parse process args
   .parse(process.argv)
   .then(() => {

@@ -72,13 +72,13 @@ class CCPack extends CommandDelegate {
     dir = path.resolve(dir);
     const cc = loadVerifyComponent(dir);
     
-    this.ui.output(`Preparing artifact from: ${cc.ref}...`);
+    this.ui.banner(`Preparing artifact from: ${cc.ref}...`);
     // TODO: handle different options.wrapper
     return ChildPromise.spawn('npm', ['pack'], {
       cwd: dir,
       stdio: 'inherit',
     }).then(() => {
-      this.ui.paragraph(`Component package '${cc.ref}' created successfully!`);
+      this.ui.banner(`Component package '${cc.ref}' archived successfully!`);
     });
   }
 }
