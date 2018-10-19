@@ -5,13 +5,14 @@
   "main": "main.js",
   "scripts": {
     "{{sdkBin}}": "node $(npm bin)/{{sdkBin}}",
-    "start": "npm run {{sdkBin}} -- service .",
-    "start:help": "npm run {{sdkBin}} -- service --help"
+    "help": "npm run {{sdkBin}} -- --help",
+    "prepack": "npm run {{sdkBin}} -- pack --dry-run",
+    "start": "npm run {{sdkBin}} -- service ."
   },
   "repository": {},
   "dependencies": {},
   "devDependencies": {
-    "@oracle/bots-node-sdk": "^{{sdkVersion}}",
+    "{{sdkName}}": "^{{sdkVersion}}",
     "express": "^4.16.4"
   }
 }

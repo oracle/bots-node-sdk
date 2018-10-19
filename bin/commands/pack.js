@@ -64,6 +64,7 @@ class CCPack extends CommandDelegate {
     this.command
       .argument('path', 'Specify path to Component Package')
       .option('-p --project <path>', 'Path to the Component Package directory')
+      .option('-d --dry-run', 'Perform package validation only')
       // .option('-w --wrapper <type>', 'Specify a wrapper type <hosted|express|omce>', 'hosted', w => w.toLowerCase());
   }
 
@@ -71,7 +72,10 @@ class CCPack extends CommandDelegate {
     let dir = options.project || pathArg || process.cwd();
     dir = path.resolve(dir);
     const cc = loadVerifyComponent(dir);
-    
+    if (options.dryRun) {
+      this.ui.banner(`Component Package '${cc.ref}' is valid!`);
+      return;
+    }
     this.ui.banner(`Preparing artifact from: ${cc.ref}...`);
     // TODO: handle different options.wrapper
     return ChildPromise.spawn('npm', ['pack'], {

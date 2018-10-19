@@ -63,7 +63,7 @@ class CCInit extends CommandDelegate {
 
   run(options, dir) {
     const { name, skipInstall, componentName } = options;
-    const { version } = this.command.project();
+    const SDK = this.command.project();
 
     dir = dir || name || process.cwd();
     const outDir = this._initDir(dir);
@@ -77,7 +77,8 @@ class CCInit extends CommandDelegate {
         this.ui.paragraph('Writing files...');
         return writeTemplates(this.templateRoot, outDir, {
           name: name || 'my-custom-component',
-          sdkVersion: version,
+          sdkName: SDK.name,
+          sdkVersion: SDK.version,
           sdkBin: this.command.root()._name,
         });
       // run component code generator
