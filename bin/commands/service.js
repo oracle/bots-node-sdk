@@ -8,7 +8,7 @@ const { loadVerifyComponent } = require('./pack');
 const defaultPort = 3000;
 
 /**
- * Command implementation for running cc_package projects as a service.
+ * Command implementation for running cc package projects as a service.
  */
 class CCServiceCommand extends CommandDelegate {
   constructor(cmd) {
@@ -99,7 +99,7 @@ class CCServiceCommand extends CommandDelegate {
     // start the service
     app.listen(port, () => {
       this.ui
-        .banner(`Component Service Ready:
+        .banner(`Component Service Ready (no auth):
         http://localhost:${port}${options.route}`)
         .outputGrid(components.map(cc => [cc.ref, '=>', cc.cnames.join('\n')]), 2, 0)
         .output();

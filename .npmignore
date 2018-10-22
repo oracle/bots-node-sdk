@@ -11,5 +11,5 @@ ts
 tslint.json
 THIRDPARTY.md
 CONTRIBUTING.md
-bin/README.md
+**/*.md
 *.tgz

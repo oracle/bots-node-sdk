@@ -36,7 +36,7 @@ function writeTemplate(src, dest, vars) {
 }
 
 /**
- * Command implementation for scaffolding cc_package projects
+ * Command implementation for scaffolding cc package projects
  */
 class CCInit extends CommandDelegate {
   constructor(cmd) {
@@ -119,6 +119,7 @@ class CCInit extends CommandDelegate {
         this.ui.paragraph('Writing files...');
         return writeTemplates(this.templateRoot, outDir, {
           name: name || 'my-custom-component',
+          componentName,
           sdkName: SDK.name,
           sdkVersion: SDK.version,
           sdkBin: this.command.root()._name,

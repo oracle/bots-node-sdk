@@ -1,5 +1,5 @@
-const OracleBot = require('@oracle/bots-node-sdk');
 const path = require('path');
+const OracleBot = require('@oracle/bots-node-sdk');
 
 /**
  * Set up custom component service
@@ -11,10 +11,11 @@ module.exports = (app, urlPath, config) => {
   const logger = (config && config.logger ? config.logger : console);
 
   try {
-    const ccPath = path.resolve('./cc_package');
+    // load custom component package in ./custom directory
+    const ccPath = path.resolve('./custom');
     const ccPkg = require(ccPath);
 
-    // initialize the application with OracleBot
+    // initialize the runtime with OracleBot
     OracleBot.init(app, {
       logger: logger
     });

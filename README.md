@@ -7,6 +7,7 @@ platform: Running [Custom Component Services](https://docs.oracle.com/en/cloud/p
 and/or [Webhook Channels](https://docs.oracle.com/en/cloud/paas/mobile-autonomous-cloud/use-chatbot/bot-channels.html).
 
 - [Installation](#installation) - Installation and usage information.
+- [CLI](#cli) - Developer tools and utilities for getting started.
 - [Custom Component](#custom-components) - Services to enrich a conversation flow with custom logic, API integrations, messages, and more.
 - [Webhook](#webhook) - Integrate with custom messaging channels using incoming/outgoing webhook.<!--[nodoc]-->
 - [Documentation](https://oracle.github.io/bots-node-sdk) - Full SDK documentation.
@@ -20,11 +21,23 @@ and/or [Webhook Channels](https://docs.oracle.com/en/cloud/paas/mobile-autonomou
 
 ## Installation
 
+Install this project as a dependency to a Node.js/express project.
+
 ```text
 npm install --save @oracle/bots-node-sdk
 ```
 
-Install this project as a dependency to a Node.js express project.
+## CLI
+
+This package includes several command line capabilties designed to facilitate
+custom development with the SDK itself. See complete documentation
+[here](https://github.com/oracle/bots-node-sdk/blob/master/bin/CLI.md)
+
+```shell
+npx @oracle/bots-node-sdk --help
+```
+
+## Basic Setup
 
 ```javascript
 const express = require('express');
@@ -285,7 +298,7 @@ messageModelUtil.convertRespToText(message);
 
 The SDK also includes unit testing facilities, which can be utilized within
 your preferred test runner. Details may be found
-[here](https://github.com/oracle/bots-node-sdk/blob/master/testing/README.md).
+[here](https://github.com/oracle/bots-node-sdk/blob/master/testing/TESTING.md).
 
 ## Using TypeScript
 
@@ -302,34 +315,6 @@ class MyCustomComponent implements Lib.IComponent {
     // ...
   }
 }
-```
-
-## CLI
-
-```shell
-
-shbot
-obot-cc
-Oracle Bots Node SDK
-obns
-oskill
-bots-node-sdk
-obots-sdk
-// obot-sdk
-
-npm init
-npm install -D @oracle/bots-node-sdk
-$(npm bin)/obot-cc init
-$(npm bin)/obot-wh init
-
-# or
-
-npm install -g @oracle/bots-node-sdk
-obot-cc init
-
-# or 
-
-npx ... obot-cc init
 ```
 
 <!--[nodoc]-->

@@ -42,6 +42,16 @@ npm start
 npm run {{sdkBin}} -- service .
 ```
 
+Once services are running, you may also test endpoints like so:
+
+```shell
+# get component metadata
+curl -X GET localhost:3000/components
+
+# invoke custom component
+curl -H "Content-Type: application/json" -d @./spec/test.req.json localhost:3000/components/{{componentName}}
+```
+
 ## Deployment
 
 As this package is designed to be installed and run with a corresponding service

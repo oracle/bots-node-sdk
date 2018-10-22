@@ -2,16 +2,16 @@
   "name": "bots-express-service-wrapper",
   "version": "2.0.0",
   "description": "Bots Express-based component service wrapper",
-  "main": "index.js",
+  "main": "service.js",
   "repository": {},
   "license": "ISC",
   "dependencies": {
-    "@oracle/bots-node-sdk": "^2.0.0",
+    "@oracle/bots-node-sdk": "^2.1.0",
     "express": "^4.13.4"
   },
   "scripts": {
     "start": "node index.js",
-    "pack:cc": "cd cc_package && npm pack",
-    "postinstall": "cd cc_package && npm install --production"
+    "pack:cc": "bots-node-sdk pack ./custom",
+    "postinstall": "cd custom && npm install --production"
   }
 }

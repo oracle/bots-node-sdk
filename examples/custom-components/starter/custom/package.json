@@ -3,10 +3,13 @@
   "version": "1.0.0",
   "description": "Simple Bots Custom Components in form of npm package",
   "main": "main.js",
-  "author": "",
-  "license": "ISC",
   "dependencies": {},
+  "scripts": {
+    "bots-node-sdk": "bots-node-sdk",
+    "start": "npm run bots-node-sdk -- service .",
+    "prepack": "npm run bots-node-sdk -- pack --dry-run ."
+  },
   "devDependencies": {
-    "@oracle/bots-node-sdk": "^2.0.0"
+    "@oracle/bots-node-sdk": "^2.1.0"
   }
 }

@@ -56,7 +56,7 @@ const loadVerifyComponent = ccPath => {
 };
 
 /**
- * Command implementation for scaffolding cc_package projects
+ * Command implementation for scaffolding cc package projects
  */
 class CCPack extends CommandDelegate {
 
