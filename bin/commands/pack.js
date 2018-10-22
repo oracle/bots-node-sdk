@@ -64,13 +64,12 @@ class CCPack extends CommandDelegate {
     super(cmd, 'Create a deployable Custom Component artifact');
     this.command
       .argument('path', 'Specify path to Component Package')
-      .option('-p --project <path>', 'Path to the Component Package directory')
       .option('-d --dry-run', 'Perform package validation only')
       // .option('-w --wrapper <type>', 'Specify a wrapper type <express|oracle-mobile-cloud>', null, w => w.toLowerCase());
   }
 
   run(options, pathArg) {
-    let dir = options.project || pathArg || process.cwd();
+    let dir = pathArg || process.cwd();
     dir = path.resolve(dir);
     const cc = loadVerifyComponent(dir);
     if (options.dryRun) {

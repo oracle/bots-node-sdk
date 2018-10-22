@@ -68,7 +68,7 @@ class CCServiceCommand extends CommandDelegate {
   /**
    * CLI invocation handler
    * @param {*} options - parsed options
-   * @param  {...any} projects - all project arguments
+   * @param  {...string} projects - all project arguments
    */
   run(options, ...projects) {
     const components = this._resolveCCs(projects);

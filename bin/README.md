@@ -51,29 +51,33 @@ $(npm bin)/bots-node-sdk init --run
 ### 1. Start a project: `init [options] [dest]`
 
 Init is the main namespace used to scaffold new projects and/or augment existing
-projects with more components. Options are as follows:
+projects with more components. If provided, `[dest]` or `--name` will be used for the output directory.
 
-- `-s --skip-install` - Tells the command to skip `npm install` during the code generation
+- `-s --skip-install` - Instruct the command to skip `npm install` after code generation
 - `-r --run` - Starts the custom component service after install completes
 - `-n --name <name>` - Specify a name for the component package. If not provided, the directory name, or existing `package.json` name will be used
 - `-c --component-name <name>` - Use a name other than the default `hello.world` for the initial component in your project
 
 ### 2. Add Components: `init component [options] <dest>`
 
-This command will generate a new Custom Component within an existing component
-package, and write to the `<dest>` path.
+This command will initialize a _new_ Custom Component within an **existing** component
+package, and write to the `<dest>` output path.
 
 - `-n --name <name>` - Provide a name for the custom component
 
-### 3. Start Dev Server: `service [options]`
+### 3. Start Dev Server: `service [options] [...packages]`
 
-Starts a server with one or more Component Packages. **NOTE** this requires
+Starts a server with one _or more_ Component Packages. **NOTE** this requires
 `express` as a `devDependency` in at least one of the component packages, and
 will error if not found.
 
-- `-p --project <path>` - Specify one or more project path (if different than `cwd`).
-- `-P --port <number>` - Use a port other than the default `:3000` for the service.
-- `-r --route <path>` - Defines the service endpoint for Custom Components.
+- `-P --port <number>` - Use a port other than the default `:3000` for the service
+- `-r --route <path>` - Defines the service endpoint for Custom Components
 
 ### 4. Package for Deployment: `pack [options]`
 
+Most often, custom implementations can be packaged with `npm pack` or `zip`
+depending on the deployment target. The `pack` command here is intended to
+provide validation and convenience methods for creating a deployable artifact.
+
+- `-d --dry-run` - Flag to peform project validations without emitting any specific archive. **TIP:** Useful addition to `prepack` or `test` scripts
