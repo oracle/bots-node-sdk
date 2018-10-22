@@ -14,7 +14,6 @@ class CCServiceCommand extends CommandDelegate {
   constructor(cmd) {
     super(cmd, 'Start a service with Custom Component package(s)');
     this.command
-      .option('-p --project <path>', 'Path(s) to the package directory', null, (p, list) => (list || []).concat(p))
       .option('-P --port <number>', 'Service port number', null, p => ~~p)
       .option('-r --route <path>', 'Path for service endpoint', '/components');
   }
@@ -46,14 +45,13 @@ class CCServiceCommand extends CommandDelegate {
 
   /**
    * resolve cc packages from command inputs
-   * @param {object} options - command options
-   * @param {*} args - command arguments, used when options.project is null
+   * @param {*} projects - command arguments, used when options.project is null
    * @returns {object[]} - array of cc hash where each contains its path and module
    */
-  _resolveCCs(options, args) {
+  _resolveCCs(projects) {
     // self
     const sdkName = this.command.project().name;
-    const ccs = (options.project || args).map(cc => {
+    const ccs = (projects || []).map(cc => {
       const ccPath = path.resolve(process.cwd(), cc);
       const loaded = loadVerifyComponent(ccPath);
       
@@ -70,10 +68,10 @@ class CCServiceCommand extends CommandDelegate {
   /**
    * CLI invocation handler
    * @param {*} options - parsed options
-   * @param  {...any} args - additional arguments passed
+   * @param  {...any} projects - all project arguments
    */
-  run(options, ...args) {
-    const components = this._resolveCCs(options, args);
+  run(options, ...projects) {
+    const components = this._resolveCCs(projects);
     const express = this._getExpress(components);
     const port = options.port || process.env.PORT || defaultPort;
 
@@ -87,6 +85,11 @@ class CCServiceCommand extends CommandDelegate {
 
     // setup express & middleware
     const app = express();
+    app.use((req, res, next) => {
+      res.set('Access-Control-Allow-Origin', '*');
+      res.set('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+      next();
+    });
     OracleBot.init(app, { logger: console });
     OracleBot.Middleware.customComponent(app, {
       baseUrl: options.route,
@@ -96,12 +99,13 @@ class CCServiceCommand extends CommandDelegate {
     // start the service
     app.listen(port, () => {
       this.ui
-        .banner(`Component Service Ready
+        .banner(`Component Service Ready:
         http://localhost:${port}${options.route}`)
         .outputGrid(components.map(cc => [cc.ref, '=>', cc.cnames.join('\n')]), 2, 0)
         .output();
     });
   }
+
 }
 
 module.exports = {
