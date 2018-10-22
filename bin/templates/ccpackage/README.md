@@ -1,9 +1,8 @@
 # Custom Component Package
 
-This project is in format of a Component Package. The Component Package structure
-is the recommended way to organize Bots Custom Components code. A Component
-Package allows the custom component code to be more portable to different
-runtime environments.
+This project is in format of a Component Package. Component Packages are the
+recommended way to organize Bots Custom Components code and allow the custom
+component code to be more portable to different runtime environments.
 
 ## Structure
 

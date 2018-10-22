@@ -65,7 +65,7 @@ class CCPack extends CommandDelegate {
     this.command
       .argument('path', 'Specify path to Component Package')
       .option('-d --dry-run', 'Perform package validation only')
-      // .option('-w --wrapper <type>', 'Specify a wrapper type <express|oracle-mobile-cloud>', null, w => w.toLowerCase());
+      // .option('-w --wrapper <type>', 'Specify a wrapper type <express|mobile-api>', null, w => w.toLowerCase());
   }
 
   run(options, pathArg) {
