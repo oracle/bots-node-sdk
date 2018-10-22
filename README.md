@@ -81,7 +81,8 @@ Custom Components into your Bot dialog.
 <!--[nodoc]-->
 ### QuickStart for Custom Components
 
-[Component Package Starter Example](https://github.com/oracle/bots-node-sdk/blob/master/examples/custom-components/starter)
+- [Component Starter Example](https://github.com/oracle/bots-node-sdk/blob/master/examples/custom-components/starter)
+- [CLI starter](https://github.com/oracle/bots-node-sdk/blob/master/bin/CLI.md)
 <!--[/nodoc]-->
 
 ### Custom Component Service
@@ -94,7 +95,7 @@ Most important is the `register` option, which specifies component
 paths or component objects - telling the service where Custom Component sources
 are located within your project.
 
-- `cwd` **string** - Top level directory to which all other paths are relative. `__dirname` is recommended.
+- `cwd` **string** - Top level directory to which all other paths are relative. (`__dirname` is recommended).
 - `register` **(string|object(s)|function)[]** - Defines component registry from array of the paths to resolve.
   - String paths may also be directories, which are scanned recursively and added to the registry.
   - Multiple components may also be exported from a single file.
@@ -191,7 +192,7 @@ receiving messages. This package includes these necessary integration tools.
 <!--[nodoc]-->
 ### QuickStart for Webhook
 
-[Webhook Starter Example](https://github.com/oracle/bots-node-sdk/blob/master/examples/webhook/starter)
+- [Webhook Starter Example](https://github.com/oracle/bots-node-sdk/blob/master/examples/webhook/starter)
 <!--[/nodoc]-->
 
 ### Webhook Client
