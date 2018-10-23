@@ -2,13 +2,7 @@
 
 const { EventEmitter } = require('events');
 const { UI } = require('./ui');
-
-function camelize(str) {
-  return str.replace(/^\W+/, '').replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function(match, index) {
-    if (+match === 0) return "";
-    return index === 0 ? match.toLowerCase() : match.toUpperCase();
-  }).replace(/\W/g, '');
-}
+const { camelize } = require('./strings');
 
 const REG = {
   OPT_MATCH: /^(--?[a-z_-]+)(?:=["']?(.+)["']?)?/i,
