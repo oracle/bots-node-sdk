@@ -81,3 +81,5 @@ depending on the deployment target. The `pack` command here is intended to
 provide validation and convenience methods for creating a deployable artifact.
 
 - `-d --dry-run` - Flag to peform project validations without emitting any specific archive. **TIP:** Useful addition to `prepack` or `test` scripts
+- `-s --service <embedded|express|mobile-api>` - Specify a service type to use in the packaging (uses standard `npm pack` for `embedded`)
+- `-e --endpoint <url>` - Provide the endpoint to use for `/components` metadata
