@@ -95,6 +95,8 @@ class CCPack extends CommandDelegate {
     this.cc.json.main = 'index.js';
     this._assignDep(SDK.name, 'dependencies', `^${SDK.version}`)
       ._assignDep('express', 'dependencies', SDK.devDependencies.express)
+      ._setScript('start', 'node index.js')
+      ._setScript('prepack', null)
       ._savePkg(outDir);
     return outDir;
   }
@@ -113,6 +115,8 @@ class CCPack extends CommandDelegate {
     // update package.json
     this.cc.json.main = 'api.js';
     this._assignDep(SDK.name, 'dependencies', `^${SDK.version}`)
+      ._setScript('start', null)
+      ._setScript('prepack', null)
       ._savePkg(outDir);
     return outDir;
   }
@@ -139,6 +143,13 @@ class CCPack extends CommandDelegate {
 
     this.cc.json[to] = Object.assign(this.cc.json[to] || {}, {
       [name]: spec || fallback
+    });
+    return this;
+  }
+
+  _setScript(name, script) {
+    this.cc.json.scripts = Object.assign(this.cc.json.scripts || {}, {
+      [name]: script || '',
     });
     return this;
   }
