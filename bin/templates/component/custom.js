@@ -17,8 +17,8 @@ module.exports = {
     const isWeekend = [0, 6].indexOf(now.getDay()) > -1;
     // reply
     conversation
-      .reply(`Greetings ${human}.`)
-      .reply(`Today is ${now.toLocaleDateString()}, a ${dayOfWeek}.`)
+      .reply(`Greetings ${human}`)
+      .reply(`Today is ${now.toLocaleDateString()}, a ${dayOfWeek}`)
       .transition(isWeekend ? 'weekend' : 'weekday');
  
     done();
