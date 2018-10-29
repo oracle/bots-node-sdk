@@ -93,7 +93,7 @@ class CCServiceCommand extends CommandDelegate {
     OracleBot.init(app, { logger: console });
     OracleBot.Middleware.customComponent(app, {
       baseUrl: options.route,
-      register: registry.components, // :)
+      register: registry.components,
     });
 
     // start the service

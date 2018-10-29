@@ -88,6 +88,7 @@ class CCInit extends CommandDelegate {
         this.ui.paragraph('Writing files...');
         return writeTemplates(this.templateRoot, outDir, {
           name: name || 'my-custom-component',
+          date: new Date().toDateString(),
           componentName,
           sdkName: SDK.name,
           sdkVersion: SDK.version,
