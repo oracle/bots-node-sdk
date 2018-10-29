@@ -5,35 +5,7 @@ const path = require('path');
 const { CommandDelegate } = require('../lib/command');
 const { ChildPromise } = require('../lib/spawn');
 const { CCServiceCommand } = require('./service');
-
-function writeTemplates(from, to, vars) {
-  fs.readdirSync(from)
-    .forEach(filename => {
-      const src = path.join(from, filename);
-      const stat = fs.statSync(src);
-      const dest = path.join(to, filename.replace(/^_+/, ''));
-      if (stat.isDirectory()) {
-        if (!fs.existsSync(dest)) {
-          fs.mkdirSync(dest);
-        }
-        return writeTemplates(src, dest, vars);
-      }
-      return writeTemplate(src, dest, vars);
-    });
-}
-
-function writeTemplate(src, dest, vars) {
-  if (fs.existsSync(dest)) {
-    console.warn(`WARN: ${dest} already exists`);
-    return;
-  }
-  console.log(`Writing file: ${dest}`);
-  const template = fs.readFileSync(src).toString();
-  const output = Object.keys(vars).reduce((temp, prop) => {
-    return temp.replace(new RegExp(`{{${prop}}}`, 'gi'), vars[prop]);
-  }, template);
-  return fs.writeFileSync(dest, output);
-}
+const { writeTemplate, writeTemplates } = require('../lib/templates');
 
 /**
  * Command implementation for scaffolding cc package projects
@@ -54,11 +26,8 @@ class CCInit extends CommandDelegate {
 
   _initDir(dir) {
     dir = path.resolve(dir);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir);
-    }
-    const contents = fs.readdirSync(dir);
-    if (contents.length) {
+    const contents = fs.existsSync(dir) && fs.readdirSync(dir);
+    if (contents && contents.length) {
       this.ui.output(`Will update contents in directory '${path.basename(dir)}'`);
       if (~contents.indexOf('package.json')) {
         this.flagUpdate();
