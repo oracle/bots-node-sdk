@@ -64,8 +64,5 @@
     "supertest": "^3.1.0",
     "tslint": "^5.10.0",
     "typescript": "^2.9.2"
-  },
-  "optionalDependencies": {
-    "joi-browser": "^13.0.1"
   }
 }
