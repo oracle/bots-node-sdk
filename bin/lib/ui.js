@@ -20,8 +20,7 @@ class UI  {
    * @param msgs messages to write
    */
   write(...msgs) {
-    msgs.forEach((msg, i) => this.stream.write(`${i ? TAB : ''}${msg}`));
-    this.stream.write(EOL);
+    this.append(...msgs).stream.write(EOL);
     return this;
   }
 

@@ -90,7 +90,10 @@ class CCServiceCommand extends CommandDelegate {
       res.set('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
       next();
     });
-    OracleBot.init(app, { logger: console });
+    OracleBot.init(app, {
+      logger: components.reduce((prev, cc) => cc.module.logger || prev, console), // take last
+      parser: components.reduce((prev, cc) => prev || cc.module.parser, null), // take first
+    });
     OracleBot.Middleware.customComponent(app, {
       baseUrl: options.route,
       register: registry.components,

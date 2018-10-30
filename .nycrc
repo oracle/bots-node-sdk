@@ -7,6 +7,7 @@
     "typings",
     "reports",
     "docs",
+    "ts",
     "examples/**",
     "bin/templates/**",
     "*.js"

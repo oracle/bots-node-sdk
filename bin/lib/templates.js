@@ -11,9 +11,6 @@ function writeTemplates(from, to, vars) {
     const stat = fs.statSync(src);
     const dest = path.join(to, filename.replace(/^_+/, ''));
     if (stat.isDirectory()) {
-      if (!fs.existsSync(dest)) {
-        fs.mkdirSync(dest);
-      }
       return writeTemplates(src, dest, vars);
     }
     return writeTemplate(src, dest, vars);

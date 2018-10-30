@@ -7,6 +7,10 @@ const { ChildPromise } = require('../lib/spawn');
 const { CCServiceCommand } = require('./service');
 const { writeTemplate, writeTemplates } = require('../lib/templates');
 
+function nameOpt(name) {
+  return name.replace(/[^\w._-]/g, '');
+}
+
 /**
  * Command implementation for scaffolding cc package projects
  */
@@ -17,8 +21,8 @@ class CCInit extends CommandDelegate {
       .argument('dest', 'Path where project should be created (cwd if omitted)')
       .option('-s --skip-install', 'Skip npm install')
       .option('-r --run', 'Start service when init completes (with defaults)')
-      .option('-n --name <name>', 'Specify a name for the new project', null, name => name.replace(/[^\w._-]/g, ''))
-      .option('-c --component-name <name>', 'Name for the first custom component', 'hello.world', name => name.replace(/[^\w._-]/g, ''));
+      .option('-n --name <name>', 'Specify a name for the new project', null, nameOpt)
+      .option('-c --component-name <name>', 'Name for the first custom component', 'hello.world', nameOpt);
 
     this.command.delegate(CCInitComponent, 'component');
     this.templateRoot = path.resolve(__dirname, '..', 'templates', 'ccpackage');
@@ -137,7 +141,7 @@ class CCInitComponent extends CommandDelegate {
     this.command
       .ignore('componentName').ignore('run').ignore('skipInstall') // inherited from parent
       .argument('dest', 'Destination directory where component should be added', true)
-      .option('-n --name <name>', 'Specify a name for the Custom Component', null, name => name.replace(/[^\w._-]/g, ''));
+      .option('-n --name <name>', 'Specify a name for the Custom Component', null, nameOpt);
 
     this.templateRoot = path.resolve(__dirname, '..', 'templates', 'component');
   }
