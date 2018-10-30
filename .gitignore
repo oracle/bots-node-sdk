@@ -3,6 +3,7 @@
 .wercker
 .sonar*
 .scanner*
+.nyc_output
 node_modules
 docs
 reports
