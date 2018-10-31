@@ -189,7 +189,7 @@ class Command extends EventEmitter {
     }).then(result => result && result.command._run(result.options, result.args))
       .then(() => this.emit(Command.RAN))
       .catch(e => {
-        this.ui.output(`ERROR: ${e.message}`);
+        this.ui.output(`ERROR: ${e.message || e}`);
         process.exit(1);
         throw e;
       });
