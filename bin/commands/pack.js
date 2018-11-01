@@ -84,9 +84,8 @@ class CCPack extends CommandDelegate {
     }).then(() => path.join(this.cc.path, util.format(`%s-%s.tgz`, name, version)));
   }
 
-  _expressPack(endpoint) {
+  _expressPack(outDir, endpoint) {
     const SDK = this.command.project();
-    const outDir = this._prepareOut('express');
     // copy additional templates
     const vars = { endpoint };
     ['api.js', 'index.js']
@@ -101,9 +100,8 @@ class CCPack extends CommandDelegate {
     return outDir;
   }
 
-  _mobilePack(endpoint) {
+  _mobilePack(outDir, endpoint) {
     const SDK = this.command.project();
-    const outDir = this._prepareOut('mobile');
     let { name } = this.cc.json;
     const apiTitle = camelize(name.replace(/components?$/i, ''));
     const apiName = name.replace(/^\W|\W+/g, (match, index) => index === 0 ? '' : '_');
@@ -167,9 +165,9 @@ class CCPack extends CommandDelegate {
       case 'embedded':
         return resolve(this._npmPack());
       case 'express':
-        return resolve(this._expressPack(endpoint));
+        return resolve(this._expressPack(this._prepareOut(service), endpoint));
       case 'mobile-api':
-        return resolve(this._mobilePack(endpoint));
+        return resolve(this._mobilePack(this._prepareOut(service), endpoint));
       default:
         return reject(`Invalid packaging option '${service}'`);
       }

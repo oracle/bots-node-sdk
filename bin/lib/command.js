@@ -172,10 +172,12 @@ class Command extends EventEmitter {
       command._defaults();
 
       if (command.options.help || (!hasArgs && !command._handler)) {
-        return command._renderHelp();
+        command._renderHelp();
+        return resolve();
       }
       if (command.options.version) {
-        return this._renderVersion();
+        this._renderVersion();
+        return resolve();
       }
       
       resolve({
@@ -184,12 +186,12 @@ class Command extends EventEmitter {
         options: command.options,
       });
 
-    })
-      .then(result => result.command._run(result.options, result.args))
+    }).then(result => result && result.command._run(result.options, result.args))
       .then(() => this.emit(Command.RAN))
       .catch(e => {
-        this.ui.output(`ERROR: ${e.message}`);
+        this.ui.output(`ERROR: ${e.message || e}`);
         process.exit(1);
+        throw e;
       });
   }
 
@@ -213,7 +215,7 @@ class Command extends EventEmitter {
     const { ignore } = this._config;
     
     // reset options and combine with parent first
-    this._config.flags = new Map();
+    this._config.flags.clear();
     const own = this._config.options.splice(0);
     [options, own].forEach(group => {
       group
