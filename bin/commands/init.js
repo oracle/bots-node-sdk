@@ -70,6 +70,13 @@ class CCInit extends CommandDelegate {
           devDependencies
         });
         fs.writeFileSync(pkgFile, JSON.stringify(pkgJson, null, 2));
+        // check legacy files
+        const deprecated = ['sdk', 'shell', 'components', 'mcebots', 'registry', 'MessageModel']
+          .map(name => name + '.js')
+          .filter(file => fs.existsSync(path.join(dir, file)));
+        if (deprecated.length) {
+          this.ui.outputSection('Deprecated', deprecated);
+        }
       } catch (e) {
         this.ui.banner(e.message);
         this._err(`Failed to update existing project`);
