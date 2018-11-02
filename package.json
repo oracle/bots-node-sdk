@@ -1,6 +1,6 @@
 {
   "name": "@oracle/bots-node-sdk",
-  "version": "2.0.6",
+  "version": "2.1.0",
   "description": "Oracle Bots SDK for custom component development and webhook integrations",
   "main": "index.js",
   "browser": "index-browser.js",
@@ -33,9 +33,13 @@
     "docs": "shx rm -rf ./docs && jsdoc -c jsdoc.json -d ./docs",
     "postdocs": "node ./docshim.js",
     "lint": "eslint . --ignore-pattern reports --ignore-pattern examples --ignore-pattern docs && tslint --project ./ts",
-    "test": "istanbul cover jasmine",
+    "test": "nyc jasmine",
     "typings": "shx rm -rf ./typings && cd ./ts && tsc",
-    "prepack": "npm run build"
+    "prepack": "npm run build",
+    "cc": "node ./bin/cc.js init"
+  },
+  "bin": {
+    "bots-node-sdk": "bin/sdk.js"
   },
   "dependencies": {
     "body-parser": "^1.18.2",
@@ -51,17 +55,14 @@
     "eslint": "^4.19.1",
     "eslint-plugin-jasmine": "^2.10.1",
     "express": "^4.16.3",
-    "istanbul": "^0.4.5",
     "jasmine": "^2.8.0",
     "jasmine-reporters": "^2.3.1",
     "jasmine-spec-reporter": "^4.2.1",
     "jsdoc": "^3.5.5",
+    "nyc": "^13.1.0",
     "shx": "^0.2.2",
     "supertest": "^3.1.0",
     "tslint": "^5.10.0",
     "typescript": "^2.9.2"
-  },
-  "optionalDependencies": {
-    "joi-browser": "^13.0.1"
   }
 }

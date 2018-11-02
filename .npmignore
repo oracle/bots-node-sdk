@@ -11,4 +11,5 @@ ts
 tslint.json
 THIRDPARTY.md
 CONTRIBUTING.md
-oracle-bots-node-sdk-*.tgz
+**/*.md
+*.tgz

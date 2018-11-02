@@ -7,6 +7,7 @@ platform: Running [Custom Component Services](https://docs.oracle.com/en/cloud/p
 and/or [Webhook Channels](https://docs.oracle.com/en/cloud/paas/mobile-autonomous-cloud/use-chatbot/bot-channels.html).
 
 - [Installation](#installation) - Installation and usage information.
+- [CLI](#cli) - Developer tools and utilities for getting started.
 - [Custom Component](#custom-components) - Services to enrich a conversation flow with custom logic, API integrations, messages, and more.
 - [Webhook](#webhook) - Integrate with custom messaging channels using incoming/outgoing webhook.<!--[nodoc]-->
 - [Documentation](https://oracle.github.io/bots-node-sdk) - Full SDK documentation.
@@ -20,11 +21,23 @@ and/or [Webhook Channels](https://docs.oracle.com/en/cloud/paas/mobile-autonomou
 
 ## Installation
 
+Install this project as a dependency to a Node.js/express project.
+
 ```text
 npm install --save @oracle/bots-node-sdk
 ```
 
-Install this project as a dependency to a Node.js express project.
+## CLI
+
+This package includes several command line capabilties designed to facilitate
+custom development with the SDK itself. See complete documentation
+[here](https://github.com/oracle/bots-node-sdk/blob/master/bin/CLI.md)
+
+```shell
+npx @oracle/bots-node-sdk --help
+```
+
+## Basic Setup
 
 ```javascript
 const express = require('express');
@@ -68,7 +81,8 @@ Custom Components into your Bot dialog.
 <!--[nodoc]-->
 ### QuickStart for Custom Components
 
-[Component Package Starter Example](https://github.com/oracle/bots-node-sdk/blob/master/examples/custom-components/starter)
+- [Component Starter Example](https://github.com/oracle/bots-node-sdk/blob/master/examples/custom-components/starter)
+- [CLI starter](https://github.com/oracle/bots-node-sdk/blob/master/bin/CLI.md)
 <!--[/nodoc]-->
 
 ### Custom Component Service
@@ -81,7 +95,7 @@ Most important is the `register` option, which specifies component
 paths or component objects - telling the service where Custom Component sources
 are located within your project.
 
-- `cwd` **string** - Top level directory to which all other paths are relative. `__dirname` is recommended.
+- `cwd` **string** - Top level directory to which all other paths are relative. (`__dirname` is recommended).
 - `register` **(string|object(s)|function)[]** - Defines component registry from array of the paths to resolve.
   - String paths may also be directories, which are scanned recursively and added to the registry.
   - Multiple components may also be exported from a single file.
@@ -178,7 +192,7 @@ receiving messages. This package includes these necessary integration tools.
 <!--[nodoc]-->
 ### QuickStart for Webhook
 
-[Webhook Starter Example](https://github.com/oracle/bots-node-sdk/blob/master/examples/webhook/starter)
+- [Webhook Starter Example](https://github.com/oracle/bots-node-sdk/blob/master/examples/webhook/starter)
 <!--[/nodoc]-->
 
 ### Webhook Client
@@ -284,27 +298,8 @@ messageModelUtil.convertRespToText(message);
 ## Unit Testing
 
 The SDK also includes unit testing facilities, which can be utilized within
-your preferred test runner.
-
-```javascript
-const Tester = require('@oracle/bots-node-sdk/testing');
-const { MyComponent } = require('../../components/MyComponent');
-
-describe('MyComponent', () => {
-  it('should chat', done => {
-    const conv = Tester.MockConversation.any();
-    new MyComponent().invoke(conv, () => {
-      // check replies
-      expect(conv.getReplies().length).toBeGreaterThan(0);
-      // check transition
-      expect(conversation.response().transition).toBe(true);
-      // check variables
-      expect(conversation.variable('abc')).toEqual('xyz');
-      done();
-    });
-  });
-});
-```
+your preferred test runner. Details may be found
+[here](https://github.com/oracle/bots-node-sdk/blob/master/testing/TESTING.md).
 
 ## Using TypeScript
 

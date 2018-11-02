@@ -1,5 +1,5 @@
-const OracleBot = require('@oracle/bots-node-sdk');
 const path = require('path');
+const OracleBot = require('@oracle/bots-node-sdk');
 
 /**
  * Set up custom component service
@@ -9,25 +9,20 @@ const path = require('path');
  */
 module.exports = (app, urlPath, config) => {
   const logger = (config && config.logger ? config.logger : console);
+  
+  // load custom component package in ./custom directory
+  const ccPath = path.resolve('./custom');
+  const ccPkg = require(ccPath);
 
-  try {
-    const ccPath = path.resolve('./cc_package');
-    const ccPkg = require(ccPath);
+  // initialize the runtime with OracleBot
+  OracleBot.init(app, {
+    logger: logger
+  });
+  OracleBot.Middleware.customComponent(app, {
+    baseUrl: urlPath,
+    cwd: ccPkg.cwd || ccPath,
+    register: ccPkg.components
+  });
 
-    // initialize the application with OracleBot
-    OracleBot.init(app, {
-      logger: logger
-    });
-    OracleBot.Middleware.customComponent(app, {
-      baseUrl: urlPath,
-      cwd: ccPkg.cwd || ccPath,
-      register: ccPkg.components
-    });
-
-    logger.info('Component service created at context path=' + urlPath);
-
-  } catch (e) {
-    logger.error(e.message);
-    throw e;
-  }
+  logger.info('Component service created at context path=' + urlPath);
 };
