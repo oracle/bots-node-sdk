@@ -12,8 +12,8 @@ class CommonValidator {
 
   static _getJoi() {
     let joi = CommonProvider.get(PROVIDER_KEY_JOI);
-    if (!joi) {
-      joi = require('joi');
+    if (!joi && joi !== null) {
+      joi = eval('require')('joi');
       CommonProvider.register({
         key: PROVIDER_KEY_JOI,
         use: joi,
@@ -27,8 +27,10 @@ class CommonValidator {
    */
   static getSchema(factory) {
     if (!schemaCache.has(factory)) {
-      const schema = factory(this._getJoi());
-      schemaCache.set(factory, schema);
+      const joi = this._getJoi();
+      if (joi) {
+        schemaCache.set(factory, factory(joi));
+      }
     }
     return schemaCache.get(factory);
   }
@@ -36,7 +38,7 @@ class CommonValidator {
   static useInBrowser() {
     CommonProvider.register({
       key: PROVIDER_KEY_JOI,
-      use: require('joi-browser'),
+      use: null,
     });
   }
 
@@ -47,7 +49,8 @@ class CommonValidator {
    * @param options - Validation options (optional)
    */
   static validate(factory, payload, options) {
-    return this.getSchema(factory).validate(payload, options);
+    const schema = this.getSchema(factory);
+    return schema ? schema.validate(payload, options) : true;
   }
 }
 

@@ -1,0 +1,22 @@
+{
+  "include": [
+    "**/*.js"
+  ],
+  "exclude": [
+    "spec",
+    "typings",
+    "reports",
+    "docs",
+    "ts",
+    "examples/**",
+    "bin/templates/**",
+    "*.js"
+  ],
+  "reporter": [
+    "lcov",
+    "text"
+  ],
+  "all": true,
+  "instrument": true,
+  "report-dir": "reports/coverage"
+}

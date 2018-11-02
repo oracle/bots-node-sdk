@@ -133,7 +133,7 @@ WebhookEvent[WebhookEvent["MESSAGE_RECEIVED"] = 3] = "MESSAGE_RECEIVED";
  * app.post('/webhook/:client/message', (req, res) => {
  *   let message = {};
  *   // assign userId, messagePayload, profile, etc... on message and send
- *   webhook.send(message);
+ *   webhook.send(message)
  *    .then(() => res.send('ok'), e => res.status(400).send())
  * });
  */
@@ -189,7 +189,7 @@ class WebhookClient {
         // ensure backwards compatibility with webhookReceiver configuration (secret only callback)
         return typeof config === 'object' ? config : {
           url: null,
-          secret: config
+          secret: config,
         };
       });
   }

@@ -1,0 +1,84 @@
+#%RAML 0.8
+# This RAML describes the Bots component service REST API contract.  
+# An OMCe custom code API that implements this RAML will be a Bots component service.
+title: {{apiTitle}}Components
+version: 1.0
+baseUri: /mobile/custom/{{apiName}}
+protocols: [HTTPS]
+/components:
+  description: |
+    Components context root
+
+  get:
+    displayName: Metadata
+    description: |
+      Components metadata retrieval
+
+    protocols: [HTTPS]
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+              {
+                "version": "1.0",
+                "components": [
+                  {
+                    "name": "hello.world",
+                    "properties": {
+                      "name": { "type": "string", "required": true }
+                    },
+                    "supportedActions": [
+                    ]
+                  }
+                ]
+              }
+
+  /{component}:
+    description: |
+      Component invocation
+
+    uriParameters:
+      component:
+        displayName: component
+        description: |
+          Name of the component
+
+        type: string
+        required: true
+    post:
+      description: |
+        Invoke a component by name
+
+      body:
+        application/json:
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  "platformVersion": "1.1",
+                  "context": {
+                    "variables": {}
+                  },
+                  "keepTurn": false,
+                  "transition": false,
+                  "error": false,
+                  "modifyContext": false,
+                  "responses": [
+                    {
+                      "payload": {
+                        "text": "example response"
+                      },
+                      "tenantId": "1234",
+                      "channelConversation": {
+                        "botId": "mockbot",
+                        "sessionId": "1234",
+                        "type": "test",
+                        "userId": "1234",
+                        "channelId": "abc"
+                      }
+                    }
+                  ]
+                }
