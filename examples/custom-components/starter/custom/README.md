@@ -11,6 +11,22 @@ A Component Package consists of the following:
 - .npmignore
 - component file(s)
 
+## Usage
+
+```shell
+# install dependencies
+npm install
+
+# start server
+npm start
+
+# get component metadata
+curl -X GET localhost:3000/components
+
+# invoke custom component
+curl -H "Content-Type: application/json" -d @./spec/sample.req.json localhost:3000/components/hello.world
+```
+
 ### package.json
 
 The `package.json` file needs to have a "main" entry that is entry point for
