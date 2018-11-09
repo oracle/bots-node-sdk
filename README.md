@@ -21,14 +21,11 @@ and/or [Webhook Channels](https://docs.oracle.com/en/cloud/paas/mobile-autonomou
 
 ## Installation
 
+Install this project as a dependency to a Node.js/express project.
+
 ```text
-npm install @oracle/bots-node-sdk
+npm install --save @oracle/bots-node-sdk
 ```
-
-Most often, this package is installed as a dependency of an express application
-where any appropriate middleware is then applied.
-
-The SDK also ships [CLI](#cli) tools with some quick start project generators.
 
 ## CLI
 

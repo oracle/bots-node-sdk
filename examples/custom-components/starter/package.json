@@ -1,15 +1,17 @@
 {
-  "name": "custom-component-default-pkg",
-  "version": "1.0.0",
-  "description": "Simple Bots Custom Components in form of npm package",
-  "main": "main.js",
-  "dependencies": {},
-  "scripts": {
-    "bots-node-sdk": "bots-node-sdk",
-    "start": "npm run bots-node-sdk -- service .",
-    "prepack": "npm run bots-node-sdk -- pack --dry-run ."
+  "name": "bots-express-service-wrapper",
+  "version": "2.0.0",
+  "description": "Bots Express-based component service wrapper",
+  "main": "service.js",
+  "repository": {},
+  "license": "ISC",
+  "dependencies": {
+    "@oracle/bots-node-sdk": "^2.1.0",
+    "express": "^4.13.4"
   },
-  "devDependencies": {
-    "@oracle/bots-node-sdk": "^2.1.0"
+  "scripts": {
+    "start": "node index.js",
+    "pack:cc": "bots-node-sdk pack ./custom",
+    "postinstall": "cd custom && npm install --production"
   }
 }
