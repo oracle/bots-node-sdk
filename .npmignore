@@ -2,6 +2,7 @@
 *.properties
 wercker.yml
 spec
+!bin/**/spec
 reports
 examples
 docs
