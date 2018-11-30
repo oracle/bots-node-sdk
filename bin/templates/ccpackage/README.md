@@ -26,6 +26,9 @@ component code to be more portable to different runtime environments.
 | `main.js` | Entrypoint for the Custom Component Package configuration |
 | `spec` | Placeholder for unit test implementations |
 
+The Component Package behaves like any other `npm` project. Directly install
+any dependencies or tools required to implement the customizations.
+
 ## Development
 
 With `@oracle/bots-node-sdk` as a `devDependency` in a Component Package
@@ -41,9 +44,11 @@ and configure an _External_ Service to connect the components to your Skill.
 npm start
 # or run with additional options
 npm run {{sdkBin}} -- service .
+# or run with debugger
+node --inspect $(npm bin)/{{sdkBin}} service .
 ```
 
-Once services are running, you may also test endpoints like so:
+With custom component services running, test endpoints like so:
 
 ```shell
 # get component metadata
@@ -56,10 +61,14 @@ curl -H "Content-Type: application/json" -d @./spec/test.req.json localhost:3000
 ## Deployment
 
 As this package is designed to be installed and run with a corresponding service
-wrapper, simply `npm pack` and upload the resulting `.tgz` to the _Embedded Container_.
+wrapper, run `npm pack` and upload the resulting `.tgz` as a package for
+the _Embedded Container_ service.
 
 ```shell
 npm pack
 # or validate and package with the {{sdkName}} command line
 npm run {{sdkBin}} -- pack .
 ```
+
+> **TIP:** use `npm run {{sdkBin}} -- pack --help` for additional packaging
+options.

@@ -14,6 +14,7 @@ class CCServiceCommand extends CommandDelegate {
   constructor(cmd) {
     super(cmd, 'Start a service with Custom Component package(s)');
     this.command
+      .argument('path', 'Specify path(s) to Component Package')
       .option('-P --port <number>', 'Service port number', null, p => ~~p)
       .option('-r --route <path>', 'Path for service endpoint', '/components');
   }
@@ -71,6 +72,9 @@ class CCServiceCommand extends CommandDelegate {
    * @param  {...string} projects - all project arguments
    */
   run(options, ...projects) {
+    if (projects && !projects.length) {
+      projects.push('.');
+    }
     const components = this._resolveCCs(projects);
     const express = this._getExpress(components);
     const port = options.port || process.env.PORT || defaultPort;
