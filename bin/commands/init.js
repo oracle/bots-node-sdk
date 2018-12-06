@@ -115,7 +115,7 @@ class CCInit extends CommandDelegate {
       }).then(() => { // run npm install
         if (!skipInstall) {
           this.ui.paragraph('Installing dependencies...');
-          return ChildPromise.spawn('npm', ['install', '--loglevel=error'], {
+          return ChildPromise.npm(['install', '--loglevel=error'], {
             cwd: outDir,
             stdio: 'inherit',
           });

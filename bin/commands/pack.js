@@ -78,7 +78,7 @@ class CCPack extends CommandDelegate {
 
   _npmPack() {
     const { name, version } = this.cc.json;
-    return ChildPromise.spawn('npm', ['pack'], {
+    return ChildPromise.npm(['pack'], {
       cwd: this.cc.path,
       stdio: 'inherit',
     }).then(() => path.join(this.cc.path, util.format(`%s-%s.tgz`, name, version)));
