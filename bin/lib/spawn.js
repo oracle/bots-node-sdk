@@ -1,6 +1,9 @@
 'use strict';
 
+const os = require('os');
 const child_process = require("child_process");
+
+const NPM = /^win/.test(os.platform()) ? 'npm.cmd' : 'npm';
 /**
  * Execute child processes as promise
  * @private
@@ -8,6 +11,9 @@ const child_process = require("child_process");
 class ChildPromise {
   static spawn(command, args, options) {
     return this._child('spawn', command, args, options);
+  }
+  static npm(args, options) {
+    return this.spawn(NPM, args, options);
   }
   static _child(type, command, args, options) {
     return new Promise((resolve, reject) => {
@@ -27,5 +33,6 @@ class ChildPromise {
   }
 }
 module.exports = {
+  NPM,
   ChildPromise,
 };

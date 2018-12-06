@@ -110,7 +110,7 @@ describe(`CLI: bots-node-sdk`, () => {
     it('should error on invalid project directory', done => {
       run(null, 'service')
         .catch(e => {
-          expect(e).toContain(`component package is required`);
+          expect(e).toContain(`does not export components`);
           done();
         });
     });
