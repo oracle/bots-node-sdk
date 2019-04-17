@@ -113,6 +113,7 @@ class CCPack extends CommandDelegate {
     // update package.json
     this.cc.json.main = 'api.js';
     this._assignDep(SDK.name, 'dependencies', `^${SDK.version}`)
+      ._setMobile({ configuration: { node: '6.10' }})
       ._setScript('start', null)
       ._setScript('prepack', null)
       ._savePkg(outDir);
@@ -142,6 +143,12 @@ class CCPack extends CommandDelegate {
     this.cc.json[to] = Object.assign(this.cc.json[to] || {}, {
       [name]: spec || fallback
     });
+    return this;
+  }
+
+  _setMobile(config) {
+    const om = this.cc.json.oracleMobile || {};
+    Object.assign(this.cc.json, {oracleMobile: Object.assign(om, config)});
     return this;
   }
 

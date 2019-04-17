@@ -25,8 +25,21 @@ For standalone usage, there are a two main options.
 1. Use [`npx`](https://www.npmjs.com/package/npx) execute commands: `npx @oracle/bots-node-sdk`
 1. Install globally: `npm install -g @oracle/bots-node-sdk`
 
-Installation is automatic when the `@oracle/bots-node-sdk` is installed as a
-dependency to your application.
+When installed globally, run `bots-node-sdk init` in an empty directory
+to generate a new project. Once installed, review the resulting `package.json`
+for additional usage of the `@oracle/bots-node-sdk` dependency.
+
+```shell
+# in an empty directory
+bots-node-sdk init
+# or specify a specific path
+bots-node-sdk init my-project
+```
+
+> Creates a fresh Custom Component package in an empty directory
+
+As an alterative approach, install `@oracle/bots-node-sdk` as a dependency
+dependency to your application, and use commands accordingly.
 
 ```shell
 mkdir bot-quickstart
@@ -34,10 +47,10 @@ cd bot-quickstart
 
 npm init -y
 npm install --save-dev @oracle/bots-node-sdk
-$(npm bin)/bots-node-sdk init --run
+$(npm bin)/bots-node-sdk init
 ```
 
-> Initializes a new Custom Component package
+> Initializes a new Custom Component package from within an existing node project.
 
 ## Usage
 
@@ -73,6 +86,9 @@ will error if not found.
 
 - `-P --port <number>` - Use a port other than the default `:3000` for the service
 - `-r --route <path>` - Defines the service endpoint for Custom Components
+
+> **NOTE:** Open a node debugger port on the service with `node --inspect $(which bots-node-sdk) service .`.
+A node supervisor may also be used in the same way.
 
 ### 4. Package for Deployment: `pack [options]`
 
