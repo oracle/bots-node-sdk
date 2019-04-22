@@ -256,7 +256,7 @@ webhookUtil.messageToBotWithProperties(url, secret, userId, messsage, extras, (e
 ## Message Formatting
 
 The Oracle Bots platform supports several
-[message formats](https://docs.oracle.com/en/cloud/paas/mobile-autonomous-cloud/use-chatbot/bot-channels.html),
+[message formats](https://docs.oracle.com/en/cloud/paas/digital-assistant/use-chatbot/channels-topic.html#GUID-3D6DE5FA-B95A-42BF-8683-4C13AA45D5AD),
 as defined by the `MessageModel` class.
 
 The class provides several static methods used to create a stuctured object of a
