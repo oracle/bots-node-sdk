@@ -3,6 +3,7 @@
     "**/*.js"
   ],
   "exclude": [
+    ".wercker",
     "spec",
     "typings",
     "reports",
