@@ -13,7 +13,7 @@ class CommonValidator {
   static _getJoi() {
     let joi = CommonProvider.get(PROVIDER_KEY_JOI);
     if (!joi && joi !== null) {
-      joi = eval('require')('joi');
+      joi = eval('require')('@hapi/joi');
       CommonProvider.register({
         key: PROVIDER_KEY_JOI,
         use: joi,

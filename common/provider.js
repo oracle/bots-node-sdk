@@ -1,7 +1,7 @@
 'use strict';
 
 exports.PROVIDER_KEY_LOGGER = 'logger';
-exports.PROVIDER_KEY_JOI = 'joi';
+exports.PROVIDER_KEY_JOI = '@hapi/joi';
 
 /**
  * polyfill basic method implementations with noop

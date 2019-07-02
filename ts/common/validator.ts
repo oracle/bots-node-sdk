@@ -1,4 +1,4 @@
-import * as joi from 'joi';
+import * as joi from '@hapi/joi';
 import { CommonProvider, PROVIDER_KEY_JOI } from './provider';
 
 export interface IValidationSchemaFactory {
