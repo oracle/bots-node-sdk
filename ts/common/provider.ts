@@ -1,7 +1,7 @@
 import { ILogger } from './definitions';
 
 export const PROVIDER_KEY_LOGGER = 'logger';
-export const PROVIDER_KEY_JOI = 'joi';
+export const PROVIDER_KEY_JOI = '@hapi/joi';
 
 export type ProviderKey = any;
 export type ProviderRef = any;
