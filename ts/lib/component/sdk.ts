@@ -217,6 +217,14 @@ export class ComponentInvocation {
   }
 
   /**
+   * Retrieves the channel Id of the current input message.
+   * @return {string} The channel id.
+   */
+  channelId() {
+    return this.request().message.channelConversation.channelId;
+  }
+
+  /**
    * Retrieves the userId for the current input message.
    * @return {string} The userId.
    */
@@ -337,7 +345,7 @@ export class ComponentInvocation {
    * @return {object} The properties
    */
   properties() {
-    return this.request().properties;
+    return this.request().properties || {};
   }
 
   /**
