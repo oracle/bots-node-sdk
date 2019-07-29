@@ -87,8 +87,9 @@ will error if not found.
 - `-P --port <number>` - Use a port other than the default `:3000` for the service
 - `-r --route <path>` - Defines the service endpoint for Custom Components
 
-> **NOTE:** Open a node debugger port on the service with `node --inspect $(which bots-node-sdk) service .`.
-A node supervisor may also be used in the same way.
+> **NOTE:** Open a node debugger port on the service with `node --inspect $(which bots-node-sdk) service .`, or
+`node --inspect node_modules/@oracle/bots-node-sdk/bin/sdk.js service .` if on Windows.
+A node supervisor mayalso be used in the same way.
 
 ### 4. Package for Deployment: `pack [options]`
 
