@@ -92,7 +92,8 @@ class CCPack extends CommandDelegate {
       .forEach(file => writeTemplate(path.join(this.templateRoot, file), path.join(outDir, file), vars));
     // update package.json
     this.cc.json.main = 'index.js';
-    this._assignDep(SDK.name, 'dependencies', `^${SDK.version}`)
+    this._setJson({ main: 'index.js' })
+      ._assignDep(SDK.name, 'dependencies', `^${SDK.version}`)
       ._assignDep('express', 'dependencies', SDK.devDependencies.express)
       ._setScript('start', 'node index.js')
       ._setScript('prepack', null)
@@ -102,7 +103,7 @@ class CCPack extends CommandDelegate {
 
   _mobilePack(outDir, endpoint) {
     const SDK = this.command.project();
-    let { name } = this.cc.json;
+    const { name } = this.cc.json;
     const apiTitle = camelize(name.replace(/components?$/i, ''));
     const apiName = name.replace(/^\W|\W+/g, (match, index) => index === 0 ? '' : '_');
     endpoint = `/mobile/custom/${apiName}/` + endpoint.replace(/^\/(mobile\/custom\/?)?/i, '');
@@ -111,9 +112,9 @@ class CCPack extends CommandDelegate {
     ['api.js', 'component.service.raml']
       .forEach(file => writeTemplate(path.join(this.templateRoot, file), path.join(outDir, file), vars));
     // update package.json
-    this.cc.json.main = 'api.js';
-    this._assignDep(SDK.name, 'dependencies', `^${SDK.version}`)
-      ._setMobile({ configuration: { node: '6.10' }})
+    this._setJson({ main: 'api.js', name: apiName })
+      ._assignDep(SDK.name, 'dependencies', `^${SDK.version}`)
+      ._setMobile({ configuration: { node: '8.9' }})
       ._setScript('start', null)
       ._setScript('prepack', null)
       ._savePkg(outDir);
@@ -129,6 +130,11 @@ class CCPack extends CommandDelegate {
     // copy cc package to output dir
     writeTemplates(this.cc.path, outDir);
     return outDir;
+  }
+
+  _setJson(props) {
+    Object.assign(this.cc.json, props);
+    return this;
   }
 
   _assignDep(name, to, fallback) {
@@ -148,15 +154,13 @@ class CCPack extends CommandDelegate {
 
   _setMobile(config) {
     const om = this.cc.json.oracleMobile || {};
-    Object.assign(this.cc.json, {oracleMobile: Object.assign(om, config)});
-    return this;
+    return this._setJson({ oracleMobile: Object.assign(om, config) });
   }
 
   _setScript(name, script) {
-    this.cc.json.scripts = Object.assign(this.cc.json.scripts || {}, {
+    return this._setJson({ scripts: Object.assign(this.cc.json.scripts || {}, {
       [name]: script || '',
-    });
-    return this;
+    })});
   }
 
   _savePkg(outDir) {
