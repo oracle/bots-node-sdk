@@ -151,7 +151,11 @@ describe(`CLI: bots-node-sdk`, () => {
               switch(type) {
               case 'express':
               case 'mobile-api':
-                expect(fs.existsSync(path.join(tmp, `service-${type}-1.0.0`))).toBe(true, `service-${type}-1.0.0 does not exist`);
+                var out = path.join(tmp, `service-${type}-1.0.0`);
+                expect(fs.existsSync(out)).toBe(true, `service-${type}-1.0.0 does not exist`);
+                var { name, main } = require(path.join(out, 'package.json'));
+                expect(main).not.toEqual('main.js', 'package main should be api.js or index.js');
+                expect(type === 'mobile-api' && name === pName).toBe(false, 'mobile name not sanitized');
                 break;
               default:
                 expect(fs.existsSync(path.join(tmp, `${pName}-1.0.0.tgz`))).toBe(true, 'npm tarball was not found');
