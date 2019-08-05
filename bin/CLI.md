@@ -89,7 +89,7 @@ will error if not found.
 
 > **NOTE:** Open a node debugger port on the service with `node --inspect $(which bots-node-sdk) service .`, or
 `node --inspect node_modules/@oracle/bots-node-sdk/bin/sdk.js service .` if on Windows.
-A node supervisor mayalso be used in the same way.
+A node supervisor may also be used in the same way.
 
 ### 4. Package for Deployment: `pack [options]`
 
