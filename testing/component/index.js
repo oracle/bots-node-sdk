@@ -56,6 +56,7 @@ function MockRequest(messagePayload = {}, properties = {}, variables = {}, type 
   return {
     botId: 'mockbot',
     platformVersion: '1.1',
+    state: "someState",
     context: context(),
     properties: props(),
     message: message(),

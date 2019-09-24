@@ -55,7 +55,10 @@ With custom component services running, test endpoints like so:
 curl -X GET localhost:3000/components
 
 # invoke custom component
-curl -H "Content-Type: application/json" -d @./spec/test.req.json localhost:3000/components/{{componentName}}
+curl -H "Content-Type: application/json" -d @./spec/test.cc.req.json localhost:3000/components/{{componentName}}
+
+# invoke resolve entity event handler component
+curl -H "Content-Type: application/json" -d @./spec/test.eh.req.json localhost:3000/components/resolveentities/{{componentName}}
 ```
 
 ## Deployment

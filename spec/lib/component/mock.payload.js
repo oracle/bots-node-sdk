@@ -6,6 +6,7 @@ exports.Mock = function() {
       nocontext: {
         botId: "963B57F7-CFE6-439D-BB39-2E342AD4EC92",
         platformVersion: "1.1",
+        state: "someState",
         properties: {
           minAge: 18
         },
@@ -30,6 +31,7 @@ exports.Mock = function() {
       novars: {
         botId: "963B57F7-CFE6-439D-BB39-2E342AD4EC92",
         platformVersion: "1.1",
+        state: "someState",
         context: {},
         properties: {
           minAge: 18
@@ -55,6 +57,7 @@ exports.Mock = function() {
       complete: {
         botId: "963B57F7-CFE6-439D-BB39-2E342AD4EC92",
         platformVersion: "1.1",
+        state: "someState",
         context: {
           variables: {
             type: {

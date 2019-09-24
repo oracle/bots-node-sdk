@@ -16,7 +16,7 @@ for demonstration of unit tests
 In this example, all unit tests _(specs)_ are located within the `./spec`
 directory.
 
-### Component Invocation Test
+### Custom Component Invocation Test
 
 For the sake of demonstration, let's assume a project including a `hello.world`
 Custom Component implementation. The invocation of the component demonstrates
@@ -57,7 +57,7 @@ the `@oracle/bots-node-sdk/testing` npm package exposes the following key object
 | Method | Description |
 |--|--|
 | `MockRequest` | Mocks a request object to be used in component invocation |
-| `MockConveration` | Directly extends the class normally constructed for component use, and provides static methods for easy creation in tests. All origianl methods are preserved, and may be used as normal by the component itself. |
+| `MockConversation` | Directly extends the class normally constructed for component use, and provides static methods for easy creation in tests. All origianl methods are preserved, and may be used as normal by the component itself. |
 
 > Create `MockRequest` objects with payloads, properties, variables, to be
 processed by Custom Components during their `invoke` call. Message payloads can
@@ -165,4 +165,102 @@ it('should respond to a request with params', done => {
       done();
     });
   });
+```
+
+### Event Handler Component Invocation Test
+
+Likewise, we can write unit tests for event handler components.
+Let's assume the following simplified event handler for resolving an expense:
+
+```javascript
+module.exports = {
+  metadata: () => ({
+    name: 'resolveExpense',    
+    eventHandlerType: 'ResolveEntities'
+  }),
+  handlers: () => ({ 
+    Expense: {
+      entity: {
+        /**
+         * Generic fallback handler that is executed when item-level publishMessage event handler is not defined
+         */        
+        publishMessage:async (event, context) => {
+          context.addCandidateMessages(); 
+        }
+      },
+      items: {
+        Amount: {
+          /**
+           * Validation of a system entity (CURRENCY): the event.newValue contains a JSON object representing the
+           * system entity value
+           */
+          validate:async (event, context) => {
+            if (event.newValue.amount < 5) {
+              context.addValidationError("Amount",`Amounts below 5 ${event.newValue.currency} cannot be expensed. Enter a higher amount or type 'cancel'.`);
+              return false;
+            }
+          }      
+        }
+      }
+    }
+  })     
+}; 
+```
+
+The two event handlers defined in this component can be tested using the following code:
+
+```javascript
+'use strict';
+
+const { ComponentRegistry, ComponentShell } = require("@oracle/bots-node-sdk/lib");
+const Tester = require("@oracle/bots-node-sdk/testing");
+const ResolveExpenseComponent = require('../components/resolveExpense');
+
+describe('ResolveExpenseComponent', () => {
+
+  // setup shell and expense composite bag variable for different tests
+  let registry, shell, variables;
+  beforeAll(() => {
+    registry = ComponentRegistry.create(ResolveExpenseComponent);
+    shell = ComponentShell(null, registry);
+    let items = [];
+    items.push(Tester.MockCompositeBagItem("Type","ENTITY","ExpenseType"));
+    items.push(Tester.MockCompositeBagItem("Amount","ENTITY","CURRENCY"));
+    items.push(Tester.MockCompositeBagItem("Date","ENTITY","DATE"));
+    variables = {expense: Tester.MockCompositeBagEntityVariable("Expense",items)};
+  });
+
+  it('should prompt expense type', done => {
+    // set up request with publishMessage event 
+    let events = [Tester.MockResolveEntitiesEvent('publishMessage')]
+    let req = Tester.MockEventHandlerRequest('expense','Type','Hi','What do you want to expense?', events, variables);
+    shell.invokeResolveEntitiesEventHandler('resolveExpense',  req, (err, res) => {
+      expect(err).toBeFalsy();
+      expect(res.messages).toBeDefined();
+      expect(res.messages.length).toBe(1);
+      expect(res.messages[0].text).toBe('What do you want to expense?'); 
+      expect(res.validationResults).toEqual({});
+      expect(res.keepProcessing).toBeFalsy();
+      expect(res.cancel).toBeFalsy();
+      done();     
+    });
+  });
+
+  it('should validate expense amount', done => {
+    // set up request with validate amount event
+    let amount = {entityName: 'CURRENCY',amount: 3, currency: 'dollar', totalCurrency: '3.0 dollar'};
+    let events = [Tester.MockResolveEntitiesEvent('validate',false,{newValue: amount},"Amount")]
+    let req = Tester.MockEventHandlerRequest('expense','Type','$3','What is expense date?', events, variables);
+    shell.invokeResolveEntitiesEventHandler('resolveExpense',  req, (err, res) => {
+      expect(err).toBeFalsy();
+      expect(res.messages).toBeUndefined();
+      expect(res.validationResults).toEqual({"Amount.validate": false});
+      expect(res.entityResolutionStatus.validationErrors).toEqual({'Amount': "Amounts below 5 dollar cannot be expensed. Enter a higher amount or type 'cancel'."});
+      expect(res.keepProcessing).toBeTrue();
+      expect(res.cancel).toBeFalsy();
+      done();     
+    });
+  });
+
+});
 ```

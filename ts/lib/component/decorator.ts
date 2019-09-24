@@ -1,24 +1,9 @@
-import { Type, Primitive } from '../../common/definitions';
-import { IComponent } from './abstract';
+import { Type } from '../../common/definitions';
+import { ICustomComponentMetadata, IComponent } from './kinds';
 
-export type ComponentMetadataName = string;
 const logger = console;
 
-/**
- * Component metadata defintion
- */
-export interface IComponentMetadata {
-  name?: ComponentMetadataName;
-  supportedActions?: string[];
-  properties?: {
-    [name: string]: {
-      type: Primitive,
-      required?: boolean,
-    }
-  };
-}
-
-export interface Component extends IComponentMetadata { }
+export interface Component extends ICustomComponentMetadata { }
 
 /**
  * @preferred
@@ -51,7 +36,7 @@ export const Component = (annotations: Component = {}): Function => { // decorat
       private readonly __decoratorMetadata = {...annotations};
 
       // auto-implement the interface methods
-      metadata(): IComponentMetadata {
+      metadata(): ICustomComponentMetadata {
         if (!!super.metadata) {
           logger.warn(`${ctor.prototype.constructor.name} used decorator, but has metadata() defined. Ignoring annotations.`);
           return super.metadata();

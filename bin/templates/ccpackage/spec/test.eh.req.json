@@ -1,0 +1,65 @@
+{
+  "botId" : "123-xxx-456",
+  "platformVersion" : "1.1",
+  "events": [
+    { "name": "publishMessage", "custom": false }
+  ],
+  "variableName": "{{entityNameLower}}",
+  "candidateMessages": [
+    {
+      "text": "How much did you pay?",
+      "type": "text"
+    }
+  ],
+  "entityResolutionStatus": {
+    "updatedEntities": [],
+    "outOfOrderMatches": [],
+    "customProperties": {},
+    "shouldPromptCache": {},
+    "validationErrors": {},
+    "skippedItems": [],
+    "allMatches": [],
+    "resolvingField": "Type",
+    "userInput": "I want to expense a taxi",
+    "disambiguationValues": {}
+  },      
+  "context": {
+    "variables": {
+      "{{entityNameLower}}" : {
+        "type": {
+          "name": "{{entityName}}",
+          "type": "COMPOSITEBAG",
+          "multiValue": false,
+          "fuzzyMatch": false,
+          "promptForDisambiguation": true,
+          "compositeBagItems": [{
+            "sequenceNr": 1,
+            "name": "Type",
+            "type": "ENTITY",
+            "entityName": "ExpenseType",
+            "description": "the type"
+          }, {
+            "sequenceNr": 2,
+            "name": "Amount",
+            "type": "ENTITY",
+            "entityName": "CURRENCY",
+            "description": "the amount"
+          }, {
+            "sequenceNr": 3,
+            "name": "Date",
+            "type": "ENTITY",
+            "entityName": "DATE",
+            "description": "the expense date"
+          }, {
+            "sequenceNr": 4,
+            "name": "Receipt",
+            "type": "ATTACHMENT",
+            "description": "the receipt"
+          }]
+        },
+        "value": null,
+        "entity": true
+      }
+    }  
+  }
+}

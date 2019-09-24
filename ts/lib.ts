@@ -36,11 +36,18 @@ export namespace Lib {
 
   // Component Conversation invocation
   export class Conversation extends lib.Conversation { }
+  export class CustomComponentContext extends lib.CustomComponentContext { }
+
+  // Entity Resolution invocation
+  export class EntityResolutionContext extends lib.EntityResolutionContext { }
 
   // Conversation Message Model
   export class MessageModel extends lib.MessageModel { }
 
   // Component Metadata interface
-  export interface IComponentMetadata extends lib.IComponentMetadata { }
+  export type IComponentMetadata = lib.IComponentMetadata;
+
+  // Component interface
+  export type IComponent<T extends IComponentMetadata = lib.ICustomComponentMetadata> = lib.IComponent<T>;
 
 }

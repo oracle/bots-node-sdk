@@ -13,3 +13,4 @@ function __export(m) {
  * @module Testing
  */
 __export(require('./component'));
+__export(require('./entity'));

@@ -3,6 +3,7 @@ export const Mock = {
     nocontext: {
       'botId' : '963B57F7-CFE6-439D-BB39-2E342AD4EC92',
       'platformVersion': '1.1',
+      'state': 'someState',
       'properties' : {
         'minAge' : 18
       },
@@ -27,6 +28,7 @@ export const Mock = {
     novars: {
       'botId' : '963B57F7-CFE6-439D-BB39-2E342AD4EC92',
       'platformVersion': '1.1',
+      'state': 'someState',
       'context' : {
       },
       'properties' : {
@@ -53,6 +55,7 @@ export const Mock = {
     complete: {
       'botId': '963B57F7-CFE6-439D-BB39-2E342AD4EC92',
       'platformVersion': '1.1',
+      'state': 'someState',
       'context': {
         'variables': {
           'type': {
@@ -165,6 +168,7 @@ export const Mock = {
   res: {
     complete: {
       'platformVersion': '1.1',
+      'state': 'someState',
       'context': {
         'variables': {
           'type': {

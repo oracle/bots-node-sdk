@@ -1,6 +1,7 @@
 {
   "botId": "xyz",
   "platformVersion": "1.1",
+  "state" : "someState",
   "context": {
     "variables": {}
   },

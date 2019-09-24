@@ -15,7 +15,7 @@ class CCServiceCommand extends CommandDelegate {
     super(cmd, 'Start a service with Custom Component package(s)');
     this.command
       .argument('path', 'Specify path(s) to Component Package')
-      .option('-P --port <number>', 'Service port number', null, p => ~~p)
+      .option('-P --port <number>', 'Service port number', defaultPort, p => ~~p)
       .option('-r --route <path>', 'Path for service endpoint', '/components');
   }
 

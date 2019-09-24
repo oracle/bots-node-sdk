@@ -1,11 +1,13 @@
-/* tslint:disable */
-
-// External deps
 import { CommonProvider } from '../../common/provider';
-import { ComponentInvocation as SDK } from './sdk';
+import { CustomComponentContext } from './sdk';
+import { EntityResolutionContext } from '../entity';
+import * as entityUtil from '../entity/utils';
+import { IComponent } from './kinds';
 
-export = function ComponentShell(config, registry) {
+type ContextType = CustomComponentContext | EntityResolutionContext;
+type Ctor<T> = new (...args: any[]) => T;
 
+export function ComponentShell(config, registry) {
   let logger = (config ? config.logger : null);
   if (!logger) {
     logger = CommonProvider.getLogger();
@@ -16,19 +18,66 @@ export = function ComponentShell(config, registry) {
     throw new Error('Invalid component registry');
   }
 
-  return {
+  /**
+   * resolve the component object and its context
+   * @param {string} componentName - name of component to invoke
+   * @param {object} requestBody - Invocation request payload
+   * @param {Function} ContextCtor - Either CustomComponentContext or EntityResolutionContext constructors
+   * @param {object} [mixins] - any object mixins to assign to the component object
+   */
+  function resolveInvocation<T extends ContextType> (
+    componentName: string,
+    requestBody: any,
+    ContextCtor: Ctor<T>,
+    mixins?: any): { context: T, component: IComponent} {
+    // Resolve component
+    const component = registry.getComponent(componentName);
+    if (!component) {
+      logger.error('Unknown component: ' + componentName);
+      let err = new Error('Unknown component ' + componentName);
+      err.name = 'unknownComponent';
+      throw err;
+    }
 
+    // Build a context object for this invocation, applying mixins if provided
+    let context;
+    try {
+      context = Object.assign(new ContextCtor(requestBody), mixins || {});
+    } catch (err) {
+      logger.error('Invocation construct error: ' + err.message);
+      throw err;
+    }
+
+    return {
+      component,
+      context,
+    };
+  }
+
+  return {
     /**
      * Returns an array of metadata for all components.
+     * @private
      */
     getAllComponentMetadata: function () {
       const allComponents = [];
       if (registry.components) {
-        for (var componentName in registry.components) {
-          allComponents.push(registry.components[componentName].metadata());
+        // tslint:disable-next-line:forin
+        for (let componentName in registry.components) {
+          const component = registry.getComponent(componentName);
+          let metadata = component.metadata();
+          // if component is event handler, then auto-register event handlers in metadata
+          if (metadata.eventHandlerType === 'ResolveEntities') {
+            metadata.events = entityUtil.getResolveEntitiesEventHandlers(component);
+          }
+          allComponents.push(metadata);
         }
       }
-      var allMetadata = { version: SDK.sdkVersion(), components: allComponents };
+      let allMetadata = {
+        version: CustomComponentContext.sdkVersion(),
+        components: allComponents
+      };
+      logger.debug('Component service metadata:\n' + JSON.stringify(allMetadata));
       return allMetadata;
     },
 
@@ -53,42 +102,23 @@ export = function ComponentShell(config, registry) {
      *     'badRequest'
      *   Component implementations may cause arbitrary errors to be propagated
      *   through.
+     * @private
      */
     invokeComponentByName: function (componentName, requestBody, sdkMixin, callback) {
-
       // assert invocation callback
       if (typeof callback !== 'function') {
         throw new Error('Invocation callback is required');
       }
-      
-      // Resolve component
-      const component = (registry.components ? registry.components[componentName] : null);
 
-      if (!component) {
-        logger.error('Unknown component ' + componentName);
-        let err = new Error('Unknown component ' + componentName);
-        err.name = 'unknownComponent';
-        callback(err);
-        return;
-      }
-
-      // Build an SDK object for this invocation, applying mixin
-      let sdk;
       try {
-        sdk = Object.assign(new SDK(requestBody), sdkMixin || {});
-      } catch (err) {
-        logger.error('Invocation construct error: ' + err.message);
-        callback(err);
-        return;
-      }
-
-      // Invoke component
-      logger.debug('Invoking component ' + componentName);
-      try {
-        // for now we check if the error is the sdk (old way of using done(sdk)) to be backward compat
-        component.invoke(sdk, (componentErr) => {
-          if (!componentErr || componentErr === sdk) {
-            callback(null, sdk.response());
+        const { component, context } =
+          resolveInvocation(componentName, requestBody, CustomComponentContext, sdkMixin);
+        // invoke custom component
+        // for now we check if the error is the sdk (old way of using done(sdk)) to be backward compatible
+        logger.debug('Invoking component ' + componentName);
+        component.invoke(context, (componentErr: any) => {
+          if (!componentErr || componentErr === context) {
+            callback(null, context.response());
           } else {
             callback(componentErr, null);
           }
@@ -97,6 +127,48 @@ export = function ComponentShell(config, registry) {
         logger.error('Invocation error: ' + err.message);
         callback(err);
       }
+    },
+
+    /**
+     * Invokes the event handler.
+     *
+     * componentName is the name of the component (as a string) [required].
+     * requestBody is the body of the invocation request (as an object) [required].     *
+     * callback is a standard error-first callback [required].
+     *   On success, the data passed to the callback is the invocation response.
+     *   On error, the following error names may be used:
+     *     'unknownComponent'
+     *     'badRequest'
+     *   Component implementations may cause arbitrary errors to be propagated
+     *   through.
+     * @private
+     */
+    invokeResolveEntitiesEventHandler: function (componentName, requestBody, callback) {
+      // assert invocation callback
+      if (typeof callback !== 'function') {
+        throw new Error('Invocation callback is required');
+      }
+
+      // Invoke component, check whether we need to invoke entity resolve event handlers,
+      // or it is regular CC invocation
+      try {
+        const { component, context } =
+          resolveInvocation(componentName, requestBody, EntityResolutionContext);
+
+        entityUtil.invokeResolveEntitiesEventHandlers(component, context, logger).then(() => {
+          callback(null, context.getResponse());
+        }).catch(err => {
+          if (!(err instanceof Error)) {
+            err = new Error(err);
+          }
+          logger.debug('Error invoking event handlers: ' + err.message);
+          callback(err)
+        });
+      } catch (err) {
+        logger.error('Invocation error: ' + err.message);
+        callback(err);
+      }
     }
+
   };
-};
+}

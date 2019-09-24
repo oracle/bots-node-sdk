@@ -1,29 +1,32 @@
-/* tslint:disable */
-
-import { ILogger } from '../../common/definitions';
-import { ERROR } from '../../common/error';
-import { CommonProvider } from '../../common/provider';
-import { CommonValidator } from '../../common/validator';
+import { BaseContext } from './baseContext';
 import { MessageModel } from '../message/messageModel';
 import ComponentRequestSchemaFactory = require('./schema/componentRequestSchema');
+import { ILogger } from '../../common/definitions';
+import { IComponentRequestBody } from './request';
 
-const sdkVersion = '1.1'; //server compatibility version
-const sdkVersionTag = '1.2.0'; // sdk code version
+const sdkVersion = '1.1'; // server compatibility version
+
+export interface ICustomComponentResponse {
+  platformVersion: string;
+  context: any,
+  action?: string,
+  keepTurn?: boolean,
+  transition?: boolean,
+  error?: boolean,
+  modifyContext?: boolean
+  messages?: any[];
+  callbackToken?: string;
+}
 
 // Response template
-const RESPONSE = {
+const RESPONSE: ICustomComponentResponse = {
   platformVersion: undefined,
   context: undefined,
   action: undefined,
   keepTurn: true,
   transition: false,
   error: false,
-  modifyContext: false
-};
-
-const VARIABLE = {
-  type: "string",
-  entity: false
+  modifyContext: false,
 };
 
 // Variable types supported by the dialog engine
@@ -55,12 +58,10 @@ export class NLPResult {
     if (entity === undefined) {
       // Retrieving entityMatches collection, or an empty collection if none
       return this._nlpresult.entityMatches ? this._nlpresult.entityMatches : {};
-    }
-    else {
+    } else {
       if (this._nlpresult.entityMatches) {
         return this._nlpresult.entityMatches[entity] ? this._nlpresult.entityMatches[entity] : [];
-      }
-      else {
+      } else {
         return [];
       }
     }
@@ -75,7 +76,9 @@ export class NLPResult {
     if (!this._nlpresult) {
       return [];
     }
-    if (this._nlpresult.intentMatches && Array.isArray(this._nlpresult.intentMatches.summary) && this._nlpresult.intentMatches.summary.length > 0) {
+    if (this._nlpresult.intentMatches &&
+      Array.isArray(this._nlpresult.intentMatches.summary) &&
+      this._nlpresult.intentMatches.summary.length > 0) {
       return this._nlpresult.intentMatches.summary;
     } else {
       return null;
@@ -87,12 +90,12 @@ export class NLPResult {
    * @return {object} The top intent match (with properties score and intent)
    */
   topIntentMatch() {
-    var intentMatches = this.intentMatches();
+    let intentMatches = this.intentMatches();
     return (intentMatches && intentMatches.length > 0 ? intentMatches[0] : {});
   }
 
   query() {
-    return (this._nlpresult ? this._nlpresult.query : "");
+    return (this._nlpresult ? this._nlpresult.query : '');
   }
 
 }
@@ -105,40 +108,27 @@ export class NLPResult {
  * It offers a friendlier interface to reading context for the invocation
  * as well as changing variables and sending results back to the diaog engine.
  */
-export class ComponentInvocation {
-  private readonly _request: any;
-  private readonly _response: any;
-  private readonly _logger: ILogger;
+export class CustomComponentContext extends BaseContext {
+
+  /**
+   * Retrieves the sdk version.
+   * @return {string} The sdk version.
+   */
+  static sdkVersion() {
+    return sdkVersion;
+  }
+
   /**
    * @param {object} requestBody - The request body
-   * @private
    */
-  constructor(requestBody) {
-    const validationResult = validateRequestBody(requestBody);
-    if (validationResult.error) {
-      const err: any = new Error('Request body malformed');
-      err.name = 'badRequest';
-      err.details = createErrorDetails('Request body malformed',
-        JSON.stringify(validationResult.error),
-        'BOTS-1000', { 
-          requestBody: requestBody
-        });
-      throw err;
-    }
-
-    this._request = requestBody; // cache a ref to the request body
-
+  constructor(request: IComponentRequestBody) {
     // Initilize the response, filling in platformVersion, context/vars
     // from the incoming request as needed.
-    this._response = Object.assign({}, RESPONSE);
-    this._response.platformVersion = this._request.platformVersion;
-    this._response.context = Object.assign({}, this._request.context);
-    this._response.context.variables = this._response.context.variables || {};
+    const response: ICustomComponentResponse = Object.assign({}, RESPONSE, { platformVersion: request.platformVersion });
+    super(request, response, ComponentRequestSchemaFactory);
 
     // Reset system.invalidUserInput variable if set to true.  Requested by runtime to do this in sdk
     this._resetInvalidUserInput();
-
-    this._logger = logger();
   }
 
   /**
@@ -146,7 +136,7 @@ export class ComponentInvocation {
    * @return {object} The request body.
    */
   request() {
-    return this._request;
+    return super.getRequest();
   }
 
   /**
@@ -158,14 +148,6 @@ export class ComponentInvocation {
   }
 
   /**
-   * Retrieves the sdk version.
-   * @return {string} The sdk version.
-   */
-  static sdkVersion() {
-    return sdkVersion;
-  }
-
-  /**
    * Retrieves the platform version of the request.
    * @return {string} The platform version.
    */
@@ -174,11 +156,12 @@ export class ComponentInvocation {
   }
 
   /**
-   * Retrieves the logger so the component can use the shared logger for logging.  The shared logger should support the methods log, info, warn, error and trace.
+   * Retrieves the logger so the component can use the shared logger for logging.
+   * The shared logger should support the methods log, info, warn, error and trace.
    * @return {object} The logger.
    */
   logger(): ILogger {
-    return this._logger;
+    return super.getLogger();
   }
 
   /**
@@ -198,13 +181,14 @@ export class ComponentInvocation {
   }
 
   /**
-   * Retrieves the payload of the current input message. For backward compatibility purposes.  However, the payload returned may be in the new message format.
+   * Retrieves the payload of the current input message. For backward compatibility purposes.
+   * However, the payload returned may be in the new message format.
    * @return {object} The message payload.
    * @deprecated to be removed in favor of rawPayload() and messagePayload()
    * @private
    */
   payload() {
-    this.logger().warn("conversation SDK payload() is deprecated in favor of messagePayload()"); 
+    this.logger().warn('conversation SDK payload() is deprecated in favor of messagePayload()');
     return this.rawPayload();
   }
 
@@ -212,7 +196,7 @@ export class ComponentInvocation {
    * Retrieves the channel type of the current input message.
    * @return {string} The channel type - facebook, webhook, test, etc.
    */
-  channelType() {
+  channelType(): string {
     return this.request().message.channelConversation.type;
   }
 
@@ -220,7 +204,7 @@ export class ComponentInvocation {
    * Retrieves the channel Id of the current input message.
    * @return {string} The channel id.
    */
-  channelId() {
+  channelId(): string {
     return this.request().message.channelConversation.channelId;
   }
 
@@ -228,7 +212,7 @@ export class ComponentInvocation {
    * Retrieves the userId for the current input message.
    * @return {string} The userId.
    */
-  userId() {
+  userId(): string {
     return this.request().message.channelConversation.userId;
   }
 
@@ -236,7 +220,7 @@ export class ComponentInvocation {
    * Retrieves the sessionId for the current input message.
    * @return {string} The sessionId.
    */
-  sessionId() {
+  sessionId(): string {
     return this.request().message.channelConversation.sessionId;
   }
 
@@ -349,81 +333,12 @@ export class ComponentInvocation {
   }
 
   /**
-   * Read or write variables defined in the current flow.
-   * It is not possible to change the type of an existing variable through
-   * this method.  It is the caller's responsibility to ensure that the
-   * value being set on a variable is of the correct type. (e.g. entity,
-   * string or other primitive, etc).
+   * Returns the MessageModel class for creating or validating messages to or from bots.
    *
-   * A new variable can be created.  However, since the variable is not
-   * defined in the flow, using it in the flow subsequently may be flagged
-   * for validation warnings.
-   *
-   * This function takes a variable number of arguments.
-   *
-   * The first form:
-   * variable(name);
-   * reads the variable called "name", returning its value.
-   *
-   * The second form:
-   * variable(name, value);
-   * writes the value "value" to the variable called "name".
-   *
-   * @param {string}  name - The name of variable to be set or read
-   * @param {string} [value] - value to be set for variable (optional)
+   * @return {MessageModel} The MessageModel class
    */
-  variable(name, value?) {
-
-    var context = this._response.context;
-    var scopeName = null;
-    var nameToUse = name;
-    var index = name.indexOf(".");
-
-    if (index > -1) {
-      scopeName = name.substring(0, index);
-      var possibleScope = context;
-      while (possibleScope) {
-        if (possibleScope.scope === scopeName) {
-          context = possibleScope;
-          nameToUse = name.substring(index + 1, name.length);
-          break;
-        } else {
-          //this is to handle the case when the variable name is system.XXX but system is not a scope 
-          if (possibleScope.variables && possibleScope.variables.hasOwnProperty(nameToUse)) {
-            context = possibleScope;
-            break;
-          }
-          possibleScope = possibleScope.parent;
-        }
-      }
-    }
-
-    if (value === undefined) {
-      if (!context.variables || !context.variables.hasOwnProperty(nameToUse)) {
-        return undefined;
-      }
-      return context.variables[nameToUse].value;
-    } else {
-      this.logger().debug('SDK: About to set variable ' + name);
-
-      if (!context.variables) {
-        context.variables = {};
-      }
-      if (!context.variables[nameToUse]) {
-        this.logger().debug('SDK: Creating new variable ' + nameToUse);
-        context.variables[nameToUse] = Object.assign({}, VARIABLE);
-      }
-
-      context.variables[nameToUse].value = value;
-      this._response.modifyContext = true;
-
-      this.logger().debug('SDK: Setting variable ' + JSON.stringify(context.variables[nameToUse]));
-      return this;
-    }
-  }
-
-  MessageModel() {
-    return MessageModel;
+  MessageModel(): typeof MessageModel {
+    return super.getMessageModel();
   }
 
   /**
@@ -437,10 +352,10 @@ export class ComponentInvocation {
    * @param {string} [nlpVariableName] - variable to be given the nlpResult
    * @return {NLPResult} The nlp resolution result.
    */
-  nlpResult(nlpVariableName?) {
+  nlpResult(nlpVariableName?: string) {
     if (nlpVariableName === undefined) {
-      for (let name in this._response.context.variables) {
-        if (this._response.context.variables[name].type === CONST.NLPRESULT_TYPE) {
+      for (let name in this.response().context.variables) {
+        if (this.response().context.variables[name].type === CONST.NLPRESULT_TYPE) {
           this.logger().debug('SDK: using implicitly found nlpresult=' + name);
           nlpVariableName = name;
           break;
@@ -457,7 +372,7 @@ export class ComponentInvocation {
       throw new Error('SDK: undefined var=' + nlpVariableName);
     }
 
-    if (this._response.context.variables[nlpVariableName].type !== CONST.NLPRESULT_TYPE) {
+    if (this.response().context.variables[nlpVariableName].type !== CONST.NLPRESULT_TYPE) {
       throw new Error('SDK: var=' + nlpVariableName + ' not of type nlpresult');
     }
 
@@ -473,17 +388,17 @@ export class ComponentInvocation {
    * @private
    */
   action(a) {
-    this.logger().warn("conversation SDK action() is deprecated in favor of transition(action)"); 
+    this.logger().warn('conversation SDK action() is deprecated in favor of transition(action)');
     if (a === undefined) {
-      return this._response.action;
+      return this.response().action;
     }
 
-    this._response.action = a;
+    this.response().action = a;
     return this;
   }
 
   /**
-   * Call this method if the input is not understood, and this would allow the bots runtime to 
+   * Call this method if the input is not understood, and this would allow the bots runtime to
    * handle the issue.  The bots runtime may just display the message to the user and execute the same component again, or
    * it may try to interpret the input and process differently.
    * @param {object|string|MessageModel} [r] - optional payload to be sent to user.  payload could also be a string for text response
@@ -493,7 +408,7 @@ export class ComponentInvocation {
     this.reply(r || 'Input not understood.  Please try again');
     return this;
   }
-  
+
   _resetInvalidUserInput() {
     if (this.variable(CONST.SYSTEM_INVALID_USER_INPUT) === true) {
       this.variable(CONST.SYSTEM_INVALID_USER_INPUT, false);
@@ -512,8 +427,8 @@ export class ComponentInvocation {
    * @private
    */
   exit(e) {
-    this.logger().warn("conversation SDK exit() is deprecated in favor of keepTurn(boolean)"); 
-    this._response.keepTurn = !e;
+    this.logger().warn('conversation SDK exit() is deprecated in favor of keepTurn(boolean)');
+    this.response().keepTurn = !e;
     return this;
   }
 
@@ -525,7 +440,7 @@ export class ComponentInvocation {
    * @param {boolean} [k] - whether to keep the turn for sending more replies
    */
   keepTurn(k?) {
-    this._response.keepTurn = (typeof k === "undefined" ? true : !!k);
+    this.response().keepTurn = (typeof k === 'undefined' ? true : !!k);
     return this;
   }
 
@@ -534,7 +449,7 @@ export class ComponentInvocation {
    * @param {boolean} [k] - whether to keep the turn for sending more replies
    */
   releaseTurn(k?) {
-    this._response.keepTurn = (typeof k === "undefined" ? false : !k);
+    this.response().keepTurn = (typeof k === 'undefined' ? false : !k);
     return this;
   }
 
@@ -561,8 +476,8 @@ export class ComponentInvocation {
   * @private
   */
   done(d) {
-    this.logger().warn("conversation SDK done() is deprecated in favor of transition()"); 
-    this._response.transition = !!d;
+    this.logger().warn('conversation SDK done() is deprecated in favor of transition()');
+    this.response().transition = !!d;
     return this;
   }
 
@@ -583,9 +498,9 @@ export class ComponentInvocation {
   *
   */
   transition(t?) {
-    this._response.transition = true;
+    this.response().transition = true;
     if (typeof t !== 'undefined') {
-      this._response.action = t;
+      this.response().action = t;
     }
     return this;
   }
@@ -595,7 +510,7 @@ export class ComponentInvocation {
   * @param {boolean} e - sets error if true
   */
   error(e) {
-    this._response.error = !!e;
+    this.response().error = !!e;
     return this;
   }
 
@@ -610,40 +525,23 @@ export class ComponentInvocation {
   * @param {object|string|MessageModel} payload - payload to be sent back.  payload could also be a string for text response
   * @param {object} [channelConversation] - to override the default channelConversation from request
   */
-  reply(payload, channelConversation?) {
-    var response: any = {
-      tenantId: this._request.message.tenantId,
-      channelConversation: channelConversation || Object.assign({}, this._request.message.channelConversation)
+  reply(payload, channelConversation?): this {
+    const response: any = {
+      tenantId: this.request().message.tenantId,
+      channelConversation: channelConversation || Object.assign({}, this.request().message.channelConversation)
     };
-
-    var messageModel;
-    if (payload instanceof MessageModel) {
-      this.logger().debug('messageModel payload provided');
-      messageModel = payload;
+    const messagePayload =  super.constructMessagePayload(payload);
+    if (messagePayload) {
+      response.messagePayload = messagePayload;
     } else {
-      this.logger().debug('creating messageModel with payload');
-      messageModel = new MessageModel(payload);
-    }
-    if (messageModel.isValid()) {
-      this.logger().debug('valid messageModel');
-      response.messagePayload = messageModel.messagePayload();
-    } else {
-      this.logger().debug('message model validation error:', messageModel.validationError());
-      this.logger().debug('using rawPayload');
-      var rawMessagePayload = MessageModel.rawConversationMessage(payload);
-      messageModel = new MessageModel(rawMessagePayload);
-      if (messageModel.isValid()) {
-        this.logger().debug('valid messageModel for rawMessagePayload');
-        response.messagePayload = messageModel.messagePayload();
-      } else {
-        this.logger().debug('message model validation error:', messageModel.validationError());
-        this.logger().debug('using payload instead of messagePayload');
-        response.payload = messageModel.rawPayload();
-      }
+      // is invalid raw message payload, keep for backwards compatibility
+      const rawMessagePayload = MessageModel.rawConversationMessage(payload);
+      const messageModel = new MessageModel(rawMessagePayload);
+      response.payload = messageModel.rawPayload();
     }
 
-    this._response.messages = this._response.messages || [];
-    this._response.messages.push(response);
+    this.response().messages = this.response().messages || [];
+    this.response().messages.push(response);
 
     // "keepTurn" false which signals to the engine to send replies and wait for user input
     this.keepTurn(false);
@@ -653,8 +551,8 @@ export class ComponentInvocation {
 
 
   // The HTTP response body
-  response() {
-    return this._response;
+  response(): ICustomComponentResponse {
+    return super.getResponse();
   }
 
   // BUGBUG: workaround for https://jira.oraclecorp.com/jira/browse/MIECS-2748
@@ -671,28 +569,12 @@ export class ComponentInvocation {
   * The provided token should be a UUID or other unique and random number.  By setting it
   * here in the response the Bot will await a reply with that token and use it to
   * thread the message back into the current conversation with that user.
-  * @param {string} callbackToken - token generated by you to allow reauthentication back into this conversation.  Should be unique, like userId + random.  It is ok to reissue the same token for the same conversation.
+  * @param {string} callbackToken - token generated by you to allow reauthentication back into this conversation.
+  * Should be unique, like userId + random.  It is ok to reissue the same token for the same conversation.
   * @private
   */
   setCallbackToken(callbackToken) {
-    this._response.callbackToken = (typeof callbackToken === "undefined" ? null : callbackToken);
+    this.response().callbackToken = (typeof callbackToken === 'undefined' ? null : callbackToken);
     return this;
   }
-}
-
-function logger(): ILogger {
-  return CommonProvider.getLogger();
-}
-
-function createErrorDetails(title, detail, errorCode, errorDetails) {
-  const details = Object.assign({}, ERROR);
-  details.title = title;
-  details.detail = detail;
-  details['o:errorCode'] = errorCode;
-  details['o:errorDetails'] = errorDetails;
-  return details;
-}
-
-function validateRequestBody(reqBody) {
-  return CommonValidator.validate(ComponentRequestSchemaFactory, reqBody, { allowUnknown: true });
 }

@@ -54,6 +54,7 @@ export = (joi: any): Joi.Schema => {
   const requestSchema = joi.object({
     botId: joi.string().required(),
     platformVersion: joi.string().required(),
+    state: joi.string().optional(),
     context: contextSchema.required(),
     properties: propertiesSchema,
     message: messageSchema.required()

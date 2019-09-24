@@ -1,7 +1,9 @@
 'use strict';
 
 const { ComponentRegistry, ComponentShell } = require("../../../lib/");
+const { EntityResolutionContext } = require("../../../lib/entity/entityResolutionContext");
 const { Mock } = require("./mock.payload");
+const EventHandlerMockRequest = require('./eh.req.json');
 
 describe('Component Shell', () => {
   
@@ -43,6 +45,102 @@ describe('Component Shell', () => {
         resolve(expect(err).toMatch(/unknown/i));
       });
     })).then(done).catch(done.fail);
+  });
+
+  /**
+   * Test event handler features of the shell
+   */
+  describe('Event Handler', () => {
+   
+    const eventComponent = {
+      metadata: () => ({
+        name: 'simple',
+        eventHandlerType: 'ResolveEntities'
+      }),
+      handlers: () => ({ 
+        Expense: {
+          entity: {
+            validate:async () => {'validateEntity'}
+          },  
+          items: {
+            Type: {
+              validate:async () => {'validateType'}
+            }
+          },
+          custom: {
+            customEvent:async () => {'customEvent'}
+          }  
+        }
+      })
+    };
+
+    class eventClassComponent {
+
+      metadata() {
+        return {
+          name: 'classtype',
+          eventHandlerType: 'ResolveEntities'
+        };
+      }
+      
+      handlers() {
+        return {
+          Expense: { // eslint-disable-line no-unused-labels
+            entity: { // eslint-disable-line no-unused-labels
+              validate: () => {'validateEntity'} // eslint-disable-line no-unused-labels
+            },  
+            items: { // eslint-disable-line no-unused-labels
+              Type: { // eslint-disable-line no-unused-labels
+                validate: () => {'validateType'} // eslint-disable-line no-unused-labels
+              }
+            },
+            custom: { // eslint-disable-line no-unused-labels
+              customEvent: () => {'customEvent'} // eslint-disable-line no-unused-labels
+            }  
+          }  
+        }
+      }
+    }
+
+    // setup for different tests
+    let registry, shell;
+    beforeAll(() => {
+      registry = ComponentRegistry.create([
+        eventComponent,
+        eventClassComponent,
+      ]);
+      shell = ComponentShell(null, registry);
+    });
+
+
+    it('should include event handler metadata', done => {
+      const allMeta = shell.getAllComponentMetadata();
+      const { components } = allMeta;
+      const cMeta = components.find(c => c.name === 'simple');
+
+      expect(components.length).toBeGreaterThan(0);
+      expect(cMeta.events).toEqual(jasmine.any(Array));
+      expect(cMeta.events).toContain('Expense.entity.validate');
+      expect(cMeta.events).toContain('Expense.items.Type.validate');
+      expect(cMeta.events).toContain('Expense.custom.customEvent');
+      done();
+    });
+
+    it('should invoke event handler', done => {
+      let comp = registry.getComponent('simple')
+      // Stub the handlers method to return the same object instance each time
+      // otherwise the method returns a new object each time.
+      const handlers = comp.handlers();
+      spyOn(comp, 'handlers').and.returnValue(handlers);
+      let itemEvents = handlers.Expense.items.Type;
+      let validate = spyOn(itemEvents, 'validate').and.callThrough();      
+      shell.invokeResolveEntitiesEventHandler('simple', EventHandlerMockRequest, (err, res) => {
+        expect(err).toBeNull();
+        expect(res).toEqual(jasmine.any(Object));
+        expect(validate).toHaveBeenCalledWith(jasmine.any(Object), jasmine.any(EntityResolutionContext));
+        done();
+      });
+    });
   });
 
 });

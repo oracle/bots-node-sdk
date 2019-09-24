@@ -41,7 +41,7 @@ const logger = console;
  * @param {string} [options.baseUrl='/'] - Base url for custom component endpoints
  * @param {string} [options.cwd=process.cwd()] - Working directory from which any component paths are relative.
  * @param {(string[]|Object[]|Function[])} options.register - Series of paths to components or directories, Objects with name=>component pairs, Objects representing a component, or Component class ctor Functions.
- * @param {*} [options.mixins] - Any mixin properties for ComponentInvocation
+ * @param {*} [options.mixins] - Any mixin properties for CustomComponentContext
  * @param {boolean|ParserOptions} [options.parser={}] - Body parser middleware options. If false, parser will be ignored.
  * @return {external.ExpressApplication} - Application with service endpoints.
  * @example

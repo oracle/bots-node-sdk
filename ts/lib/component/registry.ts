@@ -4,8 +4,7 @@ import * as fs from 'fs';
 import { CONSTANTS } from '../../common/constants';
 import { CommonProvider } from '../../common/provider';
 import { Type, isType, ILogger } from '../../common/definitions';
-import { ComponentMetadataName, IComponentMetadata } from './decorator';
-import { IComponent } from './abstract';
+import { IComponentMetadata, IComponent } from './kinds';
 
 export type CollectionName = string;
 
@@ -19,7 +18,7 @@ export class ComponentRegistry {
   private _logger: ILogger;
   protected _collectionName: CollectionName;
   protected _collections = new Map<CollectionName, ComponentRegistry>();
-  protected _components = new Map<ComponentMetadataName, IComponent>();
+  protected _components = new Map<string, IComponent>();
   protected _json: {[name: string]: IComponent} = {};
 
   /**
@@ -253,7 +252,7 @@ export class ComponentRegistry {
   /**
    * get component map for this registry
    */
-  public getComponents(): Map<ComponentMetadataName, IComponent> {
+  public getComponents(): Map<string, IComponent> {
     return this._components;
   }
 
@@ -261,7 +260,7 @@ export class ComponentRegistry {
    * get component from map by name
    * @param name - component name
    */
-  public getComponent(name: ComponentMetadataName): IComponent {
+  public getComponent(name: string): IComponent {
     return this._components.get(name);
   }
 
@@ -277,7 +276,7 @@ export class ComponentRegistry {
    * test existence of component
    * @param name - component name
    */
-  public isComponent(name: ComponentMetadataName): boolean {
+  public isComponent(name: string): boolean {
     return this._components.has(name);
   }
 
@@ -298,6 +297,19 @@ export class ComponentRegistry {
       this._logger.error(`Invalid registry requested ${collection}`);
     }
     return meta;
+  }
+
+  /**
+   * get members of a component object
+   * @param component - instantiated bot component class
+   */
+  public getComponentMethods(component: IComponent): string[] {
+    const omit = ['constructor'];
+    const properties = [].concat(...[component, Object.getPrototypeOf(component)]
+      .filter(o => o && o !== Object.prototype) // remove properties of Object.prototype
+      .map(o => Object.getOwnPropertyNames(o))); // own properties
+
+    return properties.filter(k => isType(component[k]) && omit.indexOf(k) === -1);
   }
 
 }
@@ -328,6 +340,6 @@ function makeCtor(type: Type<IComponent>): any {
  * @todo create a decorator factory to test annotations against instanceof
  */
 function isComponent(ref: any): ref is Type<IComponent> {
-  return (isType(ref) && ref.prototype /*&& isType(ref.prototype.metadata)*/ && isType(ref.prototype.invoke)) || // class usage
-    (typeof ref === 'object' && isType(ref.metadata) && isType(ref.invoke)); // legacy
+  return (isType(ref) && ref.prototype && (isType(ref.prototype.invoke) || isType(ref.prototype.handlers))) ||
+    (typeof ref === 'object' && isType(ref.metadata) && (isType(ref.invoke) || isType(ref.handlers)));
 }

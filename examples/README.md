@@ -1,6 +1,6 @@
 # Example Projects
 
-## Custom Components
+## Custom Components and Event Handlers
 
 - [component package starter](./custom-components/starter)
 

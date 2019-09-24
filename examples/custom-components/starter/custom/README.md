@@ -1,8 +1,8 @@
-# Starter Custom Component Package
+# Starter Component Package
 
-This example source is in format of a Component Package. Component Packages are the recommended way to organize Bots Custom Components code and allow the custom component code to be more portable to different runtime environments.
+This example source is in format of a Component Package. Component Packages are the recommended way to organize Bots Custom Components and Event Handler code and allow the code to be more portable to different runtime environments.
 
-A Component Package contains the component code of one or more custom components. The package as a unit can be loaded within an application, constituting a complete service runtime. The same component package can thus be used for running in different environments.  
+A Component Package contains the component code of one or more custom components and/or event handlers. The package as a unit can be loaded within an application, constituting a complete service runtime. The same component package can thus be used for running in different environments.  
 
 A Component Package consists of the following:
 
@@ -24,7 +24,10 @@ npm start
 curl -X GET localhost:3000/components
 
 # invoke custom component
-curl -H "Content-Type: application/json" -d @./spec/sample.req.json localhost:3000/components/hello.world
+curl -H "Content-Type: application/json" -d @./spec/sample.cc.req.json localhost:3000/components/hello.world
+
+# invoke event handler
+curl -H "Content-Type: application/json" -d @./spec/sample.eh.req.json localhost:3000/components/resolveentities/resolveExpense
 ```
 
 ### package.json
@@ -115,7 +118,13 @@ The .npmignore file is used when exporting the Component Package (see below). It
 ### component file(s)
 
 There could be 1 or more component file(s) in a package.  Component files can be organized in different sub-directories, or paths within your project, as long as they are listed in the main `exports`.
-Each custom component implementation exposes its `metadata()` and `invoke()` methods.  See the [example](./components/hello.world.js) and additional [documentation](https://oracle.github.io/bots-node-sdk/#custom-component-code)
+
+A component can be a custom component or an event handler.
+Each custom component implementation exposes its `metadata()` and `invoke()` methods.  See the [example](./components/hello.world.js). 
+Each event handler implementation exposes its `metadata()` and event handler methods.  See the [example](./components/resolveExpense.js).
+
+You can also check out the additional [documentation](https://oracle.github.io/bots-node-sdk/#custom-component-code)https://oracle.github.io/bots-node-sdk/#custom-component-code.
+
 
 ## Export the Component Package
 

@@ -2,7 +2,7 @@
 
 const { MiddlewareAbstract } = require("./abstract");
 const { ComponentRegistry } = require("../lib/component/registry");
-const Shell = require("../lib/component/shell");
+const { ComponentShell: Shell } = require("../lib/component/shell");
 const { STATUS_CODE } = require('./codes');
 
 /**
@@ -12,7 +12,7 @@ const { STATUS_CODE } = require('./codes');
  * @property {string} [baseUrl='/'] - Base url for custom component endpoints
  * @property {string} [cwd=process.cwd()] - Working directory from which any component paths are relative.
  * @property {(string[]|Object[]|Function[])} register - Series of paths to components or directories, Objects with name=>component pairs, Objects representing a component, or Component class ctor Functions.
- * @property {*} [mixins] - Any mixin properties for ComponentInvocation
+ * @property {*} [mixins] - Any mixin properties for CustomComponentContext
  */
 
 /**
@@ -56,12 +56,20 @@ class ComponentMiddleware extends MiddlewareAbstract {
     });
 
     /**
-     * handle root component invocation
+     * handle custom component invocation
      */
     service.post(this.__endpoint(baseUrl, `/:${PARAM_COMPONENT}`), (req, res) => {
       const componentName = req.params[PARAM_COMPONENT];
       // invoke
       this.__invoke(componentName, rootRegistry, opts, req, res);
+    });
+
+    /**
+     * handle ResolveEntities event handler invocation
+     */
+    service.post(this.__endpoint(baseUrl, `/resolveentities/:${PARAM_COMPONENT}`), (req, res) => {
+      const componentName = req.params[PARAM_COMPONENT];
+      this.__getShell(rootRegistry).invokeResolveEntitiesEventHandler(componentName, req.body, this.__invocationCb(res));      
     });
 
   }
@@ -121,10 +129,10 @@ class ComponentMiddleware extends MiddlewareAbstract {
           res.status(STATUS_CODE.NOT_FOUND).send(err.message);
           break;
         case 'badRequest':
-          res.status(STATUS_CODE.BAD_REQUEST).json(err.message);
+          res.status(STATUS_CODE.BAD_REQUEST).send(err.message);
           break;
         default:
-          res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json(err.message);
+          res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).send(err.message);
           break;
         }
       }

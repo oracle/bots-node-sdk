@@ -151,6 +151,14 @@ class Command extends EventEmitter {
     return command;
   }
 
+  runChild(name, options, args) {
+    const command = this._resolveCommand([name]);
+    command.options = options || {};
+    command.arguments = args || [];
+    command._defaults();
+    return command._run(command.options, command.arguments);
+  }
+
   /**
    * parse argv into options/arguments
    */

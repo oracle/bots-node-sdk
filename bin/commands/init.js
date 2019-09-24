@@ -11,6 +11,16 @@ function nameOpt(name) {
   return name.replace(/[^\w._-]/g, '');
 }
 
+function componentTypeOpt(type) {
+  const t = type.toLowerCase();
+  if (!~['custom', 'resolveentities'].indexOf(t)) {
+    throw new Error(`Invalid component type: ${type}`);
+  }
+  return t;
+}
+
+const defaultEntityName = 'SomeEntity';
+
 /**
  * Command implementation for scaffolding cc package projects
  */
@@ -22,9 +32,11 @@ class CCInit extends CommandDelegate {
       .option('-s --skip-install', 'Skip npm install')
       .option('-r --run', 'Start service when init completes (with defaults)')
       .option('-n --name <name>', 'Specify a name for the new project', null, nameOpt)
-      .option('-c --component-name <name>', 'Name for the first custom component', 'hello.world', nameOpt);
-
+      .option('-c --component-name <name>', 'Name for the first custom component', 'hello.world', nameOpt)
+      .option('-t --component-type <type>', 'Specify a component implementation type <custom|resolveentities>', 'custom', componentTypeOpt);
+    // add child command 'init component'
     this.command.delegate(CCInitComponent, 'component');
+    // specify template path
     this.templateRoot = path.resolve(__dirname, '..', 'templates', 'ccpackage');
   }
 
@@ -85,7 +97,7 @@ class CCInit extends CommandDelegate {
   }
 
   run(options, dir) {
-    const { name, skipInstall, componentName } = options;
+    const { name, skipInstall, componentName, componentType } = options;
     const SDK = this.command.project();
 
     dir = dir || name || process.cwd();
@@ -101,14 +113,18 @@ class CCInit extends CommandDelegate {
           name: name || 'my-custom-component',
           date: new Date().toDateString(),
           componentName,
+          entityName: defaultEntityName,
+          entityNameLower: defaultEntityName.toLowerCase(),
           sdkName: SDK.name,
           sdkVersion: SDK.version,
           sdkBin: this.command.root()._name,
           expressVersion: SDK.devDependencies.express,
         });
       }).then(() => { // run component code generator
-        return CCInitComponent.init(this.command).quiet().run({
-          name: componentName
+        return this.command.runChild('component', {
+          quiet: true,
+          name: componentName,
+          type: componentType,
         }, outDirComponent);
       }).then(() => { // perform updates (existing package.json)
         return this.update(outDir);
@@ -131,6 +147,7 @@ class CCInit extends CommandDelegate {
           });
         } else {
           this.ui.outputSection('Usage', this.ui.grid([
+            [`cd ${outDirName}`],
             ['npm start', 'Start a dev server with the component package'],
           ]));
         }
@@ -148,9 +165,12 @@ class CCInitComponent extends CommandDelegate {
     this.command
       .ignore('componentName').ignore('run').ignore('skipInstall') // inherited from parent
       .argument('dest', 'Destination directory where component should be added', true)
-      .option('-n --name <name>', 'Specify a name for the Custom Component', null, nameOpt);
+      .option('-q --quiet', 'Suppress outputs')
+      .option('-n --name <name>', 'Specify a name for the Custom Component', null, nameOpt)
+      .option('-t --type <type>', 'Specify a component implementation type <custom|resolveentities>', 'custom', componentTypeOpt)
+      .option('-e --entity-name <name>', 'Provide the entity name used in the "resolveentities" component type', defaultEntityName);
 
-    this.templateRoot = path.resolve(__dirname, '..', 'templates', 'component');
+    this.templateRoot = path.resolve(__dirname, '..', 'templates', 'components');
   }
 
   quiet() {
@@ -159,7 +179,9 @@ class CCInitComponent extends CommandDelegate {
   }
 
   run(opts, dir) {
-    const { name } = opts;
+    const { quiet, name, type, entityName } = opts;
+    this._quiet = !!quiet;
+
     if (!name) {
       this._err(`Component name is required`);
     }
@@ -175,12 +197,16 @@ class CCInitComponent extends CommandDelegate {
     }
 
     // write file
-    const from = path.join(this.templateRoot, 'custom.js');
+    const from = path.join(this.templateRoot, type, 'template.js');
     const to = path.join(dest, `${name}.js`);
     if (!fs.existsSync(to)) {
-      writeTemplate(from, to, { name });
+      writeTemplate(from, to, {
+        name,
+        entityName,
+        eventHandlerType: 'ResolveEntities', // constant for now
+      });
       if (!this._quiet) {
-        this.ui.banner(`Added Custom Component: '${name}'`);
+        this.ui.banner(`Added ${type} component: '${name}'`);
       }
     } else if (!this._quiet) {
       this._err(`Component '${name}' already exists`);

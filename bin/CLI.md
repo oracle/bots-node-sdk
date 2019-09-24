@@ -66,17 +66,24 @@ $(npm bin)/bots-node-sdk init
 Init is the main namespace used to scaffold new projects and/or augment existing
 projects with more components. If provided, `[dest]` or `--name` will be used for the output directory.
 
-- `-s --skip-install` - Instruct the command to skip `npm install` after code generation
-- `-r --run` - Starts the custom component service after install completes
-- `-n --name <name>` - Specify a name for the component package. If not provided, the directory name, or existing `package.json` name will be used
-- `-c --component-name <name>` - Use a name other than the default `hello.world` for the initial component in your project
+| Option | Description | Default |
+|--|--|--|
+| `-s --skip-install` | Instruct the command to skip `npm install` after code generation | `false` |
+| `-r --run` | Starts the custom component service after install completes | `false` |
+| `-n --name <name>` | Specify a name for the component package. If not provided, the directory name, or existing `package.json` name will be used | |
+| `-c --component-name <name>` | Use a name for the initial component in your project | `hello.world` |
+| `-t --component-type <type>` | Specify the type of component to create (`custom|eventhandler`) | `custom` |
 
 ### 2. Add Components: `init component [options] <dest>`
 
 This command will initialize a _new_ Custom Component within an **existing** component
 package, and write to the `<dest>` output path.
 
-- `-n --name <name>` - Provide a name for the custom component
+| Option | Description | Default |
+|--|--|--|
+| `-n --name <name>` | Provide a name for the custom component | `hello.world` |
+| `-t --type <type>` | Specify the type of component to create (`custom|eventhandler`) | `custom` |
+| `-e --entity-name <name>` | Provide the entity name used if the `eventhandler` component type is specified. | `SomeEntity` |
 
 ### 3. Start Dev Server: `service [options] [...packages]`
 
@@ -84,8 +91,10 @@ Starts a server with one _or more_ Component Packages. **NOTE** this requires
 `express` as a `devDependency` in at least one of the component packages, and
 will error if not found.
 
-- `-P --port <number>` - Use a port other than the default `:3000` for the service
-- `-r --route <path>` - Defines the service endpoint for Custom Components
+| Option | Description | Default |
+|--|--|--|
+| `-P --port <number>` | Specify port used for the service runtime | `3000` |
+| `-r --route <path>` | Defines the service endpoint for components | `/components` |
 
 > **NOTE:** Open a node debugger port on the service with `node --inspect $(which bots-node-sdk) service .`, or
 `node --inspect node_modules/@oracle/bots-node-sdk/bin/sdk.js service .` if on Windows.
@@ -97,6 +106,8 @@ Most often, custom implementations can be packaged with `npm pack` or `zip`
 depending on the deployment target. The `pack` command here is intended to
 provide validation and convenience methods for creating a deployable artifact.
 
-- `-d --dry-run` - Flag to peform project validations without emitting any specific archive. **TIP:** Useful addition to `prepack` or `test` scripts
-- `-s --service <embedded|express|mobile-api>` - Specify a service type to use in the packaging (uses standard `npm pack` for `embedded`)
-- `-e --endpoint <url>` - Provide the endpoint to use for `/components` metadata
+| Option | Description | Default |
+|--|--|--|
+| `-d --dry-run` | Flag to peform project validations without emitting any specific archive. **TIP:** Useful addition to `prepack` or `test` scripts | `false` |
+| `-s --service <embedded|express|mobile-api>` | Specify a service type to use in the packaging (uses standard `npm pack` for `embedded`) | `embedded` |
+| `-e --endpoint <url>` | Provide the endpoint to use for components metadata | `/components` |

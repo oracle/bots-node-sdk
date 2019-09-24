@@ -83,4 +83,19 @@ describe('Component Conversation SDK', () => {
     expect(CommonProvider.getLogger).toHaveBeenCalledTimes(1);
   });
 
+  it('should create raw payload', () => {
+    const sdk = MockConversation.any();
+    var attachment = {
+      "type": "image",
+      "payload": { "url": "https://www.google.com/finance/getchart?q=ORCL&p=1Y&i=86400"}
+    };
+    var message = {
+      "attachment": attachment
+    };
+    sdk.reply(message);
+    var response = {type: "raw", payload: message};
+    expect(sdk.response().messages[0].messagePayload).toEqual(response);
+  });
+
+
 });

@@ -1,9 +1,8 @@
 import { ICallback } from '../common/definitions';
 import { ComponentListItem, ComponentRegistry } from '../lib/component/registry';
 import { IMobileCloudRequest, MiddlewareAbstract, express, IServiceInstance } from './abstract';
+import { ComponentShell as Shell } from '../lib/component/shell';
 import { STATUS_CODE } from './codes';
-
-import Shell = require('../lib/component/shell');
 
 /**
  * component middleware specific options
@@ -65,14 +64,23 @@ export class ComponentMiddleware extends MiddlewareAbstract {
     });
 
     /**
-     * handle root component invocation
+     * handle custom component invocation
      */
     service.post(this.__endpoint(baseUrl, `/:${PARAM_COMPONENT}`), (req, res) => {
       const componentName = req.params[PARAM_COMPONENT];
       // invoke
       this.__invoke(componentName, rootRegistry, opts, req, res);
     });
+
+    /**
+     * handle ResolveEntities event handler invocation
+     */
+    service.post(this.__endpoint(baseUrl, `/resolveentities/:${PARAM_COMPONENT}`), (req, res) => {
+      const componentName = req.params[PARAM_COMPONENT];
+      this.__getShell(rootRegistry).invokeResolveEntitiesEventHandler(componentName, req.body, this.__invocationCb(res));
+    });
   }
+
   /**
    * construct an endpoint from base and url
    * @param base - base url
@@ -131,10 +139,10 @@ export class ComponentMiddleware extends MiddlewareAbstract {
           res.status(STATUS_CODE.NOT_FOUND).send(err.message);
           break;
         case 'badRequest':
-          res.status(STATUS_CODE.BAD_REQUEST).json(err.message);
+          res.status(STATUS_CODE.BAD_REQUEST).send(err.message);
           break;
         default:
-          res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json(err.message);
+          res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).send(err.message);
           break;
         }
       }
