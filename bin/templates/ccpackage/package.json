@@ -14,5 +14,6 @@
   "devDependencies": {
     "{{sdkName}}": "^{{sdkVersion}}",
     "express": "{{expressVersion}}"
-  }
+  },
+  "bundledDependencies": []
 }

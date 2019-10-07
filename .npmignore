@@ -1,5 +1,7 @@
 .*
 *.properties
+.wercker
+.sonar*
 wercker.yml
 spec
 !bin/**/spec

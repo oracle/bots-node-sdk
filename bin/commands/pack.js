@@ -151,6 +151,14 @@ class CCPack extends CommandDelegate {
     });
     return this;
   }
+  
+  // TASK-19013: bundledDependencies
+  _setBundled() {  
+    const { dependencies } = this.cc.json;
+    const bundledDependencies = Object.keys(dependencies || {});
+    this._setJson({ bundledDependencies });
+    return this;
+  }
 
   _setMobile(config) {
     const om = this.cc.json.oracleMobile || {};
@@ -166,6 +174,10 @@ class CCPack extends CommandDelegate {
   _savePkg(outDir) {
     fs.writeFileSync(path.join(outDir, 'package.json'), JSON.stringify(this.cc.json, null, 2));
     return this;
+  }
+
+  _prepack() {
+    return this._setBundled()._savePkg(this.cc.path);
   }
 
   _pack(options) {
@@ -189,6 +201,7 @@ class CCPack extends CommandDelegate {
     let dir = pathArg || process.cwd();
     dir = path.resolve(dir);
     const cc = this.cc = loadVerifyComponent(dir);
+    this._prepack();
     if (options.dryRun) {
       this.ui.banner(`Component Package '${cc.ref}' is valid!`);
       return;

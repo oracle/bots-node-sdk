@@ -134,6 +134,15 @@ describe(`CLI: bots-node-sdk`, () => {
         .then(done).catch(done.fail);
     });
 
+    it('should include bundled dependencies', done => {
+      run(tmp, 'pack', '--dry-run')
+        .then(() => {
+          const { bundledDependencies } = require(path.join(tmp, 'package.json'));
+          expect(bundledDependencies).toEqual(jasmine.any(Array));
+        })
+        .then(done).catch(done.fail);
+    });
+
     it('should error invalid service option', done => {
       run(tmp, 'pack', '--service', 'fooey')
         .catch(e => {
