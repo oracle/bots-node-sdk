@@ -1,6 +1,11 @@
 'use strict';
 const { WebhookClient } = require('../main').Middleware;
-const webhookSecret = '8e34e25f71aa447e87e065300cf305f0';
+const crypto = require('crypto');
+
+const secretLength = 32;
+const webhookSecret = crypto.randomBytes(Math.ceil(secretLength / 2))
+  .toString('hex')
+  .slice(0, secretLength);
 
 const stubWebhookChannel = () => () => {
   return Promise.resolve({
@@ -15,7 +20,7 @@ const webhook = new WebhookClient({
 
 const CONF = {
   port: 4111,
-  noop: () => {},
+  noop: () => { },
   componentPrefix: '/bot/components',
   // webhookRouterUri: '/webhook',
   webhookReceiverUri: '/webhook/standalone',
