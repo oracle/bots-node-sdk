@@ -93,8 +93,9 @@ describe('EntityResolutionContext', () => {
     context.setItemValue("Type","Taxi");
     context.setItemValue("Date",{"entityName": "DATE", "date": 1185753600000,"originalString": "30 july 2007"});
     context.setItemValue("Amount",{"entityName": "CURRENCY", "amount": 54.5,"currency":"chf","totalCurrency": "CHF 54.50"});
-    expect(context.getDisplayValue("Date")).toEqual("Mon Jul 30 2007");
-    expect(context.getDisplayValues()).toEqual([{name:"Type", value: "Taxi"},{name:"Amount", value: "54.5 chf"},{name:"Date", value: "Mon Jul 30 2007"}]);                                           
+    let displayDate = new Date(1185753600000).toDateString();
+    expect(context.getDisplayValue("Date")).toEqual(displayDate);
+    expect(context.getDisplayValues()).toEqual([{name:"Type", value: "Taxi"},{name:"Amount", value: "54.5 chf"},{name:"Date", value: displayDate}]);                                           
     context.setSystemEntityDisplayProperties('DATE',['originalString']);
     context.setSystemEntityDisplayFunction('DATE',(date => date));
     expect(context.getDisplayValue("Date")).toEqual("30 july 2007");
