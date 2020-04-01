@@ -17,7 +17,7 @@ export = (joi: any): Joi.Schema => {
             patternExpression: joi.string().allow(null),
             parentEntity: joi.any(),
             ruleParameters: joi.any(),
-            enumValues: joi.any()            
+            enumValues: joi.any()
           }).required(),
           otherwise: joi.string().required()
         }),
