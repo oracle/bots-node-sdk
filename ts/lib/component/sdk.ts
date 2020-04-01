@@ -4,7 +4,7 @@ import ComponentRequestSchemaFactory = require('./schema/componentRequestSchema'
 import { ILogger } from '../../common/definitions';
 import { IComponentRequestBody } from './request';
 
-const sdkVersion = '1.1'; // server compatibility version
+const sdkVersion = require('../../../package.json').version;
 
 export interface ICustomComponentResponse {
   platformVersion: string;
