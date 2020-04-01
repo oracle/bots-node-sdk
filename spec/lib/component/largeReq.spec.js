@@ -22,7 +22,6 @@ describe('Component Conversation SDK parsing large request', function() {
     expect(sdk.error()._response.error).not.toBeTruthy();
     expect(sdk.error(false)._response.error).not.toBeTruthy();
     expect(sdk.error(true)._response.error).toBeTruthy();
-    expect(sdk.platformVersion()).toEqual(Lib.Conversation.sdkVersion());
   });
 
   it('should resolve scope variables, get nlpresult and message rawPayload', () => {
