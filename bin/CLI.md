@@ -72,7 +72,7 @@ projects with more components. If provided, `[dest]` or `--name` will be used fo
 | `-r --run` | Starts the custom component service after install completes | `false` |
 | `-n --name <name>` | Specify a name for the component package. If not provided, the directory name, or existing `package.json` name will be used | |
 | `-c --component-name <name>` | Use a name for the initial component in your project | `hello.world` |
-| `-t --component-type <type>` | Specify the type `<custom,eventhandler>` of component to create | `custom` |
+| `-t --component-type <type>` | Specify the type `<custom,resolveentities>` of component to create | `custom` |
 
 ### 2. Add Components: `init component [options] <dest>`
 
@@ -82,8 +82,8 @@ package, and write to the `<dest>` output path.
 | Option | Description | Default |
 |--|--|--|
 | `-n --name <name>` | Provide a name for the custom component | `hello.world` |
-| `-t --type <type>` | Specify the type `<custom,eventhandler>` of component to create | `custom` |
-| `-e --entity-name <name>` | Provide the entity name used if the `eventhandler` component type is specified. | `SomeEntity` |
+| `-t --type <type>` | Specify the type `<custom,resolveentities>` of component to create | `custom` |
+| `-e --entity-name <name>` | Provide the entity name used if the `resolveentities` component type is specified. | `SomeEntity` |
 
 ### 3. Start Dev Server: `service [options] [...packages]`
 
