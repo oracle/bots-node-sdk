@@ -4,7 +4,10 @@ import ComponentRequestSchemaFactory = require('./schema/componentRequestSchema'
 import { ILogger } from '../../common/definitions';
 import { IComponentRequestBody } from './request';
 
-const sdkVersion = require('../../../package.json').version;
+// fix for MIECS-23476, we need to return "2.0" until all customers have migrated to 20.05 which
+// no longer checks whether version returned is a valid platform version
+// const sdkVersion = require('../../../package.json').version;
+const sdkVersion = '2.0';
 
 export interface ICustomComponentResponse {
   platformVersion: string;
