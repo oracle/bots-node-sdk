@@ -1,7 +1,6 @@
 import { BaseContext } from './baseContext';
 import { MessageModel } from '../message/messageModel';
 import ComponentRequestSchemaFactory = require('./schema/componentRequestSchema');
-import { ILogger } from '../../common/definitions';
 import { IComponentRequestBody } from './request';
 
 // fix for MIECS-23476, we need to return "2.0" until all customers have migrated to 20.05 which
@@ -179,15 +178,6 @@ export class CustomComponentContext extends BaseContext {
    */
   platformVersion() {
     return this.request().platformVersion;
-  }
-
-  /**
-   * Retrieves the logger so the component can use the shared logger for logging.
-   * The shared logger should support the methods log, info, warn, error and trace.
-   * @return {object} The logger.
-   */
-  logger(): ILogger {
-    return super.getLogger();
   }
 
   /**

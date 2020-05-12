@@ -340,6 +340,8 @@ function makeCtor(type: Type<IComponent>): any {
  * @todo create a decorator factory to test annotations against instanceof
  */
 function isComponent(ref: any): ref is Type<IComponent> {
-  return (isType(ref) && ref.prototype && (isType(ref.prototype.invoke) || isType(ref.prototype.handlers))) ||
-    (typeof ref === 'object' && isType(ref.metadata) && (isType(ref.invoke) || isType(ref.handlers)));
+  return (isType(ref) && ref.prototype && (isType(ref.prototype.invoke) || isType(ref.prototype.handlers) ||
+    (typeof ref.prototype.handlers === 'object'))) ||
+    (typeof ref === 'object' && (isType(ref.metadata) || typeof ref.metadata === 'object') && (isType(ref.invoke) ||
+    isType(ref.handlers) || (typeof ref.handlers === 'object')));
 }

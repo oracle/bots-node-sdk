@@ -75,8 +75,10 @@ these functions, you’ll be writing [Custom Components](https://docs.oracle.com
 These allow your bot to call REST APIs, implement business logic, transition
 state, customize messages, etc.
 
+A sepcial flavor of custom components are entity event handler components that can be used to execute custom logic while resolving composite bag entities using the system components System.ResolveEntities or System.CommonResponse.
+
 This package provides the necessary middleware and libraries for incorporating
-Custom Components into your Bot dialog.
+Custom Components and Event Handlers into your Bot dialog.
 
 - [Custom Component Service](#custom-component-service)
 - [Custom Component Code](#custom-component-code)
@@ -138,7 +140,7 @@ fundamental interface is required as follows:
 ```
 
 One supported implementation is to use a simple object with `metadata` and `invoke`
-members:
+function members:
 
 ```javascript
 // mycomponent.js
@@ -148,6 +150,22 @@ module.exports = {
     properties: {},
     supportedActions: []
   }),
+  invoke: (conversation, done) => {
+    conversation.reply('hello').transition();
+    done();
+  }
+}
+```
+Instead of using a function for `metadata` you can also use a simple object:
+
+```javascript
+// mycomponent.js
+module.exports = {
+  metadata: {
+    name: 'my.custom.component',
+    properties: {},
+    supportedActions: []
+  },
   invoke: (conversation, done) => {
     conversation.reply('hello').transition();
     done();
@@ -177,6 +195,37 @@ module.exports = class MyComponent extends ComponentAbstract {
   }
 }
 ```
+### Event Handler Code
+
+Event handlers have a slightly different `metadata` object, and contain a `handlers` object instead of the `invoke` function:
+
+```javascript
+// myeventhandler.js
+module.exports = {
+  metadata: {
+    name: 'my.entity.event.handler',
+    eventHandlerType: 'ResolveEntities'
+  },
+  handlers:  {
+    entity: {
+      resolved:async (event, context) => {
+        // logic to execute once entity is resolved goes here
+      }
+      // more entity-level handlers here
+    },
+    items: {
+      someCompositeBagItemName: {
+        // item-level handlers here
+      }
+    },
+    custom: {
+      // custom handlers here
+    },
+  }
+}
+```
+
+The `metadata` and `handlers` members can be defined as a function instead of an object if needed.
 
 ## Webhook
 

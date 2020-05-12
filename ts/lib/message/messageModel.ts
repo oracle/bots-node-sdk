@@ -115,8 +115,10 @@ export class MessageModel {
    * @param {string} text - The text of the message payload.
    * @param {object[]} [actions] - A list of actions related to the text.
    * @param {string} [footerText] - The footerText to be added at the bottom of the message.
+   * @param {string} [headerText] - The headerText to be added at the top of the message.
+   * @param {object[]} [keywords] - A list of postback keywords that can be created with the postbackKeyword function
    */
-  public static textConversationMessage(text, actions?, footerText?) {
+  static textConversationMessage(text, actions?, footerText?, headerText?, keywords?) {
     var instance: any = {
       type: 'text',
       text: text
@@ -127,8 +129,13 @@ export class MessageModel {
     if (footerText) {
       instance.footerText = footerText;
     }
+    if (headerText) {
+      instance.headerText = headerText;
+    }
+    if (keywords) {
+      instance.keywords = keywords;
+    }
     return instance;
-
   }
 
   private static _baseActionObject(type, label?, imageUrl?) {
@@ -251,8 +258,10 @@ export class MessageModel {
    * @param {object[]} cards - The list of cards to be rendered.
    * @param {object[]} [actions] - A list of actions for the cardConversationMessage.
    * @param {string} [footerText] - The footerText to be added at the bottom of the message.
+   * @param {string} [headerText] - The headerText to be added at the top of the message.
+   * @param {object[]} [keywords] - A list of postback keywords that can be created with the postbackKeyword function
    */
-  public static cardConversationMessage(layout, cards, actions?, footerText?) {
+  static cardConversationMessage(layout, cards, actions?, footerText?, headerText?, keywords?) {
     var response: any = {
       type: 'card',
       layout: layout || 'vertical',
@@ -264,6 +273,12 @@ export class MessageModel {
     if (footerText) {
       response.footerText = footerText;
     }
+    if (headerText) {
+      response.headerText = headerText;
+    }
+    if (keywords) {
+      response.keywords = keywords;
+    }
     return response;
   }
 
@@ -274,8 +289,10 @@ export class MessageModel {
    * @param {string} url - the url of the attachment.
    * @param {object[]} [actions] - A list of actions for the attachmentConversationMessage.
    * @param {string} [footerText] - The footerText to be added at the bottom of the message.
+   * @param {string} [headerText] - The headerText to be added at the top of the message.
+   * @param {object[]} [keywords] - A list of postback keywords that can be created with the postbackKeyword function
    */
-  public static attachmentConversationMessage(type, url, actions?, footerText?) {
+  static attachmentConversationMessage(type, url, actions?, footerText?, headerText?, keywords?) {
     var attachment = {
       type: type,
       url: url
@@ -289,6 +306,12 @@ export class MessageModel {
     }
     if (footerText) {
       response.footerText = footerText;
+    }
+    if (headerText) {
+      response.headerText = headerText;
+    }
+    if (keywords) {
+      response.keywords = keywords;
     }
     return response;
   }
@@ -342,6 +365,22 @@ export class MessageModel {
       response.actions = actions;
     }
     return response;
+  }
+
+  /**
+   * Static method to create a keyword for a postack payload that is not associated to a postback action button
+   * @return {object} A Keyword object.
+   * @param {string[]} [keywords] - array of keywords that can be used to trigger the postback action.
+   * @param {object|string} postback - object to send as postback if keyword is entered
+   * @param {boolean} [skipAutoNumber] - Boolean flag that can be used to exclude the keyword from autoNumbering
+   */
+  public static postbackKeyword(keywords, postback, skipAutoNumber?) {
+    var keyword: any = {
+      keywords: keywords,
+      postback: postback,
+      skipAutoNumber: skipAutoNumber || false
+    };
+    return keyword;
   }
 
   /**

@@ -29,48 +29,61 @@ export = (joi: any): Joi.Schema => {
     channelExtensions: joi.object().optional()
   });
   const actionsSchema = joi.array().items(actionSchema);
-  const attachmentSchema = joi.object().keys({
-    type: joi.string().required().valid('file', 'video', 'audio', 'image'),
-    url: joi.string().uri()
+  const keywordSchema = Joi.object().keys({
+    keywords: Joi.array().required(),
+    postback: Joi.any().required(),
+    skipAutoNumber: Joi.boolean().optional()
   });
-  const cardSchema = joi.object().keys({
-    title: joi.string().required(),
-    description: joi.string().optional(),
-    imageUrl: joi.string().uri().optional(),
-    url: joi.string().uri().optional(),
+  const keywordsSchema = Joi.array().items(keywordSchema);
+  const attachmentSchema = Joi.object().keys({
+    type: Joi.string().required().valid('file', 'video', 'audio', 'image'),
+    url: Joi.string().uri(),
+    title: Joi.string().optional(),
+  });
+  const cardSchema = Joi.object().keys({
+    title: Joi.string().required(),
+    description: Joi.string().optional(),
+    imageUrl: Joi.string().uri().optional(),
+    url: Joi.string().uri().optional(),
     actions: actionsSchema.optional(),
-    channelExtensions: joi.object().optional()
+    channelExtensions: Joi.object().optional()
   });
-  const locationSchema = joi.object().keys({
-    title: joi.string().optional(),
-    url: joi.string().uri().optional(),
-    latitude: joi.number().required(),
-    longitude: joi.number().required()
+  const locationSchema = Joi.object().keys({
+    title: Joi.string().optional(),
+    url: Joi.string().uri().optional(),
+    latitude: Joi.number().required(),
+    longitude: Joi.number().required()
   });
-  const textConversationMessageSchema = joi.object().keys({
-    type: joi.string().required().valid('text'),
-    text: joi.string().required().trim(),
+  const textConversationMessageSchema = Joi.object().keys({
+    type: Joi.string().required().valid('text'),
+    text: Joi.string().required().trim(),
     actions: actionsSchema.optional(),
-    footerText: joi.string().optional(),
+    footerText: Joi.string().optional(),
+    headerText: Joi.string().optional(),
+    keywords: keywordsSchema.optional(),
     globalActions: actionsSchema.optional(),
-    channelExtensions: joi.object().optional()
+    channelExtensions: Joi.object().optional()
   });
-  const cardConversationMessageSchema = joi.object().keys({
-    type: joi.string().required().valid('card'),
-    layout: joi.string().required().valid('horizontal', 'vertical'),
-    cards: joi.array().items(cardSchema).min(1),
+  const cardConversationMessageSchema = Joi.object().keys({
+    type: Joi.string().required().valid('card'),
+    layout: Joi.string().required().valid('horizontal', 'vertical'),
+    cards: Joi.array().items(cardSchema).min(1),
     actions: actionsSchema.optional(),
-    footerText: joi.string().optional(),
+    footerText: Joi.string().optional(),
+    headerText: Joi.string().optional(),
+    keywords: keywordsSchema.optional(),
     globalActions: actionsSchema.optional(),
-    channelExtensions: joi.object().optional()
+    channelExtensions: Joi.object().optional()
   });
-  const attachmentConversationMessageSchema = joi.object().keys({
-    type: joi.string().required().valid('attachment'),
+  const attachmentConversationMessageSchema = Joi.object().keys({
+    type: Joi.string().required().valid('attachment'),
     attachment: attachmentSchema.required(),
     actions: actionsSchema.optional(),
-    footerText: joi.string().optional(),
+    footerText: Joi.string().optional(),
+    headerText: Joi.string().optional(),
+    keywords: keywordsSchema.optional(),
     globalActions: actionsSchema.optional(),
-    channelExtensions: joi.object().optional()
+    channelExtensions: Joi.object().optional()
   });
   const locationConversationMessageSchema = joi.object().keys({
     type: joi.string().required().valid('location'),

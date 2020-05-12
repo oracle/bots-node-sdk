@@ -65,7 +65,7 @@ export function ComponentShell(config, registry) {
         // tslint:disable-next-line:forin
         for (let componentName in registry.components) {
           const component = registry.getComponent(componentName);
-          let metadata = component.metadata();
+          let metadata = (typeof component.metadata === 'function') ? component.metadata() : component.metadata;
           // if component is event handler, then auto-register event handlers in metadata
           if (metadata.eventHandlerType === 'ResolveEntities') {
             metadata.events = entityUtil.getResolveEntitiesEventHandlers(component);
@@ -143,7 +143,7 @@ export function ComponentShell(config, registry) {
      *   through.
      * @private
      */
-    invokeResolveEntitiesEventHandler: function (componentName, requestBody, callback) {
+    invokeResolveEntitiesEventHandler: function (componentName, requestBody, callback, sdkMixin) {
       // assert invocation callback
       if (typeof callback !== 'function') {
         throw new Error('Invocation callback is required');
@@ -153,9 +153,9 @@ export function ComponentShell(config, registry) {
       // or it is regular CC invocation
       try {
         const { component, context } =
-          resolveInvocation(componentName, requestBody, EntityResolutionContext);
+          resolveInvocation(componentName, requestBody, EntityResolutionContext, sdkMixin);
 
-        entityUtil.invokeResolveEntitiesEventHandlers(component, context, logger).then(() => {
+        entityUtil.invokeResolveEntitiesEventHandlers(component, context).then(() => {
           callback(null, context.getResponse());
         }).catch(err => {
           if (!(err instanceof Error)) {
