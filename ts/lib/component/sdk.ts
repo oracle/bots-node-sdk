@@ -71,6 +71,29 @@ export class NLPResult {
   }
 
   /**
+   * Returns full payload matches for the specified entity; may be an empty collection.
+   * If no entity is specified, returns the full payload map of all entities.
+   * @param {string} [entity] - name of the entity
+   * @return {object} The full entity match result.
+   */
+  fullEntityMatches(entity?: string) {
+    if (!this._nlpresult) {
+      return entity === undefined ? {} : [];
+    }
+
+    if (entity === undefined) {
+      // Retrieving fullEntityMatches collection, or an empty collection if none
+      return this._nlpresult.fullEntityMatches ? this._nlpresult.fullEntityMatches : {};
+    } else {
+      if (this._nlpresult.fullEntityMatches) {
+        return this._nlpresult.fullEntityMatches[entity] ? this._nlpresult.fullEntityMatches[entity] : [];
+      } else {
+        return [];
+      }
+    }
+  }
+
+  /**
    * Returns intent matches if any.
    * Intent matches are returned in descending order of score
    * @return {object[]} The intent match results, each match with properties score and intent.

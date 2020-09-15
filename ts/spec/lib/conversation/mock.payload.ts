@@ -126,6 +126,23 @@ export const Mock = {
                   'Large'
                 ]
               }
+              'fullEntityMatches': {
+                  'PizzaType': [
+                    {
+                      'entityName': 'PizzaType',
+                      'originalString': 'pepperoni',
+                      'canonicalName': 'pepperoni'
+                    }
+                  ],
+                  'PizzaSize': [
+                    {
+                      'entityName': 'PizzaSize',
+                      'originalString': 'large',
+                      'canonicalName': 'Large'
+                    }
+                  ]
+                }
+              }
             },
             'entity': false
           },
@@ -237,6 +254,22 @@ export const Mock = {
                 ],
                 'PizzaSize': [
                   'Large'
+                ]
+              },
+              'fullEntityMatches': {
+                'PizzaType': [
+                  {
+                    'entityName': 'PizzaType',
+                    'originalString': 'pepperoni',
+                    'canonicalName': 'pepperoni'
+                  }
+                ],
+                'PizzaSize': [
+                  {
+                    'entityName': 'PizzaSize',
+                    'originalString': 'large',
+                    'canonicalName': 'Large'
+                  }
                 ]
               }
             },

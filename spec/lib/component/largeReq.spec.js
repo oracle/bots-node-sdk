@@ -30,6 +30,7 @@ describe('Component Conversation SDK parsing large request', function() {
     expect(sdk.variable('system.invalidUserInput')).not.toBeNull();
     expect(sdk.nlpResult()).not.toBeNull();
     expect(sdk.nlpResult("iResult").entityMatches('AccountType')[0]).toEqual('checking');
+    expect(sdk.nlpResult("iResult").fullEntityMatches('AccountType')[0].originalString).toEqual('checking');
     expect(sdk.nlpResult("iResult").entityMatches()).toBeTruthy();
     expect(sdk.nlpResult("iResult").topIntentMatch().intent).toEqual('Balances');
     expect(sdk.nlpResult("iResult").query()).toEqual("what's my balance in checking?");

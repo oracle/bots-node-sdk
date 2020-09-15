@@ -126,6 +126,22 @@ exports.Mock = function() {
                 entityMatches: {
                   PizzaType: ["pepperoni"],
                   PizzaSize: ["Large"]
+                },
+                fullEntityMatches: {
+                  PizzaType: [
+                    {
+                      entityName: "PizzaType",
+                      originalString: "pepperoni",
+                      canonicalName: "pepperoni"
+                    }
+                  ],
+                  PizzaSize: [
+                    {
+                      entityName: "PizzaSize",
+                      originalString: "large",
+                      canonicalName: "Large"
+                    }
+                  ]
                 }
               },
               entity: false
@@ -235,6 +251,22 @@ exports.Mock = function() {
                 entityMatches: {
                   PizzaType: ["pepperoni"],
                   PizzaSize: ["Large"]
+                },
+                fullEntityMatches: {
+                  PizzaType: [
+                    {
+                      entityName: "PizzaType",
+                      originalString: "pepperoni",
+                      canonicalName: "pepperoni"
+                    }
+                  ],
+                  PizzaSize: [
+                    {
+                      entityName: "PizzaSize",
+                      originalString: "large",
+                      canonicalName: "Large"
+                    }
+                  ]
                 }
               },
               entity: false
