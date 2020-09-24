@@ -48,6 +48,9 @@ describe('Component Conversation SDK', () => {
     expect(nlpResult.topIntentMatch().intent).toEqual('OrderPizza');
     expect(nlpResult.entityMatches('PizzaType')[0]).toEqual('pepperoni');
 
+    expect(nlpResult.fullEntityMatches('PizzaSize')[0].originalString).toEqual('large');
+    expect(nlpResult.fullEntityMatches('PizzaSize')[0].canonicalName).toEqual('Large');
+
     sdk.variable('name', 'Ken');
     expect(sdk.variable('name')).toEqual('Ken');
     expect(sdk.response().modifyContext).toEqual(true); // wrote to context

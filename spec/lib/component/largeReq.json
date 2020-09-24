@@ -86,6 +86,15 @@
           "appId": "C174E54F-9A5D-4377-A34A-BD79C6DCCFC2",
           "botName": "MJ_FinancialBot",
           "entityMatches": { "AccountType": ["checking"] },
+          "fullEntityMatches": { 
+            "AccountType": [
+              {
+                "entityName": "AccountType",
+                "originalString": "checking",
+                "canonicalName": "checking"
+              }
+            ] 
+          },
           "intentMatches": {
             "summary": [{ "intent": "Balances", "score": 1 }],
             "detail": {
