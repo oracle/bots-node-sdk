@@ -69,7 +69,8 @@ class ComponentMiddleware extends MiddlewareAbstract {
      */
     service.post(this.__endpoint(baseUrl, `/resolveentities/:${PARAM_COMPONENT}`), (req, res) => {
       const componentName = req.params[PARAM_COMPONENT];
-      this.__getShell(rootRegistry).invokeResolveEntitiesEventHandler(componentName, req.body, this.__invocationCb(res));      
+      const mixins = Object.assign({}, opts.mixins);
+      this.__getShell(rootRegistry).invokeResolveEntitiesEventHandler(componentName, req.body, this.__invocationCb(res), mixins);      
     });
 
   }

@@ -58,19 +58,17 @@ describe('Component Shell', () => {
         eventHandlerType: 'ResolveEntities'
       }),
       handlers: () => ({ 
-        Expense: {
-          entity: {
-            validate:async () => {'validateEntity'}
-          },  
-          items: {
-            Type: {
-              validate:async () => {'validateType'}
-            }
-          },
-          custom: {
-            customEvent:async () => {'customEvent'}
-          }  
-        }
+        entity: {
+          validate:async () => {'validateEntity'}
+        },  
+        items: {
+          Type: {
+            validate:async () => {'validateType'}
+          }
+        },
+        custom: {
+          customEvent:async () => {'customEvent'}
+        }  
       })
     };
 
@@ -85,18 +83,16 @@ describe('Component Shell', () => {
       
       handlers() {
         return {
-          Expense: { // eslint-disable-line no-unused-labels
-            entity: { // eslint-disable-line no-unused-labels
-              validate: () => {'validateEntity'} // eslint-disable-line no-unused-labels
-            },  
-            items: { // eslint-disable-line no-unused-labels
-              Type: { // eslint-disable-line no-unused-labels
-                validate: () => {'validateType'} // eslint-disable-line no-unused-labels
-              }
-            },
-            custom: { // eslint-disable-line no-unused-labels
-              customEvent: () => {'customEvent'} // eslint-disable-line no-unused-labels
-            }  
+          entity: { // eslint-disable-line no-unused-labels
+            validate: () => {'validateEntity'} // eslint-disable-line no-unused-labels
+          },  
+          items: { // eslint-disable-line no-unused-labels
+            Type: { // eslint-disable-line no-unused-labels
+              validate: () => {'validateType'} // eslint-disable-line no-unused-labels
+            }
+          },
+          custom: { // eslint-disable-line no-unused-labels
+            customEvent: () => {'customEvent'} // eslint-disable-line no-unused-labels
           }  
         }
       }
@@ -120,9 +116,9 @@ describe('Component Shell', () => {
 
       expect(components.length).toBeGreaterThan(0);
       expect(cMeta.events).toEqual(jasmine.any(Array));
-      expect(cMeta.events).toContain('Expense.entity.validate');
-      expect(cMeta.events).toContain('Expense.items.Type.validate');
-      expect(cMeta.events).toContain('Expense.custom.customEvent');
+      expect(cMeta.events).toContain('entity.validate');
+      expect(cMeta.events).toContain('items.Type.validate');
+      expect(cMeta.events).toContain('custom.customEvent');
       done();
     });
 
@@ -132,7 +128,7 @@ describe('Component Shell', () => {
       // otherwise the method returns a new object each time.
       const handlers = comp.handlers();
       spyOn(comp, 'handlers').and.returnValue(handlers);
-      let itemEvents = handlers.Expense.items.Type;
+      let itemEvents = handlers.items.Type;
       let validate = spyOn(itemEvents, 'validate').and.callThrough();      
       shell.invokeResolveEntitiesEventHandler('simple', EventHandlerMockRequest, (err, res) => {
         expect(err).toBeNull();

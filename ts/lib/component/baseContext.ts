@@ -63,12 +63,24 @@ export abstract class BaseContext {
   }
 
   /**
-   * Retrieves the response object.
-   * @return {object} The response object.
+   * Retrieves the logger object.
+   * @return {object} The logger object.
    */
-  getLogger(): ILogger {
+  logger(): ILogger {
+    // this function is replaced with mixin logger when deployed to embedded functions to enable viewing logs in bots UI
     return this._logger;
   }
+
+  /**
+   * Retrieves the logger object.
+   * @return {object} The logger object.
+   * @deprecated use logger() function instead
+   */
+  getLogger(): ILogger {
+    this.logger().warn('The getLogger() method is deprecated, and will be removed in a future release. Use logger() method instead.');
+    return this.logger();
+  }
+
 
   /**
    * Read or write variables defined in the current flow.
@@ -132,20 +144,20 @@ export abstract class BaseContext {
       }
       return context.variables[nameToUse].value;
     } else {
-      this._logger.debug('SDK: About to set variable ' + name);
+      this.logger().debug('SDK: About to set variable ' + name);
 
       if (!context.variables) {
         context.variables = {};
       }
       if (!context.variables[nameToUse]) {
-        this._logger.debug('SDK: Creating new variable ' + nameToUse);
+        this.logger().debug('SDK: Creating new variable ' + nameToUse);
         context.variables[nameToUse] = Object.assign({}, VARIABLE);
       }
 
       context.variables[nameToUse].value = value;
       this.getResponse().modifyContext = true;
 
-      this._logger.debug('SDK: Setting variable ' + JSON.stringify(context.variables[nameToUse]));
+      this.logger().debug('SDK: Setting variable ' + JSON.stringify(context.variables[nameToUse]));
       return this;
     }
   }
@@ -187,25 +199,25 @@ export abstract class BaseContext {
     let messagePayload: IMessagePayload;
     let messageModel;
     if (payload instanceof MessageModel) {
-      this._logger.debug('messageModel payload provided');
+      this.logger().debug('messageModel payload provided');
       messageModel = payload;
     } else {
-      this._logger.debug('creating messageModel with payload');
+      this.logger().debug('creating messageModel with payload');
       messageModel = new MessageModel(payload);
     }
     if (messageModel.isValid()) {
-      this._logger.debug('valid messageModel');
+      this.logger().debug('valid messageModel');
       messagePayload = messageModel.messagePayload();
     } else {
-      this._logger.debug('message model validation error:', messageModel.validationError());
-      this._logger.debug('using rawPayload');
+      this.logger().debug('message model validation error:', messageModel.validationError());
+      this.logger().debug('using rawPayload');
       let rawMessagePayload = MessageModel.rawConversationMessage(payload);
       messageModel = new MessageModel(rawMessagePayload);
       if (messageModel.isValid()) {
-        this._logger.debug('valid messageModel for rawMessagePayload');
+        this.logger().debug('valid messageModel for rawMessagePayload');
         messagePayload = messageModel.messagePayload();
       } else {
-        this._logger.debug('message model raw message validation error:', messageModel.validationError());
+        this.logger().debug('message model raw message validation error:', messageModel.validationError());
       }
     }
     return messagePayload;

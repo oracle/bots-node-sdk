@@ -6,14 +6,14 @@ import { EntityResolutionContext } from './entityResolutionContext';
  * Invoke an entity resolution component
  * @param {object} component - component instance
  * @param {EntityResolutionContext} context - context derived for this invocation
- * @param {*} logger - logging instance to use
  * @private
  */
 export async function invokeResolveEntitiesEventHandlers(
   component: IComponent<IEntityResolverComponentMetadata>,
-  context: EntityResolutionContext,
-  logger: ILogger) {
-  let entityHandlers = component.handlers()[context.getEntityName()];
+  context: EntityResolutionContext) {
+  let logger = context.logger();
+  let entityHandlers = (typeof component.handlers === 'function') ? component.handlers() : component.handlers;
+
   for (let event of context.getRequest().events) {
     let eventName = event.name;
     let itemName = event.eventItem;
@@ -72,25 +72,24 @@ export async function invokeResolveEntitiesEventHandlers(
  */
 export function getResolveEntitiesEventHandlers(component): string[] {
   let events: string[] = [];
-  let handlers = component.handlers();
+  let handlers = (typeof component.handlers === 'function') ? component.handlers() : component.handlers;
   if (handlers) {
     Object.keys(handlers).forEach(key => {
-      let entObject = handlers[key];
-      if (entObject.entity) {
-        Object.keys(entObject.entity).forEach(event => {
-          events.push(`${key}.entity.${event}`);
+      if (key === 'entity') {
+        Object.keys(handlers[key]).forEach(event => {
+          events.push(`entity.${event}`);
         });
       }
-      if (entObject.items) {
-        Object.keys(entObject.items).forEach(itemKey => {
-          Object.keys(entObject.items[itemKey]).forEach(event => {
-            events.push(`${key}.items.${itemKey}.${event}`);
+      if (key === 'items') {
+        Object.keys(handlers[key]).forEach(itemKey => {
+          Object.keys(handlers[key][itemKey]).forEach(event => {
+            events.push(`items.${itemKey}.${event}`);
           });
         });
       }
-      if (entObject.custom) {
-        Object.keys(entObject.custom).forEach(event => {
-          events.push(`${key}.custom.${event}`);
+      if (key === 'custom') {
+        Object.keys(handlers[key]).forEach(event => {
+          events.push(`custom.${event}`);
         });
       }
     });

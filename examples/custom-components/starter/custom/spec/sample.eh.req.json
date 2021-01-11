@@ -22,6 +22,7 @@
     "skippedItems": [],
     "allMatches": [{"name": "Date", "type": "ENTITY", "entityName" : "DATE"}],
     "resolvingField": "Type",
+    "useFullEntityMatches": false,
     "userInput": "expense taxi and flight and meal",
     "disambiguationValues": {"Type": ["Taxi","Flight"]}
   },      

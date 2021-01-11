@@ -32,6 +32,8 @@ export interface IEntityResolutionStatus {
   allMatches?: ICompositeBagItem[];
   disambiguationValues: { [name: string]: any[] };
   userInput?: string;
+  enumValues: object[],
+  useFullEntityMatches: true;
   customProperties: { [name: string]: any };
   shouldPromptCache: any;
 }
@@ -170,6 +172,16 @@ export class EntityResolutionContext extends BaseContext {
   }
 
   /**
+   * Sets the disambiguation values for a specific bag item
+   * @param {string} itemName - name of the composite bag item
+   * @param {object[]} disambiguationValues - this is a string array for bag items that have a custom
+   * entity type, and a JSONObject array for bag items with a system entity type
+   */
+  setDisambiguationValues(itemName: string, disambiguationValues: any[]) {
+    this._entityStatus.disambiguationValues[itemName] = disambiguationValues;
+  }
+
+  /**
    * Removes the disambiguation values that are found based on the last user input for a specific bag item
    * @param {string} itemName - name of the composite bag item, if not specified, all disambiguation values
    * of all items will be cleared
@@ -197,6 +209,18 @@ export class EntityResolutionContext extends BaseContext {
    */
   getUserInput(): string {
     return this._entityStatus.userInput;
+  }
+
+  /**
+   * Returns boolean flag indicating whether the component used to resolve the composite bag entity
+   * (System.ResolveEntities or System.CommonResponse) has set the useFullEntityMatches property to true.
+   * When set to true, custom entity values are stored as JSON object, similar to the builtin entities
+   * that are always stored as JSON object.
+   *
+   * @return {boolean} fullEntityMatches flag
+   */
+  isFullEntityMatches(): boolean {
+    return this._entityStatus.useFullEntityMatches;
   }
 
   /**
@@ -315,6 +339,15 @@ export class EntityResolutionContext extends BaseContext {
   }
 
   /**
+   * Returns list of enumeration values for the bag item that is currently being resolved.
+   * This list is paginated, it only includes the values in current range
+   * @return {object[]} list of enumeration values
+   */
+  getEnumValues(): object[] {
+    return this._entityStatus.enumValues;
+  }
+
+  /**
    * A bag item of type system entity, LOCATION and ATTACHMENT has a JSON Object as value.
    * With this function you can override the default display properties of the JSON
    * Object that should be used to print out a string representation of the value.
@@ -342,9 +375,13 @@ export class EntityResolutionContext extends BaseContext {
   }
 
   /**
-   * Returns the display value for a composite bag item. For bag items with a custom entity type
-   * or STRING items, the display value is the same as the actual value. For system entities, LOCATION
-   * and ATTACHMENT the configured display properties and display function determine the display value
+   * Returns the display value for a composite bag item.
+   * For bag items with a custom entity type, the display value returned is the value property of the
+   * JSON Object value when isFullEntityMatches returns true. When isFullEntityMatches returns false, the actual value is returned.
+   * For STRING bag item types, the display value is the same as the actual value.
+   * For system entities, and for bag item types LOCATION and ATTACHMENT the configured display
+   * properties and display function determine the display value
+   * @see isFullEntityMatches
    * @see setSystemEntityDisplayProperties
    * @see setSystemEntityDisplayFunction
    * @return {string} display value of composite bag item
@@ -355,7 +392,7 @@ export class EntityResolutionContext extends BaseContext {
     for (let item of this.getEntityItems()) {
       if (item.name === itemName) {
         // bag item types ATTACHMENT and LOCATION also have display properties
-        let entityName = item.entityName ? item.entityName : item.type;
+        let entityName = item.entityName ? item.entityName : item.type + '_ITEM';
         itemValue =  this._getDisplayValue(entityName, itemValue);
       }
     }
@@ -363,9 +400,8 @@ export class EntityResolutionContext extends BaseContext {
   }
 
   /**
-   * Returns the display value for a composite bag item. For bag items with a custom entity type
-   * or STRING items, the display value is the same as the actual value. For system entities, LOCATION
-   * and ATTACHMENT the configured display properties and display function determine the display value
+   * Returns the display values for a composite bag entity.
+   * @see getDisplayValue
    * @see setSystemEntityDisplayProperties
    * @see setSystemEntityDisplayFunction
    * @return {string[]} list of display values of composite bag item
@@ -386,8 +422,24 @@ export class EntityResolutionContext extends BaseContext {
     return itemValues;
   }
 
+  /**
+   * Cancels the entity resolution process and sets the 'cancel' transition on the ResolveEntities or Common Response component.
+   */
   cancel(): void {
     this.getResponse().cancel = true;
+  }
+
+  /**
+   * Get translated string using a resource bundle key defined in the skill.
+   * IMPORTANT: for this method to work the resource bundle must be defined as a context variable in the dialog flow using the name 'rb'.
+   * @return {string} resource bundle freemarker expression that will be resolved when event handler response is received by dialog engine
+   * @param {string} rbKey - key of the resource bundle entry defined with the skill that should be used to translate
+   * @param {string} rbArgs - substitution variables
+   */
+  translate(rbKey: string, ...rbArgs: string[]) {
+    // create freemarker expression that will be resolved in runtime after event handler response is received
+    let exp = '${rb(\'' + rbKey + '\',\'' + rbArgs.join('\', \'') + '\')}';
+    return exp;
   }
 
   /**
@@ -416,7 +468,7 @@ export class EntityResolutionContext extends BaseContext {
   }
 
   /**
-   * Configure default display properties for all system entities
+   * Configure default display properties for all system entities, and ATTACHMENT and LOCATION item types
    * INTERNAL ONLY - DO NOT USE
    * @private
    */
@@ -431,11 +483,12 @@ export class EntityResolutionContext extends BaseContext {
       // tslint:disable-next-line:max-line-length
       , 'DURATION': {'properties': ['startDate', 'endDate'], 'function': ((startDate, endDate) => new Date(startDate).toDateString() + ' - ' + new Date(endDate).toDateString())}
       , 'ADDRESS': {'properties': ['originalString']}
+      , 'PERSON': {'properties': ['originalString']}
       , 'PHONE_NUMBER': {'properties': ['completeNumber']}
       , 'SET': {'properties': ['originalString']}
       , 'URL': {'properties': ['fullPath']}
-      , 'ATTACHMENT': {'properties': ['url']}
-      , 'LOCATION': {'properties': ['latitude, longitude']}
+      , 'ATTACHMENT_ITEM': {'properties': ['url']}
+      , 'LOCATION_ITEM': {'properties': ['latitude, longitude']}
     };
   }
 
@@ -450,15 +503,27 @@ export class EntityResolutionContext extends BaseContext {
    */
   private _getDisplayValue(entityName: string, rawValue: any) {
     let props = this._systemEntityDisplayProperties[entityName];
-    if (props && props.properties) {
-      let args = props.properties.map(p => rawValue[p]);
-      if (props.hasOwnProperty('function')) {
-        return props['function'](...args);
+    let self = this;
+    let getValue = (itemValue: any) => {
+      if (props && props.properties) {
+        let args = props.properties.map(p => itemValue[p]);
+        if (props.hasOwnProperty('function')) {
+          return props['function'](...args);
+        } else {
+          return args.join(' ');
+        }
       } else {
-        return args.join(' ');
+        if (self.isFullEntityMatches() && itemValue && itemValue.hasOwnProperty('value')) {
+          return itemValue.value;
+        } else {
+          return itemValue;
+        }
       }
+    };
+    if (Array.isArray(rawValue)) {
+      return rawValue.map(v => getValue(v)).join(', ');
     } else {
-      return rawValue;
+      return getValue(rawValue);
     }
   }
 
