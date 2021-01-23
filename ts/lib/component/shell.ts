@@ -2,9 +2,10 @@ import { CommonProvider } from '../../common/provider';
 import { CustomComponentContext } from './sdk';
 import { EntityResolutionContext } from '../entity';
 import * as entityUtil from '../entity/utils';
-import { IComponent } from './kinds';
+import { Component, CustomComponent, EntityEventHandler } from './kinds';
 
 type ContextType = CustomComponentContext | EntityResolutionContext;
+type ComponentType = Component | CustomComponent;
 type Ctor<T> = new (...args: any[]) => T;
 
 export function ComponentShell(config, registry) {
@@ -25,11 +26,11 @@ export function ComponentShell(config, registry) {
    * @param {Function} ContextCtor - Either CustomComponentContext or EntityResolutionContext constructors
    * @param {object} [mixins] - any object mixins to assign to the component object
    */
-  function resolveInvocation<T extends ContextType> (
+  function resolveInvocation<T extends ContextType, C extends ComponentType> (
     componentName: string,
     requestBody: any,
     ContextCtor: Ctor<T>,
-    mixins?: any): { context: T, component: IComponent} {
+    mixins?: any): { context: T, component: C} {
     // Resolve component
     const component = registry.getComponent(componentName);
     if (!component) {
@@ -112,21 +113,46 @@ export function ComponentShell(config, registry) {
 
       try {
         const { component, context } =
-          resolveInvocation(componentName, requestBody, CustomComponentContext, sdkMixin);
+          resolveInvocation<CustomComponentContext, CustomComponent>(componentName, requestBody, CustomComponentContext, sdkMixin);
         // invoke custom component
-        // for now we check if the error is the sdk (old way of using done(sdk)) to be backward compatible
         logger.debug('Invoking component ' + componentName);
-        component.invoke(context, (componentErr: any) => {
-          if (!componentErr || componentErr === context) {
-            callback(null, context.response());
-          } else {
-            callback(componentErr, null);
-          }
-        });
+        // if the invoke method has 2 arguments, the second is the callback, and we invoke the old way for
+        // backwards compatibility
+        // if there is 1 argument we use the new async invoke expecting a promise
+        const argsCount =  this.getNumberOfArgs(component.invoke);
+        if (argsCount === 1) {
+          // invoke can be async (returning a promise), but we dont want to enforce that
+          // hence Promise.resolve wrapping of invocation
+          Promise.resolve(component.invoke(context)).then(() => {
+            callback(null, context.getResponse());
+          }).catch(err => {
+            if (!(err instanceof Error)) {
+              err = new Error(err);
+            }
+            logger.debug('Invocation error: ' + err.message);
+            callback(err);
+          });
+        } else if (argsCount === 2) {
+          component.invoke(context, (componentErr: any) => {
+            if (!componentErr || componentErr === context) {
+              callback(null, context.response());
+            } else {
+              callback(componentErr, null);
+            }
+          });
+        } else {
+          throw new Error(`Custom component ${componentName} has invoke method with invalid number of arguments.`);
+        }
       } catch (err) {
         logger.error('Invocation error: ' + err.message);
         callback(err);
       }
+    },
+
+    getNumberOfArgs: function(func) {
+      const funcStr = func.toString()
+      const argnames =  funcStr.slice(funcStr.indexOf('(') + 1, funcStr.indexOf(')')).match(/([^\s,]+)/g) || [];
+      return argnames.length;
     },
 
     /**
@@ -153,7 +179,7 @@ export function ComponentShell(config, registry) {
       // or it is regular CC invocation
       try {
         const { component, context } =
-          resolveInvocation(componentName, requestBody, EntityResolutionContext, sdkMixin);
+          resolveInvocation<EntityResolutionContext, EntityEventHandler>(componentName, requestBody, EntityResolutionContext, sdkMixin);
 
         entityUtil.invokeResolveEntitiesEventHandlers(component, context).then(() => {
           callback(null, context.getResponse());

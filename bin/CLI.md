@@ -68,22 +68,24 @@ projects with more components. If provided, `[dest]` or `--name` will be used fo
 
 | Option | Description | Default |
 |--|--|--|
+| `-l --language` | Specify the language to use `[t]ypescript` or `[j]avascript` | `javascript` |
+| `-c --component-name ` | Use a name for the initial component in your project | `helloWorld` |
+| `-t --component-type ` | Specify the component type `[c]ustom` or `[e]ntityEventHandler` to create | `custom` |
 | `-s --skip-install` | Instruct the command to skip `npm install` after code generation | `false` |
 | `-r --run` | Starts the custom component service after install completes | `false` |
-| `-n --name <name>` | Specify a name for the component package. If not provided, the directory name, or existing `package.json` name will be used | |
-| `-c --component-name <name>` | Use a name for the initial component in your project | `hello.world` |
-| `-t --component-type <type>` | Specify the type `<custom,resolveentities>` of component to create | `custom` |
+| `-n --name ` | Specify a name for the component package. If not provided, the current working directory name, or existing `package.json` name will be used | |
 
-### 2. Add Components: `init component [options] <dest>`
+### 2. Add Components: `init component <name> <type> <dest>`
 
-This command will initialize a _new_ Custom Component within an **existing** component
-package, and write to the `<dest>` output path.
+This command will create a _new_ custom component or event handler within an **existing** component
+package, and write to the `<dest>` output path. If the output path is not specified, the component will be written to the `components` directory or `src\components` directory when using typesript. If this directory doesn't exist it will be created.
+The component `<name>` and `<type>` are required and `<type>` should be set to `[c]ustom` or `[e]ntityEventHandler`.
 
-| Option | Description | Default |
-|--|--|--|
-| `-n --name <name>` | Provide a name for the custom component | `hello.world` |
-| `-t --type <type>` | Specify the type `<custom,resolveentities>` of component to create | `custom` |
-| `-e --entity-name <name>` | Provide the entity name used if the `resolveentities` component type is specified. | `SomeEntity` |
+For example, to create a new entity event handler component named `resolvePizza`, you can use the following command:
+
+```shell
+bots-node-sdk init component resolvePizza e
+```
 
 ### 3. Start Dev Server: `service [options] [...packages]`
 

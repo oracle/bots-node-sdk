@@ -1,13 +1,13 @@
-import { ICallback } from '../common/definitions';
+import { InvocationCallback } from '../common/definitions';
 import { ComponentListItem, ComponentRegistry } from '../lib/component/registry';
-import { IMobileCloudRequest, MiddlewareAbstract, express } from './abstract';
+import { MobileCloudRequest, MiddlewareAbstract, express } from './abstract';
 import { ComponentShell as Shell } from '../lib/component/shell';
 import { STATUS_CODE } from './codes';
 
 /**
  * component middleware specific options
  */
-export interface IComponentMiddlewareOptions {
+export interface ComponentMiddlewareOptions {
   /** base url for custom component endpoints (defaults to '/') */
   baseUrl?: string;
   /** working directory of the project runtime (defaults to process.cwd()) */
@@ -32,11 +32,11 @@ const [PARAM_COMPONENT] = ['component'];
  */
 export class ComponentMiddleware extends MiddlewareAbstract {
 
-  protected _init(service: express.Express, options: IComponentMiddlewareOptions): void {
+  protected _init(service: express.Express, options: ComponentMiddlewareOptions): void {
     if (!service || typeof service.get !== 'function' || typeof service.post !== 'function') {
       throw new Error('Cannot initialize component middleware: service argument is required');
     }
-    const opts: IComponentMiddlewareOptions = {
+    const opts: ComponentMiddlewareOptions = {
       // option defaults
       // autocollect: ComponentRegistry.COMPONENT_DIR,
       baseUrl: '/',
@@ -113,8 +113,8 @@ export class ComponentMiddleware extends MiddlewareAbstract {
   private __invoke(
     componentName: string,
     registry: ComponentRegistry,
-    options: IComponentMiddlewareOptions,
-    req: IMobileCloudRequest,
+    options: ComponentMiddlewareOptions,
+    req: MobileCloudRequest,
     res: express.Response
   ): void {
     // apply mixins and invoke component
@@ -130,7 +130,7 @@ export class ComponentMiddleware extends MiddlewareAbstract {
    * convenience handler for CC invocation
    * @param res: express.Response
    */
-  private __invocationCb(res: express.Response): ICallback {
+  private __invocationCb(res: express.Response): InvocationCallback {
     return (err, data) => {
       // direct port from components.js
       if (!err) {

@@ -1,6 +1,6 @@
 import * as util from './util/';
-import { IApproximateTextMatch } from './util/textUtil';
-export { IApproximateTextMatch }
+import { ApproximateTextMatch } from './util/textUtil';
+export { ApproximateTextMatch }
 
 /**
  * Util module encapsulating various utility methods, classes, etc.

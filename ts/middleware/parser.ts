@@ -1,11 +1,11 @@
 import * as bodyParser from 'body-parser';
 import { CONSTANTS } from '../common/constants';
-import { MiddlewareAbstract, express, IServiceInstance } from './abstract';
+import { MiddlewareAbstract, express, ServiceInstance } from './abstract';
 
 /**
  * concentrated parser middleware options
  */
-export interface IParserMiddlewareOptions {
+export interface ParserMiddlewareOptions {
   /** urlencoded content type parsing */
   urlencoded?: boolean|object;
   /** json body parsing configuration */
@@ -19,7 +19,7 @@ export interface IParserMiddlewareOptions {
 /**
  * extended request object with raw properties
  */
-export interface IParsedRequest extends express.Request {
+export interface ParsedRequest extends express.Request {
   rawBody: Buffer,
   encoding: string,
 }
@@ -29,7 +29,7 @@ export interface IParsedRequest extends express.Request {
  */
 export class ParserMiddleware extends MiddlewareAbstract {
 
-  protected _init(service: IServiceInstance, options: IParserMiddlewareOptions): void {
+  protected _init(service: ServiceInstance, options: ParserMiddlewareOptions): void {
     if (options.urlencoded || options.urlencoded == null) {
       this._addParser(service, bodyParser.urlencoded(this._getOptions({ extended: true }, options.urlencoded)));
     }
@@ -43,7 +43,7 @@ export class ParserMiddleware extends MiddlewareAbstract {
    * @param service - application or router layer to add
    * @param parser - body parser middleware
    */
-  private _addParser(service: IServiceInstance, parser: express.RequestHandler) {
+  private _addParser(service: ServiceInstance, parser: express.RequestHandler) {
     let stack = (service && (service['_router'] || service).stack) || [];
     let replaced = false;
 
@@ -63,7 +63,7 @@ export class ParserMiddleware extends MiddlewareAbstract {
   /**
    * get common options object
    */
-  private _commonOptions(): IParserMiddlewareOptions {
+  private _commonOptions(): ParserMiddlewareOptions {
     const { limit, verify } = this.options;
     return {
       limit: limit || '5mb',

@@ -4,7 +4,7 @@
   "events": [
     { "name": "publishMessage", "custom": false }
   ],
-  "variableName": "{{entityNameLower}}",
+  "variableName": "expense",
   "candidateMessages": [
     {
       "text": "How much did you pay?",
@@ -12,7 +12,13 @@
     }
   ],
   "entityResolutionStatus": {
-    "updatedEntities": [],
+    "updatedEntities": [{
+            "sequenceNr": 1,
+            "name": "Type",
+            "type": "ENTITY",
+            "entityName": "ExpenseType",
+            "description": "the type"
+          }],
     "outOfOrderMatches": [],
     "customProperties": {},
     "shouldPromptCache": {},
@@ -25,9 +31,9 @@
   },      
   "context": {
     "variables": {
-      "{{entityNameLower}}" : {
+      "expense" : {
         "type": {
-          "name": "{{entityName}}",
+          "name": "Expense",
           "type": "COMPOSITEBAG",
           "multiValue": false,
           "fuzzyMatch": false,
@@ -57,7 +63,7 @@
             "description": "the receipt"
           }]
         },
-        "value": null,
+        "value": {"entityName": "Expense", "Type": "PEPPERONI"},
         "entity": true
       }
     }  

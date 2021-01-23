@@ -51,7 +51,7 @@ describe(`CLI: bots-node-sdk`, () => {
         })
         .then(() => run(outDir, ...init)) // run again as update
         .then(() => {
-          expect(fs.existsSync(path.join(outDir, 'components', `hello.world.js`))).toBe(true);
+          expect(fs.existsSync(path.join(outDir, 'components', `helloWorld.js`))).toBe(true);
         }).then(done).catch(done.fail);
     }, 1e4);
 
@@ -61,18 +61,19 @@ describe(`CLI: bots-node-sdk`, () => {
       it('should require a name', done => {
         run(null, ...initc)
           .catch(e => {
-            expect(e).toContain('name is required');
+            expect(e).toContain('Please specify component name');
             done();
           });
       });
 
-      it('should require a destination', done => {
-        run(null, ...initc.concat('--name', 'foo'))
+      it('should require a type', done => {
+        run(null, ...initc.concat('foo'))
           .catch(e => {
-            expect(e).toContain('Missing output destination');
+            expect(e).toContain('Please specify component type');
             done();
           });
       });
+
     });
 
     // TODO standalone component init...

@@ -2,8 +2,9 @@
 export * from './kinds';
 export { ComponentAbstract } from './abstract';
 export { ComponentRegistry } from './registry';
+export { ComponentListItem } from './registry';
+export { ComponentPackage } from './registry';
 
-export { IComponentRequestBody } from './request';
+export { ComponentRequestBody } from './request';
 export { CustomComponentContext } from './sdk';
-export { CustomComponentContext as Conversation } from './sdk'; // alias
 export { ComponentShell } from './shell';

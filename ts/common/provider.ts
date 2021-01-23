@@ -1,4 +1,4 @@
-import { ILogger } from './definitions';
+import { Logger } from './definitions';
 
 export const PROVIDER_KEY_LOGGER = 'logger';
 export const PROVIDER_KEY_JOI = '@hapi/joi';
@@ -15,16 +15,16 @@ export type Provider = ProviderDefinition | ProviderDefinition[];
  * polyfill basic method implementations with noop
  * @param logger
  */
-function polyfillLogger(logger: any): ILogger {
+function polyfillLogger(logger: any): Logger {
   const noop = () => { /*noop log*/ };
   // noop unknown methods
   ['log', 'trace', 'info', 'debug', 'warn', 'error', 'fatal']
     .filter(method => !logger[method])
     .forEach(method => logger[method] = noop);
-  return logger as ILogger;
+  return logger as Logger;
 }
 
-const _DEFAULT_LOGGER: ILogger = polyfillLogger({ });
+const _DEFAULT_LOGGER: Logger = polyfillLogger({ });
 
 /**
  * CommonProvider static object reference.
@@ -73,7 +73,7 @@ export class CommonProvider {
    * accessor for a shared logger reference.
    * @return logger interface object
    */
-  public static getLogger(): ILogger {
+  public static getLogger(): Logger {
     const logger = this.get(PROVIDER_KEY_LOGGER) || _DEFAULT_LOGGER;
     return polyfillLogger(logger);
   }

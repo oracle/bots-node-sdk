@@ -1,383 +1,130 @@
-# Oracle Bots Node.js SDK
+# Oracle Digital Assistant Node.js SDK
 
-This SDK is the main developer resource for Oracle Bots integrations
-in a Node.js express environment. This package provides two primary solutions for
-custom implementations against the [Oracle Bots](https://docs.oracle.com/en/cloud/paas/mobile-autonomous-cloud/use-chatbot/overview1.html)
-platform: Running [Custom Component Services](https://docs.oracle.com/en/cloud/paas/mobile-autonomous-cloud/use-chatbot/bot-components.html)
-and/or [Webhook Channels](https://docs.oracle.com/en/cloud/paas/mobile-autonomous-cloud/use-chatbot/bot-channels.html).
+This SDK is the main developer resource for [Oracle Digital Asistant](https://docs.oracle.com/en/cloud/paas/digital-assistant/index.html) (ODA) integrations in a Node.js express environment. It provides two primary solutions for custom implementations against the ODA platform: 
+- Creating [Custom Component Services](https://docs.oracle.com/en/cloud/paas/digital-assistant/use-chatbot/components1.html#GUID-D4DB30EC-D089-4809-A845-31FAAE1794AA)
+- Creating [Webhooks](https://docs.oracle.com/en/cloud/paas/digital-assistant/use-chatbot/webhooks.html#GUID-96CCA06D-0432-4F20-8CDD-E60161F46680).
 
-- [Installation](#installation) - Installation and usage information.
-- [CLI](#cli) - Developer tools and utilities for getting started.
-- [Custom Component](#custom-components) - Services to enrich a conversation flow with custom logic, API integrations, messages, and more.
-- [Webhook](#webhook) - Integrate with custom messaging channels using incoming/outgoing webhook.<!--[nodoc]-->
-- [Documentation](https://oracle.github.io/bots-node-sdk) - Full SDK documentation.
-<!--[/nodoc]-->
-<!--[nodoc]-->
-[![npm version](https://badge.fury.io/js/%40oracle%2Fbots-node-sdk.svg)](https://badge.fury.io/js/%40oracle%2Fbots-node-sdk)
-[![wercker status](https://app.wercker.com/status/39bb567cbcdc92b7dcbb3a78f144102d/s/master "wercker status")](https://app.wercker.com/project/byKey/39bb567cbcdc92b7dcbb3a78f144102d)
-<!--[/nodoc]-->
-
----
 
 ## Installation
+
+To install globally
+
+```text
+npm install -g @oracle/bots-node-sdk
+```
+
+To install locally in your current directory:
 
 ```text
 npm install @oracle/bots-node-sdk
 ```
 
-Most often, this package is installed as a dependency of an express application
-where any appropriate middleware is then applied.
+When installed locally use `npx @oracle/bots-node-sdk` instead of just `bots-node-sdk` to run the command-line interface (CLI) commands described below in getting started section.
 
-The SDK also ships [CLI](#cli) tools with some quick start project generators.
+## Getting Started 
 
-## CLI
+This section explains the basic CLI commands to get your component service up and running. See the [CLI documentation](https://github.com/oracle/bots-node-sdk/blob/master/bin/CLI.md) for a complete list of all the arguments and options you can configure with each command.
 
-This package includes several command line capabilties designed to facilitate
-custom development with the SDK itself. See complete documentation
-[here](https://github.com/oracle/bots-node-sdk/blob/master/bin/CLI.md)
+### Creating a New Component Service
 
-```shell
-npx @oracle/bots-node-sdk --help
+```text
+bots-node-sdk init MyComponentService
 ```
 
-## Basic Setup
+This creates a new commponent service named `MyComponentService` in a directory by the same name.
+The component service includes one sample custom component named `helloWorld`.
 
-```javascript
-const express = require('express');
-const OracleBot = require('@oracle/bots-node-sdk');
+### Adding a Custom Component to Existing Service
 
-const app = express();
-OracleBot.init(app);
-// implement custom bot services... (see below)
+```text
+bots-node-sdk init component myCustomComponent custom
 ```
 
-### Custom Logging
+This creates a new custom component named `myCustomComponent`. Instead of typing `custom` for the component type argument, you can type `c` as a shortcut.
 
-If verbose logging details are desired, you may configure a logging utility of
-your choice, and initialize the SDK accordingly.
+### Adding an Entity Event Handler to Existing Service
 
-```javascript
-OracleBot.init(app, {
-  logger: console,
-});
+```text
+bots-node-sdk init component myEventHandler entityEventHandler
 ```
 
-## Custom Components
+This creates a new entity event handler named `myEventHandler`. Instead of typing `entityEventHandler` for the component type argument, you can type `e` as a shortcut.
 
-Each state within a Bot flow calls a component to perform actions ranging
-from basic interactions like user input and outputting response text to
-some service-specific actions like fulfilling an order or booking a flight.
+### Creating a Component Service Package
 
-The platform has many [built-in components](https://docs.oracle.com/en/cloud/paas/mobile-autonomous-cloud/use-chatbot/reference1.html)
-to support basic actions like setting variables, allowing OAuth, and enabling
-user input. In cases where your bot design calls for unique actions outside of
-these functions, you’ll be writing [Custom Components](https://docs.oracle.com/en/cloud/paas/mobile-autonomous-cloud/use-chatbot/bot-components.html).
-These allow your bot to call REST APIs, implement business logic, transition
-state, customize messages, etc.
+```text
+npm pack
+```
+This creates a component service package .tgz file that can be uploaded to the ODA embedded container.
 
-A sepcial flavor of custom components are entity event handler components that can be used to execute custom logic while resolving composite bag entities using the system components System.ResolveEntities or System.CommonResponse.
+### Deploying as External Component Service
 
-This package provides the necessary middleware and libraries for incorporating
-Custom Components and Event Handlers into your Bot dialog.
+```text
+npm start
+```
+This creates a component service running on a local node server. 
+The following command returns the metadata of all deployed components:
 
-- [Custom Component Service](#custom-component-service)
-- [Custom Component Code](#custom-component-code)
+```text
+curl -X GET localhost:3000/components
+```
+
+To deploy to a docker container, you can use the following commands:
+
+```text
+npm run-script docker-build
+docker-compose up
+```
+
+### Using Typescript
+
+The SDK has full support for typescript. If you want to use typescript to write your custom components and event handlers, all you need to do is specify the language option when creating the component service:
+
+```text
+bots-node-sdk init --language typescript MyComponentService
+```
+
+or the shorter format:
+
+```text
+bots-node-sdk init -l t MyComponentService
+```
+
+This will set up your project for typescript, if you subsequently use the `init component` command to add a component to the service, it will create a typescript component instead of a javascript component.
+
+When you run any of the other CLI commands described above after setting up your project with typescript, the typescript files will be automatically transpiled to javascript.
+
+The benefit of using typescript over javascript is that it is strongly typed, so if you use an editor like Visual Code Studio, you will get code completion features and compile-time type checking, similar to Java.
+
+See the README.md created in your scaffolded typescript project for more information.   
+
+## More Information
 
 <!--[nodoc]-->
-### QuickStart for Custom Components
-
-- [Component Starter Example](https://github.com/oracle/bots-node-sdk/blob/master/examples/custom-components/starter)
-- [CLI starter](https://github.com/oracle/bots-node-sdk/blob/master/bin/CLI.md)
+- [Using the CLI](https://github.com/oracle/bots-node-sdk/blob/master/bin/CLI.md) - Command line capabilities to facilitate writing custom components and entity event handlers.
+- [Writing Custom Components](https://github.com/oracle/bots-node-sdk/blob/master/CUSTOM_COMPONENT.md) - Guidelines and tips for writing custom components.
+- [Writing Entity Event Handlers](https://github.com/oracle/bots-node-sdk/blob/master/ENTIY_EVENT_HANDLER.md) - Guidelines and tips for writing entity event handlers.
+- [Conversation Messaging](https://github.com/oracle/bots-node-sdk/blob/master/MESSAGE_MODEL.md) - Creating conversation messages from custom code
+- [Writing Webhooks]((https://github.com/oracle/bots-node-sdk/blob/master/WEBHOOK.md) - Integrate with custom messaging channels using incoming/outgoing webhook.
+- [Unit Testing](https://github.com/oracle/bots-node-sdk/blob/master/testing/TESTING.md) - Unit testing facilities.
+- [Documentation](https://oracle.github.io/bots-node-sdk) - Full SDK documentation.
+- [Release Notes](https://github.com/oracle/bots-node-sdk/blob/master/RELEASE_NOTES.md) - List of new features and fixed issues for each release
 <!--[/nodoc]-->
 
-### Custom Component Service
-
-The API for exposing custom components to your bot is established using the
-middleware included in this package.
-
-Initializing the component middleware includes some basic configurations.
-Most important is the `register` option, which specifies component
-paths or component objects - telling the service where Custom Component sources
-are located within your project.
-
-- `cwd` **string** - Top level directory to which all other paths are relative. (`__dirname` is recommended).
-- `register` **(string|object(s)|function)[]** - Defines component registry from array of the paths to resolve.
-  - String paths may also be directories, which are scanned recursively and added to the registry.
-  - Multiple components may also be exported from a single file.
-
-```javascript
-const express = require('express');
-const OracleBot = require('@oracle/bots-node-sdk');
-
-const app = express();
-OracleBot.init(app);
-
-// implement custom component api
-OracleBot.Middleware.customComponent(app, {
-  baseUrl: '/components',
-  cwd: __dirname,
-  register: [
-    './path/to/a/component',
-    './path/to/other/components',
-    './path/to/a/directory',
-  ]
-});
-```
-
-### Custom Component Code
-
-Using the `@oracle/bots-node-sdk` for Custom Component development supports a
-flexible approach to authoring components. This means that many structures for
-the implementation of a Custom Component are possible. Whatever the approach, the
-fundamental interface is required as follows:
-
-```javascript
-// interface for a custom component implementation
-{
-  metadata(): {name: string, properties?: {[name:string]: string}, supportedActions?: string[]};
-  invoke(conversation: Conversation, done: () => {}): void;
-}
-```
-
-One supported implementation is to use a simple object with `metadata` and `invoke`
-function members:
-
-```javascript
-// mycomponent.js
-module.exports = {
-  metadata: () => ({
-    name: 'my.custom.component',
-    properties: {},
-    supportedActions: []
-  }),
-  invoke: (conversation, done) => {
-    conversation.reply('hello').transition();
-    done();
-  }
-}
-```
-Instead of using a function for `metadata` you can also use a simple object:
-
-```javascript
-// mycomponent.js
-module.exports = {
-  metadata: {
-    name: 'my.custom.component',
-    properties: {},
-    supportedActions: []
-  },
-  invoke: (conversation, done) => {
-    conversation.reply('hello').transition();
-    done();
-  }
-}
-```
-
-You may also wish to define a component by exporting class(es) and **optionally**
-extending the `ComponentAbstract` class for additional convenience members.
-**NOTE** Component classes are instantiated as _singletons_.
-
-```javascript
-// mycomponent.js
-const { ComponentAbstract } = require('@oracle/bots-node-sdk/lib');
-
-module.exports = class MyComponent extends ComponentAbstract {
-  metadata() {
-    return {
-      name: 'my.custom.component',
-      properties: {},
-      supportedActions: []
-    }
-  }
-  invoke(conversation, done) {
-    conversation.reply('hello').transition();
-    done();
-  }
-}
-```
-### Event Handler Code
-
-Event handlers have a slightly different `metadata` object, and contain a `handlers` object instead of the `invoke` function:
-
-```javascript
-// myeventhandler.js
-module.exports = {
-  metadata: {
-    name: 'my.entity.event.handler',
-    eventHandlerType: 'ResolveEntities'
-  },
-  handlers:  {
-    entity: {
-      resolved:async (event, context) => {
-        // logic to execute once entity is resolved goes here
-      }
-      // more entity-level handlers here
-    },
-    items: {
-      someCompositeBagItemName: {
-        // item-level handlers here
-      }
-    },
-    custom: {
-      // custom handlers here
-    },
-  }
-}
-```
-
-The `metadata` and `handlers` members can be defined as a function instead of an object if needed.
-
-## Webhook
-
-The fundamental mechanism for sending and receiving messages with the Bot platform
-is through _asynchronous_ inbound and outbound messaging. The platform supports
-several **built-in** channels natively, and **webhook** for any other messaging
-service or client.
-
-Implementing webhook as a channel can differ greatly across clients. Generally
-each client uses a unique message format, and different mechanisms for sending or
-receiving messages. This package includes these necessary integration tools.
-
-- [Webhook Client](#webhook-client)
-- [Webhook Utils](#webhook-utils)
-
-<!--[nodoc]-->
-### QuickStart for Webhook
-
-- [Webhook Starter Example](https://github.com/oracle/bots-node-sdk/blob/master/examples/webhook/starter)
-<!--[/nodoc]-->
-
-### Webhook Client
-
-`WebhookClient` is a flexible library for integrating with webhook channels
-configured within your bot. Refer to the documentation and examples to further
-understand ways the webhook client may be implemented.
-
-```javascript
-const express = require('express');
-const OracleBot = require('@oracle/bots-node-sdk');
-
-const app = express();
-OracleBot.init(app);
-
-// implement webhook
-const { WebhookClient, WebhookEvent } = OracleBot.Middleware;
-
-const channel = {
-  url: process.env.BOT_WEBHOOK_URL,
-  secret: process.env.BOT_WEBHOOK_SECRET
-};
-const webhook = new WebhookClient({ channel: channel });
-webhook.on(WebhookEvent.ERROR, console.error); // receive errors
-
-// receive bot messages
-app.post('/bot/message', webhook.receiver()); // receive bot messages
-webhook.on(WebhookEvent.MESSAGE_RECEIVED, message => {
-  // format and send to messaging client...
-});
-
-// send messages to bot (example)
-app.post('/user/message', (req, res) => {
-  let message = {/* ... */}; // format according to MessageModel
-  webhook.send(message)
-    .then(() => res.send('ok'), e => res.status(400).end());
-});
-```
-
-> **TIP** `send()` supports an _optional_ `channel` as its
-second argument, thereby handling request-specific channel determination.
-
-### Webhook Utilities
-
-While `WebhookClient` is designed to support the majority of possible integration
-types, there may be cases where further control is needed. For this reason, and
-to support the full spectrum of integration designs, a series of utilities are
-exposed directly for interfacing with the platform's webhook channel.
-
-```javascript
-const { webhookUtil } = require('@oracle/bots-node-sdk/util');
-// ...
-webhookUtil.messageToBotWithProperties(url, secret, userId, messsage, extras, (err, result) => {
-
-});
-```
-
-## Message Formatting
-
-The Oracle Bots platform supports several
-[message formats](https://docs.oracle.com/en/cloud/paas/digital-assistant/use-chatbot/channels-topic.html#GUID-3D6DE5FA-B95A-42BF-8683-4C13AA45D5AD),
-as defined by the `MessageModel` class.
-
-The class provides several static methods used to create a stuctured object of a
-known Common Message Model message such as Text, Card, Attachment, Location,
-Postback or Raw type. It can be used within Custom Components, Webhook, or
-independently. In addition, MessageModel can be used in browsers. When used in
-browser, include the package `joi-browser`.
-
-```javascript
-const { MessageModel } = require('@oracle/bots-node-sdk/lib');
-// or
-const OracleBot = require('@oracle/bots-node-sdk');
-const { MessageModel } = OracleBot.Lib;
-```
-
-> **TIP:** Use `conversation.MessageModel()` to access from within a Custom
-Component invoke method. Use `webhook.MessageModel()` to access from within a `WebhookClient`
-instance.
-
-| Method | Purpose | Usage |
-|--|--|--|
-| `textConversationMessage` | Basic text | `inbound`, `outbound` |
-| `attachmentConversationMessage` | Support media URLs | `inbound`, `outbound` |
-| `cardConversationMessage` | Card presentation | `outbound` |
-| `postbackConversationMessage` | Submit postback payloads | `inbound` |
-| `locationConversationMessage` | Receive location payload | `inbound` |
-| `rawConversationMessage` | Freeform payload | `inbound`, `outbound` |
-
-### MessageModel Utilities
-
-Additionally, a set of utilities for MessageModel are provided. `Util.MessageModel`
-functions help deriving string or speech representation of a Conversation Message
-Model payload. This is used primarily to output text or speech to voice or
-text-based channels like Alexa and SMS.
-
-```javascript
-const { messageModelUtil } = require('@oracle/bots-node-sdk/util');
-// ...
-messageModelUtil.convertRespToText(message);
-```
-
-## Unit Testing
-
-The SDK also includes unit testing facilities, which can be utilized within
-your preferred test runner. Details may be found
-[here](https://github.com/oracle/bots-node-sdk/blob/master/testing/TESTING.md).
-
-## Using TypeScript
-
-This package includes `types`, and can therefore be used directly with TypeScript.
-
-```typescript
-import { Lib } from '@oracle/bots-node-sdk';
-
-class MyCustomComponent implements Lib.IComponent {
-  public metadata(): Lib.IComponentMetadata {
-    return { name: 'my.custom.component' }
-  }
-  public invoke(conversation: Lib.Conversation, done: () => void): void {
-    // ...
-  }
-}
-```
-
-<!--[nodoc]-->
 ## Contributing
 
+<!--[nodoc]-->
 `@oracle/bots-node-sdk` is an open source project. See
-[CONTRIBUTING](https://github.com/oracle/bots-node-sdk/blob/master/CONTRIBUTING.md) for details.<!--[/nodoc]-->
+[CONTRIBUTING](https://github.com/oracle/bots-node-sdk/blob/master/CONTRIBUTING.md) for details.
+<!--[/nodoc]-->
 
 ## License
 
-Copyright © 2018, Oracle and/or its affiliates. All rights reserved.
+Copyright © 2018-2021, Oracle and/or its affiliates. All rights reserved.
 
 The Universal Permissive License (UPL), Version 1.0
+
+<!--[nodoc]-->
+[![npm version](https://badge.fury.io/js/%40oracle%2Fbots-node-sdk.svg)](https://badge.fury.io/js/%40oracle%2Fbots-node-sdk)
+[![wercker status](https://app.wercker.com/status/39bb567cbcdc92b7dcbb3a78f144102d/s/master "wercker status")](https://app.wercker.com/project/byKey/39bb567cbcdc92b7dcbb3a78f144102d)
+<!--[/nodoc]-->

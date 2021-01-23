@@ -2,7 +2,7 @@
  * Definition of the component request object.
  * This interface represents the payload used for component invocation.
  */
-export interface IComponentRequestBody {
+export interface ComponentRequestBody {
   botId: string;
   platformVersion: string;
   context: { variables?: any; parent?: any };

@@ -1,16 +1,16 @@
 import * as express from 'express';
-import { ILogger } from '../common/definitions';
+import { Logger } from '../common/definitions';
 import { CommonProvider } from '../common/provider';
 export { express }
 
-export type IServiceInstance = express.Router | express.Express;
+export type ServiceInstance = express.Router | express.Express;
 
-export interface IStaticMiddlwareAbstract {
-  extend(service: IServiceInstance, options?: any);
-  new (service: IServiceInstance, options: any): MiddlewareAbstract
+export interface StaticMiddlwareAbstract {
+  extend(service: ServiceInstance, options?: any);
+  new (service: ServiceInstance, options: any): MiddlewareAbstract
 }
 
-export interface IParsedRequest extends express.Request {
+export interface ParsedRequest extends express.Request {
   body: any;
 }
 
@@ -18,7 +18,7 @@ export interface IParsedRequest extends express.Request {
  * interface for extended request object in OMCe
  * @see https://docs.oracle.com/en/cloud/paas/mobile-suite/develop/calling-apis-custom-code.html
  */
-export interface IMobileCloudRequest extends IParsedRequest {
+export interface MobileCloudRequest extends ParsedRequest {
   oracleMobile?: { [service: string]: { [method: string]: Function } };
 }
 
@@ -26,13 +26,13 @@ export interface IMobileCloudRequest extends IParsedRequest {
  * Embedded middleware abstraction layer.
  */
 export abstract class MiddlewareAbstract {
-  protected _logger: ILogger; // establish a namespaced logger instance
-  protected _service: IServiceInstance;
+  protected _logger: Logger; // establish a namespaced logger instance
+  protected _service: ServiceInstance;
 
   /**
    * static getter for class constructor
    */
-  private static get ctor(): IStaticMiddlwareAbstract {
+  private static get ctor(): StaticMiddlwareAbstract {
     return this as any;
   }
 
@@ -42,11 +42,11 @@ export abstract class MiddlewareAbstract {
    * @param options: any - Channel specific middleware options.
    * @return instantiated class.
    */
-  public static extend(service: IServiceInstance, options: any = {}): MiddlewareAbstract {
+  public static extend(service: ServiceInstance, options: any = {}): MiddlewareAbstract {
     return new this.ctor(service, options);
   }
 
-  constructor(service: IServiceInstance, protected options?: any) {
+  constructor(service: ServiceInstance, protected options?: any) {
     // setup additional iVars.
     this._logger = CommonProvider.getLogger();
     this._service = service;
@@ -64,6 +64,6 @@ export abstract class MiddlewareAbstract {
    * @param service: application service router
    * @param options: any channel specific middleware options.
    */
-  protected abstract _init(service: IServiceInstance, options: any): void;
+  protected abstract _init(service: ServiceInstance, options: any): void;
 
 }

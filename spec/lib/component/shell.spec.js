@@ -23,7 +23,7 @@ describe('Component Shell', () => {
       metadata: () => ({
         name: 'foo'
       }),
-      invoke: () => {
+      invoke: (context, done) => { // eslint-disable-line no-unused-vars
         throw new Error('nasty code');
       },
     };
@@ -46,6 +46,55 @@ describe('Component Shell', () => {
       });
     })).then(done).catch(done.fail);
   });
+
+  it('should handle component invocation without callback arg', done => {
+    const fooComponent = {
+      metadata: () => ({
+        name: 'foo'
+      }),
+      invoke: (context) => { // eslint-disable-line no-unused-vars
+        throw new Error('one arg');
+      },
+    };
+
+    const registry = ComponentRegistry.create(fooComponent);
+    const shell = ComponentShell(null, registry);
+    const shellWrap = (cb) => {
+      shell.invokeComponentByName('foo', Mock().req.complete, null, cb);
+    };
+
+    // case where invoke is called without a callback
+    expect(shellWrap).toThrow();
+    new Promise(resolve => {
+      // case where cc is invoked and throws err
+      shellWrap(err => resolve(expect(err).toMatch(/one arg/)));
+    }).then(done).catch(done.fail);
+  });
+
+  it('should report invalid number of invoke args', done => {
+    const fooComponent = {
+      metadata: () => ({
+        name: 'foo'
+      }),
+      invoke: () => {
+        throw new Error('no args');
+      },
+    };
+
+    const registry = ComponentRegistry.create(fooComponent);
+    const shell = ComponentShell(null, registry);
+    const shellWrap = (cb) => {
+      shell.invokeComponentByName('foo', Mock().req.complete, null, cb);
+    };
+
+    // case where invoke is called without a callback
+    expect(shellWrap).toThrow();
+    new Promise(resolve => {
+      // case where cc is invoked and throws err
+      shellWrap(err => resolve(expect(err).toMatch(/invalid number of arguments/)));
+    }).then(done).catch(done.fail);
+  });
+
 
   /**
    * Test event handler features of the shell

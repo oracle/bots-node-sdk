@@ -12,32 +12,39 @@ function nameOpt(name) {
 }
 
 function componentTypeOpt(type) {
-  const t = type.toLowerCase();
-  if (!~['custom', 'resolveentities'].indexOf(t)) {
-    throw new Error(`Invalid component type: ${type}`);
+  let t = type.toLowerCase();
+  t = t === 'c' ? 'custom' : (t === 'e' ? 'entityeventhandler' : t);
+  if (!~['custom', 'entityeventhandler'].indexOf(t)) {
+    throw new Error(`Invalid component type: ${type}, allowable values are [c]ustom or [e]ntityEventHandler.`);
   }
   return t;
 }
 
-const defaultEntityName = 'SomeEntity';
+function languageOpt(type) {
+  let t = type.toLowerCase();
+  t = t === 't' ? 'typescript' : (t === 'j' ? 'javascript' : t);
+  if (!~['typescript', 'javascript'].indexOf(t)) {
+    throw new Error(`Invalid language: ${type}, allowable values are [t]ypescript and [j]avascript.`);
+  }
+  return t;
+}
 
 /**
  * Command implementation for scaffolding cc package projects
  */
 class CCInit extends CommandDelegate {
   constructor(cmd) {
-    super(cmd, 'Initialize a new Custom Component package');
+    super(cmd, 'Initialize a new Custom Component package!');
     this.command
       .argument('dest', 'Path where project should be created (cwd if omitted)')
+      .option('-l --language <language>', 'Specify the language to use [t]ypescript or [j]avascript', 'javascript', languageOpt)
       .option('-s --skip-install', 'Skip npm install')
       .option('-r --run', 'Start service when init completes (with defaults)')
       .option('-n --name <name>', 'Specify a name for the new project', null, nameOpt)
-      .option('-c --component-name <name>', 'Name for the first custom component', 'hello.world', nameOpt)
-      .option('-t --component-type <type>', 'Specify a component implementation type <custom|resolveentities>', 'custom', componentTypeOpt);
+      .option('-c --component-name <name>', 'Name for the first custom component', 'helloWorld', nameOpt)
+      .option('-t --component-type <type>', 'Specify the component type [c]ustom or [e]ntityEventHandler', 'custom', componentTypeOpt);
     // add child command 'init component'
     this.command.delegate(CCInitComponent, 'component');
-    // specify template path
-    this.templateRoot = path.resolve(__dirname, '..', 'templates', 'ccpackage');
   }
 
   _initDir(dir) {
@@ -97,35 +104,36 @@ class CCInit extends CommandDelegate {
   }
 
   run(options, dir) {
-    const { name, skipInstall, componentName, componentType } = options;
+    const { name, skipInstall, componentName, componentType, language } = options;
+
+    const templateRoot = path.resolve(__dirname, '..', 'templates', language === 'javascript' ? 'ccpackage/js' : 'ccpackage/ts');
     const SDK = this.command.project();
 
     dir = dir || name || process.cwd();
     this.ui.sep();
     const outDir = this._initDir(dir);
     const outDirName = path.basename(outDir);
-    const outDirComponent = path.join(outDir, 'components');
+    const outDirComponent = path.join(outDir, language === 'javascript' ? 'components' : 'src/components');
     return this._delay(`Create component package in directory '${outDirName}'`, 3e3)
       .then(() => this.ui.sep())
       .then(() => { // write package templates
         this.ui.paragraph('Writing files...');
-        return writeTemplates(this.templateRoot, outDir, {
-          name: name || 'my-custom-component',
+        return writeTemplates(templateRoot, outDir, {
+          name: name || 'my-component-service',
           date: new Date().toDateString(),
           componentName,
-          entityName: defaultEntityName,
-          entityNameLower: defaultEntityName.toLowerCase(),
           sdkName: SDK.name,
           sdkVersion: SDK.version,
           sdkBin: this.command.root()._name,
           expressVersion: SDK.devDependencies.express,
+          expressTypesVersion: SDK.devDependencies['@types/express'],
+          typescriptVersion: SDK.devDependencies.typescript
         });
       }).then(() => { // run component code generator
         return this.command.runChild('component', {
           quiet: true,
-          name: componentName,
-          type: componentType,
-        }, outDirComponent);
+          rootDir: outDir 
+        }, [componentName, componentType, outDirComponent]);
       }).then(() => { // perform updates (existing package.json)
         return this.update(outDir);
       }).then(() => { // run npm install
@@ -164,13 +172,11 @@ class CCInitComponent extends CommandDelegate {
     super(cmd, 'Add a Custom Component to your package');
     this.command
       .ignore('componentName').ignore('run').ignore('skipInstall') // inherited from parent
-      .argument('dest', 'Destination directory where component should be added', true)
+      .argument('name', 'Specify a name for the component', true, nameOpt)
+      .argument('type', 'Specify the component type [c]ustom or [e]ntityEventHandler', true, componentTypeOpt)
+      .argument('dest', 'Destination directory where component should be added', false)
       .option('-q --quiet', 'Suppress outputs')
-      .option('-n --name <name>', 'Specify a name for the Custom Component', null, nameOpt)
-      .option('-t --type <type>', 'Specify a component implementation type <custom|resolveentities>', 'custom', componentTypeOpt)
-      .option('-e --entity-name <name>', 'Provide the entity name used in the "resolveentities" component type', defaultEntityName);
 
-    this.templateRoot = path.resolve(__dirname, '..', 'templates', 'components');
   }
 
   quiet() {
@@ -178,31 +184,49 @@ class CCInitComponent extends CommandDelegate {
     return this;
   }
 
-  run(opts, dir) {
-    const { quiet, name, type, entityName } = opts;
+  run(opts, ...args) {
+    let { quiet, rootDir } = opts;
     this._quiet = !!quiet;
+    rootDir = rootDir ? rootDir : this._getRootDir();
+    if (!rootDir) {
+      this._err(`Cannot find package.json, please run this command in the project root dir.`);
+    } 
+
+    const name = args.length > 0 ?  nameOpt(args[0]) : undefined;
+    const type = args.length > 1 ?  componentTypeOpt(args[1]) : undefined;
+    let dir = args.length > 2 ?  args[2] : undefined;
 
     if (!name) {
-      this._err(`Component name is required`);
-    }
-    const dest = dir && path.resolve(dir);
-    if (!dest) {
-      this._err(`Missing output destination`);
-    }
-    // verify dest exists and is directory
+      this._err(`Please specify component name as first argument in 'init component <name> <type> <dest>' command.`);
+    } 
+
+    if (!type) {
+      this._err(`Please specify component type as second argument in 'init component <name> <type> <dest>' command.`);
+    } 
+    
+    const language = fs.existsSync(path.resolve(rootDir,'tsconfig.json')) ? 'typescript' : 'javascript';
+
+    dir = dir ? dir : (language === 'javascript' ? 'components' : 'src/components');
+    let dest = path.resolve(rootDir, dir);
+    // create components dir if needed and verify it is directory
     if (!fs.existsSync(dest)) {
       fs.mkdirSync(dest);
     } else if (!fs.statSync(dest).isDirectory()) {
       this._err(`Destination must be a directory`);
     }
 
+    const templateRoot = path.resolve(__dirname, '..', 'templates', 'components');
+
     // write file
-    const from = path.join(this.templateRoot, type, 'template.js');
-    const to = path.join(dest, `${name}.js`);
+    const extension = language === 'javascript' ? 'js' : 'ts';
+    const from = path.join(templateRoot, type, `template.${extension}`);
+    const to = path.join(dest, `${name}.${extension}`);
     if (!fs.existsSync(to)) {
+      let className = name.charAt(0).toUpperCase() + name.slice(1);
+      className = className.replace('.','');
       writeTemplate(from, to, {
         name,
-        entityName,
+        className: className,
         eventHandlerType: 'ResolveEntities', // constant for now
       });
       if (!this._quiet) {
@@ -212,6 +236,20 @@ class CCInitComponent extends CommandDelegate {
       this._err(`Component '${name}' already exists`);
     }
   }
+
+  _getRootDir() {
+    let dir = process.cwd();
+    while (dir && !fs.existsSync(path.resolve(dir,'package.json'))) {
+      if (dir === path.sep ) {
+        // we are at root, stop it.
+        dir = undefined;
+      } else {
+        dir = path.join(dir, '..');
+      }  
+    }
+    return dir;
+  }
+
 }
 
 module.exports = {

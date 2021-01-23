@@ -1,4 +1,4 @@
-import { Conversation as SDK, IComponentRequestBody, IMessagePayload } from '../../lib/';
+import { CustomComponentContext as SDK, ComponentRequestBody, MessagePayload } from '../../lib/';
 
 /**
  * Create a mock request for component middleware handling.
@@ -8,7 +8,7 @@ import { Conversation as SDK, IComponentRequestBody, IMessagePayload } from '../
  * @param {*} [variables] - conversation variables
  * @param {string} [type] - channel type
  */
-export function MockRequest(messagePayload = {}, properties: any = {}, variables: any = {}, type = 'test'): IComponentRequestBody {
+export function MockRequest(messagePayload = {}, properties: any = {}, variables: any = {}, type = 'test'): ComponentRequestBody {
   function context() {
     Object.keys(variables)
       .forEach(k => {
@@ -91,7 +91,7 @@ export class MockConversation extends SDK {
    * @param req the component invocation request body
    * @return Conversation
    */
-  public static fromRequest(req: IComponentRequestBody): MockConversation {
+  public static fromRequest(req: ComponentRequestBody): MockConversation {
     return new MockConversation(req);
   }
 
@@ -99,7 +99,7 @@ export class MockConversation extends SDK {
    * get conversation reply messages
    * @return - message list returned by the component
    */
-  public getReplies(): IMessagePayload[] {
+  public getReplies(): MessagePayload[] {
     return this.response().messages;
   }
 

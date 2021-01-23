@@ -2,8 +2,8 @@ import { CommonProvider } from '../../common/provider';
 import { CommonValidator } from '../../common/validator';
 import { ERROR } from '../../common/error';
 import { MessageModel } from '../message/messageModel';
-import { ILogger } from '../../common/definitions';
-import { IMessagePayload } from '../message';
+import { Logger } from '../../common/definitions';
+import { MessagePayload } from '../message';
 
 const VARIABLE = {
   type: 'string',
@@ -17,7 +17,7 @@ const VARIABLE = {
 export abstract class BaseContext {
   protected readonly _request: any;
   protected readonly _response: any;
-  protected readonly _logger: ILogger;
+  protected readonly _logger: Logger;
 
   /**
    * @param {object} request - invocation request payload
@@ -66,7 +66,7 @@ export abstract class BaseContext {
    * Retrieves the logger object.
    * @return {object} The logger object.
    */
-  logger(): ILogger {
+  logger(): Logger {
     // this function is replaced with mixin logger when deployed to embedded functions to enable viewing logs in bots UI
     return this._logger;
   }
@@ -76,7 +76,7 @@ export abstract class BaseContext {
    * @return {object} The logger object.
    * @deprecated use logger() function instead
    */
-  getLogger(): ILogger {
+  getLogger(): Logger {
     this.logger().warn('The getLogger() method is deprecated, and will be removed in a future release. Use logger() method instead.');
     return this.logger();
   }
@@ -195,8 +195,8 @@ export abstract class BaseContext {
    * payload will be parsed into a MessageModel payload.  If the MessageModel payload has a valid common message format,
    * then reply will use it as messagePayload, else it will use the payload to create a rawConversationMessage as messagePayload.
    */
-  constructMessagePayload(payload): IMessagePayload {
-    let messagePayload: IMessagePayload;
+  constructMessagePayload(payload): MessagePayload {
+    let messagePayload: MessagePayload;
     let messageModel;
     if (payload instanceof MessageModel) {
       this.logger().debug('messageModel payload provided');

@@ -3,23 +3,30 @@ import * as fs from 'fs';
 
 import { CONSTANTS } from '../../common/constants';
 import { CommonProvider } from '../../common/provider';
-import { Type, isType, ILogger } from '../../common/definitions';
-import { IComponentMetadata, IComponent } from './kinds';
+import { Type, isType, Logger } from '../../common/definitions';
+import { ComponentMetadata, Component } from './kinds';
 
 export type CollectionName = string;
 
 /**
  * Define accepted type for component initialization objects.
  */
-export type ComponentListItem = string | Type<IComponent> | {[key: string]: Type<IComponent>};
+export type ComponentListItem = string | Type<Component> | {[key: string]: Type<Component>};
+
+export interface ComponentPackage {
+  /** base path for component loading */
+  cwd?: string;
+  /** component list/paths */
+  components: ComponentListItem[];
+}
 
 export class ComponentRegistry {
   public static readonly COMPONENT_DIR = CONSTANTS.DEFAULT_COMPONENT_DIR;
-  private _logger: ILogger;
+  private _logger: Logger;
   protected _collectionName: CollectionName;
   protected _collections = new Map<CollectionName, ComponentRegistry>();
-  protected _components = new Map<string, IComponent>();
-  protected _json: {[name: string]: IComponent} = {};
+  protected _components = new Map<string, Component>();
+  protected _json: {[name: string]: Component} = {};
 
   /**
    * Create a registry from a list of component references. The resulting registry
@@ -108,7 +115,7 @@ export class ComponentRegistry {
    * @param dir - directory to scan for components
    * @param withCollections - group subdirectories as collections
    */
-  private __scanDir(dir: string, withCollections?: boolean): IComponent[] {
+  private __scanDir(dir: string, withCollections?: boolean): Component[] {
     const results = fs.readdirSync(dir) // scan directory for components
       .filter(name => !/^\./.test(name) && ~['', '.js'].indexOf(path.extname(name))) // js and folders
       .map(name => path.join(dir, name)) // absolute path
@@ -125,7 +132,7 @@ export class ComponentRegistry {
    * @param filePath - absolute path to a component resource or directory
    * @param withCollections - consider directories as separate registry collections.
    */
-  private __digestPath(filePath: string, withCollections?: boolean): IComponent[] {
+  private __digestPath(filePath: string, withCollections?: boolean): Component[] {
     // consider case where manual registry is used and contain files references without extensions
     filePath = fs.existsSync(filePath) ? filePath : `${filePath}.js`;
     const stat = fs.statSync(filePath);
@@ -177,7 +184,7 @@ export class ComponentRegistry {
    * component instantiation factory.
    * @param mod - component reference (class|object)
    */
-  private __componentFactory(mod: Type<IComponent>): IComponent {
+  private __componentFactory(mod: Type<Component>): Component {
     const ctor = makeCtor(mod);
     return new ctor();
   }
@@ -186,7 +193,7 @@ export class ComponentRegistry {
    * register an instantiated component in
    * @param component - instantiated bot component class
    */
-  private __register(component: IComponent): void {
+  private __register(component: Component): void {
     const meta = component.metadata();
     if (this.isComponent(meta.name)) {
       return this._logger.warn(`Duplicate component found: ${meta.name} while attempting to register ${component['constructor'].name}`);
@@ -217,7 +224,7 @@ export class ComponentRegistry {
    * Legacy conversation shell compatability "components" property getter
    * @desc allows components to be resolved by `registry.components`
    */
-  public get components(): {[name: string]: IComponent} {
+  public get components(): {[name: string]: Component} {
     return {...this._json};
   }
 
@@ -252,7 +259,7 @@ export class ComponentRegistry {
   /**
    * get component map for this registry
    */
-  public getComponents(): Map<string, IComponent> {
+  public getComponents(): Map<string, Component> {
     return this._components;
   }
 
@@ -260,7 +267,7 @@ export class ComponentRegistry {
    * get component from map by name
    * @param name - component name
    */
-  public getComponent(name: string): IComponent {
+  public getComponent(name: string): Component {
     return this._components.get(name);
   }
 
@@ -285,7 +292,7 @@ export class ComponentRegistry {
    * @param collection - the collection name, defaults to the parent collection (optional)
    * @return - array of component metadata
    */
-  public getMetadata(collection?: CollectionName): IComponentMetadata[] {
+  public getMetadata(collection?: CollectionName): ComponentMetadata[] {
     const registry = this.getRegistry(collection);
     let meta = [];
     if (!!registry) {
@@ -303,7 +310,7 @@ export class ComponentRegistry {
    * get members of a component object
    * @param component - instantiated bot component class
    */
-  public getComponentMethods(component: IComponent): string[] {
+  public getComponentMethods(component: Component): string[] {
     const omit = ['constructor'];
     const properties = [].concat(...[component, Object.getPrototypeOf(component)]
       .filter(o => o && o !== Object.prototype) // remove properties of Object.prototype
@@ -328,7 +335,7 @@ function fullPath(cwd: string, dirname: string): string {
  * @desc converts module.exports = {} to a prototyped object
  * @param type - component reference object
  */
-function makeCtor(type: Type<IComponent>): any {
+function makeCtor(type: Type<Component>): any {
   return (isType(type) && type) || (function LegacyComponentWrapper() {
     return type;
   });
@@ -339,7 +346,7 @@ function makeCtor(type: Type<IComponent>): any {
  * @param ref class or object from exports.
  * @todo create a decorator factory to test annotations against instanceof
  */
-function isComponent(ref: any): ref is Type<IComponent> {
+function isComponent(ref: any): ref is Type<Component> {
   return (isType(ref) && ref.prototype && (isType(ref.prototype.invoke) || isType(ref.prototype.handlers) ||
     (typeof ref.prototype.handlers === 'object'))) ||
     (typeof ref === 'object' && (isType(ref.metadata) || typeof ref.metadata === 'object') && (isType(ref.invoke) ||

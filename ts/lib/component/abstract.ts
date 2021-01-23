@@ -1,16 +1,16 @@
 import { CommonProvider } from '../../common/provider';
-import { ILogger, ICallback } from '../../common/definitions';
+import { Logger, InvocationCallback } from '../../common/definitions';
 
-import { CustomComponentContext as Conversation } from './sdk';
-import { IComponent, ICustomComponentMetadata } from './kinds';
+import { CustomComponentContext } from './sdk';
+import { CustomComponent, CustomComponentMetadata } from './kinds';
 
 /**
  * Custom component abstract class.
  * @preferred
  * @example export class MyCustomComponent extends ComponentAbstract { ... }
  */
-export abstract class ComponentAbstract implements IComponent<ICustomComponentMetadata> {
-  protected readonly logger: ILogger; // establish a logger instance
+export abstract class ComponentAbstract implements CustomComponent {
+  protected readonly logger: Logger; // establish a logger instance
   constructor() {
     this.logger = CommonProvider.getLogger();
   }
@@ -19,7 +19,7 @@ export abstract class ComponentAbstract implements IComponent<ICustomComponentMe
    * component metadata method.
    * @return - metadata property object for the custom component.
    */
-  public abstract metadata(): ICustomComponentMetadata
+  public abstract metadata(): CustomComponentMetadata
 
   /**
    * component invocation method.
@@ -27,6 +27,6 @@ export abstract class ComponentAbstract implements IComponent<ICustomComponentMe
    * @param done Conversation done callback
    * @return void
    */
-  public abstract invoke(conversation: Conversation, done: ICallback): void
+  public abstract invoke(conversation: CustomComponentContext, done: InvocationCallback): void
 
 }

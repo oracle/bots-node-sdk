@@ -1,14 +1,14 @@
 import { BaseContext } from './baseContext';
 import { MessageModel } from '../message/messageModel';
 import ComponentRequestSchemaFactory = require('./schema/componentRequestSchema');
-import { IComponentRequestBody } from './request';
+import { ComponentRequestBody } from './request';
 
 // fix for MIECS-23476, we need to return "2.0" until all customers have migrated to 20.05 which
 // no longer checks whether version returned is a valid platform version
 // const sdkVersion = require('../../../package.json').version;
 const sdkVersion = '2.0';
 
-export interface ICustomComponentResponse {
+export interface CustomComponentResponse {
   platformVersion: string;
   context: any,
   action?: string,
@@ -21,7 +21,7 @@ export interface ICustomComponentResponse {
 }
 
 // Response template
-const RESPONSE: ICustomComponentResponse = {
+const RESPONSE: CustomComponentResponse = {
   platformVersion: undefined,
   context: undefined,
   action: undefined,
@@ -146,10 +146,10 @@ export class CustomComponentContext extends BaseContext {
   /**
    * @param {object} requestBody - The request body
    */
-  constructor(request: IComponentRequestBody) {
+  constructor(request: ComponentRequestBody) {
     // Initilize the response, filling in platformVersion, context/vars
     // from the incoming request as needed.
-    const response: ICustomComponentResponse = Object.assign({}, RESPONSE, { platformVersion: request.platformVersion });
+    const response: CustomComponentResponse = Object.assign({}, RESPONSE, { platformVersion: request.platformVersion });
     super(request, response, ComponentRequestSchemaFactory);
 
     // Reset system.invalidUserInput variable if set to true.  Requested by runtime to do this in sdk
@@ -567,7 +567,7 @@ export class CustomComponentContext extends BaseContext {
 
 
   // The HTTP response body
-  response(): ICustomComponentResponse {
+  response(): CustomComponentResponse {
     return super.getResponse();
   }
 

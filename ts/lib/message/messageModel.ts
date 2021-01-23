@@ -1,6 +1,7 @@
 /* tslint:disable */
 
 import { CommonValidator } from '../../common/validator';
+import { Action, Attachment, AttachmentMessage, BaseAction, BaseMessagePayload, CallAction, Card, CardMessage, Keyword, Location, LocationAction, LocationMessage, MessagePayload, PostbackAction, PostbackMessage, RawMessage, ShareAction, TextMessage, UrlAction } from './messageTypes';
 import MessageModelSchemaFactory = require('./schema/messageModelSchema');
 
 /**
@@ -19,7 +20,7 @@ import MessageModelSchemaFactory = require('./schema/messageModelSchema');
  */
 export class MessageModel {
   private _payload: any;
-  private _messagePayload: any;
+  private _messagePayload: MessagePayload;
   private _validationError: any;
   /**
    * To create a MessageModel object using a string or an object representing the message.
@@ -29,9 +30,9 @@ export class MessageModel {
    *
    * The input will be parsed.  If it is a valid message, messagePayload() will return the valid message object.  If not, the message content can be retrieved via payload().
    * @constructor
-   * @param {string|object} payload - The payload to be parsed into a MessageModel object
+   * @param payload - The payload to be parsed into a MessageModel object
    */
-  constructor(payload) {
+  constructor(payload: string | object) {
     this._payload = payload;
     this._messagePayload = null;
     this._validationError = null;
@@ -67,16 +68,16 @@ export class MessageModel {
 
   /**
    * Retrieves the validated common message model payload.
-   * @return {object} The common message model payload.
+   * @return The common message model payload.
    */
-  messagePayload() {
+  messagePayload(): MessagePayload {
     return this._messagePayload;
   }
 
   /**
    * If messagePayload() returns null or if isValid() is false, this method can be used
    * to retrieve the payload that could not be converted to a Conversation Message Model payload.
-   * @return {object} The payload which may not comply to Conversation Message Model
+   * @return The payload which may not comply to Conversation Message Model
    */
   rawPayload() {
     return this._payload;
@@ -84,7 +85,7 @@ export class MessageModel {
 
   /**
    * returns if the instance contains a valid message according to Conversation Message Model
-   * @return {boolean} if the message is valid common message model.
+   * @return if the message is valid common message model.
    */
   isValid() {
     return (!!this._messagePayload);
@@ -92,7 +93,7 @@ export class MessageModel {
 
   /**
    * Retrieves the validation error messages, if any.  Use if messagePayload() returns null or isValid() is false, signifying validation errors;
-   * @return {object} The validation error(s) encountered when converting the payload to the Conversation Message Model.
+   * @return The validation error(s) encountered when converting the payload to the Conversation Message Model.
    */
   validationError() {
     return this._validationError;
@@ -111,15 +112,15 @@ export class MessageModel {
 
   /**
    * Static utility method to create a TextConversationMessage
-   * @return {object} A TextConversationMessage.
-   * @param {string} text - The text of the message payload.
-   * @param {object[]} [actions] - A list of actions related to the text.
-   * @param {string} [footerText] - The footerText to be added at the bottom of the message.
-   * @param {string} [headerText] - The headerText to be added at the top of the message.
-   * @param {object[]} [keywords] - A list of postback keywords that can be created with the postbackKeyword function
+   * @return A TextConversationMessage.
+   * @param text - The text of the message payload.
+   * @param actions - A list of actions related to the text.
+   * @param footerText - The footerText to be added at the bottom of the message.
+   * @param headerText - The headerText to be added at the top of the message.
+   * @param keywords - A list of postback keywords that can be created with the postbackKeyword function
    */
-  static textConversationMessage(text, actions?, footerText?, headerText?, keywords?) {
-    var instance: any = {
+  static textConversationMessage(text: string, actions?:  Action[], footerText?: string, headerText?: string, keywords?: Keyword[]): TextMessage {
+    var instance: TextMessage = {
       type: 'text',
       text: text
     };
@@ -138,7 +139,7 @@ export class MessageModel {
     return instance;
   }
 
-  private static _baseActionObject(type, label?, imageUrl?) {
+  private static _baseActionObject<T extends BaseAction>(type: string, label?: string, imageUrl?: string | undefined): T {
     var instance: any = {
       type: type
     };
@@ -153,17 +154,17 @@ export class MessageModel {
 
   /**
    * Static utility method to create a postback Action.  A label or an imageUrl is required.
-   * @return {object} A postbackActionObject.
-   * @param {string} [label] - label of the action.
-   * @param {string} [imageUrl] - image to show for the action.
-   * @param {object|string} postback - object or string to send as postback if action is taken.
-   * @param {string[]} [keywords] - array of keywords that can be used to trigger the postback action
-   * @param {boolean} [skipAutoNumber] - Boolean flag that can be used to exclude a postback action 
+   * @return A postbackActionObject.
+   * @param label - label of the action.
+   * @param imageUrl - image to show for the action.
+   * @param postback - object or string to send as postback if action is taken.
+   * @param keywords - array of keywords that can be used to trigger the postback action
+   * @param skipAutoNumber - Boolean flag that can be used to exclude a postback action 
    * from auto-numbering. Only applicable when 'autoNumberPostbackActions' context variable or
    * 'autoNumberPostbackActions' component property is set to true.
    */
-  public static postbackActionObject(label, imageUrl, postback, keywords?, skipAutoNumber?) {
-    var instance = this._baseActionObject('postback', label, imageUrl);
+  public static postbackActionObject(label: string, imageUrl: string  | undefined, postback: string | object, keywords?: string[], skipAutoNumber?: boolean): PostbackAction {
+    var instance = this._baseActionObject<PostbackAction>('postback', label, imageUrl);
     if (~['string', 'object'].indexOf(typeof postback)) {
       instance.postback = postback;
     }
@@ -179,61 +180,61 @@ export class MessageModel {
 
   /**
    * Static utility method to create a url Action.  A label or an imageUrl is required.
-   * @return {object} A urlActionObject.
-   * @param {string} [label] - label of the action.
-   * @param {string} [imageUrl] - image to show for the action.
-   * @param {string} url - url to open if action is taken.
+   * @return A urlActionObject.
+   * @param label - label of the action.
+   * @param imageUrl - image to show for the action.
+   * @param url - url to open if action is taken.
    */
-  public static urlActionObject(label, imageUrl, url) {
-    var instance = this._baseActionObject('url', label, imageUrl);
+  public static urlActionObject(label: string, imageUrl: string  | undefined, url: string): UrlAction {
+    var instance = this._baseActionObject<UrlAction>('url', label, imageUrl);
     instance.url = url;
     return instance;
   }
 
   /**
    * Static utility method to create a call Action.  A label or an imageUrl is required.
-   * @return {object} A callActionObject.
-   * @param {string} [label] - label of the action.
-   * @param {string} [imageUrl] - image to show for the action.
-   * @param {string} phoneNumber - phoneNumber to call if action is taken.
+   * @return A callActionObject.
+   * @param label - label of the action.
+   * @param imageUrl - image to show for the action.
+   * @param phoneNumber - phoneNumber to call if action is taken.
    */
-  public static callActionObject(label, imageUrl, phoneNumber) {
-    var instance = this._baseActionObject('call', label, imageUrl);
+  public static callActionObject(label: string, imageUrl: string  | undefined, phoneNumber: string): CallAction {
+    var instance = this._baseActionObject<CallAction>('call', label, imageUrl);
     instance.phoneNumber = phoneNumber;
     return instance;
   }
 
   /**
    * Static utility method to create a location Action.  A label or an imageUrl is required.
-   * @return {object} A locationActionObject.
-   * @param {string} [label] - label of the action.
-   * @param {string} [imageUrl] - image to show for the action.
+   * @return A locationActionObject.
+   * @param label - label of the action.
+   * @param imageUrl - image to show for the action.
    */
-  public static locationActionObject(label?, imageUrl?) {
-    return this._baseActionObject('location', label, imageUrl);
+  public static locationActionObject(label?: string, imageUrl?: string): LocationAction {
+    return this._baseActionObject<LocationAction>('location', label, imageUrl);
   }
 
   /**
    * Static utility method to create a share Action.  A label or an imageUrl is required.
-   * @return {object} A shareActionObject.
-   * @param {string} [label] - label of the action.
-   * @param {string} [imageUrl] - image to show for the action.
+   * @return A shareActionObject.
+   * @param label - label of the action.
+   * @param imageUrl - image to show for the action.
    */
-  public static shareActionObject(label?, imageUrl?) {
-    return this._baseActionObject('share', label, imageUrl);
+  public static shareActionObject(label?: string, imageUrl?: string): ShareAction {
+    return this._baseActionObject<ShareAction>('share', label, imageUrl);
   }
 
   /**
    * Static utility method to create a card object for CardConversationMessage
-   * @return {object} A Card.
-   * @param {string} title - The title of the card.
-   * @param {string} [description] - The description of the card.
-   * @param {string} [imageUrl] - URL of the image.
-   * @param {string} [url] - URL for a hyperlink of the card.
-   * @param {object[]} [actions] - A list of actions available for this card.
+   * @return A Card.
+   * @param title - The title of the card.
+   * @param description - The description of the card.
+   * @param imageUrl - URL of the image.
+   * @param url - URL for a hyperlink of the card.
+   * @param actions - A list of actions available for this card.
    */
-  public static cardObject(title, description?, imageUrl?, url?, actions?) {
-    var instance: any = {
+  public static cardObject(title: string, description?: string, imageUrl?: string, url?: string, actions?: Action[]): Card {
+    var instance: Card = {
       title: title || ''
     };
     if (description) {
@@ -253,16 +254,16 @@ export class MessageModel {
 
   /**
    * Static utility method to create a CardConversationMessage
-   * @return {object} A CardConversationMessage.
-   * @param {string} [layout] - 'vertical' or 'horizontal'.  Whether to display the cards horizontally or vertically.  Default is vertical.
-   * @param {object[]} cards - The list of cards to be rendered.
-   * @param {object[]} [actions] - A list of actions for the cardConversationMessage.
-   * @param {string} [footerText] - The footerText to be added at the bottom of the message.
-   * @param {string} [headerText] - The headerText to be added at the top of the message.
-   * @param {object[]} [keywords] - A list of postback keywords that can be created with the postbackKeyword function
+   * @return A CardConversationMessage.
+   * @param layout - 'vertical' or 'horizontal'.  Whether to display the cards horizontally or vertically.  Default is vertical.
+   * @param cards - The list of cards to be rendered.
+   * @param actions - A list of actions for the cardConversationMessage.
+   * @param footerText - The footerText to be added at the bottom of the message.
+   * @param headerText - The headerText to be added at the top of the message.
+   * @param keywords - A list of postback keywords that can be created with the postbackKeyword function
    */
-  static cardConversationMessage(layout, cards, actions?, footerText?, headerText?, keywords?) {
-    var response: any = {
+  static cardConversationMessage(layout: 'vertical' | 'horizontal', cards: Card[], actions?: Action[], footerText?: string, headerText?: string, keywords?: Keyword[]): CardMessage {
+    var response: CardMessage = {
       type: 'card',
       layout: layout || 'vertical',
       cards: cards
@@ -284,20 +285,20 @@ export class MessageModel {
 
   /**
    * Static utility method to create an AttachmentConversationMessage
-   * @return {object} An AttachmentConversationMessage.
-   * @param {string} type - type of attachment - file, image, video or audio.
-   * @param {string} url - the url of the attachment.
-   * @param {object[]} [actions] - A list of actions for the attachmentConversationMessage.
-   * @param {string} [footerText] - The footerText to be added at the bottom of the message.
-   * @param {string} [headerText] - The headerText to be added at the top of the message.
-   * @param {object[]} [keywords] - A list of postback keywords that can be created with the postbackKeyword function
+   * @return An AttachmentConversationMessage.
+   * @param type - type of attachment - file, image, video or audio.
+   * @param url - the url of the attachment.
+   * @param actions - A list of actions for the attachmentConversationMessage.
+   * @param footerText - The footerText to be added at the bottom of the message.
+   * @param headerText - The headerText to be added at the top of the message.
+   * @param keywords - A list of postback keywords that can be created with the postbackKeyword function
    */
-  static attachmentConversationMessage(type, url, actions?, footerText?, headerText?, keywords?) {
-    var attachment = {
+  static attachmentConversationMessage(type: 'file' | 'video' | 'audio' | 'image', url: string, actions?: Action[], footerText?: string, headerText?: string, keywords?: Keyword[]): AttachmentMessage {
+    var attachment: Attachment = {
       type: type,
       url: url
     };
-    var response: any = {
+    var response: AttachmentMessage = {
       type: 'attachment',
       attachment: attachment
     };
@@ -318,15 +319,15 @@ export class MessageModel {
 
   /**
    * Static utility method to create a LocationConversationMessage
-   * @return {object} A LocationConversationMessage.
-   * @param {number} latitude - The latitude.
-   * @param {number} longitude - The longitude.
-   * @param {string} [title] - The title for the location.
-   * @param {string} [url] - A url for displaying a map of the location.
-   * @param {object[]} [actions] - A list of actions for the locationConversationMessage.
+   * @return A LocationConversationMessage.
+   * @param latitude - The latitude.
+   * @param longitude - The longitude.
+   * @param title - The title for the location.
+   * @param url - A url for displaying a map of the location.
+   * @param actions - A list of actions for the locationConversationMessage.
    */
-  public static locationConversationMessage(latitude, longitude, title?, url?, actions?) {
-    var location: any = {
+  public static locationConversationMessage(latitude: number, longitude: number, title?: string, url?: string, actions?: Action[]): LocationMessage {
+    var location: Location = {
       latitude: latitude,
       longitude: longitude
     };
@@ -336,7 +337,7 @@ export class MessageModel {
     if (url) {
       location.url = url;
     }
-    var response: any = {
+    var response: LocationMessage = {
       type: 'location',
       location: location
     };
@@ -348,13 +349,13 @@ export class MessageModel {
 
   /**
    * Static utility method to create a postackConversationMessage
-   * @return {object} A PostbackConversationMessage.
-   * @param {object|string} postback - object or string to send as postback
-   * @param {string} [label] - The label associated with the postback.
-   * @param {object[]} [actions] - A list of actions for the postbackConversationMessage.
+   * @return A PostbackConversationMessage.
+   * @param postback - object or string to send as postback
+   * @param label - The label associated with the postback.
+   * @param actions - A list of actions for the postbackConversationMessage.
    */
-  public static postbackConversationMessage(postback, label?, actions?) {
-    var response: any = {
+  public static postbackConversationMessage(postback: object | string, label?: string, actions?: Action[]): PostbackMessage {
+    var response: PostbackMessage = {
       type: 'postback',
       postback: postback
     };
@@ -369,13 +370,13 @@ export class MessageModel {
 
   /**
    * Static method to create a keyword for a postack payload that is not associated to a postback action button
-   * @return {object} A Keyword object.
-   * @param {string[]} [keywords] - array of keywords that can be used to trigger the postback action.
-   * @param {object|string} postback - object to send as postback if keyword is entered
-   * @param {boolean} [skipAutoNumber] - Boolean flag that can be used to exclude the keyword from autoNumbering
+   * @return A Keyword object.
+   * @param keywords - array of keywords that can be used to trigger the postback action.
+   * @param postback - object to send as postback if keyword is entered
+   * @param skipAutoNumber - Boolean flag that can be used to exclude the keyword from autoNumbering
    */
-  public static postbackKeyword(keywords, postback, skipAutoNumber?) {
-    var keyword: any = {
+  public static postbackKeyword(keywords: string[], postback: object | string, skipAutoNumber?: boolean): Keyword {
+    var keyword: Keyword = {
       keywords: keywords,
       postback: postback,
       skipAutoNumber: skipAutoNumber || false
@@ -385,10 +386,10 @@ export class MessageModel {
 
   /**
    * Static utility method to create a RawConversationMessage
-   * @return {object} A RawConversationMessage.
-   * @param {object} payload - The raw (channel-specific) payload to send.
+   * @return A RawConversationMessage.
+   * @param payload - The raw (channel-specific) payload to send.
    */
-  public static rawConversationMessage(payload) {
+  public static rawConversationMessage(payload): RawMessage {
     return {
       type: 'raw',
       payload: payload
@@ -397,14 +398,14 @@ export class MessageModel {
 
   /**
    * Static utility method to add channel extensions to a payload
-   * @return {object} A ConversationMessage with channel extensions.
-   * @param {object} message - The message to add channel extensions to.
-   * @param {string} channel - The channel type ('facebook', 'webhook', etc) to set extensions on
-   * @param {object} extensions - The channel-specific extensions to be added.
+   * @return A ConversationMessage with channel extensions.
+   * @param message - The message to add channel extensions to.
+   * @param channel - The channel type ('facebook', 'webhook', etc) to set extensions on
+   * @param extensions - The channel-specific extensions to be added.
    */
-  public static addChannelExtensions(message, channel, extensions) {
+  public static addChannelExtensions<M extends BaseMessagePayload>(message: M, channel: string, extensions: any): M {
     if (message && channel && extensions) {
-      if (!message.channelExensions) {
+      if (!message.channelExtensions) {
         message.channelExtensions = {};
       }
       message.channelExtensions[channel] = (message.channelExtensions[channel] ? Object.assign(message.channelExtensions[channel], extensions) : extensions);
@@ -414,11 +415,11 @@ export class MessageModel {
 
   /**
    * Static utility method to add global actions to a payload
-   * @return {object} A ConversationMessage with global actions.
-   * @param {object} message - The message to add global actions to.
-   * @param {object} globalActions - The global actions to be added.
+   * @return A ConversationMessage with global actions.
+   * @param message - The message to add global actions to.
+   * @param globalActions - The global actions to be added.
    */
-  public static addGlobalActions(message, globalActions) {
+  public static addGlobalActions<M extends BaseMessagePayload>(message: M, globalActions: Action[]): M {
     if (message && globalActions) {
       message.globalActions = globalActions;
     }
@@ -427,8 +428,8 @@ export class MessageModel {
 
   /**
    * Static utility method to validate a common ConversationMessage
-   * @return {boolean|object} true if valid; return Validation Error object (error & value) if invalid
-   * @param {object} payload - The payload object to be verified
+   * @return true if valid; return Validation Error object (error & value) if invalid
+   * @param payload - The payload object to be verified
    */
   public static validateConversationMessage(payload) {
     const result = CommonValidator.validate(MessageModelSchemaFactory, payload);

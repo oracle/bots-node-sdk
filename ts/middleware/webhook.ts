@@ -1,14 +1,14 @@
 import { CONSTANTS } from '../common/constants';
 import { webhookUtil } from '../util/';
 import { express } from './abstract';
-import { IMessage, MessageModel } from '../lib/message';
+import { Message, MessageModel } from '../lib/message';
 import { STATUS_CODE } from './codes';
 
 
 /**
  * Configuration details for sending messages to bots on a webhook channel.
  */
-export interface IWebhookChannel {
+export interface WebhookChannel {
   /** webhook url issued by bots platform channel */
   url: string;
   /** message signature secret key used to create X-Hub-Signature */
@@ -20,33 +20,33 @@ export interface IWebhookChannel {
  * The req object is the first argument when called within the receiver.
  * for a given request.
  */
-export interface IWebhookChannelCallback {
-  (req?: express.Request): IWebhookChannel | Promise<IWebhookChannel>;
+export interface WebhookChannelCallback {
+  (req?: express.Request): WebhookChannel | Promise<WebhookChannel>;
 }
 
 /**
  * Option for webhook channel configuration.
  */
-export type IWebhookChannelOption = IWebhookChannel | IWebhookChannelCallback;
+export type WebhookChannelOption = WebhookChannel | WebhookChannelCallback;
 
 /**
  * Options to configure a webhook client endpoint where messages are forwarded
  * to the bot on a webhook channel.
  */
-export interface IWebhookClientOptions {
+export interface WebhookClientOptions {
   /** object or async callback to specify the webhook channel configuration details */
-  channel?: IWebhookChannelOption;
+  channel?: WebhookChannelOption;
 }
 
 /**
  * Webhook message receiver callback. Called when a message is sent by bot to
  * the webhook endpoint.
  */
-export interface IWebhookRecieverCallback extends express.RequestHandler {
+export interface WebhookRecieverCallback extends express.RequestHandler {
   /** Error if the webhook message fails validation, and message when valid */
   (req: express.Request & {
     /** req.body as verified bot message */
-    body: IMessage;
+    body: Message;
   }, res: express.Response, next: express.NextFunction): void;
 }
 
@@ -59,21 +59,21 @@ export enum WebhookEvent {
   MESSAGE_RECEIVED,
 }
 
-export interface IWebhookEventCallback {
+export interface WebhookEventCallback {
   (...args: any[]): void;
 }
 
 export class WebhookClient {
-  private _subscriptions = new Map<WebhookEvent, Set<IWebhookEventCallback>>();
-  private _options: IWebhookClientOptions;
+  private _subscriptions = new Map<WebhookEvent, Set<WebhookEventCallback>>();
+  private _options: WebhookClientOptions;
 
-  constructor(options?: IWebhookClientOptions) {
+  constructor(options?: WebhookClientOptions) {
     this._options = options || {};
     // prepare event subscription map
     Object.keys(WebhookEvent)
       .filter(key => ~~key) // non-zero integer only
       .forEach((eventType: any) => {
-        this._subscriptions.set(<any>`${eventType}`, new Set<IWebhookEventCallback>())
+        this._subscriptions.set(<any>`${eventType}`, new Set<WebhookEventCallback>())
       });
   }
 
@@ -90,7 +90,7 @@ export class WebhookClient {
       .forEach(handler => handler.apply(handler, [].concat(args)));
   }
 
-  private _getChannelConfig(req?: express.Request): Promise<IWebhookChannel> {
+  private _getChannelConfig(req?: express.Request): Promise<WebhookChannel> {
     const { channel } = this._options;
     return Promise.resolve(typeof channel === 'function' ? channel(req) : channel)
       .then(config => {
@@ -108,9 +108,9 @@ export class WebhookClient {
    * @param handler - Corresponding event type handler.
    */
   public on(event: WebhookEvent.ERROR, handler: (error: Error) => void): this;
-  public on(event: WebhookEvent.MESSAGE_SENT, handler: (message: IMessage) => void): this;
-  public on(event: WebhookEvent.MESSAGE_RECEIVED, handler: (response: IMessage) => void): this;
-  public on(event: WebhookEvent, handler: IWebhookEventCallback): this {
+  public on(event: WebhookEvent.MESSAGE_SENT, handler: (message: Message) => void): this;
+  public on(event: WebhookEvent.MESSAGE_RECEIVED, handler: (response: Message) => void): this;
+  public on(event: WebhookEvent, handler: WebhookEventCallback): this {
     this._getSubscriptions(event).add(handler);
     return this;
   }
@@ -120,7 +120,7 @@ export class WebhookClient {
    * @param message - Complete payload to send
    * @param channel - Webhook channel configuration to use (if different than that in the instance options)
    */
-  public send(message: IMessage, channel?: IWebhookChannel): Promise<void> {
+  public send(message: Message, channel?: WebhookChannel): Promise<void> {
     return Promise.resolve(channel || this._getChannelConfig())
       .then(webhook => new Promise<any>((resolve, reject) => {
         if (message) {
@@ -149,7 +149,7 @@ export class WebhookClient {
    * Webhook receiver middleware.
    * @param callback - callback on message received, otherwise emits event
    */
-  public receiver(callback?: IWebhookRecieverCallback): express.RequestHandler {
+  public receiver(callback?: WebhookRecieverCallback): express.RequestHandler {
     return (req, res, next) => {
       // Validate message from bot
       this._receiverValidationHandler()(req, res, err => {

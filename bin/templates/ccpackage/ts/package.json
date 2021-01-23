@@ -1,0 +1,25 @@
+{
+  "name": "{{name}}",
+  "description": "Oracle Digital Assistant Component Package",
+  "version": "1.0.0",
+  "main": "build/main.js",
+  "scripts": {
+    "{{sdkBin}}": "{{sdkBin}}",
+    "help": "npm run {{sdkBin}} -- --help",
+    "prepack": "npm run compile && npm run {{sdkBin}} -- pack --dry-run",
+    "start": "npm run compile && npm run {{sdkBin}} -- service .",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "docker-build": "npm run compile && docker-compose build --force-rm --no-cache"  
+  },
+  "repository": {},
+  "dependencies": {},
+  "devDependencies": {
+    "{{sdkName}}": "^{{sdkVersion}}",
+    "@types/express": "{{expressTypesVersion}}",
+    "express": "{{expressVersion}}",
+    "typescript": "{{typescriptVersion}}"
+  },
+  "bundledDependencies": []
+}

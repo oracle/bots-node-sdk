@@ -1,5 +1,4 @@
-import { ILogger } from '../../common/definitions';
-import { IComponent, IEntityResolverComponentMetadata } from '../component/kinds';
+import { EntityEventHandler, EntityEventHandlers } from '../component/kinds';
 import { EntityResolutionContext } from './entityResolutionContext';
 
 /**
@@ -9,10 +8,11 @@ import { EntityResolutionContext } from './entityResolutionContext';
  * @private
  */
 export async function invokeResolveEntitiesEventHandlers(
-  component: IComponent<IEntityResolverComponentMetadata>,
+  component: EntityEventHandler,
   context: EntityResolutionContext) {
   let logger = context.logger();
-  let entityHandlers = (typeof component.handlers === 'function') ? component.handlers() : component.handlers;
+  // TODO: can we also support handlers as object instead of function?
+  let entityHandlers: EntityEventHandlers = component.handlers();
 
   for (let event of context.getRequest().events) {
     let eventName = event.name;

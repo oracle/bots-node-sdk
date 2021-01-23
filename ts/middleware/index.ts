@@ -1,11 +1,11 @@
-import { express, IServiceInstance } from './abstract';
-import { ComponentMiddleware, IComponentMiddlewareOptions } from './component';
-import { IParserMiddlewareOptions, ParserMiddleware } from './parser';
+import { express, ServiceInstance } from './abstract';
+import { ComponentMiddleware, ComponentMiddlewareOptions } from './component';
+import { ParserMiddlewareOptions, ParserMiddleware } from './parser';
 import {
-  WebhookClient, WebhookEvent, IWebhookClientOptions,
-  IWebhookChannelOption, IWebhookRecieverCallback } from './webhook';
+  WebhookClient, WebhookEvent, WebhookClientOptions,
+  WebhookChannelOption, WebhookRecieverCallback } from './webhook';
 
-export { WebhookClient, WebhookEvent, IWebhookClientOptions };
+export { WebhookClient, WebhookEvent, WebhookClientOptions };
 
 const logger = console;
 
@@ -32,9 +32,9 @@ const logger = console;
  * ```
  */
 export function customComponent(
-  service: IServiceInstance,
-  options: IComponentMiddlewareOptions & { parser?: IParserMiddlewareOptions } = <any>{}
-): IServiceInstance {
+  service: ServiceInstance,
+  options: ComponentMiddlewareOptions & { parser?: ParserMiddlewareOptions } = <any>{}
+): ServiceInstance {
   if (options.parser !== false) {
     ParserMiddleware.extend(service, options.parser);
   }
@@ -68,7 +68,7 @@ export function customComponent(
  * }));
  * ```
  */
-export function webhookReceiver(secret: IWebhookChannelOption, callback: IWebhookRecieverCallback): express.RequestHandler {
+export function webhookReceiver(secret: WebhookChannelOption, callback: WebhookRecieverCallback): express.RequestHandler {
   logger.warn('Deprecated webhookReceiver. Please use WebhookClient.receiver() instead.');
   return new WebhookClient({
     channel: secret,

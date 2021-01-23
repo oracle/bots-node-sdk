@@ -1,9 +1,9 @@
 import { Type } from '../../common/definitions';
-import { ICustomComponentMetadata, IComponent } from './kinds';
+import { CustomComponentMetadata, CustomComponent } from './kinds';
 
 const logger = console;
 
-export interface Component extends ICustomComponentMetadata { }
+export interface Component extends CustomComponentMetadata { }
 
 /**
  * @preferred
@@ -26,17 +26,17 @@ export interface Component extends ICustomComponentMetadata { }
  * }
  * ```
  */
-export const Component = (annotations: Component = {}): Function => { // decorator factory
-  return <T extends Type<IComponent>>(ctor: T) => { // class decorator
+export const Component = (annotations: Component = {name: 'myComponent'}): Function => { // decorator factory
+  return <T extends Type<CustomComponent>>(ctor: T) => { // class decorator
     // assert annotation component name.
     annotations.name = annotations.name ||
       ctor.prototype.constructor.name.replace(/([a-z-]+)([A-Z])/g, '$1.$2').toLowerCase();
 
-    return class extends ctor implements IComponent {
+    return class extends ctor implements CustomComponent {
       private readonly __decoratorMetadata = {...annotations};
 
       // auto-implement the interface methods
-      metadata(): ICustomComponentMetadata {
+      metadata(): CustomComponentMetadata {
         if (!!super.metadata) {
           logger.warn(`${ctor.prototype.constructor.name} used decorator, but has metadata() defined. Ignoring annotations.`);
           return super.metadata();

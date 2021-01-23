@@ -1,13 +1,13 @@
 import * as express from 'express';
-import { ILogger } from '../common/definitions';
-import { IParserMiddlewareOptions } from '../middleware/parser';
+import { Logger } from '../common/definitions';
+import { ParserMiddlewareOptions } from '../middleware/parser';
 
 /**
  * options for OracleBot.init()
  */
 export interface IMainInitOptions {
-  logger?: ILogger;
-  parser?: IParserMiddlewareOptions;
+  logger?: Logger;
+  parser?: ParserMiddlewareOptions;
 }
 
 /**

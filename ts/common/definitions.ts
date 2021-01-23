@@ -25,14 +25,14 @@ export type Primitive = 'int' | 'float' | 'double' | 'boolean' | 'string' | 'map
 /**
  * Standard async callback signature
  */
-export interface ICallback {
+export interface InvocationCallback {
   (err?: Error, result?: any): void;
 }
 
 /**
  * Standard logging interface
  */
-export interface ILogger {
+export interface Logger {
   debug(...args: any[]): void;
   error(...args: any[]): void;
   info(...args: any[]): void;

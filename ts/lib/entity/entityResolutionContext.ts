@@ -1,6 +1,6 @@
 import { BaseContext } from '../component/baseContext';
 import EventHandlerRequestSchemaFactory = require('./schema/eventHandlerRequestSchema');
-import { IMessagePayload } from '../message';
+import { MessagePayload, TextMessage } from '../message';
 
 // Response template
 const RESPONSE = {
@@ -12,33 +12,43 @@ const RESPONSE = {
   modifyContext: false
 };
 
-export interface IEntityMap {
+export interface EntityMap {
+  entityName?: string
   [name: string]: any;
 }
 
-export interface ICompositeBagItem {
+export interface CompositeBagItem {
+  sequenceNr: number
   name: string;
   type: string;
   entityName?: string;
+  description?: string;
 }
 
-export interface IEntityResolutionStatus {
+export interface EntityResolutionStatus {
   name?: string;
   resolvingField?: string;
   validationErrors?: { [name: string]: string | Error };
   skippedItems?: string[];
-  updatedEntities?: ICompositeBagItem[];
-  outOfOrderMatches?: ICompositeBagItem[];
-  allMatches?: ICompositeBagItem[];
+  updatedEntities?: CompositeBagItem[];
+  outOfOrderMatches?: CompositeBagItem[];
+  allMatches?: CompositeBagItem[];
   disambiguationValues: { [name: string]: any[] };
   userInput?: string;
   enumValues: object[],
   useFullEntityMatches: true;
   customProperties: { [name: string]: any };
   shouldPromptCache: any;
+  nextRangeStart?: number;
+  previousRangeStart?: number;
+  rangeSize?: number
+  needShowMoreButton?: boolean;
+  needShowPreviousButton?: boolean;
+  promptCount?: number;
+  prompt?: string;
 }
 
-export interface ISystemEntityDisplayProperty {
+export interface SystemEntityDisplayProperty {
   properties: string[];
   function?: (...args: string[]) => string;
 }
@@ -51,9 +61,9 @@ export interface ISystemEntityDisplayProperty {
  * @memberof module:Lib
  */
 export class EntityResolutionContext extends BaseContext {
-  private readonly _entityStatus: IEntityResolutionStatus;
-  private _entity: IEntityMap;
-  private _systemEntityDisplayProperties: {[key: string]: ISystemEntityDisplayProperty};
+  private readonly _entityStatus: EntityResolutionStatus;
+  private _entity: EntityMap;
+  private _systemEntityDisplayProperties: {[key: string]: SystemEntityDisplayProperty};
 
   /**
    * Constructor of entity resolution context.
@@ -76,7 +86,7 @@ export class EntityResolutionContext extends BaseContext {
    * Returns the value of the composite bag entity currently being resolved
    * @return {object} The JSON object holding the composite bag item values
    */
-  getEntity(): IEntityMap {
+  getEntity(): EntityMap {
     return this._entity;
   }
 
@@ -85,7 +95,7 @@ export class EntityResolutionContext extends BaseContext {
    * Sets the value of the composite bag entity currently being resolved
    * @param {object} newEntity - The JSON object holding the composite bag item values
    */
-  setEntity(newEntity: IEntityMap): void {
+  setEntity(newEntity: EntityMap): void {
     this._entity = newEntity;
     delete this._entityStatus.resolvingField;
     this.setVariable(this.getRequest().variableName, this._entity);
@@ -105,7 +115,7 @@ export class EntityResolutionContext extends BaseContext {
    * Returns list of composite bag item definitions
    * @return {object[]} list of composite bag item definitions
    */
-  getEntityItems(): ICompositeBagItem[] {
+  getEntityItems(): CompositeBagItem[] {
     const cbvar = this.getRequest().variableName;
     return this.getRequest().context.variables[cbvar].type.compositeBagItems;
   }
@@ -124,7 +134,7 @@ export class EntityResolutionContext extends BaseContext {
    * @param {string} name - the name of the composite bag item for which the value is set
    * @param {object} value - value of the composite bag item
    */
-  setItemValue(name: string, value: ICompositeBagItem): void {
+  setItemValue(name: string, value: CompositeBagItem): void {
     if (!this._entity) {
       this._entity = {'entityName': this.getEntityName()}
       this.setVariable(this.getRequest().variableName, this._entity);
@@ -260,7 +270,7 @@ export class EntityResolutionContext extends BaseContext {
    * @return {object[]} list of candidate messages. Note that these messages are in the format of the conversation
    * message model (CMM), and can be either a text, attachment or card message payload
    */
-  getCandidateMessages(): IMessagePayload[] {
+  getCandidateMessages(): TextMessage[] {
     return this.getRequest().candidateMessages;
   }
 
@@ -289,7 +299,7 @@ export class EntityResolutionContext extends BaseContext {
    * Returns the list of messages that will be sent to the user
    * @return list of messages
    */
-  getMessages(): IMessagePayload[] {
+  getMessages(): MessagePayload[] {
     return this.getResponse().messages || [];
   }
 
@@ -304,7 +314,7 @@ export class EntityResolutionContext extends BaseContext {
    * If set to true, the component will continue processing, possibly sending more messages to the
    * user before releasing the turn
    */
-  addMessage(payload: string | IMessagePayload, keepProcessing?: boolean) {
+  addMessage(payload: string | MessagePayload, keepProcessing?: boolean) {
     this.getResponse().keepProcessing = !!keepProcessing;
     this.getResponse().messages = this.getResponse().messages || [];
     this.getResponse().messages.push(super.constructMessagePayload(payload));

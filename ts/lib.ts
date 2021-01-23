@@ -1,23 +1,8 @@
 import * as lib from './lib/'; // index
-// import { Component as _Component } from './lib/'; // decorator
+import * as def from './common/definitions';
 
 /**
  * SDK 'Lib' exposing core classes, decorators, etc.
- *
- * ```javascript
- *  import * as OracleBot from '@oracle/bots-node-sdk';
- *
- *  @OracleBot.Lib.Component({
- *    name: 'my.custom.component',
- *    properties: {},
- *    supportedActions: []
- *  })
- *  export class MyCustomComponent extends OracleBot.Lib.ComponentAbstract {
- *    invoke(conversation: OracleBot.Lib.Conversation, done) {
- *      // ...
- *    }
- *  }
- * ```
  */
 export namespace Lib {
 
@@ -34,20 +19,58 @@ export namespace Lib {
   // Custom Component registry class
   export class ComponentRegistry extends lib.ComponentRegistry { }
 
+  //  Component package interface
+  export type ComponentPackage = lib.ComponentPackage;
+
   // Component Conversation invocation
-  export class Conversation extends lib.Conversation { }
   export class CustomComponentContext extends lib.CustomComponentContext { }
 
   // Entity Resolution invocation
   export class EntityResolutionContext extends lib.EntityResolutionContext { }
 
+  // InvocationCallback interface for custom component invocation
+  export type InvocationCallback = def.InvocationCallback;
+
   // Conversation Message Model
   export class MessageModel extends lib.MessageModel { }
 
-  // Component Metadata interface
-  export type IComponentMetadata = lib.IComponentMetadata;
+  // Custom Component interface
+  export type CustomComponent = lib.CustomComponent;
 
-  // Component interface
-  export type IComponent<T extends IComponentMetadata = lib.ICustomComponentMetadata> = lib.IComponent<T>;
+  // Entity Event Handler interface
+  export type EntityEventHandler = lib.EntityEventHandler;
+
+  // Custom Component Metadata interface
+  export type CustomComponentMetadata = lib.CustomComponentMetadata;
+
+  // Entity Event Handler Metadata interface
+  export type EntityEventHandlerMetadata = lib.EntityEventHandlerMetadata;
+
+  // Entity Event Handler handlers interface
+  export type EntityEventHandlers = lib.EntityEventHandlers;
+
+  export type EntityItems = lib.EntityItems;
+
+  export type EntityEvent = lib.EntityEvent;
+
+  export type EntityItemEvents = lib.EntityItemEvents;
+
+  export type EntityValidateEvent = lib.EntityValidateEvent;
+
+  export type EntityPublishMessageEvent = lib.EntityPublishMessageEvent;
+
+  export type EntityMaxPromptsReachedEvent = lib.EntityMaxPromptsReachedEvent;
+
+  export type EntityAttachmentReceivedEvent = lib.EntityAttachmentReceivedEvent
+
+  export type EntityLocationReceivedEvent = lib.EntityLocationReceivedEvent;
+
+  export type EntityItemValidateEvent = lib.EntityItemValidateEvent;
+
+  export type EntityItemPublishPromptMessageEvent = lib.EntityItemPublishPromptMessageEvent
+
+  export type EntityItemPublishDisambiguationMessageEvent = lib.EntityItemPublishDisambiguationMessageEvent
+
+  export type EntityItemMaxPromptsReachedEvent = lib.EntityItemMaxPromptsReachedEvent
 
 }

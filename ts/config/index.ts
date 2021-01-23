@@ -1,13 +1,13 @@
 import { CommonProvider, PROVIDER_KEY_LOGGER } from '../common/provider';
-import { ILogger } from '../common/definitions';
+import { Logger } from '../common/definitions';
 
-export { ILogger }
+export { Logger }
 
 /**
  * declare logging instance
  * @param logger - logging utility
  */
-export function setLogger(logger: ILogger): void {
+export function setLogger(logger: Logger): void {
   CommonProvider.register({
     key: PROVIDER_KEY_LOGGER,
     use: logger
