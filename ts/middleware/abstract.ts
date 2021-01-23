@@ -3,7 +3,7 @@ import { ILogger } from '../common/definitions';
 import { CommonProvider } from '../common/provider';
 export { express }
 
-export type IServiceInstance = express.Application | express.Router;
+export type IServiceInstance = express.Router | express.Express;
 
 export interface IStaticMiddlwareAbstract {
   extend(service: IServiceInstance, options?: any);

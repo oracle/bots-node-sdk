@@ -134,7 +134,7 @@ export class WebhookClient {
             );
           } catch (e) { reject(e); }
         } else {
-          resolve();
+          resolve(null);
         }
       }))
       .then(sent => sent && this._dispatch(WebhookEvent.MESSAGE_SENT, message))
