@@ -1,6 +1,6 @@
 import { ICallback } from '../common/definitions';
 import { ComponentListItem, ComponentRegistry } from '../lib/component/registry';
-import { IMobileCloudRequest, MiddlewareAbstract, express, IServiceInstance } from './abstract';
+import { IMobileCloudRequest, MiddlewareAbstract, express } from './abstract';
 import { ComponentShell as Shell } from '../lib/component/shell';
 import { STATUS_CODE } from './codes';
 
@@ -32,7 +32,7 @@ const [PARAM_COMPONENT] = ['component'];
  */
 export class ComponentMiddleware extends MiddlewareAbstract {
 
-  protected _init(service: IServiceInstance, options: IComponentMiddlewareOptions): void {
+  protected _init(service: express.Express, options: IComponentMiddlewareOptions): void {
     if (!service || typeof service.get !== 'function' || typeof service.post !== 'function') {
       throw new Error('Cannot initialize component middleware: service argument is required');
     }

@@ -1,6 +1,6 @@
 {
   "name": "@oracle/bots-node-sdk",
-  "version": "2.4.2",
+  "version": "2.4.3",
   "description": "Oracle Bots SDK for custom component development and webhook integrations",
   "main": "index.js",
   "browser": "index-browser.js",
@@ -9,7 +9,8 @@
   "author": "Oracle Corp.",
   "contributors": [
     "Matt Vander Vliet <matthew.vander.vliet@oracle.com>",
-    "Henrick Yau <henrick.yau@oracle.com>"
+    "Henrick Yau <henrick.yau@oracle.com>",
+    "Steven Davelaar <steven.davelaar@oracle.com>"
   ],
   "repository": {
     "type": "git",
@@ -29,12 +30,12 @@
     "npm": ">=5.6.0"
   },
   "scripts": {
-    "build": "npm run lint && npm run typings",
+    "build": "npm run lint && npm run types",
     "docs": "shx rm -rf ./docs && jsdoc -c jsdoc.json -d ./docs",
     "postdocs": "node ./docshim.js",
     "lint": "eslint . --ignore-pattern reports --ignore-pattern examples --ignore-pattern docs && tslint --project ./ts",
     "test": "nyc jasmine",
-    "typings": "shx rm -rf ./typings && cd ./ts && tsc",
+    "types": "shx rm -rf ./typings && cd ts && tsc",
     "prepack": "npm run build",
     "cc": "node ./bin/cc.js init"
   },
@@ -42,27 +43,27 @@
     "bots-node-sdk": "bin/sdk.js"
   },
   "dependencies": {
-    "@hapi/joi": "^15.1.0",
-    "body-parser": "^1.18.2",
+    "@hapi/joi": "^15.1.1",
+    "body-parser": "^1.19.0",
     "leven": "^2.1.0",
-    "node-fetch": "^2.2.0"
+    "node-fetch": "^2.6.1"
   },
   "devDependencies": {
-    "@types/body-parser": "^1.17.0",
-    "@types/express": "^4.16.0",
-    "@types/joi": "^14.3.3",
+    "@types/body-parser": "^1.19.0",
+    "@types/express": "^4.17.11",
+    "@types/joi": "^14.3.4",
     "docdash": "^0.4.0",
     "eslint": "^5.16.0",
     "eslint-plugin-jasmine": "^2.10.1",
-    "express": "^4.16.3",
+    "express": "^4.17.1",
     "jasmine": "^2.8.0",
-    "jasmine-reporters": "^2.3.1",
+    "jasmine-reporters": "^2.3.2",
     "jasmine-spec-reporter": "^4.2.1",
-    "jsdoc": "^3.6.3",
-    "nyc": "^14.0.0",
-    "shx": "^0.3.2",
+    "jsdoc": "^3.6.6",
+    "nyc": "^14.1.1",
+    "shx": "^0.3.3",
     "supertest": "^3.4.2",
-    "tslint": "^5.10.0",
-    "typescript": "^2.9.2"
+    "tslint": "^5.20.1",
+    "typescript": "^4.1.3"
   }
 }
