@@ -1,10 +1,10 @@
 # Release Notes
 
-- [Version 2.4.4](#v244)
+- [Version 2.5.0](#v250)
 - [Version 2.4.3](#v243)
 - [Version 2.4.2](#v242)
 
-## Version 2.4.4 <a name="v244">
+## Version 2.5.0 <a name="v250">
 
 ### New Features
 
