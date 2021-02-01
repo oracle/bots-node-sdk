@@ -9,7 +9,7 @@ build:
           echo "npm version $(npm -v) running"
     # install dependencies with `npm ci`
     - npm-install:
-        options: --global
+        options: --global --save-dev
     # test
     - npm-test
 
