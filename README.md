@@ -1,7 +1,7 @@
 # Oracle Digital Assistant Node.js SDK
 
 This SDK is the main developer resource for [Oracle Digital Asistant](https://docs.oracle.com/en/cloud/paas/digital-assistant/index.html) (ODA) integrations in a Node.js express environment. It provides two primary solutions for custom implementations against the ODA platform: 
-- Creating [Custom Component Services](https://docs.oracle.com/en/cloud/paas/digital-assistant/use-chatbot/components1.html#GUID-D4DB30EC-D089-4809-A845-31FAAE1794AA)
+- Creating [Custom Component Services](https://docs.oracle.com/en/cloud/paas/digital-assistant/use-chatbot/components1.html#GUID-D4DB30EC-D089-4809-A845-31FAAE1794AA).
 - Creating [Webhooks](https://docs.oracle.com/en/cloud/paas/digital-assistant/use-chatbot/webhooks.html#GUID-96CCA06D-0432-4F20-8CDD-E60161F46680).
 
 
@@ -105,7 +105,7 @@ See the README.md created in your scaffolded typescript project for more informa
 - [Writing Custom Components](https://github.com/oracle/bots-node-sdk/blob/master/CUSTOM_COMPONENT.md) - Guidelines and tips for writing custom components.
 - [Writing Entity Event Handlers](https://github.com/oracle/bots-node-sdk/blob/master/ENTIY_EVENT_HANDLER.md) - Guidelines and tips for writing entity event handlers.
 - [Conversation Messaging](https://github.com/oracle/bots-node-sdk/blob/master/MESSAGE_MODEL.md) - Creating conversation messages from custom code
-- [Writing Webhooks]((https://github.com/oracle/bots-node-sdk/blob/master/WEBHOOK.md) - Integrate with custom messaging channels using incoming/outgoing webhook.
+- [Writing Webhooks](https://github.com/oracle/bots-node-sdk/blob/master/WEBHOOK.md) - Integrate with custom messaging channels using incoming/outgoing webhook.
 - [Unit Testing](https://github.com/oracle/bots-node-sdk/blob/master/testing/TESTING.md) - Unit testing facilities.
 - [Documentation](https://oracle.github.io/bots-node-sdk) - Full SDK documentation.
 - [Release Notes](https://github.com/oracle/bots-node-sdk/blob/master/RELEASE_NOTES.md) - List of new features and fixed issues for each release
