@@ -173,7 +173,7 @@ describe(`CLI: bots-node-sdk`, () => {
               }
             }).then(done).catch(done.fail);
         });
-      });
+      }, 1e5); // 10 seconds
   });
 
 });

@@ -8,7 +8,8 @@ build:
           echo "node version $(node -v) running"
           echo "npm version $(npm -v) running"
     # install dependencies with `npm ci`
-    - mvandervliet/npm-ci
+    - npm-install:
+        options: --global
     # test
     - npm-test
 
