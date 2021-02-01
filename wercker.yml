@@ -7,9 +7,11 @@ build:
         code: |
           echo "node version $(node -v) running"
           echo "npm version $(npm -v) running"
-    # install dependencies with `npm ci`
+    # make available as global
     - npm-install:
-        options: --global --save-dev
+        options: --global
+    # install dependencies with `npm ci`
+    - mvandervliet/npm-ci
     # test
     - npm-test
 
