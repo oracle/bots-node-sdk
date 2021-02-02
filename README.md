@@ -31,7 +31,7 @@ This section explains the basic CLI commands to get your component service up an
 bots-node-sdk init MyComponentService
 ```
 
-This creates a new commponent service named `MyComponentService` in a directory by the same name.
+This creates a new component service named `MyComponentService` in a directory by the same name.
 The component service includes one sample custom component named `helloWorld`.
 
 ### Adding a Custom Component to Existing Service
@@ -103,12 +103,12 @@ See the README.md created in your scaffolded typescript project for more informa
 <!--[nodoc]-->
 - [Using the CLI](https://github.com/oracle/bots-node-sdk/blob/master/bin/CLI.md) - Command line capabilities to facilitate writing custom components and entity event handlers.
 - [Writing Custom Components](https://github.com/oracle/bots-node-sdk/blob/master/CUSTOM_COMPONENT.md) - Guidelines and tips for writing custom components.
-- [Writing Entity Event Handlers](https://github.com/oracle/bots-node-sdk/blob/master/ENTIY_EVENT_HANDLER.md) - Guidelines and tips for writing entity event handlers.
-- [Conversation Messaging](https://github.com/oracle/bots-node-sdk/blob/master/MESSAGE_MODEL.md) - Creating conversation messages from custom code
+- [Writing Entity Event Handlers](https://github.com/oracle/bots-node-sdk/blob/master/ENTITY_EVENT_HANDLER.md) - Guidelines and tips for writing entity event handlers.
+- [Conversation Messaging](https://github.com/oracle/bots-node-sdk/blob/master/MESSAGE_MODEL.md) - Creating conversation messages from custom code.
 - [Writing Webhooks](https://github.com/oracle/bots-node-sdk/blob/master/WEBHOOK.md) - Integrate with custom messaging channels using incoming/outgoing webhook.
 - [Unit Testing](https://github.com/oracle/bots-node-sdk/blob/master/testing/TESTING.md) - Unit testing facilities.
 - [Documentation](https://oracle.github.io/bots-node-sdk) - Full SDK documentation.
-- [Release Notes](https://github.com/oracle/bots-node-sdk/blob/master/RELEASE_NOTES.md) - List of new features and fixed issues for each release
+- [Release Notes](https://github.com/oracle/bots-node-sdk/blob/master/RELEASE_NOTES.md) - List of new features and fixed issues for each release.
 <!--[/nodoc]-->
 
 ## Contributing

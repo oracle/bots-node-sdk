@@ -10,7 +10,7 @@ examples
 docs
 docshim.js
 jsdoc.json
-ts
+/ts
 tslint.json
 THIRDPARTY.md
 CONTRIBUTING.md

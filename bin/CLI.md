@@ -1,7 +1,6 @@
 # CLI Developer Tools
 
-This SDK includes a CLI with developer-oriented productivity tools.
-Presently these tools are geared towards **Custom Component** development.
+This SDK includes a command-line intertace (CLI) to help you creating and packaging custom components and entity event handlers.
 
 ```text
 Usage: bots-node-sdk [options] <subcommand> [options]
@@ -36,9 +35,9 @@ bots-node-sdk init
 bots-node-sdk init my-project
 ```
 
-> Creates a fresh Custom Component package in an empty directory
+> Creates a fresh custom component service package in an empty directory
 
-As an alterative approach, install `@oracle/bots-node-sdk` as a dependency
+As an alternative approach, install `@oracle/bots-node-sdk` as a dependency
 dependency to your application, and use commands accordingly.
 
 ```shell
@@ -50,16 +49,16 @@ npm install --save-dev @oracle/bots-node-sdk
 $(npm bin)/bots-node-sdk init
 ```
 
-> Initializes a new Custom Component package from within an existing node project.
+> Initializes a new custom component service package from within an existing node project.
 
 ## Usage
 
 | Command | Feature | Description |
 |--|--|--|
-| `init` | Components | Generates source code for Custom Component projects |
+| `init` | Components | Generates source code for custom component service projects |
 | `init component` | Components | Adds a component to an existing project |
-| `service` | Components | Starts a local server for hosting a Component Package |
-| `pack` | Components | Validates project and creates a deployable Component Package artifact |
+| `service` | Components | Starts a local server for hosting a component package |
+| `pack` | Components | Validates project and creates a deployable component package |
 
 ### 1. Start a project: `init [options] [dest]`
 
@@ -78,7 +77,7 @@ projects with more components. If provided, `[dest]` or `--name` will be used fo
 ### 2. Add Components: `init component <name> <type> <dest>`
 
 This command will create a _new_ custom component or event handler within an **existing** component
-package, and write to the `<dest>` output path. If the output path is not specified, the component will be written to the `components` directory or `src\components` directory when using typesript. If this directory doesn't exist it will be created.
+package, and write to the `<dest>` output path. If the output path is not specified, the component will be written to the `components` directory or `src\components` directory when using typescript. If this directory doesn't exist it will be created.
 The component `<name>` and `<type>` are required and `<type>` should be set to `[c]ustom` or `[e]ntityEventHandler`.
 
 For example, to create a new entity event handler component named `resolvePizza`, you can use the following command:
@@ -104,9 +103,7 @@ A node supervisor may also be used in the same way.
 
 ### 4. Package for Deployment: `pack [options]`
 
-Most often, custom implementations can be packaged with `npm pack` or `zip`
-depending on the deployment target. The `pack` command here is intended to
-provide validation and convenience methods for creating a deployable artifact.
+The `npm pack` command can be used to package the component service as a `.tgz` file that can be uploaded to the ODA embedded container.
 
 | Option | Description | Default |
 |--|--|--|

@@ -48,11 +48,11 @@ module.exports = {
   }
 }
 ```
-The old style of defining the `invoke` function using the `done` callback argument is still supported:
+The old style of defining the `invoke` function using the `done` callback argument is still supported (with `conversation` as the old name for the `context` argument):
 
 ```javascript
-  invoke: (context, done) => {
-    context.reply('hello world');
+  invoke: (conversation, done) => {
+    conversation.reply('hello world');
     done();
   }
 }
@@ -64,7 +64,7 @@ In addition, you no longer have to remember to call `done()` at every place in y
 
 When using typescript, the custom component class should implement the `CustomComponent` interface which requires two methods to be present: 
 - the `metadata` method that should return an object of type `CustomComponentMetadata`.
-- the `invoke` method that should accept two arguments, the context of type `CustomComponentContext` and a callback of type `InvocationCallback`.
+- the `invoke` method that should accept one argument, the context of type `CustomComponentContext`.
 
 ```typescript
 import {CustomComponent,  CustomComponentMetadata, CustomComponentContext, InvocationCallback }  from '@oracle/bots-node-sdk/lib';
@@ -79,7 +79,7 @@ export class HelloWorld implements CustomComponent {
     }
   }
 
-  public async invoke(conversation: CustomComponentContext): Promise<void> {
+  public async invoke(context: CustomComponentContext): Promise<void> {
     context.reply('hello world');
   }
 }
