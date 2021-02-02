@@ -1,8 +1,15 @@
 # Release Notes
 
+- [Version 2.5.1](#v251)
 - [Version 2.5.0](#v250)
 - [Version 2.4.3](#v243)
 - [Version 2.4.2](#v242)
+
+## Version 2.5.1 <a name="v251">
+
+### Fixed Issues
+
+- Creating typescript project using `bots-node-sdk init --language typescript` failed with error 'no such file or directory'.
 
 ## Version 2.5.0 <a name="v250">
 
