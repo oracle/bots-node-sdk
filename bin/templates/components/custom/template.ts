@@ -1,4 +1,4 @@
-import {CustomComponent,  CustomComponentMetadata, CustomComponentContext }  from '@oracle/bots-node-sdk/lib';
+import {CustomComponent,  CustomComponentMetadata, CustomComponentContext, InvocationCallback  }  from '@oracle/bots-node-sdk/lib';
 
 // You can use your favorite http client package to make REST calls, however, the node fetch API is pre-installed with the bots-node-sdk.
 // Documentation can be found at https://www.npmjs.com/package/node-fetch
@@ -17,18 +17,18 @@ export class {{className}} implements CustomComponent {
       };
   }
 
-  public async invoke(context: CustomComponentContext): Promise<void> {
-    // perform conversation tasks.
+  public invoke(context: CustomComponentContext, done: InvocationCallback): void {
+    // Retrieve the value of the 'human' component property.
     const { human } = context.properties();
-    // determine date
+    // Determine the current date
     const now = new Date();
     const dayOfWeek = now.toLocaleDateString('en-US', { weekday: 'long' });
     const isWeekend = [0, 6].indexOf(now.getDay()) > -1;
-    // reply
-    context
-      .reply(`Greetings ${human}`)
+    // Send two messages, and transition based on the day of the week
+    context.reply(`Greetings ${human}`)
       .reply(`Today is ${now.toLocaleDateString()}, a ${dayOfWeek}`)
-      .transition(isWeekend ? 'weekend' : 'weekday'); 
+      .transition(isWeekend ? 'weekend' : 'weekday');
+    done();  
   }
   
 }  

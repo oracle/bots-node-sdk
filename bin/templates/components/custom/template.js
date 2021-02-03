@@ -13,18 +13,17 @@ module.exports = {
     },
     supportedActions: ['weekday', 'weekend']
   }),
-  invoke: async (context) => {
-    // perform conversation tasks.
+  invoke: (context, done) => {
+    // Retrieve the value of the 'human' component property.
     const { human } = context.properties();
-    // determine date
+    // Determine the current date
     const now = new Date();
     const dayOfWeek = now.toLocaleDateString('en-US', { weekday: 'long' });
     const isWeekend = [0, 6].indexOf(now.getDay()) > -1;
-    // reply
-    context
-      .reply(`Greetings ${human}`)
+    // Send two messages, and transition based on the day of the week
+    context.reply(`Greetings ${human}`)
       .reply(`Today is ${now.toLocaleDateString()}, a ${dayOfWeek}`)
-      .transition(isWeekend ? 'weekend' : 'weekday');
-       
+      .transition(isWeekend ? 'weekend' : 'weekday');       
+    done();  
   }
 };

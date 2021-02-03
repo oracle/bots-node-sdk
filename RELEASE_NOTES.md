@@ -1,15 +1,16 @@
 # Release Notes
 
+- [Version 2.5.2](#v252)
 - [Version 2.5.1](#v251)
 - [Version 2.5.0](#v250)
 - [Version 2.4.3](#v243)
 - [Version 2.4.2](#v242)
 
-## Version 2.5.1 <a name="v251">
+## Version 2.5.2 <a name="v252">
 
 ### Fixed Issues
 
-- Creating typescript project using `bots-node-sdk init --language typescript` failed with error 'no such file or directory'.
+- Custom components built with bots-node-sdk version 2.5.1 don't work in embedded container
 
 ## Version 2.5.0 <a name="v250">
 
