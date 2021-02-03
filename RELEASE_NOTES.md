@@ -12,6 +12,12 @@
 
 - Custom components built with bots-node-sdk version 2.5.1 don't work in embedded container
 
+## Version 2.5.1 <a name="v251">
+
+### Fixed Issues
+
+- Creating typescript project using `bots-node-sdk init --language typescript` failed with error 'no such file or directory'.
+
 ## Version 2.5.0 <a name="v250">
 
 ### New Features
