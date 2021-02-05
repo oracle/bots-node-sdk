@@ -83,8 +83,8 @@ export interface EntityValidateEvent extends EntityEvent {
 
 export interface EntityPublishMessageEvent extends EntityEvent {
   currentItem: string;
-  promptCount: number;
-  disambiguationValues?: object[];
+  promptCount?: number;
+  disambiguationValues?: [string: object];
 }
 
 export interface EntityMaxPromptsReachedEvent extends EntityEvent {

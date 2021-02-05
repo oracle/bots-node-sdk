@@ -178,9 +178,9 @@ The code to make REST calls with `node fetch` within an event handler looks like
   let payload = ...
   const response = await fetch('http://some-backend-server-url',{ method: 'POST', body: payload});
   if (response.status === 200) {        
-    context.reply('Transaction successful');
+    context.addMessage('Transaction successful');
   } else {
-    context.reply('Transaction failed');
+    context.addMessage('Transaction failed');
   }
 }
 ```
@@ -225,7 +225,7 @@ items: {
   }
 ```
 
-Note how we obtain the new value from the validation event object. And since the `Amount` item value is a CURRENCY JSON object, we need to obtain the `amount` property from it.  We use the `addValidationError` function to register the error message . We could also have used `conversation.reply()` directly. The difference is that when using `conversation.reply()` further processing in the RE/CRC component is stopped, so other items that just got a value are not validated.
+Note how we obtain the new value from the validation event object. And since the `Amount` item value is a CURRENCY JSON object, we need to obtain the `amount` property from it.  We use the `addValidationError` function to register the error message . We could also have used `conversation.addMessage()`. The difference is that when using `conversation.addMessage()` there is an optional second boolean argument `keepProcessing` that allows you to stop further processing in the RE/CRC component.
 
 To read the validation error message from the skill resource bundle, instead of hardcoding the text, the translate function can be used:
 

@@ -1,7 +1,9 @@
 /* tslint:disable */
 
 import { CommonValidator } from '../../common/validator';
-import { Action, Attachment, AttachmentMessage, BaseAction, BaseMessagePayload, CallAction, Card, CardMessage, Keyword, Location, LocationAction, LocationMessage, MessagePayload, PostbackAction, PostbackMessage, RawMessage, ShareAction, TextMessage, UrlAction } from './messageTypes';
+import { Action, Attachment, AttachmentMessage, BaseAction, BaseMessagePayload, CallAction, Card, CardMessage, Keyword, Location
+  , LocationAction, LocationMessage, MessagePayload, PostbackAction, PostbackMessage, RawMessage, ShareAction, TextMessage
+  , UrlAction, NonRawMessagePayload, ChannelType } from './messageTypes';
 import MessageModelSchemaFactory = require('./schema/messageModelSchema');
 
 /**
@@ -397,20 +399,20 @@ export class MessageModel {
   }
 
   /**
-   * Static utility method to add channel extensions to a payload
-   * @return A ConversationMessage with channel extensions.
-   * @param message - The message to add channel extensions to.
-   * @param channel - The channel type ('facebook', 'webhook', etc) to set extensions on
+   * Static method to add channel extensions to a payload object.
+   * @return The message object with channel extensions.
+   * @param message - The message, card or action object to add channel extensions to.
+   * @param channel - The channel type ('facebook', 'webhook', etc) to set extensions on.
    * @param extensions - The channel-specific extensions to be added.
    */
-  public static addChannelExtensions<M extends BaseMessagePayload>(message: M, channel: string, extensions: any): M {
-    if (message && channel && extensions) {
-      if (!message.channelExtensions) {
-        message.channelExtensions = {};
+  public static addChannelExtensions(messageObject: NonRawMessagePayload | Card | Action, channel: ChannelType, extensions: any): NonRawMessagePayload | Card | Action {
+    if (messageObject && channel && extensions) {
+      if (!messageObject.channelExtensions) {
+        messageObject.channelExtensions = {};
       }
-      message.channelExtensions[channel] = (message.channelExtensions[channel] ? Object.assign(message.channelExtensions[channel], extensions) : extensions);
+      messageObject.channelExtensions[channel] = (messageObject.channelExtensions[channel] ? Object.assign(messageObject.channelExtensions[channel], extensions) : extensions);
     }
-    return message;
+    return messageObject;
   }
 
   /**
@@ -419,7 +421,7 @@ export class MessageModel {
    * @param message - The message to add global actions to.
    * @param globalActions - The global actions to be added.
    */
-  public static addGlobalActions<M extends BaseMessagePayload>(message: M, globalActions: Action[]): M {
+  public static addGlobalActions(message: NonRawMessagePayload, globalActions: Action[]): NonRawMessagePayload {
     if (message && globalActions) {
       message.globalActions = globalActions;
     }

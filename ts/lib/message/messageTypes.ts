@@ -14,6 +14,8 @@ export type Action = PostbackAction | UrlAction | CallAction | LocationAction | 
 
 export type ActionType = 'postback' | 'url' | 'call' | 'location' | 'share';
 
+export type ChannelType = 'facebook' | 'webhook' | 'slack' | 'msteams' | 'cortana' | 'websdk' | 'androidsdk' | 'iossdk' | 'twilio' | 'test'
+
 export interface BaseAction {
   type: ActionType;
   label?: string;

@@ -348,7 +348,7 @@ if (addressVariable){
 
 As you have seen in the previous examples, you can use `context.reply(<payload>)` to create a bot message that is sent to the user. 
 You can call this function multiple times to send multiple messages. When you call this function, `keepTurn` is set to false automatically.
-The payload can be a string, or a rich message object. See the section on [Conversation Messaging](https://github.com/oracle/bots-node-sdk/blob/master/MESSAGE_MODEL.md) for code samples on how to create a [text message with buttons actions](https://github.com/oracle/bots-node-sdk/blob/master/MESSAGE_MODEL.md#cardMessage), a [card message](https://github.com/oracle/bots-node-sdk/blob/master/MESSAGE_MODEL.md#cardMessage), and an [attachment message](https://github.com/oracle/bots-node-sdk/blob/master/MESSAGE_MODEL.md#attachmentMessage).
+The payload can be a string, or a rich message object. See the section on [Conversation Messaging](https://github.com/oracle/bots-node-sdk/blob/master/MESSAGE_MODEL.md) for code samples on how to create a [text message with buttons actions](https://github.com/oracle/bots-node-sdk/blob/master/MESSAGE_MODEL.md#textMessage), a [card message](https://github.com/oracle/bots-node-sdk/blob/master/MESSAGE_MODEL.md#cardMessage), and an [attachment message](https://github.com/oracle/bots-node-sdk/blob/master/MESSAGE_MODEL.md#attachmentMessage).
 
 ### How to Get a Skill's Custom Parameter Value <a name="getCustomParam">
 

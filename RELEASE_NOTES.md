@@ -1,10 +1,18 @@
 # Release Notes
 
+- [Version 2.5.3](#v253)
 - [Version 2.5.2](#v252)
 - [Version 2.5.1](#v251)
 - [Version 2.5.0](#v250)
 - [Version 2.4.3](#v243)
 - [Version 2.4.2](#v242)
+
+## Version 2.5.3 <a name="v253">
+
+### Fixed Issues
+
+- Existing channel extensions are being overridden when using `MessageModel.addChannelExtensions`.
+- Improved typescript typings
 
 ## Version 2.5.2 <a name="v252">
 
