@@ -1,69 +1,87 @@
 # Oracle Digital Assistant Node.js SDK
 
-This SDK is the main developer resource for [Oracle Digital Asistant](https://docs.oracle.com/en/cloud/paas/digital-assistant/index.html) (ODA) integrations in a Node.js express environment. It provides two primary solutions for custom implementations against the ODA platform: 
-- Creating [Custom Component Services](https://docs.oracle.com/en/cloud/paas/digital-assistant/use-chatbot/components1.html#GUID-D4DB30EC-D089-4809-A845-31FAAE1794AA).
-- Creating [Webhooks](https://docs.oracle.com/en/cloud/paas/digital-assistant/use-chatbot/webhooks.html#GUID-96CCA06D-0432-4F20-8CDD-E60161F46680).
+This SDK is the main developer resource for [Oracle Digital Asistant](https://docs.oracle.com/en/cloud/paas/digital-assistant/index.html) integrations in a Node.js express environment. It provides two primary solutions for custom implementations against the Digital Assistant platform: 
+- Creating [Custom Component Services](https://www.oracle.com/pls/topic/lookup?ctx=en/cloud/paas/digital-assistant&id=DACUA-GUID-D4DB30EC-D089-4809-A845-31FAAE1794AA)
+- Creating )[Webhooks](https://www.oracle.com/pls/topic/lookup?ctx=en/cloud/paas/digital-assistant&id=DACUA-GUID-96CCA06D-0432-4F20-8CDD-E60161F46680
 
 
-## Installation
+## SDK Installation
 
-To install globally
+To install the SDK globally:
 
 ```text
 npm install -g @oracle/bots-node-sdk
 ```
 
-To install locally in your current directory:
+To install the SDK locally in your current directory:
 
 ```text
 npm install @oracle/bots-node-sdk
 ```
 
-When installed locally use `npx @oracle/bots-node-sdk` instead of just `bots-node-sdk` to run the command-line interface (CLI) commands described below in getting started section.
+When installed locally, use `npx @oracle/bots-node-sdk` instead of just `bots-node-sdk` to run the command-line interface (CLI) commands described in the Getting Started section.
 
 ## Getting Started 
 
-This section explains the basic CLI commands to get your component service up and running. See the [CLI documentation](https://github.com/oracle/bots-node-sdk/blob/master/bin/CLI.md) for a complete list of all the arguments and options you can configure with each command.
+This section explains the basic CLI commands to get your component service up and running. See the [CLI documentation](https://github.com/oracle/bots-node-sdk/blob/master/bin/CLI.md) for a complete list of all the arguments and options that you can configure with each command.
 
-### Creating a New Component Service
+### Create a Component Service
+
+Use the `init` command to create a component service package. For example:
 
 ```text
-bots-node-sdk init MyComponentService
+bots-node-sdk init PizzaService --name pizza-service 
 ```
 
-This creates a new component service named `MyComponentService` in a directory by the same name.
+This example creates a component service named `pizza-service` in a directory named `PizzaService`.
 The component service includes one sample custom component named `helloWorld`.
 
-### Adding a Custom Component to Existing Service
+### Add a Custom Component to Existing Service
+
+You use the `init component <name> custom` command to add a component to an existing package. For example:
 
 ```text
 bots-node-sdk init component myCustomComponent custom
 ```
 
-This creates a new custom component named `myCustomComponent`. Instead of typing `custom` for the component type argument, you can type `c` as a shortcut.
+This example creates a component of type `custom` named `myCustomComponent`. Instead of typing `custom` for the component type argument, you can type `c` as a shortcut.
 
-### Adding an Entity Event Handler to Existing Service
+### Add an Entity Event Handler to Existing Service
+
+You use the `init component <name> entityEventHandler` command to add an event handler to an existing package. For example:
 
 ```text
 bots-node-sdk init component myEventHandler entityEventHandler
 ```
 
-This creates a new entity event handler named `myEventHandler`. Instead of typing `entityEventHandler` for the component type argument, you can type `e` as a shortcut.
+This example creates a component of type `entityEventHandler` that is named `myEventHandler`. Instead of typing `entityEventHandler` for the component type argument, you can type `e` as a shortcut.
 
-### Creating a Component Service Package
+### Create a Component Service Package
+
+To package the components, use the `pack` command. For example:
 
 ```text
-npm pack
+bots-node-sdk pack
 ```
-This creates a component service package .tgz file that can be uploaded to the ODA embedded container.
 
-### Deploying as External Component Service
+This creates a component service package .tgz file that can be hosted as an express service, uploaded to a skill's embedded container in Digital Assistant, or uploaded to Oracle Mobile Hub.
+
+### Deploy as an External Component Service
+
+To start a service on a local node server and host the custom component package, use the `start` command.
 
 ```text
 npm start
 ```
-This creates a component service running on a local node server. 
-The following command returns the metadata of all deployed components:
+This example creates a component service running on a local node server. It uses the `@oracle/bots-node-sdk` dev dependency.
+
+Alternatively, you can use this bots-node-sdk command to start the service. This command uses the global bots-node-sdk installation.
+
+```text
+bots-node-sdk service
+```
+
+To see the metadata for all deployed components, run this cURL command:
 
 ```text
 curl -X GET localhost:3000/components
@@ -76,27 +94,28 @@ npm run-script docker-build
 docker-compose up
 ```
 
-### Using Typescript
+### Using TypeScript
 
-The SDK has full support for typescript. If you want to use typescript to write your custom components and event handlers, all you need to do is specify the language option when creating the component service:
+The SDK has full support for TypeScript. If you want to use TypeScript to write your custom components and event handlers, all you need to do is specify the language option when you create the component service. For example:
 
 ```text
-bots-node-sdk init --language typescript MyComponentService
+bots-node-sdk init MyComponentService --language typescript
 ```
 
 or the shorter format:
 
 ```text
-bots-node-sdk init -l t MyComponentService
+bots-node-sdk init MyComponentService  -l t
 ```
+This example creates a TypeScript project in the MyComponentService directory. 
 
-This will set up your project for typescript, if you subsequently use the `init component` command to add a component to the service, it will create a typescript component instead of a javascript component.
+If you subsequently use the `init component` command to add a component to a TypeScript project, it creates a TypeScript component instead of a JavaScript component.
 
-When you run any of the other CLI commands described above after setting up your project with typescript, the typescript files will be automatically transpiled to javascript.
+ When run on a TypeScript project, the `service` and `pack` commands transpile all files under the `src` directory into JavaScript files in the `build` directory.
 
-The benefit of using typescript over javascript is that it is strongly typed, so if you use an editor like Visual Code Studio, you will get code completion features and compile-time type checking, similar to Java.
+The benefit of using TypeScript over JavaScript is that it is strongly typed, so, if you use an editor like Visual Code Studio, you'll get code completion features and compile-time type checking similar to Java.
 
-See the README.md created in your scaffolded typescript project for more information.   
+See the README.md that's created in your scaffolded TypeScript project for more information.   
 
 ## More Information
 

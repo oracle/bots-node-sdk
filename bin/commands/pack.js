@@ -59,6 +59,21 @@ const loadVerifyComponent = ccPath => {
   };
 };
 
+const npmCompile = async (dir) => {
+  const isTs = fs.existsSync(path.resolve(dir, 'tsconfig.json'));
+  if (isTs) {
+    // get bin path
+    const npmbin = await ChildPromise.npm(['bin'], { cwd: dir });
+    // get expected tsc bin
+    const tsc = path.join(npmbin, 'tsc');
+    if (!fs.existsSync(tsc)) {
+      throw new Error(`Typescript detected but 'typescript' is not installed`);
+    }
+    // run tsc
+    await ChildPromise.spawn(tsc, ['-p', '.'], { cwd: dir });
+  }
+};
+
 const OUT_FORMAT = 'service-%s-%s';
 
 /**
@@ -197,9 +212,10 @@ class CCPack extends CommandDelegate {
     });
   }
 
-  run(options, pathArg) {
+  async run(options, pathArg) {
     let dir = pathArg || process.cwd();
     dir = path.resolve(dir);
+    await npmCompile(dir);
     const cc = this.cc = loadVerifyComponent(dir);
     this._prepack();
     if (options.dryRun) {
@@ -213,11 +229,12 @@ class CCPack extends CommandDelegate {
       if (fs.statSync(artifact).isDirectory()) {
         this.ui.outputSection('Next Steps', `Compress the output directory into a .zip and deploy`)
       }
-    });
-  }
+    });      
+  }  
 }
 
 module.exports = {
   loadVerifyComponent,
+  npmCompile,
   CCPack,
 };

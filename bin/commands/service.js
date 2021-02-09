@@ -3,7 +3,7 @@
 const path = require('path');
 const OracleBot = require('../../');
 const { CommandDelegate } = require('../lib/command');
-const { loadVerifyComponent } = require('./pack');
+const { loadVerifyComponent, npmCompile } = require('./pack');
 
 const defaultPort = 3000;
 
@@ -71,7 +71,9 @@ class CCServiceCommand extends CommandDelegate {
    * @param {*} options - parsed options
    * @param  {...string} projects - all project arguments
    */
-  run(options, ...projects) {
+  async run(options, ...projects) {
+    let dir = path.resolve(process.cwd());
+    await npmCompile(dir);
     if (projects && !projects.length) {
       projects.push('.');
     }

@@ -1,25 +1,25 @@
 # Webhooks
 
-The fundamental mechanism for sending and receiving messages with the Bot platform
+The fundamental mechanism for sending and receiving messages with the Oracle Digital Assistant platform
 is through _asynchronous_ inbound and outbound messaging. The platform supports
-several **built-in** channels natively, and **webhook** for any other messaging
-service or client.
+several **built-in** channels natively, and supports **webhook** for other messaging
+services and clients.
 
-Implementing webhook as a channel can differ greatly across clients. Generally
-each client uses a unique message format, and different mechanisms for sending or
-receiving messages. This package includes these necessary integration tools.
+How you implement webhook as a channel differs greatly across clients. Generally,
+each client uses a unique message format, and has different mechanisms for sending and
+receiving messages. This package includes the necessary integration tools.
 
 <!--[nodoc]-->
 ## QuickStart for Webhook
 
-- [Webhook Starter Example](https://github.com/oracle/bots-node-sdk/blob/master/examples/webhook/starter)
+[Webhook Starter Example](https://github.com/oracle/bots-node-sdk/blob/master/examples/webhook/starter) contains sample code and instructions.
 <!--[/nodoc]-->
 
 ## Webhook Client
 
-`WebhookClient` is a flexible library for integrating with webhook channels
-configured within your bot. Refer to the documentation and examples to further
-understand ways the webhook client may be implemented.
+`WebhookClient` is a flexible library for integrating with webhook channels that are
+configured in your Digital Assistant instance. Refer to [Webhooks](https://www.oracle.com/pls/topic/lookup?ctx=en/cloud/paas/digital-assistant&id=DACUA-GUID-96CCA06D-0432-4F20-8CDD-E60161F46680) in *Using Oracle Digital Assistant* and the [Webhook Starter Example](https://github.com/oracle/bots-node-sdk/blob/master/examples/webhook/starter) to further
+understand ways you can implement a webhook client.
 
 ```javascript
 const express = require('express');
@@ -55,8 +55,8 @@ app.post('/user/message', (req, res) => {
 > **TIP** `send()` supports an _optional_ `channel` as its
 second argument, thereby handling request-specific channel determination.
 
-> **TIP** If verbose logging details are desired, you may configure a logging utility of
-your choice, and initialize the SDK accordingly:
+> **TIP** If you want verbose logging details, you can configure a logging utility of
+your choice and initialize the SDK accordingly:
 ```javascript
 OracleBot.init(app, {
   logger: console,
