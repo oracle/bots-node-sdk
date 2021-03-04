@@ -239,7 +239,6 @@ The code to make REST calls with `node fetch` looks like this:
     return response.json();    
   })
   .then((data) => {
-    const data = await response.json();
     // Store the data in a context variable
     context.setVariable('myContextVar', data);
     done();
