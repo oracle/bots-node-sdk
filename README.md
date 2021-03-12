@@ -1,8 +1,8 @@
 # Oracle Digital Assistant Node.js SDK
 
 This SDK is the main developer resource for [Oracle Digital Asistant](https://docs.oracle.com/en/cloud/paas/digital-assistant/index.html) integrations in a Node.js express environment. It provides two primary solutions for custom implementations against the Digital Assistant platform: 
-- Creating [Custom Component Services](https://www.oracle.com/pls/topic/lookup?ctx=en/cloud/paas/digital-assistant&id=DACUA-GUID-D4DB30EC-D089-4809-A845-31FAAE1794AA)
-- Creating )[Webhooks](https://www.oracle.com/pls/topic/lookup?ctx=en/cloud/paas/digital-assistant&id=DACUA-GUID-96CCA06D-0432-4F20-8CDD-E60161F46680
+- Creating [Custom Component Services](https://docs.oracle.com/en/cloud/paas/digital-assistant/use-chatbot/backend-integration1.html#GUID-3F827E58-BCB2-41F2-B752-82EF9DB602CE)
+- Creating [Webhooks](https://docs.oracle.com/en/cloud/paas/digital-assistant/use-chatbot/webhooks.html#GUID-96CCA06D-0432-4F20-8CDD-E60161F46680)
 
 
 ## SDK Installation
