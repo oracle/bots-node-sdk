@@ -12,7 +12,7 @@ docshim.js
 jsdoc.json
 /ts
 tslint.json
-THIRDPARTY.md
+THIRD_PARTY_LICENSES.txt
 CONTRIBUTING.md
 **/*.md
 *.tgz
