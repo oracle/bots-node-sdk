@@ -440,19 +440,6 @@ export class EntityResolutionContext extends BaseContext {
   }
 
   /**
-   * Get translated string using a resource bundle key defined in the skill.
-   * IMPORTANT: for this method to work the resource bundle must be defined as a context variable in the dialog flow using the name 'rb'.
-   * @return {string} resource bundle freemarker expression that will be resolved when event handler response is received by dialog engine
-   * @param {string} rbKey - key of the resource bundle entry defined with the skill that should be used to translate
-   * @param {string} rbArgs - substitution variables
-   */
-  translate(rbKey: string, ...rbArgs: string[]) {
-    // create freemarker expression that will be resolved in runtime after event handler response is received
-    let exp = '${rb(\'' + rbKey + '\',\'' + rbArgs.join('\', \'') + '\')}';
-    return exp;
-  }
-
-  /**
    * Sets the value of a custom property that is stored in the entity resolution context. A custom property can be
    * used to maintain custom state accross event handler calls while resolving the composite bag entity.
    * If you set the value to null, the custom property will be removed.

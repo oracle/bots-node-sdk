@@ -181,6 +181,27 @@ export abstract class BaseContext {
   }
 
   /**
+   * Get translated string using a resource bundle key defined in the skill.
+   * @return {string} resource bundle freemarker expression that will be resolved when event handler or custom component response is 
+   * received by dialog engine
+   * @param {string} rbKey - key of the resource bundle entry defined with the skill that should be used to translate
+   * @param {string} rbArgs - substitution variables
+   */
+  translate(rbKey: string, ...rbArgs: string[]) {
+    // create freemarker expression that will be resolved in runtime after event handler or custom component response is received
+    let exp = '${rb(\'' + rbKey + '\',\'' + rbArgs.join('\', \'') + '\')}';
+    return exp;
+  }
+
+  /**
+   * Return the channel conversation type
+   * @return {string} the channel type
+   */
+  getChannelType(): string {
+    return this.getRequest().message.channelConversation.type;
+  }
+
+  /**
    * Returns the MessageModel class for creating or validating messages to or from bots.
    * @see MessageModel.js
    * @return {MessageModel} The MessageModel class

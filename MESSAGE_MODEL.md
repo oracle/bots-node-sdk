@@ -96,7 +96,7 @@ const messageModel = context.getMessageModel();
 let keywords = [];
 keywords.push( messageModel.postbackKeyword(["1","first"], {"variables" : {"pizzaSize": "small"}}));
 keywords.push( messageModel.postbackKeyword(["2","second"], {"variables" : {"pizzaSize": "medium"}}));
-keywords.push( messageModel.postbackKeyword(["1","third"], {"variables" : {"pizzaSize": "large"}}));
+keywords.push( messageModel.postbackKeyword(["3","third"], {"variables" : {"pizzaSize": "large"}}));
 let textMessage = messageModel.textConversationMessage('What pizza size do you want?\n1. Small\n2. Medium\n3. Large', undefined, undefined, undefined, keywords);
 context.reply(textMessage);
 ```
@@ -180,7 +180,7 @@ module.exports = {
     name: 'orderConfirmation'
   }),
   invoke: (context, done) => {
-    if (context.getRequest().message.channelConversation.type ==='msteams') {
+    if (context.getChannelType() === 'msteams') {
       context.reply(context.getMessageModel().rawConversationMessage(card));
      } else {
       context.reply('Thank you for ordering a PEPPERONI piza, have a nice day!');
@@ -190,7 +190,7 @@ module.exports = {
   }
 };
 ```
-Because the skill might use multiple channels, only send the adaptve card for the `msteams` channel. 
+Because the skill might use multiple channels, we only send the adaptive card for the `msteams` channel. 
 The actual adaptive card payload is defined in `card.json`, which looks like this:
 
 ```javascript

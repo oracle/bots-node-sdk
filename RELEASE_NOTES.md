@@ -1,5 +1,6 @@
 # Release Notes
 
+- [Version 2.5.5](#v255)
 - [Version 2.5.4](#v254)
 - [Version 2.5.3](#v253)
 - [Version 2.5.2](#v252)
@@ -7,6 +8,14 @@
 - [Version 2.5.0](#v250)
 - [Version 2.4.3](#v243)
 - [Version 2.4.2](#v242)
+
+## Version 2.5.5 <a name="v255">
+
+### New Features
+
+- **Support for resource bundles in custom components**: The `context.translate` function that was already available for entity event handlers, can now be used with custom components as well. The function takes a resource bundle key and optionally a list of sustitution variables. Note that use of this function requires digital assistant version 21.06 or higher.
+- **Convenience method to get channel type**: A new function `context.getChannelType` has been added for both custom components and entity event handler.
+- **Convenience method to add a global action**: A new function `messageModel.addGlobalAction` has been added to the message model. This method adds a single globl action without removing any existing global actions.
 
 ## Version 2.5.4 <a name="v254">
 

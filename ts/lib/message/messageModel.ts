@@ -416,7 +416,7 @@ export class MessageModel {
   }
 
   /**
-   * Static utility method to add global actions to a payload
+   * Static method to add global actions to a message payload object. This method replaces any existing global actions.
    * @return A ConversationMessage with global actions.
    * @param message - The message to add global actions to.
    * @param globalActions - The global actions to be added.
@@ -425,6 +425,19 @@ export class MessageModel {
     if (message && globalActions) {
       message.globalActions = globalActions;
     }
+    return message;
+  }
+
+  /**
+   * Static method to add a global action to a message payload object. 
+   * @return A ConversationMessage with global actions.
+   * @param message - The message to add the global action to.
+   * @param globalAction - The global action to be added.
+   */
+  static addGlobalAction(message: NonRawMessagePayload, globalAction: Action): NonRawMessagePayload {
+    let globalActions = message.globalActions || [];
+    globalActions.push(globalAction);
+    message.globalActions = globalActions;
     return message;
   }
 
