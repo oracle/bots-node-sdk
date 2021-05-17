@@ -182,7 +182,7 @@ export abstract class BaseContext {
 
   /**
    * Get translated string using a resource bundle key defined in the skill.
-   * @return {string} resource bundle freemarker expression that will be resolved when event handler or custom component response is 
+   * @return {string} resource bundle freemarker expression that will be resolved when event handler or custom component response is
    * received by dialog engine
    * @param {string} rbKey - key of the resource bundle entry defined with the skill that should be used to translate
    * @param {string} rbArgs - substitution variables
