@@ -8,7 +8,8 @@
 module.exports = {
   metadata: {
     name: '{{name}}',    
-    eventHandlerType: '{{eventHandlerType}}'
+    eventHandlerType: '{{eventHandlerType}}',
+    supportedActions: [] // string array of transition actions that might be set by the event handler
   },
   handlers: { 
     entity: { 

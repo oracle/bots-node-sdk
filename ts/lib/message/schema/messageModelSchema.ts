@@ -75,6 +75,75 @@ export = (joi: any): Joi.Schema => {
     globalActions: actionsSchema.optional(),
     channelExtensions: Joi.object().optional()
   });
+  const tableHeadingSchema = Joi.object().keys({
+    label: Joi.string().required(),
+    width: Joi.number().optional(),
+    alignment: Joi.string().optional().valid('left', 'right', 'center'),
+    channelExtensions: Joi.object().optional()
+  });
+  const tableOrFormFieldSchema = Joi.object().keys({
+    label: Joi.string().optional(),
+    value: Joi.any().optional(),
+    width: Joi.number().optional(),
+    alignment: Joi.string().optional().valid('left', 'right', 'center'),
+    displayType: Joi.string().optional().valid('text', 'link'),
+    linkLabel: Joi.string().optional(),
+    channelExtensions: Joi.object().optional()
+  });
+  const tableRowSchema = Joi.object().keys({
+    fields: Joi.array().items(tableOrFormFieldSchema),
+    channelExtensions: Joi.object().optional()
+  });
+  const formSchema = Joi.object().keys({
+    title: Joi.string().optional(),
+    fields: Joi.array().items(tableOrFormFieldSchema),
+    channelExtensions: Joi.object().optional()
+  });
+  const paginationInfoSchema = Joi.object().keys({
+    totalCount: Joi.number().required(),
+    rangeSize: Joi.number().required(),
+    rangeStart: Joi.number().required(),
+    status: Joi.string().optional(),
+  });
+  const tableConversationMessageSchema = Joi.object().keys({
+    type: Joi.string().required().valid('table'),
+    headings: Joi.array().items(tableHeadingSchema),
+    rows: Joi.array().items(tableRowSchema),
+    paginationInfo: paginationInfoSchema.optional(),
+    actions: actionsSchema.optional(),
+    footerText: Joi.string().optional(),
+    headerText: Joi.string().optional(),
+    keywords: keywordsSchema.optional(),
+    globalActions: actionsSchema.optional(),
+    channelExtensions: Joi.object().optional()
+  });
+  const formConversationMessageSchema = Joi.object().keys({
+    type: Joi.string().required().valid('form'),
+    forms: Joi.array().items(formSchema),
+    formColumns: Joi.number().required(),
+    paginationInfo: paginationInfoSchema.optional(),
+    actions: actionsSchema.optional(),
+    footerText: Joi.string().optional(),
+    headerText: Joi.string().optional(),
+    keywords: keywordsSchema.optional(),
+    globalActions: actionsSchema.optional(),
+    channelExtensions: Joi.object().optional()
+  });
+  const tableFormConversationMessageSchema = Joi.object().keys({
+    type: Joi.string().required().valid('tableForm'),
+    headings: Joi.array().items(tableHeadingSchema),
+    rows: Joi.array().items(tableRowSchema),
+    forms: Joi.array().items(formSchema),
+    formColumns: Joi.number().required(),
+    showFormButtonLabel: Joi.string().optional(),
+    paginationInfo: paginationInfoSchema.optional(),
+    actions: actionsSchema.optional(),
+    footerText: Joi.string().optional(),
+    headerText: Joi.string().optional(),
+    keywords: keywordsSchema.optional(),
+    globalActions: actionsSchema.optional(),
+    channelExtensions: Joi.object().optional()
+  });
   const attachmentConversationMessageSchema = Joi.object().keys({
     type: Joi.string().required().valid('attachment'),
     attachment: attachmentSchema.required(),
@@ -113,7 +182,8 @@ export = (joi: any): Joi.Schema => {
 
   const conversationMessageSchema = joi.alternatives().try(textConversationMessageSchema,
     cardConversationMessageSchema, attachmentConversationMessageSchema, locationConversationMessageSchema,
-    postbackConversationMessageSchema, rawConversationMessageSchema, agentConversationMessageSchema
+    postbackConversationMessageSchema, rawConversationMessageSchema, agentConversationMessageSchema,
+    tableConversationMessageSchema, formConversationMessageSchema, tableFormConversationMessageSchema
   );
   return conversationMessageSchema;
 };

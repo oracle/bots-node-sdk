@@ -16,7 +16,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 ```text
-Copyright (c) 2020, Oracle and/or its affiliates. All rights reserved.
+Copyright (c) 2020-2022, Oracle and/or its affiliates. All rights reserved.
 
 The Universal Permissive License (UPL), Version 1.0
 

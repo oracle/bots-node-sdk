@@ -10,6 +10,9 @@
     - [Creating a Text Message with Action Buttons](#textMessage)
     - [Creating a Card Message with Card Action Buttons](#cardMessage)
     - [Creating an Attachment Message](#attachmentMessage)
+    - [Creating a Table Message](#tableMessage)
+    - [Creating a Form Message](#formMessage)
+    - [Creating a TableForm Message](#tableFormMessage)
     - [Creating a Microsoft Adaptive Cards Message](#adaptiveCardMessage)
 
 ## Introduction <a name="introduction">
@@ -52,6 +55,9 @@ The `MessageModel` class provides the following static methods to create the var
 | text | `textConversationMessage` | `inbound`, `outbound` |
 | attachment | `attachmentConversationMessage` | `inbound`, `outbound` |
 | card | `cardConversationMessage` |  `outbound` |
+| table | `tableConversationMessage` |  `outbound` |
+| form | `formConversationMessage` |  `outbound` |
+| tableForm | `tableFormConversationMessage` |  `outbound` |
 | raw | `rawConversationMessage` | `inbound`, `outbound` |
 
 Except for the `rawConversationMessage` method, each method has optional arguments to set a `headerText`, `footerText`, a list of `actions`, and a list of [keywords](#keywords). 
@@ -167,6 +173,110 @@ You can display action URLs under the attachment, such as links to more videos a
   var urlTutorialAction = messageModel.urlActionObject('More Tutorials', undefined, tutorialsUrl);
   let message = messageModel.attachmentConversationMessage(attachmentType, attachmentUrl,
        [urlVideoAction, urlTutorialAction]);
+```
+
+### Creating a Table Message <a name="tableMessage">
+
+You use the [`tableConversationMessage`](https://oracle.github.io/bots-node-sdk/MessageModel.html#.tableConversationMessage) function to create a message with table layout.
+
+```javascript
+  const messageModel = context.getMessageModel();  
+  let message = messageModel.tableConversationMessage(headings, rows, paginationInfo);
+```
+
+To create the arguments required for `tableConversationMessage`, you can use the following functions:
+- [`tableHeaderColumn`](https://oracle.github.io/bots-node-sdk/MessageModel.html#.tableHeaderColumn) function to populate the array of headings
+- [`tableColumn`](https://oracle.github.io/bots-node-sdk/MessageModel.html#.tableColumn) function to populate an array of columns
+- [`tableRow`](https://oracle.github.io/bots-node-sdk/MessageModel.html#.tableRow) function to populate the array of rows, passing in the columns as argument for each row.
+- [`paginationInfo`](https://oracle.github.io/bots-node-sdk/MessageModel.html#.paginationInfo) function to create the optional paginationInfo. Note that adding this info is only used to display a pagination status message, you must implement the actual pagination yourself. 
+
+```javascript
+  const people = [ {firstName: "Bob", lastName: "Dole"}
+                ,{firstName: "John", lastName: "Doe"}
+                ,{firstName: "Jane", lastName: "Doe"}]
+
+  let headings = [];
+  headings.push( messageModel.tableHeaderColumn("First Name"));
+  headings.push( messageModel.tableHeaderColumn("Last Name"));
+  let rows = [];
+  for (let p of people) {
+     let columns = [];
+     columns.push(messageModel.tableColumn(p.firstName));
+     columns.push(messageModel.tableColumn(p.lastName));
+     rows.push(messageModel.tableRow(columns));
+  }
+  const paginationInfo = messageModel.paginationInfo(5,3,0, context.translate("systemConfiguration_paginationStatus",1,3,5));
+  let message = messageModel.tableConversationMessage(headings, rows, paginationInfo);
+```
+
+### Creating a Form Message <a name="FormMessage">
+
+You use the [`formConversationMessage`](https://oracle.github.io/bots-node-sdk/MessageModel.html#.formConversationMessage) function to create a message with tableForm layout.
+
+```javascript
+  const messageModel = context.getMessageModel();  
+  let message = messageModel.formConversationMessage(forms, formColumns, paginationInfo);
+```
+
+To create the arguments required for `tableConversationMessage`, you can use the following functions:
+- [`formField`](https://oracle.github.io/bots-node-sdk/MessageModel.html#.formField) function to populate an array of field
+- [`form`](https://oracle.github.io/bots-node-sdk/MessageModel.html#.form) function to populate the array of forms, passing in the fields as argument for each form.
+- [`paginationInfo`](https://oracle.github.io/bots-node-sdk/MessageModel.html#.paginationInfo) function to create the optional paginationInfo. Note that adding this info is only used to display a pagination status message, you must implement the actual pagination yourself. 
+
+```javascript
+  const people = [ {firstName: "Bob", lastName: "Dole"}
+                ,{firstName: "John", lastName: "Doe"}
+                ,{firstName: "Jane", lastName: "Doe"}]
+
+  let forms = [];
+  for (let p of people) {
+    let fields = [];
+    fields.push(messageModel.formField("First Name", p.firstName));
+    fields.push(messageModel.formField("Last Name", p.lastName));
+    forms.push(messageModel.form(null, fields));
+  }
+  const paginationInfo = messageModel.paginationInfo(5,3,0, context.translate("systemConfiguration_paginationStatus",1,3,5));
+  let message = messageModel.formConversationMessage(forms, 2, paginationInfo);
+```
+
+### Creating a TableForm Message <a name="tableFormMessage">
+
+You use the [`tableFormConversationMessage`](https://oracle.github.io/bots-node-sdk/MessageModel.html#.tableFormConversationMessage) function to create a message with tableForm layout.
+
+```javascript
+  const messageModel = context.getMessageModel();  
+  let message = messageModel.tableFormConversationMessage(headings, rows, forms, formColumns, showFormButtonLabel, paginationInfo);
+```
+
+To create the arguments required for `tableConversationMessage`, you can use the following functions:
+- [`tableHeaderColumn`](https://oracle.github.io/bots-node-sdk/MessageModel.html#.tableHeaderColumn) function to populate the array of headings
+- [`tableColumn`](https://oracle.github.io/bots-node-sdk/MessageModel.html#.tableColumn) function to populate an array of columns
+- [`tableRow`](https://oracle.github.io/bots-node-sdk/MessageModel.html#.tableRow) function to populate the array of rows, passing in the columns as argument for each row.
+- [`formField`](https://oracle.github.io/bots-node-sdk/MessageModel.html#.formField) function to populate an array of field
+- [`form`](https://oracle.github.io/bots-node-sdk/MessageModel.html#.form) function to populate the array of forms, passing in the fields as argument for each form.
+- [`paginationInfo`](https://oracle.github.io/bots-node-sdk/MessageModel.html#.paginationInfo) function to create the optional paginationInfo. Note that adding this info is only used to display a pagination status message, you must implement the actual pagination yourself. 
+
+```javascript
+  const people = [ {firstName: "Bob", lastName: "Dole"}
+                ,{firstName: "John", lastName: "Doe"}
+                ,{firstName: "Jane", lastName: "Doe"}]
+
+  let headings = [];
+  headings.push( messageModel.tableHeaderColumn("First Name"));
+  let rows = [];
+  let forms = [];
+  for (let p of people) {
+    // create row
+    let columns = [];
+    columns.push(messageModel.tableColumn(p.firstName));
+    rows.push(messageModel.tableRow(columns));
+    // create form
+    let fields = [];
+    fields.push(messageModel.formField("Last Name", p.lastName));
+    forms.push(messageModel.form("View details", fields));
+  }
+  const paginationInfo = messageModel.paginationInfo(5,3,0, context.translate("systemConfiguration_paginationStatus",1,3,5));
+  let message = messageModel.tableFormConversationMessage(headings, rows, forms, 2, null, paginationInfo);
 ```
 
 ### Creating a Microsoft Adaptive Cards Message <a name="adaptiveCardMessage">

@@ -2,6 +2,8 @@ import { EntityResolutionContext
   , EntityEventHandler
   , EntityEventHandlers
   , EntityEventHandlerMetadata
+  , EntityEvent
+  , EntityPublishMessageEvent
 } from '@oracle/bots-node-sdk/lib';
 
 // You can use your favorite http client package to make REST calls, however, the node fetch API is pre-installed with the bots-node-sdk.
@@ -14,7 +16,8 @@ export class {{className}} implements EntityEventHandler {
   public metadata(): EntityEventHandlerMetadata {
     return { 
       name: '{{name}}',    
-      eventHandlerType: '{{eventHandlerType}}'
+      eventHandlerType: '{{eventHandlerType}}',
+      supportedActions: [] // string array of transition actions that might be set by the event handler
       };
   }
 
@@ -26,7 +29,7 @@ export class {{className}} implements EntityEventHandler {
         * Default message handler that includes acknowledgements when a bag item is updated
         * or a bag item value is provided while the user was prompted for another item
         */
-        publishMessage: async (event, context) => {
+        publishMessage: async (event: EntityPublishMessageEvent, context: EntityResolutionContext) => {
           updatedItemsMessage(context);
           outOfOrderItemsMessage(context);
           context.addCandidateMessages();
@@ -35,7 +38,7 @@ export class {{className}} implements EntityEventHandler {
         /**
          * This handler is called when the composite bag entity is resolved
          */
-        resolved: async (event, context) => { // eslint-disable-line no-unused-vars
+        resolved: async (event: EntityEvent, context: EntityResolutionContext) => { // eslint-disable-line no-unused-vars
           // add your back-end REST API call here
         }
         // add more entity level event handlers here

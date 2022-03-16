@@ -39,7 +39,8 @@ An entity event handler exports two objects: the `metadata` object that provides
 module.exports = {
   metadata: {
     name: 'myEntityEventHandler',
-    eventHandlerType: 'ResolveEntities'
+    eventHandlerType: 'ResolveEntities',
+    supportedActions: [] // string array of transition actions that might be set by the event handler
   },
   handlers:  {
     entity: {
@@ -70,21 +71,22 @@ In TypeScript, the event handler class implements the `EntityEventHandler` inter
 - The `handlers` method that returns an object of type `EntityEventHandlers`.
 
 ```typescript
-import { EntityResolutionContext, EntityEventHandler, EntityEventHandlers, EntityEventHandlerMetadata} from '@oracle/bots-node-sdk/lib';
+import { EntityResolutionContext, EntityEventHandler, EntityEventHandlers, EntityEventHandlerMetadata, EntityEvent} from '@oracle/bots-node-sdk/lib';
 
 export class MyEntityEventHandler implements EntityEventHandler {
 
   public metadata(): EntityEventHandlerMetadata {
     return { 
       name: 'myEntityEventHandler',    
-      eventHandlerType: 'ResolveEntities'
+      eventHandlerType: 'ResolveEntities',
+      supportedActions: [] // string array of transition actions that might be set by the event handler
       };
   }
 
   public handlers(): EntityEventHandlers {
     return {
       entity: {
-        resolved:async (event, context) => {
+        resolved:async (event: EntityEvent, context: EntityResolutionContext) => {
           // logic to execute once entity is resolved goes here
         }
         // more entity-level handlers here
@@ -119,6 +121,7 @@ The table below lists all entity level events currently supported:
 
 | Event | Description | Event Properties |
 |--|--|--|
+| `init` | A handler that can be used for initialization tasks. It is called when the entity resolution process starts. | none
 | `validate` | A handler for entity-level validations that include two or more bag item values. Validation errors can be registered by calling `context.addValidationError(itemName,errorMessage)`. The handler returns `false` if the validation fails. None of the item values provided by the last user message will be updated when the validation fails.<br/><br/>**NOTE**: This handler is called when at least one bag item value has changed. | <ul><li><b>newValues</b>: JSONObject with key-value pairs where the key is the item name and the value is the new item value.</li><li><b>oldValues</b>: JSONObject with key-value pairs where the key is the item name and the value the old item value.</li><li><b>currentItem</b>: The name of the item that's currently being resolved.</li></ul>
 | `publishMessage` | A generic fallback handler that is called when an item-specific prompt or a disambiguate handler is not specified. | <ul><li><b>currentItem</b>: The name of the item that's currently being resolved.</li><li><b>promptCount</b>: The number of times that the user is prompted for the current item (only set for a prompt event).</li><li><b>disambiguationValues</b>: A list of values that matches the user input (only set for a disambiguate event).</li></ul>
 | `maxPromptsReached` | A generic fallback handler when an item-specific handler for reaching max prompts is not specified. | <ul><li><b>currentItem</b>: The name of item that's currently being resolved.</li><li><b>promptCount</b>: The number of times that the user is prompted for the current item.</li></ul>

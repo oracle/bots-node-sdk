@@ -1,9 +1,10 @@
 /* tslint:disable */
 
 import { CommonValidator } from '../../common/validator';
-import { Action, Attachment, AttachmentMessage, BaseAction, BaseMessagePayload, CallAction, Card, CardMessage, Keyword, Location
+import { Action, Attachment, AttachmentMessage, BaseAction, CallAction, Card, CardMessage, Keyword, Location
   , LocationAction, LocationMessage, MessagePayload, PostbackAction, PostbackMessage, RawMessage, ShareAction, TextMessage
-  , UrlAction, NonRawMessagePayload, ChannelType } from './messageTypes';
+  , UrlAction, NonRawMessagePayload, ChannelType, TableHeaderColumn, TableColumn, TableRow, FormField, Form, PaginationInfo
+  , TableMessage, FormMessage, TableFormMessage, AlignmentType, FieldDisplayType } from './messageTypes';
 import MessageModelSchemaFactory = require('./schema/messageModelSchema');
 
 /**
@@ -264,7 +265,7 @@ export class MessageModel {
    * @param headerText - The headerText to be added at the top of the message.
    * @param keywords - A list of postback keywords that can be created with the postbackKeyword function
    */
-  static cardConversationMessage(layout: 'vertical' | 'horizontal', cards: Card[], actions?: Action[], footerText?: string, headerText?: string, keywords?: Keyword[]): CardMessage {
+  public static cardConversationMessage(layout: 'vertical' | 'horizontal', cards: Card[], actions?: Action[], footerText?: string, headerText?: string, keywords?: Keyword[]): CardMessage {
     var response: CardMessage = {
       type: 'card',
       layout: layout || 'vertical',
@@ -284,6 +285,241 @@ export class MessageModel {
     }
     return response;
   }
+
+  /**
+   * Static method to create a TableHeaderColumn object.
+   * @return A TableHeaderColumn object.
+   * @param label - The label of the column header
+   * @param width - The width of the column header (optional)
+   * @param alignment - The alignment of the column header label (left, right or center, defaults to left)
+   */
+  public static tableHeaderColumn(label: string, width?: number, alignment?: AlignmentType): TableHeaderColumn {
+    var response: TableHeaderColumn = {
+      label: label,      
+      alignment: alignment || 'left'
+    };
+    if (width) {
+      response.width = width;
+    }
+    return response;
+  }
+
+  /**
+   * Static method to create a TableColumn object.
+   * @return A TableColumn object.
+   * @param value - The value of the column
+   * @param alignment - The alignment of the column value (left, right or center, defaults to left)
+   * @param displayType - The display type (text or link, defaults to text)
+   * @param linkLabel - The label used when the displayType is set to 'link'.
+   */
+  public static tableColumn(value?: any, alignment?: AlignmentType, displayType?: FieldDisplayType, linkLabel?: string): TableColumn {
+    var response: TableColumn = {
+      alignment: alignment || 'left',
+      displayType: displayType || 'text'
+    };
+    if (value) {
+      response.value = value;
+    }
+    if (linkLabel) {
+      response.linkLabel = linkLabel;
+    }
+    return response;
+  }
+
+  /**
+   * Static method to create a FormField object.
+   * @return A FormField object.
+   * @param label - The label of the form field
+   * @param value - The value of the field
+   * @param displayType - The display type (text or link, defaults to text)
+   * @param linkLabel - The label used when the displayType is set to 'link'.
+   */
+  public static formField(label: string, value?: any, displayType?: FieldDisplayType, linkLabel?: string): FormField {
+    var response: FormField = {
+      label: label,
+      displayType: displayType || 'text'
+    };
+    if (value) {
+      response.value = value;
+    }
+    if (linkLabel) {
+      response.linkLabel = linkLabel;
+    }
+    return response;
+  }
+
+  /**
+   * Static method to create a TableRow object.
+   * @return A TableRow object.
+   * @param columns - The columns in the row, can be created with tableColumn function
+   */
+  public static tableRow(columns: TableColumn[]): TableRow {
+    var response: TableRow = {
+      fields: columns 
+    };
+    return response;
+  }
+
+  /**
+   * Static method to create a Form object.
+   * @return A Form object.
+   * @param fields - The fields in the form, can be created with formField function
+   * @param title - The title of the form object
+   */
+  public static form(fields: FormField[], title?: string): Form {
+    var response: Form = {
+      fields: fields 
+    };
+    if (title) {
+      response.title = title;
+    }
+    return response;
+  }
+
+  /**
+   * Static method to create a PaginationInfo object.
+   * @return A PaginationInfo object.
+   * @param totalCount - The total number of items that are paginated
+   * @param rangeSize - The number of items shown at once
+   * @param rangeStart - The current range start index within the list of items
+   * @param status - Pagination status message
+   */
+  public static paginationInfo(totalCount: number, rangeSize: number, rangeStart: number, status?: string): PaginationInfo {
+    var response:PaginationInfo = {
+      totalCount: totalCount,
+      rangeSize: rangeSize,
+      rangeStart: rangeStart
+    };
+    if (status) {
+      response.status = status;
+    } 
+    return response;
+  }
+
+  /**
+   * Static method to create a TableConversationMessage.
+   * @return A TableConversationMessage.
+   * @param headings - The table header columns, can be created with tableHeaderColumn function
+   * @param rows - The table rows, can be created with tableRow function
+   * @param paginationInfo - The pagination info, can be created with the paginationInfo function
+   * @param actions - A list of actions added to the message
+   * @param footerText - The footerText to be added at the bottom of the message.
+   * @param headerText - The headerText to be added at the top of the message.
+   * @param keywords - A list of postback keywords that can be created with the postbackKeyword function
+   */
+  static tableConversationMessage(headings: TableHeaderColumn[], rows: TableRow[], paginationInfo?: PaginationInfo, actions?: Action[], footerText?: string, headerText?: string, keywords?: Keyword[]): TableMessage {
+    var response: TableMessage = {
+      type: 'table',
+      headings: headings || [],
+      rows: rows || []
+    };
+    if (paginationInfo) {
+      response.paginationInfo = paginationInfo;
+    } else {
+      // default to no pagination
+      let count = (rows || []).length
+      response.paginationInfo = this.paginationInfo(count, count, 0, null);
+    }
+    if (actions) {
+      response.actions = actions;
+    }
+    if (footerText) {
+      response.footerText = footerText;
+    }
+    if (headerText) {
+      response.headerText = headerText;
+    }
+    if (keywords) {
+      response.keywords = keywords;
+    }
+    return response;
+  }
+
+  /**
+   * Static method to create a FormConversationMessage.
+   * @return A FormConversationMessage.
+   * @param forms - The list of forms, can be created with form function
+   * @param formColumns - The number of columns used in the form layout, defaults to 1
+   * @param paginationInfo - The pagination info, can be created with the paginationInfo function
+   * @param actions - A list of actions added to the message
+   * @param footerText - The footerText to be added at the bottom of the message.
+   * @param headerText - The headerText to be added at the top of the message.
+   * @param keywords - A list of postback keywords that can be created with the postbackKeyword function
+   */
+  public static formConversationMessage(forms: Form[], formColumns?: number, paginationInfo?: PaginationInfo, actions?: Action[], footerText?: string, headerText?: string, keywords?: Keyword[]): FormMessage {
+    var response: FormMessage = {
+      type: 'form',
+      forms: forms,
+      formColumns: formColumns || 1
+    };
+    if (paginationInfo) {
+      response.paginationInfo = paginationInfo;
+    } else {
+      // default to no pagination
+      let count = (forms || []).length
+      response.paginationInfo = this.paginationInfo(count, count, 0, null);
+    }
+    if (actions) {
+      response.actions = actions;
+    }
+    if (footerText) {
+      response.footerText = footerText;
+    }
+    if (headerText) {
+      response.headerText = headerText;
+    }
+    if (keywords) {
+      response.keywords = keywords;
+    }
+    return response;
+  }
+
+  /**
+   * Static method to create a TableFormConversationMessage.
+   * @return A TableFormConversationMessage.
+   * @param headings - The table header columns, can be created with tableHeaderColumn function
+   * @param rows - The table rows, can be created with tableRow function
+   * @param forms - The list of forms, can be created with form function
+   * @param formColumns - The number of columns used in the form layout, defaults to 1
+   * @param paginationInfo - The pagination info, can be created with the paginationInfo function
+   * @param actions - A list of actions added to the message
+   * @param footerText - The footerText to be added at the bottom of the message.
+   * @param headerText - The headerText to be added at the top of the message.
+   * @param keywords - A list of postback keywords that can be created with the postbackKeyword function
+   */
+  public static tableFormConversationMessage(headings: TableHeaderColumn[], rows: TableRow[], forms: Form[], formColumns?: number, showFormButtonLabel?: string, paginationInfo?: PaginationInfo, actions?: Action[], footerText?: string, headerText?: string, keywords?: Keyword[]): TableFormMessage {
+    var response: TableFormMessage = {
+      type: 'tableForm',
+      headings: headings,
+      rows: rows,
+      forms: forms,
+      formColumns: formColumns || 1,
+      paginationInfo: paginationInfo
+    };
+    if (paginationInfo) {
+      response.paginationInfo = paginationInfo;
+    } else {
+      // default to no pagination
+      let count = (rows || []).length
+      response.paginationInfo = this.paginationInfo(count, count, 0, null);
+    }
+    if (showFormButtonLabel) {
+      response.showFormButtonLabel = showFormButtonLabel;
+    }
+    if (actions) {
+      response.actions = actions;
+    }
+    if (footerText) {
+      response.footerText = footerText;
+    }
+    if (headerText) {
+      response.headerText = headerText;
+    }
+    if (keywords) {
+      response.keywords = keywords;
+    }
+    return response;
+  } 
 
   /**
    * Static utility method to create an AttachmentConversationMessage

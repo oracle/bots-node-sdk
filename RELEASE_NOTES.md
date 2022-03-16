@@ -1,5 +1,6 @@
 # Release Notes
 
+- [Version 2.6.0](#v260)
 - [Version 2.5.5](#v255)
 - [Version 2.5.4](#v254)
 - [Version 2.5.3](#v253)
@@ -8,6 +9,21 @@
 - [Version 2.5.0](#v250)
 - [Version 2.4.3](#v243)
 - [Version 2.4.2](#v242)
+
+## Version 2.6.0 <a name="v260">
+
+### New Features
+
+- **Support for visual flows**: Starting with ODA platform version 22.04, skills can be defined using multiple visual flows, rather than a single monolitic flow defined in YAML. 
+- **New 'init' entity event handler**: A new 'init' event is available in entity event handler which fires when entity resolution starts.
+- **New attribute 'supportedActions' in entity event handler metadata**: The `supportedActions` property contains a string array of transition actions that might be set by the event handler. By setting this property, the skill validator will not raise a warning if a transition action created in an event handler is set by by the resolving state in the flow.
+- **New entity resolution context method to set transition action**: When using the new `setTransitionAction` function, the entity resolution process is aborted, and the dialog engine will transition to the state defined for this transition action.
+- **New functions to create table, form and tableForm message payloads**: The ODA conversation message model has been extended with 3 new message types to render data in a table, form, or tableForm layout. These new functions allow you to create these message types using the SDK. See [Conversation Messaging](https://github.com/oracle/bots-node-sdk/blob/master/MESSAGE_MODEL.md) for more information.
+
+### Fixed Issues
+
+- The `context.translate` function did not work correctly with ICU message formats that expect a numeric argument.
+- Code completion didn't work out of the box for Typescript-based component services.
 
 ## Version 2.5.5 <a name="v255">
 

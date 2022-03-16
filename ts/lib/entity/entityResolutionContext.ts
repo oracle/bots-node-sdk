@@ -1,6 +1,6 @@
 import { BaseContext } from '../component/baseContext';
 import EventHandlerRequestSchemaFactory = require('./schema/eventHandlerRequestSchema');
-import { MessagePayload, TextMessage } from '../message';
+import { MessagePayload, NonRawMessagePayload } from '../message';
 
 // Response template
 const RESPONSE = {
@@ -107,7 +107,15 @@ export class EntityResolutionContext extends BaseContext {
    * @return {string} name of the composite bag entity type
    */
   getEntityName(): string {
-    const variable =  this.getRequest().context.variables[this.getRequest().variableName];
+    const varName = this.getRequest().variableName;
+    const context = this.getRequest().context;
+    let variable;
+    // if it is a dialog 2.0 skill-scoped variable, we need to get the variable def from the parent scope
+    if (varName.startsWith('skill.') && context.hasOwnProperty('parent') && context.parent.scope === 'skill') {
+      variable = context.parent.variables[varName.substring(6)];
+    } else {
+      variable = context.variables[varName];
+    }
     return variable.type.name;
   }
 
@@ -267,10 +275,10 @@ export class EntityResolutionContext extends BaseContext {
   /**
    * Returns a list of the candidate bot messages created by the the ResolveEntities or CommonResponse component
    * that will be sent to the user when you use addCandidateMessages() function.
-   * @return {object[]} list of candidate messages. Note that these messages are in the format of the conversation
+   * @return {NonRawMessagePayload[]} list of candidate messages. Note that these messages are in the format of the conversation
    * message model (CMM), and can be either a text, attachment or card message payload
    */
-  getCandidateMessages(): TextMessage[] {
+  getCandidateMessages(): NonRawMessagePayload[] {
     return this.getRequest().candidateMessages;
   }
 
@@ -437,6 +445,15 @@ export class EntityResolutionContext extends BaseContext {
    */
   cancel(): void {
     this.getResponse().cancel = true;
+  }
+
+  /**
+   * Set a transition action. When you use this function, the entity resolution process is aborted, and the dialog engine will transition
+   * to the state defined for this transition action.
+   * @param {string} action - name of the transition action
+   */
+  setTransitionAction(action: string) {
+    this.getResponse().transitionAction = action;
   }
 
   /**

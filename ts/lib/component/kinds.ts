@@ -7,6 +7,7 @@ import { CustomComponentContext } from './sdk';
  */
 export interface BaseComponentMetadata {
   name: string;
+  supportedActions?: string[];
 }
 
 export type CustomComponentPropertyType =
@@ -15,7 +16,6 @@ export type CustomComponentPropertyType =
 
 
 export interface CustomComponentMetadata extends BaseComponentMetadata {
-  supportedActions?: string[];
   properties?: {
     [name: string]: {
       type: CustomComponentPropertyType,
@@ -54,6 +54,7 @@ export interface EntityItems {
 }
 
 export interface EntityEvent {
+  init?(event: EntityEvent, context: EntityResolutionContext): void
   validate?(event: EntityValidateEvent, context: EntityResolutionContext): void
   publishMessage?(event: EntityPublishMessageEvent, context: EntityResolutionContext): void
   maxPromptsReached?(event: EntityMaxPromptsReachedEvent, context: EntityResolutionContext): void
