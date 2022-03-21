@@ -21,6 +21,9 @@ jobs:
       - name: Install
         run: npm ci
 
+      - name: Link
+        run: npm link
+
       - name: Test
         run: npm test
 
