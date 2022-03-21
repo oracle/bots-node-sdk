@@ -63,6 +63,8 @@ jobs:
         npm run docs
         cd docs
         git init
+        git config user.name "GitHub Action"
+        git config user.email "no-reply@oracle.com"
         git checkout -b gh-pages
         git remote add origin https://${GH_PAGES_AUTH}@github.com/${OWNER}/${REPO}.git
         git add -A
