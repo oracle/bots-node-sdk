@@ -42,7 +42,7 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-  
+
     - name: Setup node
       uses: actions/setup-node@v2
       with:
@@ -51,12 +51,19 @@ jobs:
     - name: Install
       run: npm ci
 
-    - name: Create docs
-      run: npm run docs
-
-    - name: Publish Docs
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_branch: gh-pages
-        publish_dir: docs
+    - name: GH Pages
+      env:
+          # GH_PAGES_AUTH: ${{ secrets.GH_PAGES_AUTH }}
+          # Create a GH_PAGES_AUTH secret with format <github-username>:<github-token>
+          GH_PAGES_AUTH: ${{ secrets:GH_PAGES_AUTH }}
+          OWNER: ${{ github.repository_owner }}
+          REPO: ${{ github.event.repository.name }}
+      run: |
+        npm run docs
+        cd docs
+        git init
+        git checkout -b gh-pages
+        git remote add origin https://${GH_PAGES_AUTH}@github.com/${OWNER}/${REPO}.git
+        git add -A
+        git commit -m "Documentation Refresh"
+        git push origin gh-pages --force
