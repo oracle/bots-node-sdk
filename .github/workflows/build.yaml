@@ -55,7 +55,7 @@ jobs:
       env:
           # GH_PAGES_AUTH: ${{ secrets.GH_PAGES_AUTH }}
           # Create a GH_PAGES_AUTH secret with format <github-username>:<github-token>
-          GH_PAGES_AUTH: ${{ secrets:GH_PAGES_AUTH }}
+          GH_PAGES_AUTH: ${{ secrets.GH_PAGES_AUTH }}
           OWNER: ${{ github.repository_owner }}
           REPO: ${{ github.event.repository.name }}
       run: |
