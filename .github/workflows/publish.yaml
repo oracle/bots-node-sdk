@@ -1,8 +1,8 @@
 name: NPM Publish
 
 on:
-  push:
-    tags: ['v*']
+  # push:
+  #   tags: ['v*']
   release:
     types: [created]
 
