@@ -15,7 +15,6 @@
 
 ### New Features
 
-- **Support for code completion in Visual Studio Code**: When using a JavaScript-based component package, you now get code insight and code completion on newly created component services when using Visual Studio Code as your editor. 
 - **Improved custom component scaffolding**: Custom components created with the CLI now use the `async` syntax rather than the deprecated `done` callback.
 
 ### Fixed Issues
