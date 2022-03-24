@@ -53,6 +53,8 @@ export namespace Lib {
 
   export type EntityEvent = lib.EntityEvent;
 
+  export type EntityBaseEvent = lib.EntityBaseEvent;
+
   export type EntityItemEvents = lib.EntityItemEvents;
 
   export type EntityValidateEvent = lib.EntityValidateEvent;

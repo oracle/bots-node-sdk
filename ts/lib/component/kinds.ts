@@ -54,11 +54,11 @@ export interface EntityItems {
 }
 
 export interface EntityEvent {
-  init?(event: EntityEvent, context: EntityResolutionContext): void
+  init?(event: EntityBaseEvent, context: EntityResolutionContext): void
   validate?(event: EntityValidateEvent, context: EntityResolutionContext): void
   publishMessage?(event: EntityPublishMessageEvent, context: EntityResolutionContext): void
   maxPromptsReached?(event: EntityMaxPromptsReachedEvent, context: EntityResolutionContext): void
-  resolved?(event: EntityEvent, context: EntityResolutionContext): void
+  resolved?(event: EntityBaseEvent, context: EntityResolutionContext): void
   attachmentReceived?(event: EntityAttachmentReceivedEvent, context: EntityResolutionContext): void
   locationReceived?(event: EntityLocationReceivedEvent, context: EntityResolutionContext): void
 }
@@ -73,48 +73,48 @@ export interface EntityItemEvents {
 
 // marker interface for entity event types, some events dont have any event properties, so thats why
 // this is an empty interface
-export interface EntityEvent {
+export interface EntityBaseEvent {
 }
 
-export interface EntityValidateEvent extends EntityEvent {
+export interface EntityValidateEvent extends EntityBaseEvent {
   currentItem: string;
   oldValues: [string: object];
   newValues: [string: object];
 }
 
-export interface EntityPublishMessageEvent extends EntityEvent {
+export interface EntityPublishMessageEvent extends EntityBaseEvent {
   currentItem: string;
   promptCount?: number;
   disambiguationValues?: [string: object];
 }
 
-export interface EntityMaxPromptsReachedEvent extends EntityEvent {
+export interface EntityMaxPromptsReachedEvent extends EntityBaseEvent {
   currentItem: string;
   promptCount: number;
 }
 
-export interface EntityAttachmentReceivedEvent extends EntityEvent {
+export interface EntityAttachmentReceivedEvent extends EntityBaseEvent {
   value: Attachment;
 }
 
-export interface EntityLocationReceivedEvent extends EntityEvent {
+export interface EntityLocationReceivedEvent extends EntityBaseEvent {
   value: Location;
 }
 
-export interface EntityItemValidateEvent extends EntityEvent {
+export interface EntityItemValidateEvent extends EntityBaseEvent {
   oldValue: object;
   newValue: object;
 }
 
-export interface EntityItemPublishPromptMessageEvent extends EntityEvent {
+export interface EntityItemPublishPromptMessageEvent extends EntityBaseEvent {
   promptCount: number;
 }
 
-export interface EntityItemPublishDisambiguationMessageEvent extends EntityEvent {
+export interface EntityItemPublishDisambiguationMessageEvent extends EntityBaseEvent {
   disambiguationValues: object[];
 }
 
-export interface EntityItemMaxPromptsReachedEvent extends EntityEvent {
+export interface EntityItemMaxPromptsReachedEvent extends EntityBaseEvent {
   promptCount: number;
 }
 
