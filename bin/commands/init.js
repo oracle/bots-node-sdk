@@ -127,6 +127,7 @@ class CCInit extends CommandDelegate {
           sdkBin: this.command.root()._name,
           expressVersion: SDK.devDependencies.express,
           expressTypesVersion: SDK.devDependencies['@types/express'],
+          nodeFetchTypesVersion: SDK.devDependencies['@types/node-fetch'],
           typescriptVersion: SDK.devDependencies.typescript
         });
       }).then(() => { // run component code generator

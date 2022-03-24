@@ -1,5 +1,7 @@
 'use strict';
 
+const {EntityPublishMessageEvent, EntityBaseEvent, EntityResolutionContext} = require('@oracle/bots-node-sdk/lib'); // eslint-disable-line no-unused-vars
+
 // You can use your favorite http client package to make REST calls, however, the node fetch API is pre-installed with the bots-node-sdk.
 // Documentation can be found at https://www.npmjs.com/package/node-fetch
 // Un-comment the next line if you want to make REST calls using node-fetch. 
@@ -16,6 +18,8 @@ module.exports = {
       /**
       * Default message handler that includes acknowledgements when a bag item is updated
       * or a bag item value is provided while the user was prompted for another item
+      * @param {EntityPublishMessageEvent} event
+      * @param {EntityResolutionContext} context
       */
       publishMessage: async (event, context) => {
         updatedItemsMessage(context);   
@@ -24,6 +28,8 @@ module.exports = {
       },
       /**
        * This handler is called when the composite bag entity is resolved
+      * @param {EntityBaseEvent} event
+      * @param {EntityResolutionContext} context
        */
       resolved: async (event, context) => { // eslint-disable-line no-unused-vars
         // add your back-end REST API call here
@@ -44,6 +50,7 @@ module.exports = {
 
 /**
  * Helper function to show acknowledgement message when a bag item value is updated.
+ * @param {EntityResolutionContext} context
  */
 function updatedItemsMessage(context) {
   if (context.getItemsUpdated().length > 0) {
@@ -54,6 +61,7 @@ function updatedItemsMessage(context) {
 
 /**
  * Helper function to show acknowledgement message when a bag item value is provided when user was prompted for anther bag item.
+ * @param {EntityResolutionContext} context
  */
 function outOfOrderItemsMessage(context) {
   if (context.getItemsMatchedOutOfOrder().length > 0) {

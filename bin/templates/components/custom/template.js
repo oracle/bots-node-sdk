@@ -1,5 +1,7 @@
 'use strict';
 
+const {CustomComponentContext} = require('@oracle/bots-node-sdk/lib'); // eslint-disable-line no-unused-vars
+
 // You can use your favorite http client package to make REST calls, however, the node fetch API is pre-installed with the bots-node-sdk.
 // Documentation can be found at https://www.npmjs.com/package/node-fetch
 // Un-comment the next line if you want to make REST calls using node-fetch. 
@@ -13,7 +15,13 @@ module.exports = {
     },
     supportedActions: ['weekday', 'weekend']
   }),
-  invoke: (context, done) => {
+
+
+  /**
+   * invoke methods gets called when the custom component state is executed in the dialog flow
+   * @param {CustomComponentContext} context 
+   */
+  invoke: async (context) => {
     // Retrieve the value of the 'human' component property.
     const { human } = context.properties();
     // Determine the current date
@@ -24,6 +32,5 @@ module.exports = {
     context.reply(`Greetings ${human}`)
       .reply(`Today is ${now.toLocaleDateString()}, a ${dayOfWeek}`)
       .transition(isWeekend ? 'weekend' : 'weekday');       
-    done();  
   }
 };
