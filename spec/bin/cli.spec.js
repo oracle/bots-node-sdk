@@ -53,7 +53,7 @@ describe(`CLI: bots-node-sdk`, () => {
         .then(() => {
           expect(fs.existsSync(path.join(outDir, 'components', `helloWorld.js`))).toBe(true);
         }).then(done).catch(done.fail);
-    }, 1e4);
+    }, 2e4);
 
     describe('Subcommand: component', () => {
       const initc = ['init', 'component'];
@@ -106,7 +106,7 @@ describe(`CLI: bots-node-sdk`, () => {
           .then(() => service.kill())
           .catch(e => { service.kill(); throw e;});
       }).then(done).catch(done.fail);
-    });
+    }, 3e4);
 
     it('should error on invalid project directory', done => {
       run(null, 'service')
@@ -114,7 +114,7 @@ describe(`CLI: bots-node-sdk`, () => {
           expect(e).toContain(`does not export components`);
           done();
         });
-    });
+    }, 3e4);
   });
 
   describe('Command: pack', () => {
@@ -127,13 +127,13 @@ describe(`CLI: bots-node-sdk`, () => {
       run(null, 'pack', '--dry-run')
         .then(() => done.fail('invalid package was validated'))
         .catch(() => done());
-    });
+    }, 2e4);
 
     it('should verify a valid cc package', done => {
       run(tmp, 'pack', '--dry-run')
         .then(out => expect(out).toContain('is valid'))
         .then(done).catch(done.fail);
-    });
+    }, 2e4);
 
     it('should include bundled dependencies', done => {
       run(tmp, 'pack', '--dry-run')
@@ -142,7 +142,7 @@ describe(`CLI: bots-node-sdk`, () => {
           expect(bundledDependencies).toEqual(jasmine.any(Array));
         })
         .then(done).catch(done.fail);
-    });
+    }, 2e4);
 
     it('should error invalid service option', done => {
       run(tmp, 'pack', '--service', 'fooey')
@@ -150,7 +150,7 @@ describe(`CLI: bots-node-sdk`, () => {
           expect(e).toMatch(/invalid/i);
           done();
         })
-    });
+    }, 2e4);
 
     // attempt all service types
     [null, 'npm', 'embedded', 'express', 'mobile-api']
@@ -173,7 +173,7 @@ describe(`CLI: bots-node-sdk`, () => {
               }
             }).then(done).catch(done.fail);
         });
-      }, 1e5); // 10 seconds
-  });
+      }, 2e5); // 10 seconds
+  }, 2e4);
 
 });
