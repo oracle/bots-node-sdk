@@ -2,14 +2,14 @@ import { EntityResolutionContext
   , EntityEventHandler
   , EntityEventHandlers
   , EntityEventHandlerMetadata
-  , EntityEvent
+  , EntityBaseEvent
   , EntityPublishMessageEvent
 } from '@oracle/bots-node-sdk/lib';
 
 // You can use your favorite http client package to make REST calls, however, the node fetch API is pre-installed with the bots-node-sdk.
 // Documentation can be found at https://www.npmjs.com/package/node-fetch
 // Un-comment the next line if you want to make REST calls using node-fetch. 
-// import * as fetch from 'node-fetch';
+// import fetch from 'node-fetch';
 
 export class {{className}} implements EntityEventHandler {
 
@@ -38,7 +38,7 @@ export class {{className}} implements EntityEventHandler {
         /**
          * This handler is called when the composite bag entity is resolved
          */
-        resolved: async (event: EntityEvent, context: EntityResolutionContext) => { // eslint-disable-line no-unused-vars
+        resolved: async (event: EntityBaseEvent, context: EntityResolutionContext) => { // eslint-disable-line no-unused-vars
           // add your back-end REST API call here
         }
         // add more entity level event handlers here

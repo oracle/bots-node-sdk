@@ -1,9 +1,9 @@
-import {CustomComponent,  CustomComponentMetadata, CustomComponentContext, InvocationCallback  }  from '@oracle/bots-node-sdk/lib';
+import {CustomComponent,  CustomComponentMetadata, CustomComponentContext}  from '@oracle/bots-node-sdk/lib';
 
 // You can use your favorite http client package to make REST calls, however, the node fetch API is pre-installed with the bots-node-sdk.
 // Documentation can be found at https://www.npmjs.com/package/node-fetch
 // Un-comment the next line if you want to make REST calls using node-fetch. 
-// import * as fetch from 'node-fetch';
+// import fetch from 'node-fetch';
 
 export class {{className}} implements CustomComponent {
 
@@ -17,7 +17,7 @@ export class {{className}} implements CustomComponent {
       };
   }
 
-  public invoke(context: CustomComponentContext, done: InvocationCallback): void {
+  public async invoke(context: CustomComponentContext): Promise<void> {
     // Retrieve the value of the 'human' component property.
     const { human } = context.properties();
     // Determine the current date
@@ -28,7 +28,6 @@ export class {{className}} implements CustomComponent {
     context.reply(`Greetings ${human}`)
       .reply(`Today is ${now.toLocaleDateString()}, a ${dayOfWeek}`)
       .transition(isWeekend ? 'weekend' : 'weekday');
-    done();  
   }
   
 }  

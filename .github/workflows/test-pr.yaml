@@ -1,0 +1,38 @@
+# Workflow for build/test/docs
+
+name: PR Test
+
+on:
+  pull_request:
+    branches:
+      - main
+      - master
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x, 16.x]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        
+      - name: Setup node ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Link
+        run: npm link
+      
+      - name: Build
+        run: npm run build --if-present
+        
+      - name: Test
+        run: npm test
+

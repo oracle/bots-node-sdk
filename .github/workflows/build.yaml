@@ -1,13 +1,9 @@
 # Workflow for build/test/docs
 
-name: Build
+name: Build & Test
 
 on:
   push:
-    branches:
-      - main
-      - master
-  pull_request:
     branches:
       - main
       - master
