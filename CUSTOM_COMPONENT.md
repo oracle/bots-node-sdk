@@ -43,7 +43,7 @@ The custom component must export two objects:
     - Supported transition actions
 - The `invoke` function, which contains the logic to execute
 
-Here's an example of how to use both objects. Note that the first argument (`context`) names the reference to the [CustomComponentContext](https://oracle.github.io/bots-node-sdk/CustomComponentContext.html) object, which provides a context object for reading and changing variables as well as sending back results.
+Here's an example of how to use both objects. Note that the argument (`context`) names the reference to the [CustomComponentContext](https://oracle.github.io/bots-node-sdk/CustomComponentContext.html) object, which provides a context object for reading and changing variables as well as sending back results.
 
 > **Note:** Before version 2.5.1, many code examples named the first argument `conversation`. Either name is valid.
 
@@ -58,7 +58,7 @@ module.exports = {
     supportedActions: ['weekday', 'weekend']
   },
 
-  invoke: (context, done) => {
+  invoke: async (context) => {
     // Retrieve the value of the 'human' component property.
     const { human } = context.properties();
     // determine date
@@ -69,7 +69,6 @@ module.exports = {
     context.reply(`Greetings ${human}`)
       .reply(`Today is ${now.toLocaleDateString()}, a ${dayOfWeek}`)
       .transition(isWeekend ? 'weekend' : 'weekday'); 
-    done();  
   }
 }
 ```
@@ -90,20 +89,6 @@ module.exports = {
   ...
 }
 ```
-Bots Node SDK version 2.5.1 introduced an alternative syntax for the `invoke` method, which uses an `async` keyword instead of the `done` argument. 
-
-```javascript
-  invoke: async (context) => {
-    ...
-    context.reply('hello world');
-  }
-```
-You can use this syntax in the following cases:
-- You'll deploy to an embedded container in a Digital Assistance instance of version 21.02 or higher
-- You'll deploy to a host other than the embedded container and your component package uses Bots Node SDK version 2.5.1 or higher
-
-With the `async` function definition, you can write asynchronous code in a synchronous way using the `await` keyword.
-In addition, you no longer have to call `done()` at every place in your code where the custom component logic is completed.
 
 ### Using TypeScript <a name="ts">
 
@@ -121,7 +106,7 @@ When you use TypeScript, the custom component class must implement the `CustomCo
 The following code shows an example of defining the two methods.
 
 ```typescript
-import {CustomComponent,  CustomComponentMetadata, CustomComponentContext, InvocationCallback }  from '@oracle/bots-node-sdk/lib';
+import {CustomComponent,  CustomComponentMetadata, CustomComponentContext }  from '@oracle/bots-node-sdk/lib';
 
 export class HelloWorld implements CustomComponent {
 
@@ -135,7 +120,7 @@ export class HelloWorld implements CustomComponent {
     }
   }
 
-  public invoke(context: CustomComponentContext, done: InvocationCallback): void {
+  public async invoke(context: CustomComponentContext): Promise<void> {
     // Retrieve the value of the 'human' component property.
     const { human } = context.properties();
     // determine date
@@ -150,19 +135,6 @@ export class HelloWorld implements CustomComponent {
   }
 }
 ```
-Bots Node SDK version 2.5.1 introduced an alternative syntax for the `invoke` method, which uses an `async` keyword instead of the `done` argument. 
-
-```typescript
-  public async invoke(context: CustomComponentContext): Promise<void> {
-    context.reply('hello world');
-  }
-```
-You can use this syntax in the following cases:
-- You'll deploy to an embedded container in a Digital Assistance instance of version 21.02 or higher
-- You'll deploy to a host other than the embedded container and your component package uses Bots Node SDK version 2.5.1 or higher
-
-With the `async` function definition, you can write asynchronous code in a synchronous way using the `await` keyword.
-In addition, you no longer have to call `done()` at every place in your code where the custom component logic is completed.
 
 ### The Metadata Object <a name="metadata">
 
@@ -184,7 +156,7 @@ The `supportedActions` aren't checked at runtime. If you call the `transition(ac
 
 The `invoke` method contains all the logic. In this method you can read and write skill context variables, create conversation messages, set state transitions, make REST calls, and more.
 
-The first argument of the `invoke` method is the `context` object. This object references the [CustomComponentContext](https://oracle.github.io/bots-node-sdk/CustomComponentContext.html), which provides access to many convenience methods to create your logic.
+The argument of the `invoke` method is the `context` object. This object references the [CustomComponentContext](https://oracle.github.io/bots-node-sdk/CustomComponentContext.html), which provides access to many convenience methods to create your logic.
 
 More information about creating conversation messages to send to the skill user can be found [here](https://github.com/oracle/bots-node-sdk/blob/master/MESSAGE_MODEL.md).
 
@@ -198,12 +170,11 @@ You use different combinations of the [CustomComponentContext](https://oracle.gi
 If you don't call `transition()`, the response is sent but the dialog stays in the state and subsequent user input comes back to this component. That is, `invoke()` is called again.
 
 ```javascript
-invoke: (context, done) => {
+invoke: async (context) => {
    ...
    context.reply(payload);
    context.keepTurn(true);
    context.transition ("success"); 
-   done();
 }
 ```
 Here's a list of typical combinations of `keepTurn()` and `transition()` that you can use depending on the use case:
@@ -227,43 +198,10 @@ const fetch = require("node-fetch");
 - **TypeScript:**
 
 ```typescript
-import * as fetch from 'node-fetch';
+import fetch from 'node-fetch';
 ```
 
 The code to make REST calls with `node fetch` looks like this:
-
-```javascript
-  // Make a REST GET request
-  fetch('http://some-backend-server-url')
-  .then((response) => {
-    return response.json();    
-  })
-  .then((data) => {
-    // Store the data in a context variable
-    context.setVariable('myContextVar', data);
-    done();
-  })
-  .catch((err) => {
-    done(err);
-  });
-
-  // Make a REST POST request
-  let payload = ...
-  fetch('http://some-backend-server-url',{ method: 'POST', body: payload})
-  .then((response) => {
-    if (response.status === 200) {        
-      context.transition('success');
-    } else {
-      context.transition('failure');
-    }
-    done();
-  })
-  .catch((err) => {
-    done(err);
-  });
-```
-
-When you use the `async invoke` syntax, you can write your code in a synchronous way without callbacks or `promise-then` constructs. For example:
 
 ```javascript
   // Make a REST GET request
@@ -272,7 +210,10 @@ When you use the `async invoke` syntax, you can write your code in a synchronous
     const data = await response.json();
     // Store the data in a context variable
     context.setVariable('myContextVar', data);
-  } 
+    context.transition('success');
+  } else {
+    context.transition('failure');
+  }
 
   // Make a REST POST request
   let payload = ...
@@ -300,11 +241,10 @@ module.exports = {
     }
   },
 
-  invoke: (context, done) => {
+  invoke: async (context) => {
     // Retrieve the value of the 'name' component property.
     const { name } = context.properties() || '';
     context.reply(`Hello ${name}`);
-    done();
   }
 }
 ```
@@ -330,9 +270,8 @@ const { latitudeVariable } = context.properties();
 if (latitudeVariable) {
   let _latitude = context.getVariable(latitudeVariable); 
   // ...   
-  done();
 } else {
-  done(new Error('State is missing latitudeVariable property.'));
+  throw new Error('State is missing latitudeVariable property.');
 }
 ```
 
@@ -352,7 +291,7 @@ On the skill's **Settings** tab, add the custom parameter and provide a value (o
 Add a `metadata` property to pass in the name of the variable, and then call `context.setVariable(<variable name>, <value>)` to set the value. For example:
 
 ```javascript
-invoke (context, done) => {
+invoke async (context) => {
   const listVariableName = context.properties().variableName;
   const fruits = [{"label": "Banana", "value": "banana"}, {"label": "Apple", "value": "apple"}, {"label": "Orange", "value": "orange"}];
   // Write list of fruits to a context variable
@@ -360,7 +299,6 @@ invoke (context, done) => {
   // Navigate to next state without first prompting for user interaction.
   context.keepTurn(true);
   context.transition();
-  done();
 }
 ```
 
@@ -395,7 +333,7 @@ metadata: {
   supportedActions: ["validEmail", "invalidEmail"]
 },
 
-invoke: (context, done) => {
+invoke: async (context) => {
   // code to get component property values and validate email goes here
   ...
   // Get composite bag entity object (cbe), create bag item object, update bag item in cbe 
@@ -404,7 +342,6 @@ invoke: (context, done) => {
   context.setVariable(variableName, cbe);
   context.transition("validEmail");
   context.keepTurn(true);
-  done();
 }
 ```
 > **Tip**: When working with composite bag entities, [entity event handlers](https://github.com/oracle/bots-node-sdk/blob/master/ENTITY_EVENT_HANDLER.md) are easier to use than custom components.
@@ -421,7 +358,7 @@ The payload can be a string or a rich message object. See [Conversation Messagin
 This code sample keeps showing the user a random quote of the day until the user indicates they want to quit.
 
 ```javascript
-invoke: (context, done) => {
+invoke: async (context) => {
 
   const quotes = require("./json/Quotes.json");
   const quote = quotes[Math.floor(Math.random() * quotes.length)];
@@ -446,7 +383,6 @@ invoke: (context, done) => {
     // easier to see how you intend the component to behave.
     context.keepTurn(false);
   }
-  done();
 }
 ```
 The Quotes.json file that's used in this example looks like this:
