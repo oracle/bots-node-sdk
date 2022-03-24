@@ -15,6 +15,8 @@ const run = (cwd, ...args) => {
 
 describe(`CLI: bots-node-sdk`, () => {
 
+  beforeAll(() => jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000)
+
   it('should show help', done => {
     run(null, '--help')
       .then(out => {
@@ -85,7 +87,7 @@ describe(`CLI: bots-node-sdk`, () => {
     beforeAll(done => run(tmp, 'init', '--skip-install', '-c', ccName).then(done));
 
     it('should run a cc package', done => {
-      return new Promise(resolve => {
+      return new Promise((resolve, reject) => {
         let sOut = '';
         const service = child_process.spawn(bin, ['service', '.', '--port', CONF.port], { cwd: tmp });
         // detect readystate
@@ -93,8 +95,11 @@ describe(`CLI: bots-node-sdk`, () => {
           sOut += `${d}`;
           if (~sOut.indexOf('Ready')) {
             resolve(service);
+          } else if (~sOut.indexOf('ERROR')) {
+            reject(new Error(sOut));
           }
         });
+
       }).then(service => {
         const fetch = httpClient();
         return fetch(`http://127.0.0.1:${CONF.port}/components`)
