@@ -15,6 +15,8 @@ const run = (cwd, ...args) => {
 
 describe(`CLI: bots-node-sdk`, () => {
 
+  beforeAll(() => jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000)
+
   it('should show help', done => {
     run(null, '--help')
       .then(out => {
@@ -53,7 +55,7 @@ describe(`CLI: bots-node-sdk`, () => {
         .then(() => {
           expect(fs.existsSync(path.join(outDir, 'components', `helloWorld.js`))).toBe(true);
         }).then(done).catch(done.fail);
-    }, 2e4);
+    }, 1e4);
 
     describe('Subcommand: component', () => {
       const initc = ['init', 'component'];
@@ -85,7 +87,7 @@ describe(`CLI: bots-node-sdk`, () => {
     beforeAll(done => run(tmp, 'init', '--skip-install', '-c', ccName).then(done));
 
     it('should run a cc package', done => {
-      return new Promise(resolve => {
+      return new Promise((resolve, reject) => {
         let sOut = '';
         const service = child_process.spawn(bin, ['service', '.', '--port', CONF.port], { cwd: tmp });
         // detect readystate
@@ -93,8 +95,11 @@ describe(`CLI: bots-node-sdk`, () => {
           sOut += `${d}`;
           if (~sOut.indexOf('Ready')) {
             resolve(service);
+          } else if (~sOut.indexOf('ERROR')) {
+            reject(new Error(sOut));
           }
         });
+
       }).then(service => {
         const fetch = httpClient();
         return fetch(`http://127.0.0.1:${CONF.port}/components`)
@@ -106,7 +111,7 @@ describe(`CLI: bots-node-sdk`, () => {
           .then(() => service.kill())
           .catch(e => { service.kill(); throw e;});
       }).then(done).catch(done.fail);
-    }, 3e4);
+    });
 
     it('should error on invalid project directory', done => {
       run(null, 'service')
@@ -114,7 +119,7 @@ describe(`CLI: bots-node-sdk`, () => {
           expect(e).toContain(`does not export components`);
           done();
         });
-    }, 3e4);
+    });
   });
 
   describe('Command: pack', () => {
@@ -127,13 +132,13 @@ describe(`CLI: bots-node-sdk`, () => {
       run(null, 'pack', '--dry-run')
         .then(() => done.fail('invalid package was validated'))
         .catch(() => done());
-    }, 2e4);
+    });
 
     it('should verify a valid cc package', done => {
       run(tmp, 'pack', '--dry-run')
         .then(out => expect(out).toContain('is valid'))
         .then(done).catch(done.fail);
-    }, 2e4);
+    });
 
     it('should include bundled dependencies', done => {
       run(tmp, 'pack', '--dry-run')
@@ -142,7 +147,7 @@ describe(`CLI: bots-node-sdk`, () => {
           expect(bundledDependencies).toEqual(jasmine.any(Array));
         })
         .then(done).catch(done.fail);
-    }, 2e4);
+    });
 
     it('should error invalid service option', done => {
       run(tmp, 'pack', '--service', 'fooey')
@@ -150,7 +155,7 @@ describe(`CLI: bots-node-sdk`, () => {
           expect(e).toMatch(/invalid/i);
           done();
         })
-    }, 2e4);
+    });
 
     // attempt all service types
     [null, 'npm', 'embedded', 'express', 'mobile-api']
@@ -173,7 +178,7 @@ describe(`CLI: bots-node-sdk`, () => {
               }
             }).then(done).catch(done.fail);
         });
-      }, 2e5); // 10 seconds
-  }, 2e4);
+      }, 1e5); // 10 seconds
+  });
 
 });
