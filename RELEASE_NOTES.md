@@ -1,5 +1,6 @@
 # Release Notes
 
+- [Version 2.6.2](#v262)
 - [Version 2.6.1](#v261)
 - [Version 2.6.0](#v260)
 - [Version 2.5.5](#v255)
@@ -10,6 +11,13 @@
 - [Version 2.5.0](#v250)
 - [Version 2.4.3](#v243)
 - [Version 2.4.2](#v242)
+
+## Version 2.6.2 <a name="v262">
+
+### Fixed Issues
+
+- The EntityResolutionContext method `clearItemValue()` failed if composite bag entity is empty
+- Building a component package using the option `--language typescript` failed.
 
 ## Version 2.6.1 <a name="v261">
 
