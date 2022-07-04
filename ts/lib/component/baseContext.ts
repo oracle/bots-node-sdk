@@ -26,7 +26,7 @@ export abstract class BaseContext {
    */
   constructor(request: any, response: any, validationSchema?: (joi: any) => any) {
 
-    const validation = validationSchema && validateRequestSchema(request, validationSchema);
+    const validation = validationSchema ? validateRequestSchema(request, validationSchema) : null;
     if (validation && validation.error) {
       const err: any = new Error('Request body malformed');
       err.name = 'badRequest';

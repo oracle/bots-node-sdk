@@ -1,6 +1,6 @@
 {
   "name": "@oracle/bots-node-sdk",
-  "version": "2.6.1",
+  "version": "2.6.2",
   "description": "Oracle Bots SDK for custom component development and webhook integrations",
   "main": "index.js",
   "browser": "index-browser.js",
@@ -8,9 +8,9 @@
   "license": "UPL-1.0",
   "author": "Oracle Corp.",
   "contributors": [
-    "Matt Vander Vliet <matthew.vander.vliet@oracle.com>",
-    "Henrick Yau <henrick.yau@oracle.com>",
-    "Steven Davelaar <steven.davelaar@oracle.com>"
+    "Matt Vander Vliet",
+    "Henrick Yau",
+    "Steven Davelaar"
   ],
   "repository": {
     "type": "git",

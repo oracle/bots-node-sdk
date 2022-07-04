@@ -13,9 +13,9 @@ function nameOpt(name) {
 
 function componentTypeOpt(type) {
   let t = type.toLowerCase();
-  t = t === 'c' ? 'custom' : (t === 'e' ? 'entityeventhandler' : t);
-  if (!~['custom', 'entityeventhandler'].indexOf(t)) {
-    throw new Error(`Invalid component type: ${type}, allowable values are [c]ustom or [e]ntityEventHandler.`);
+  t = t === 'c' ? 'custom' : (t === 'e' ? 'entityeventhandler' : (t === 'd' ? 'dataqueryeventhandler' : t));
+  if (!~['custom', 'entityeventhandler', 'dataqueryeventhandler'].indexOf(t)) {
+    throw new Error(`Invalid component type: ${type}, allowable values are [c]ustom or [e]ntityEventHandler or [d]ataQueryEventHandler..`);
   }
   return t;
 }
@@ -42,7 +42,7 @@ class CCInit extends CommandDelegate {
       .option('-r --run', 'Start service when init completes (with defaults)')
       .option('-n --name <name>', 'Specify a name for the new project', null, nameOpt)
       .option('-c --component-name <name>', 'Name for the first custom component', 'helloWorld', nameOpt)
-      .option('-t --component-type <type>', 'Specify the component type [c]ustom or [e]ntityEventHandler', 'custom', componentTypeOpt);
+      .option('-t --component-type <type>', 'Specify the component type [c]ustom or [e]ntityEventHandler or [d]ataQueryEventHandler', 'custom', componentTypeOpt);
     // add child command 'init component'
     this.command.delegate(CCInitComponent, 'component');
   }
@@ -127,7 +127,7 @@ class CCInit extends CommandDelegate {
           sdkBin: this.command.root()._name,
           expressVersion: SDK.devDependencies.express,
           expressTypesVersion: SDK.devDependencies['@types/express'],
-          nodeFetchTypesVersion: SDK.devDependencies['@types/node-fetch'],
+          nodeFetchTypesVersion: "^2.6.1", // SDK.devDependencies['@types/node-fetch'] TODO figure out why hudson build fails when this dev dep is added
           typescriptVersion: SDK.devDependencies.typescript
         });
       }).then(() => { // run component code generator
@@ -174,7 +174,7 @@ class CCInitComponent extends CommandDelegate {
     this.command
       .ignore('componentName').ignore('run').ignore('skipInstall') // inherited from parent
       .argument('name', 'Specify a name for the component', true, nameOpt)
-      .argument('type', 'Specify the component type [c]ustom or [e]ntityEventHandler', true, componentTypeOpt)
+      .argument('type', 'Specify the component type [c]ustom or [e]ntityEventHandler or [d]ataQueryEventHandler', true, componentTypeOpt)
       .argument('dest', 'Destination directory where component should be added', false)
       .option('-q --quiet', 'Suppress outputs')
 
@@ -225,10 +225,11 @@ class CCInitComponent extends CommandDelegate {
     if (!fs.existsSync(to)) {
       let className = name.charAt(0).toUpperCase() + name.slice(1);
       className = className.replace('.','');
+      let eventHandlerType = type === 'entityeventhandler' ? 'ResolveEntities' : 'DataQuery';
       writeTemplate(from, to, {
         name,
         className: className,
-        eventHandlerType: 'ResolveEntities', // constant for now
+        eventHandlerType: eventHandlerType
       });
       if (!this._quiet) {
         this.ui.banner(`Added ${type} component: '${name}'`);

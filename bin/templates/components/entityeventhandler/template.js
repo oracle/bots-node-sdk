@@ -52,19 +52,18 @@ module.exports = {
  */
 function updatedItemsMessage(context) {
   if (context.getItemsUpdated().length > 0) {
-    let message = "I have updated" + context.getItemsUpdated().map((item, i) => (i !== 0 ? " and the " : " the ") + item.toLowerCase() + " to " + context.getDisplayValue(item));
+    let message = "I have updated" + context.getItemDefsUpdated().map((item, i) => (i !== 0 ? " and the " : " the ") + (item.label || item.name.toLowerCase()) + " to " + context.getDisplayValue(item.fullName || item.name));
     context.addMessage(message);
   }
 }
 
 /**
- * Helper function to show acknowledgement message when a bag item value is provided when user was prompted for anther bag item.
+ * Helper function to show acknowledgement message when a bag item value is provided when user was prompted for another bag item.
  * @param {EntityResolutionContext} context
  */
 function outOfOrderItemsMessage(context) {
   if (context.getItemsMatchedOutOfOrder().length > 0) {
-    let message = "I got" + context.getItemsMatchedOutOfOrder().map((item, i) => (i !== 0 ? " and the " : " the ") + item.toLowerCase() + " " + context.getDisplayValue(item));
+    let message = "I got" + context.getItemDefsMatchedOutOfOrder().map((item, i) => (i !== 0 ? " and the " : " the ") + (item.label || item.name.toLowerCase()) + " " + context.getDisplayValue(item.fullName || item.name));
     context.addMessage(message);
   }
 }
-

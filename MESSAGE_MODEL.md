@@ -218,12 +218,13 @@ You use the [`formConversationMessage`](https://oracle.github.io/bots-node-sdk/M
   let message = messageModel.formConversationMessage(forms, formColumns, paginationInfo);
 ```
 
-To create the arguments required for `tableConversationMessage`, you can use the following functions:
+To create the arguments required for `formConversationMessage`, you can use the following functions:
 - [`formField`](https://oracle.github.io/bots-node-sdk/MessageModel.html#.formField) function to populate an array of field
 - [`form`](https://oracle.github.io/bots-node-sdk/MessageModel.html#.form) function to populate the array of forms, passing in the fields as argument for each form.
 - [`paginationInfo`](https://oracle.github.io/bots-node-sdk/MessageModel.html#.paginationInfo) function to create the optional paginationInfo. Note that adding this info is only used to display a pagination status message, you must implement the actual pagination yourself. 
 
 ```javascript
+  const messageModel = context.getMessageModel();  
   const people = [ {firstName: "Bob", lastName: "Dole"}
                 ,{firstName: "John", lastName: "Doe"}
                 ,{firstName: "Jane", lastName: "Doe"}]
@@ -233,7 +234,7 @@ To create the arguments required for `tableConversationMessage`, you can use the
     let fields = [];
     fields.push(messageModel.formField("First Name", p.firstName));
     fields.push(messageModel.formField("Last Name", p.lastName));
-    forms.push(messageModel.form(null, fields));
+    forms.push(messageModel.form(fields));
   }
   const paginationInfo = messageModel.paginationInfo(5,3,0, context.translate("systemConfiguration_paginationStatus",1,3,5));
   let message = messageModel.formConversationMessage(forms, 2, paginationInfo);
