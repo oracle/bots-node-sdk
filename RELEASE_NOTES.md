@@ -1,5 +1,6 @@
 # Release Notes
 
+- [Version 2.6.3](#v263)
 - [Version 2.6.2](#v262)
 - [Version 2.6.1](#v261)
 - [Version 2.6.0](#v260)
@@ -11,6 +12,12 @@
 - [Version 2.5.0](#v250)
 - [Version 2.4.3](#v243)
 - [Version 2.4.2](#v242)
+
+## Version 2.6.3 <a name="v263">
+
+### Fixed Issues
+
+- Fix for display value of multi-value recurring property 
 
 ## Version 2.6.2 <a name="v262">
 
