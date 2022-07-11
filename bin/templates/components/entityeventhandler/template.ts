@@ -67,7 +67,7 @@ export class {{className}} implements EntityEventHandler {
  */
 function updatedItemsMessage(context: EntityResolutionContext) {
   if (context.getItemsUpdated().length > 0) {
-    let message = "I have updated" + context.getItemDefsUpdated().map((item, i) => (i !== 0 ? " and the " : " the ") + (item.label || item.name.toLowerCase()) + " to " + context.getDisplayValue(item.fullName || item.name));
+    let message = "I have updated" + context.getItemDefsUpdated().map((item, i) => (i !== 0 ? " and the " : " the ") + (item.label || item.name).toLowerCase() + " to " + context.getDisplayValue(item.fullName || item.name));
     context.addMessage(message);
   }
 }
@@ -78,7 +78,7 @@ function updatedItemsMessage(context: EntityResolutionContext) {
  */
 function outOfOrderItemsMessage(context: EntityResolutionContext) {
   if (context.getItemsMatchedOutOfOrder().length > 0) {
-    let message = "I got" + context.getItemDefsMatchedOutOfOrder().map((item, i) => (i !== 0 ? " and the " : " the ") + (item.label || item.name.toLowerCase()) + " " + context.getDisplayValue(item.fullName || item.name));
+    let message = "I got" + context.getItemDefsMatchedOutOfOrder().map((item, i) => (i !== 0 ? " and the " : " the ") + (item.label || item.name).toLowerCase() + " " + context.getDisplayValue(item.fullName || item.name));
     context.addMessage(message);
   }
 }
