@@ -5,3 +5,4 @@ package/
 src
 tsconfig.json
 **/*.map
+!.npmignore

@@ -13,9 +13,9 @@ function nameOpt(name) {
 
 function componentTypeOpt(type) {
   let t = type.toLowerCase();
-  t = t === 'c' ? 'custom' : (t === 'e' ? 'entityeventhandler' : (t === 'd' ? 'dataqueryeventhandler' : t));
-  if (!~['custom', 'entityeventhandler', 'dataqueryeventhandler'].indexOf(t)) {
-    throw new Error(`Invalid component type: ${type}, allowable values are [c]ustom or [e]ntityEventHandler or [d]ataQueryEventHandler..`);
+  t = t === 'c' ? 'custom' : (t === 'e' ? 'entityeventhandler' : (t === 's' ? 'sqlqueryeventhandler' : t));
+  if (!~['custom', 'entityeventhandler', 'sqlqueryeventhandler'].indexOf(t)) {
+    throw new Error(`Invalid component type: ${type}, allowable values are [c]ustom or [e]ntityEventHandler or [s]qlQueryEventHandler..`);
   }
   return t;
 }
@@ -42,7 +42,7 @@ class CCInit extends CommandDelegate {
       .option('-r --run', 'Start service when init completes (with defaults)')
       .option('-n --name <name>', 'Specify a name for the new project', null, nameOpt)
       .option('-c --component-name <name>', 'Name for the first custom component', 'helloWorld', nameOpt)
-      .option('-t --component-type <type>', 'Specify the component type [c]ustom or [e]ntityEventHandler or [d]ataQueryEventHandler', 'custom', componentTypeOpt);
+      .option('-t --component-type <type>', 'Specify the component type [c]ustom or [e]ntityEventHandler or [s]qlQueryEventHandler', 'custom', componentTypeOpt);
     // add child command 'init component'
     this.command.delegate(CCInitComponent, 'component');
   }
@@ -174,7 +174,7 @@ class CCInitComponent extends CommandDelegate {
     this.command
       .ignore('componentName').ignore('run').ignore('skipInstall') // inherited from parent
       .argument('name', 'Specify a name for the component', true, nameOpt)
-      .argument('type', 'Specify the component type [c]ustom or [e]ntityEventHandler or [d]ataQueryEventHandler', true, componentTypeOpt)
+      .argument('type', 'Specify the component type [c]ustom or [e]ntityEventHandler or [s]qlQueryEventHandler', true, componentTypeOpt)
       .argument('dest', 'Destination directory where component should be added', false)
       .option('-q --quiet', 'Suppress outputs')
 

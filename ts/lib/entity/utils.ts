@@ -53,8 +53,9 @@ export async function invokeResolveEntitiesEventHandlers(
           retValue = false;
         }
         context.getResponse().validationResults[handlerPath] = retValue;
-        if (!retValue) {
+        if (!retValue && !context.getEntityResolutionStatus().editFormMode) {
           // only invoke next validate handler when current handler returned true
+          // or we are in edit form mode
           break;
         }
       }

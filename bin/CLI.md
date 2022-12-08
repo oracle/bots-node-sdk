@@ -1,6 +1,6 @@
 # CLI Developer Tools
 
-This SDK includes a command-line intertace (CLI) to help you create and package custom components and entity event handlers.
+This SDK includes a command-line intertace (CLI) to help you create and package custom components and event handlers.
 
 ```text
 Usage: bots-node-sdk [command] [arguments][options]
@@ -74,7 +74,7 @@ When neither `[dest]` nor `--name` are provided, the command writes the artifact
 |--|--|--|
 | `-l --language` | The language to use: `[t]ypescript` or `[j]avascript` | `javascript` |
 | `-c --component-name ` | The name for the initial component in your project | `helloWorld` |
-| `-t --component-type ` | The type of component to create: `[c]ustom` or `[e]ntityEventHandler` to create | `custom` |
+| `-t --component-type ` | The type of component to create: `[c]ustom` or `[e]ntityEventHandler` or `[s]qlQueryEventHandler` | `custom` |
 | `-s --skip-install` | Skip invoking the `npm install` command to install named dependencies after code generation | The command isn't skipped |
 | `-r --run` | Start the component service after the command completes | The service isn't started |
 | `-n --name ` | The name for the component package.|`my-component-service`|
@@ -84,7 +84,7 @@ When neither `[dest]` nor `--name` are provided, the command writes the artifact
 Run this command in the component package's top-level directory to create a custom component or event handler. The component's language is the same as the language that you specified when you ran the `init` command to create the component package.
 
 If `dest` isn't specified, then the component is written to the `components` directory for JavaScript and the `src/components` directory for TypeScript. If this directory doesn't exist, it will be created.
-The component `name` and `type` arguments are required, and `type` must be either `[c]ustom` or `[e]ntityEventHandler`.
+The component `name` and `type` arguments are required, and `type` must be either `[c]ustom` or `[e]ntityEventHandler` or `[s]qlQueryEventHandler`.
 
 For example, to create a new entity event handler component named `resolvePizza`, you can use this command:
 

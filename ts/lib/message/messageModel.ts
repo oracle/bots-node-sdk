@@ -365,13 +365,17 @@ export class MessageModel {
    * @return A Form object.
    * @param fields - The fields in the form, can be created with formField function
    * @param title - The title of the form object
+   * @param {Action[]} [actions] - A list of actions added to the form
    */
-  public static form(fields: FormField[], title?: string): Form {
+  public static form(fields: FormField[], title?: string, actions?: Action[]): Form {
     var response: Form = {
       fields: fields 
     };
     if (title) {
       response.title = title;
+    }
+    if (actions) {
+      response.actions = actions;
     }
     return response;
   }

@@ -1,5 +1,6 @@
 import { InvocationCallback } from '../../common/definitions';
 import { EntityResolutionContext } from '../entity';
+import { DataQueryEventHandlerMetadata } from '../dataquery/dataQueryTypes';
 import { Attachment, Location } from '../message';
 import { CustomComponentContext } from './sdk';
 /**
@@ -29,7 +30,7 @@ export interface EntityEventHandlerMetadata extends BaseComponentMetadata {
   events?: string[];
 }
 
-export type ComponentMetadata = CustomComponentMetadata | EntityEventHandlerMetadata;
+export type ComponentMetadata = CustomComponentMetadata | EntityEventHandlerMetadata | DataQueryEventHandlerMetadata;
 
 export type Component = CustomComponent | EntityEventHandler;
 
@@ -117,6 +118,3 @@ export interface EntityItemPublishDisambiguationMessageEvent extends EntityBaseE
 export interface EntityItemMaxPromptsReachedEvent extends EntityBaseEvent {
   promptCount: number;
 }
-
-
-
