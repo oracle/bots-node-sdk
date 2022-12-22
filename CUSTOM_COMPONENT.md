@@ -338,7 +338,7 @@ invoke: async (context) => {
   ...
   // Get composite bag entity object (cbe), create bag item object, update bag item in cbe 
   let cbe = context.getVariable(variableName) || {"entityName": compositeBagEntityName};
-  cbe[bagItemName)] = {"entityName": "EMAIL", "email": _email};
+  cbe[bagItemName] = {"entityName": "EMAIL", "email": _email};
   context.setVariable(variableName, cbe);
   context.transition("validEmail");
   context.keepTurn(true);
