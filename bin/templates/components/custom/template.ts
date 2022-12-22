@@ -1,5 +1,7 @@
 import {CustomComponent,  CustomComponentMetadata, CustomComponentContext}  from '@oracle/bots-node-sdk/lib';
 
+// Documentation for writing custom components: https://github.com/oracle/bots-node-sdk/blob/master/CUSTOM_COMPONENT.md
+
 // You can use your favorite http client package to make REST calls, however, the node fetch API is pre-installed with the bots-node-sdk.
 // Documentation can be found at https://www.npmjs.com/package/node-fetch
 // Un-comment the next line if you want to make REST calls using node-fetch. 
@@ -27,6 +29,7 @@ export class {{className}} implements CustomComponent {
     // Send two messages, and transition based on the day of the week
     context.reply(`Greetings ${human}`)
       .reply(`Today is ${now.toLocaleDateString()}, a ${dayOfWeek}`)
+      .keepTurn(true)
       .transition(isWeekend ? 'weekend' : 'weekday');
   }
   

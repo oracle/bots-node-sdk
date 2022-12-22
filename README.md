@@ -56,6 +56,16 @@ bots-node-sdk init component myEventHandler entityEventHandler
 
 This example creates a component of type `entityEventHandler` that is named `myEventHandler`. Instead of typing `entityEventHandler` for the component type argument, you can type `e` as a shortcut.
 
+### Add an SQL Query Event Handler to Existing Service
+
+You use the `init component <name> sqlQueryEventHandler` command to add an event handler to an existing package. For example:
+
+```text
+bots-node-sdk init component myEventHandler sqlQueryEventHandler
+```
+
+This example creates a component of type `sqlQueryEventHandler` that is named `myEventHandler`. Instead of typing `sqlQueryEventHandler` for the component type argument, you can type `s` as a shortcut.
+
 ### Create a Component Service Package
 
 To package the components, use the `pack` command. For example:
@@ -123,6 +133,7 @@ See the README.md that's created in your scaffolded TypeScript project for more 
 - [Using the CLI](https://github.com/oracle/bots-node-sdk/blob/master/bin/CLI.md) - Command line capabilities to facilitate writing custom components and entity event handlers.
 - [Writing Custom Components](https://github.com/oracle/bots-node-sdk/blob/master/CUSTOM_COMPONENT.md) - Guidelines and tips for writing custom components.
 - [Writing Entity Event Handlers](https://github.com/oracle/bots-node-sdk/blob/master/ENTITY_EVENT_HANDLER.md) - Guidelines and tips for writing entity event handlers.
+- [Writing SQL Query Event Handlers](https://github.com/oracle/bots-node-sdk/blob/master/DATA_QUERY_EVENT_HANDLER.md) - Guidelines and tips for writing data query event handlers.
 - [Conversation Messaging](https://github.com/oracle/bots-node-sdk/blob/master/MESSAGE_MODEL.md) - Creating conversation messages from custom code.
 - [Writing Webhooks](https://github.com/oracle/bots-node-sdk/blob/master/WEBHOOK.md) - Integrate with custom messaging channels using incoming/outgoing webhook.
 - [Unit Testing](https://github.com/oracle/bots-node-sdk/blob/master/testing/TESTING.md) - Unit testing facilities.
@@ -139,7 +150,7 @@ See the README.md that's created in your scaffolded TypeScript project for more 
 
 ## License
 
-Copyright © 2018-2021, Oracle and/or its affiliates. All rights reserved.
+Copyright © 2018-2022, Oracle and/or its affiliates. All rights reserved.
 
 The Universal Permissive License (UPL), Version 1.0
 

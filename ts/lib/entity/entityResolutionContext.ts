@@ -2,6 +2,8 @@ import { BaseContext } from '../component/baseContext';
 import EventHandlerRequestSchemaFactory = require('./schema/eventHandlerRequestSchema');
 import { MessagePayload, NonRawMessagePayload } from '../message';
 
+const PARENT_SEPARATOR  = '-';
+
 // Response template
 const RESPONSE = {
   context: undefined,
@@ -20,9 +22,12 @@ export interface EntityMap {
 export interface CompositeBagItem {
   sequenceNr: number
   name: string;
+  fullName: string;
   type: string;
   entityName?: string;
   description?: string;
+  children?: CompositeBagItem[];
+  label?: string
 }
 
 export interface EntityResolutionStatus {
@@ -34,9 +39,10 @@ export interface EntityResolutionStatus {
   outOfOrderMatches?: CompositeBagItem[];
   allMatches?: CompositeBagItem[];
   disambiguationValues: { [name: string]: any[] };
+  disambiguationMatches: { [name: string]: any };
   userInput?: string;
   enumValues: object[],
-  useFullEntityMatches: true;
+  useFullEntityMatches: boolean;
   customProperties: { [name: string]: any };
   shouldPromptCache: any;
   nextRangeStart?: number;
@@ -46,6 +52,15 @@ export interface EntityResolutionStatus {
   needShowPreviousButton?: boolean;
   promptCount?: number;
   prompt?: string;
+  formMode?: string;
+  editFormMode?: boolean;
+  readOnlyFormMode?: boolean;
+  initialized?: boolean;
+  resolved?: boolean;
+  submittedFields?: { [name: string]: any[] };
+  entityMatches?: any;
+  variable?: string;
+  newItemMatches: { [name: string]: any };
 }
 
 export interface SystemEntityDisplayProperty {
@@ -107,16 +122,8 @@ export class EntityResolutionContext extends BaseContext {
    * @return {string} name of the composite bag entity type
    */
   getEntityName(): string {
-    const varName = this.getRequest().variableName;
-    const context = this.getRequest().context;
-    let variable;
-    // if it is a dialog 2.0 skill-scoped variable, we need to get the variable def from the parent scope
-    if (varName.startsWith('skill.') && context.hasOwnProperty('parent') && context.parent.scope === 'skill') {
-      variable = context.parent.variables[varName.substring(6)];
-    } else {
-      variable = context.variables[varName];
-    }
-    return variable.type.name;
+    let cbvarDef = this.getVariableDefinition(this.getRequest().variableName);
+    return cbvarDef ? cbvarDef.type.name : undefined;
   }
 
   /**
@@ -124,39 +131,86 @@ export class EntityResolutionContext extends BaseContext {
    * @return {object[]} list of composite bag item definitions
    */
   getEntityItems(): CompositeBagItem[] {
-    const cbvar = this.getRequest().variableName;
-    return this.getRequest().context.variables[cbvar].type.compositeBagItems;
+    let cbvarDef = this.getVariableDefinition(this.getRequest().variableName);
+    return cbvarDef ? cbvarDef.type.compositeBagItems : [];
+  }
+
+  /**
+   * Returns composite bag item definition for the (nested) bag item name
+   * @param {string} fullName - the full name of the (nested) composite bag item for which the value is returned
+   * @return {CompositeBagItem} composite bag item definition
+   */
+  getEntityItem(fullName: string): any {
+    let names = fullName.split(PARENT_SEPARATOR);
+    let item = names.reduce( (curItem: any, name) => curItem && curItem.children ? curItem.children.find(c => c.name === name) : undefined,
+     {'children' : this.getEntityItems()});
+    if (!item) {
+      this.logger().error(`No bag item found with name ${fullName}`);
+    }
+    return item;
   }
 
   /**
    * Return value of a composite bag item in the composite bag entity currentyly being resolved
+   * @param {string} fullName - the full name of the (nested) composite bag item for which the value is returned
    * @return {object} value of the composite bag item
-   * @param {string} name - the name of the composite bag item for which the value is returned
    */
-  getItemValue(name: string): any {
-    return this._entity ? this._entity[name] : undefined;
+  getItemValue(fullName: string): any {
+    let names = fullName.split(PARENT_SEPARATOR);
+    return names.reduce( (entityValue, name) => entityValue ? entityValue[name] : undefined , this._entity);
   }
 
   /**
-   * Set value of a composite bag item in the composite bag entity currentyly being resolved
-   * @param {string} name - the name of the composite bag item for which the value is set
+   * Set value of a (nested) composite bag item in the composite bag entity currentyly being resolved
+   * @param {string} fullName - the full name of the composite bag item for which the value is set
    * @param {object} value - value of the composite bag item
    */
-  setItemValue(name: string, value: CompositeBagItem): void {
+  setItemValue(fullName: string, value: any): void {
+    // init root entity if needed
     if (!this._entity) {
       this._entity = {'entityName': this.getEntityName()}
       this.setVariable(this.getRequest().variableName, this._entity);
     }
-    this._entity[name] = value;
+    // created nested entity values if needed before setting nested bag item value
+    let entityValue = this._entity;
+    let names = fullName.split(PARENT_SEPARATOR);
+    let itemName = names.pop();
+    if (names.length > 0) {
+      // get or create nested entity values before setting nested bag item value
+      entityValue = names.reduce( (curEntityValue, name, index) => {
+        if (!curEntityValue[name]) {
+          // create parent entity value, need to lookup the corresponsing nested bag entity definition to set proper entityName and subType
+          let parentItemName = names.splice(index).join(PARENT_SEPARATOR);
+          let itemDef = this.getEntityItem(parentItemName);
+          let parent = {'entityName': itemDef.entityName};
+          if (itemDef.namedEntitySubType) {
+            parent['subType'] = itemDef.namedEntitySubType;
+          }
+          curEntityValue[name] = parent;
+        }
+        return curEntityValue[name];
+      }, entityValue);
+    }
+    entityValue[itemName] = value;
     this._clearShouldPromptCache();
+    this.clearDisambiguationValues(fullName);
   }
 
   /**
    * Remove the value of a composite bag item from the composite bag entity JSON object
-   * @param {string} name - name of the composite bag item
+   * @param {string} fullName - full name of the composite bag item
    */
-  clearItemValue(name: string): void {
-    delete this._entity[name];
+  clearItemValue(fullName: string): void {
+    let names = fullName.split(PARENT_SEPARATOR);
+    let entityValue = this._entity;
+    let itemName = names.pop();
+    if (names.length > 0) {
+      // get the nested entity value that holds the item we need to clear
+      entityValue = this.getItemValue(names.join(PARENT_SEPARATOR));
+    }
+    if (entityValue) {
+      delete entityValue[itemName];
+    }
     this._clearShouldPromptCache();
   }
 
@@ -204,12 +258,26 @@ export class EntityResolutionContext extends BaseContext {
    * @param {string} itemName - name of the composite bag item, if not specified, all disambiguation values
    * of all items will be cleared
    */
-  clearDisambiguationValues(itemName: string): void {
+  clearDisambiguationValues(itemName?: string): void {
     if (itemName) {
       delete this._entityStatus.disambiguationValues[itemName];
     } else {
       // clear all disambiguation values
       this._entityStatus.disambiguationValues = {};
+    }
+  }
+
+  /**
+   * Removes the disambiguation items that are matched for a single entity value using the last user input.
+   * @param {string} itemName - full name of the first composite bag item that matches the entity value,
+   * if not specified, all disambiguation items will be cleared
+   */
+  clearDisambiguationItems(itemName?: string): void {
+    if (itemName) {
+      delete this._entityStatus.disambiguationMatches[itemName];
+    } else {
+      // clear all disambiguation values
+      this._entityStatus.disambiguationMatches = {};
     }
   }
 
@@ -331,29 +399,61 @@ export class EntityResolutionContext extends BaseContext {
   /**
    * Returns the composite bag item definitions that already had a value and have gotten a new value
    * extracted from the last user input.
-   * @return {string[]} list of composite bag item names
+   * @return {string[]} list of composite bag item definitions
+   */
+  getItemDefsUpdated(): CompositeBagItem[] {
+    return this._entityStatus.updatedEntities;
+  }
+
+  /**
+   * Returns the composite bag item (full) names that already had a value and have gotten a new value
+   * extracted from the last user input.
+   * @return {string[]} list of composite bag item full names
+   * @deprecated use getItemDefsUpdated instead which returns the complete item definition instead of just the full name
    */
   getItemsUpdated(): string[] {
-    return this._entityStatus.updatedEntities.map(ent => ent.name);
+    return this._entityStatus.updatedEntities.map(ent => ent.fullName || ent.name);
   }
 
   /**
    * Returns the composite bag item definitions that have gotten a new value
    * extracted from the last user input while the user was prompted for
    * another bag item.
-   * @return {string[]} list of composite bag item names
+   * @return {string[]} list of composite bag item definitions
+   */
+  getItemDefsMatchedOutOfOrder(): CompositeBagItem[] {
+    return this._entityStatus.outOfOrderMatches;
+  }
+
+  /**
+   * Returns the composite bag item (fulll) names that have gotten a new value
+   * extracted from the last user input while the user was prompted for
+   * another bag item.
+   * @return {string[]} list of composite bag item full names
+   * @deprecated use getItemDefsMatchedOutOfOrder instead which returns the complete item definition instead of just the full name
    */
   getItemsMatchedOutOfOrder(): string[] {
-    return this._entityStatus.outOfOrderMatches.map(ent => ent.name);
+    return this._entityStatus.outOfOrderMatches.map(ent => ent.fullName || ent.name);
   }
+
 
   /**
    * Returns the composite bag item definitions that have gotten a new value
    * extracted from the last user input
-   * @return {string[]} list of composite bag item names
+   * @return {string[]} list of composite bag item definitions
+   */
+  getItemDefsMatched(): CompositeBagItem[] {
+    return this._entityStatus.allMatches;
+  }
+
+  /**
+   * Returns the composite bag item (full) names) that have gotten a new value
+   * extracted from the last user input
+   * @return {string[]} list of composite bag item full names
+   * @deprecated use getItemDefsMatched instead which returns the complete item definition instead of just the full name
    */
   getItemsMatched(): string[] {
-    return this._entityStatus.allMatches.map(ent => ent.name);
+    return this._entityStatus.allMatches.map(ent => ent.fullName || ent.name);
   }
 
   /**
@@ -381,7 +481,7 @@ export class EntityResolutionContext extends BaseContext {
    * With this function you can override the default display function that is applied to the
    * display property values. The function is called with each display property as an argument
    * For example, this is the default display function for DURATION:
-   * ((startDate,endDate) => new Date(startDate)+" - "+new Date(endDate))
+   * ((startDate,endDate) => new Date(startDate)+' - '+new Date(endDate))
    * If you want to format the dates differently, you can use a library like moments.js
    * and call this function to override the display function
    * Object that should be used to print out a string representation of the value.
@@ -405,12 +505,17 @@ export class EntityResolutionContext extends BaseContext {
    * @return {string} display value of composite bag item
    * @param {string} itemName - name of the composite bag item
    */
-  getDisplayValue(itemName: string): string {
+  getDisplayValue(itemName: string): any {
     let itemValue = this.getItemValue(itemName);
-    for (let item of this.getEntityItems()) {
-      if (item.name === itemName) {
-        // bag item types ATTACHMENT and LOCATION also have display properties
-        let entityName = item.entityName ? item.entityName : item.type + '_ITEM';
+    let item = this.getEntityItem(itemName);
+    if (item) {
+      // bag item types ATTACHMENT and LOCATION also have display properties
+      // For entities that have a subType like DATE_TIME, the subType is added to the name, separated by a dot
+      let entityName = item.entityName ? (item.namedEntitySubType ?  item.entityName + '.' + item.namedEntitySubType : item.entityName ) :
+       item.type + '_ITEM';
+      if (entityName === 'DATE_TIME.RECURRING') {
+        itemValue =  this._getDateTimeRecurringDisplayValue(item, itemValue);
+      } else {
         itemValue =  this._getDisplayValue(entityName, itemValue);
       }
     }
@@ -422,19 +527,20 @@ export class EntityResolutionContext extends BaseContext {
    * @see getDisplayValue
    * @see setSystemEntityDisplayProperties
    * @see setSystemEntityDisplayFunction
-   * @return {string[]} list of display values of composite bag item
+   * @return {object[]} list of display values of all bag items in the composite bag entity.
+   * Each display value is an object with two properties, the name and the value.
    * @param {string} itemNames - you can specify one or more item names as argument. If you do this, only the display
    * values of these items will be returned. If you do not specify an item name, the display values of all
    * items in the bag will be returned.
    */
-  getDisplayValues(): string[] {
+  getDisplayValues(): { name: string; value: any; }[] {
     // convert arguments to real array so we can use includes function
     let args = Array.prototype.slice.call(arguments);
-    let itemValues = [];
+    let itemValues: { name: string; value: any; }[] = [];
     for (let item of this.getEntityItems()) {
       if (this._entity.hasOwnProperty(item.name) && (args.length === 0 || args.includes(item.name))) {
         let itemValue =  this.getDisplayValue(item.name);
-        itemValues.push({name: item.name, value: itemValue});
+        itemValues.push({name: item.label || item.name, value: itemValue});
       }
     }
     return itemValues;
@@ -450,6 +556,8 @@ export class EntityResolutionContext extends BaseContext {
   /**
    * Set a transition action. When you use this function, the entity resolution process is aborted, and the dialog engine will transition
    * to the state defined for this transition action.
+   * <p>
+   * NOTE: This method cannot be used in the init event handler
    * @param {string} action - name of the transition action
    */
   setTransitionAction(action: string) {
@@ -481,12 +589,38 @@ export class EntityResolutionContext extends BaseContext {
     return this._entityStatus.customProperties[name];
   }
 
+   /**
+   * Returns information about the entity resolution status
+   * @return {EntityResolutionStatus} the status object
+   */
+  getEntityResolutionStatus(): EntityResolutionStatus {
+    return this._entityStatus;
+  }
+
+  /**
+   * Create display value for bag item of type DATE_TIME.RECURRING
+   * INTERNAL ONLY - DO NOT USE
+   * @private
+   */
+  _getDateTimeRecurringDisplayValue(item: CompositeBagItem, itemValue: object) {
+    let displayValue = '';
+    for (let childItem of item.children) {
+      let childValue = itemValue[childItem.name];
+      if (childValue) {
+        let label = childItem.label || childItem.name;
+        let subType = Array.isArray(childValue) ? childValue[0].subType : childValue.subType;
+        displayValue +=  '\n' + label + ': ' + this._getDisplayValue('DATE_TIME.' + subType, childValue);
+      }
+    }
+    return displayValue;
+  }
+
   /**
    * Configure default display properties for all system entities, and ATTACHMENT and LOCATION item types
    * INTERNAL ONLY - DO NOT USE
    * @private
    */
-  private _initSystemEntityDisplayProperties(): void {
+  _initSystemEntityDisplayProperties(): void {
     this._systemEntityDisplayProperties = {
       'EMAIL': {'properties': ['email']}
       , 'CURRENCY': {'properties': ['amount', 'currency']}
@@ -494,8 +628,8 @@ export class EntityResolutionContext extends BaseContext {
       , 'YES_NO': {'properties': ['yesno']}
       , 'DATE': {'properties': ['date'], 'function': (date => new Date(date).toDateString())}
       , 'TIME': {'properties': ['originalString']}
-      // tslint:disable-next-line:max-line-length
-      , 'DURATION': {'properties': ['startDate', 'endDate'], 'function': ((startDate, endDate) => new Date(startDate).toDateString() + ' - ' + new Date(endDate).toDateString())}
+      , 'DURATION': {'properties': ['startDate', 'endDate'], 'function': ((startDate, endDate) => new Date(startDate).toDateString() +
+       ' - ' + new Date(endDate).toDateString())}
       , 'ADDRESS': {'properties': ['originalString']}
       , 'PERSON': {'properties': ['originalString']}
       , 'PHONE_NUMBER': {'properties': ['completeNumber']}
@@ -503,6 +637,16 @@ export class EntityResolutionContext extends BaseContext {
       , 'URL': {'properties': ['fullPath']}
       , 'ATTACHMENT_ITEM': {'properties': ['url']}
       , 'LOCATION_ITEM': {'properties': ['latitude, longitude']}
+      , 'DATE_TIME.DATE': {'properties': ['value'], 'function': (value => new Date(value).toDateString())}
+      , 'DATE_TIME.TIME': {'properties': ['value'], 'function': (value => value.substring(0, 5))}
+      , 'DATE_TIME.DURATION': {'properties': ['value']}
+      , 'DATE_TIME.DATETIME': {'properties': ['date', 'time'], 'function': ((date: any, time: any) =>  (date ?
+        (new Date(date.value).toDateString() + ' ') : '') + (time ? time.value.substring(0, 5) : ''))}
+      , 'DATE_TIME.INTERVAL': {'properties': ['startDate', 'startTime', 'endDate', 'endTime'], 'function':
+       ((startDate: any, startTime: any, endDate: any, endTime: any) =>  (startDate ? new Date(startDate.value).toDateString() + ' ' : '')
+        + (startTime ? startTime.value.substring(0, 5) : '') + ((((endDate &&  endDate.value !== (startDate  ? startDate.value : ''))
+         || endTime) && (startDate || startTime)) ? ' - ' : '') + (endDate && endDate.value !== (startDate ? startDate.value : '')
+          ? (new Date(endDate.value).toDateString() + ' ') : '') + (endTime ? endTime.value.substring(0, 5) :  ''))}
     };
   }
 

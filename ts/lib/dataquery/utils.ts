@@ -1,13 +1,16 @@
+import { DataQueryEventHandler, DataQueryEventHandlers } from './dataQueryTypes';
+import { DataQueryContext } from './dataQueryContext';
+
 /**
  * Invoke data query event handlers
  * @param {object} component - component instance
  * @param {DataQueryContext} context - context derived for this invocation
  * @private
  */
-async function invokeDataQueryEventHandlers(component, context) {
+export async function invokeDataQueryEventHandlers(component: DataQueryEventHandler, context: DataQueryContext) {
   let logger = context.logger();
-  let handlers = (typeof component.handlers === 'function') ? component.handlers() : component.handlers;  
-  for (var event of context.getRequest().events) {
+  let handlers: DataQueryEventHandlers = component.handlers();
+  for (let event of context.getRequest().events) {
     let eventName = event.name;
     let attributeName = event.attributeName;
     let handler;
@@ -37,7 +40,7 @@ async function invokeDataQueryEventHandlers(component, context) {
               row[attributeName] = returnValue
             }
           }
-        }  
+        }
       } else if (handlerPath === `attributes.${attributeName}.changeUISettings`) {
         // only invoke the handler if the attribute is included in the result
         let metadata = context.getAttributeUISettings(attributeName);
@@ -79,8 +82,8 @@ async function invokeDataQueryEventHandlers(component, context) {
     } else {
       logger.debug(`No handler found for event: ${handlerPath}`);
       break;
-    }              
-  } 
+    }
+  }
 }
 
 /**
@@ -88,7 +91,7 @@ async function invokeDataQueryEventHandlers(component, context) {
  * @param {object} component - component implementation
  * @private
  */
-function getDataQueryEventHandlers(component) {
+export function getDataQueryEventHandlers(component: DataQueryEventHandler) {
   let events = [];
   let handlers = (typeof component.handlers === 'function') ? component.handlers() : component.handlers;
   if (handlers) {
@@ -104,13 +107,14 @@ function getDataQueryEventHandlers(component) {
             events.push(`attributes.${itemKey}.${event}`);
           });
         });
-      }   
-    });    
+      }
+      if (key === 'custom') {
+        Object.keys(handlers[key]).forEach(event => {
+          events.push(`custom.${event}`);
+        });
+      }
+    });
   }
   return events;
 }
 
-module.exports = {
-  getDataQueryEventHandlers,
-  invokeDataQueryEventHandlers,
-};

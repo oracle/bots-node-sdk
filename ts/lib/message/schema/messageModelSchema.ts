@@ -97,6 +97,7 @@ export = (joi: any): Joi.Schema => {
   const formSchema = Joi.object().keys({
     title: Joi.string().optional(),
     fields: Joi.array().items(tableOrFormFieldSchema),
+    actions: actionsSchema.optional(),
     channelExtensions: Joi.object().optional()
   });
   const paginationInfoSchema = Joi.object().keys({
@@ -141,6 +142,7 @@ export = (joi: any): Joi.Schema => {
     footerText: Joi.string().optional(),
     headerText: Joi.string().optional(),
     keywords: keywordsSchema.optional(),
+    disclosedFormIndex: Joi.number().optional(),
     globalActions: actionsSchema.optional(),
     channelExtensions: Joi.object().optional()
   });
@@ -154,24 +156,24 @@ export = (joi: any): Joi.Schema => {
     globalActions: actionsSchema.optional(),
     channelExtensions: Joi.object().optional()
   });
-  const locationConversationMessageSchema = joi.object().keys({
-    type: joi.string().required().valid('location'),
+  const locationConversationMessageSchema = Joi.object().keys({
+    type: Joi.string().required().valid('location'),
     location: locationSchema.required(),
     actions: actionsSchema.optional(),
     globalActions: actionsSchema.optional(),
-    channelExtensions: joi.object().optional()
+    channelExtensions: Joi.object().optional()
   });
-  const rawConversationMessageSchema = joi.object().keys({
-    type: joi.string().required().valid('raw'),
-    payload: joi.required(),
+  const rawConversationMessageSchema = Joi.object().keys({
+    type: Joi.string().required().valid('raw'),
+    payload: Joi.required(),
   });
-  const postbackConversationMessageSchema = joi.object().keys({
-    type: joi.string().required().valid('postback'),
-    postback: joi.alternatives().try([joi.string(), joi.object()]).required(),
-    text: joi.string().optional().trim(),
+  const postbackConversationMessageSchema = Joi.object().keys({
+    type: Joi.string().required().valid('postback'),
+    postback: Joi.alternatives().try([Joi.string(), Joi.object()]).required(),
+    text: Joi.string().optional().trim(),
     actions: actionsSchema.optional(),
     globalActions: actionsSchema.optional(),
-    channelExtensions: joi.object().optional()
+    channelExtensions: Joi.object().optional()
   });
   const agentConversationMessageSchema = joi.object().keys({
     type: joi.string().required().valid('agentRequest', 'agentRequestResponse', 'agentConversationHistory', 'agentJoined', 'agentLeft',

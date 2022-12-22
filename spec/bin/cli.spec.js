@@ -143,8 +143,8 @@ describe(`CLI: bots-node-sdk`, () => {
     it('should include bundled dependencies', done => {
       run(tmp, 'pack', '--dry-run')
         .then(() => {
-          const { bundledDependencies } = require(path.join(tmp, 'package.json'));
-          expect(bundledDependencies).toEqual(jasmine.any(Array));
+          const { bundleDependencies } = require(path.join(tmp, 'package.json'));
+          expect(bundleDependencies).toEqual(jasmine.any(Array));
         })
         .then(done).catch(done.fail);
     });

@@ -22,5 +22,5 @@
     "express": "{{expressVersion}}",
     "typescript": "{{typescriptVersion}}"
   },
-  "bundledDependencies": []
+  "bundleDependencies": []
 }

@@ -2,3 +2,4 @@
 spec
 service-*
 package/
+!.npmignore

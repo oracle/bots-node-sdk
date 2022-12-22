@@ -15,6 +15,7 @@
     - [How to Validate an Item](#validate)
     - [How to Send Acknowledgement Messages](#acknowledge)
     - [How to Set or Update Bag Items](#update)
+    - [How to Create a Summary Message](#summary)
     - [How to Use Custom Events](#custom)
     - [How to Invoke a REST API](#restSample)
     - [How to Send Rich Conversation Messages](#messages)
@@ -114,6 +115,12 @@ The second argument of each event method  is the `context` object. This object r
 
 You can find more information on creating conversation messages from an event handler [here](https://github.com/oracle/bots-node-sdk/blob/master/MESSAGE_MODEL.md).
 
+<b>TIP</b>: if you are using a JavaScript IDE like Visual Studio Code, you can get code insight and code completion support by defining the types used in the event handlers as follows in your JavaScript handler file:
+```javascript
+const { EntityResolutionContext, EntityEventHandler, EntityEventHandlers, EntityEventHandlerMetadata, EntityEvent } = require ('@oracle/bots-node-sdk/lib');
+```
+When using TypeScript you will automatically get code completion support when your IDE supports it.
+
 ## Supported Events <a name="events">
 
 ### Entity Level Events <a name="entityEvents">
@@ -128,6 +135,7 @@ The table below lists all entity level events currently supported:
 | `resolved` | A function that gets called when the composite bag entity is resolved. You will typically use this function to call some backend API to complete the transaction that the composite bag entity has collected the data for. If the backend API call returns errors, possibly forcing a re-prompting for some invalid bag items, you can enable the re-prompting by simply clearing those bag items. The `System.CommonResponse` and `System.ResolveEntities` components will notice that the entity is not fully resolved after all, and will resume prompting for the missing bag items. | none
 | `attachmentReceived`| A function that gets called when the user sends an attachment. If the attachment can be mapped to a composite bag item, the validate function of that item will be called first. | <ul><li><b>value</b>: The attachment JSON object with `type` and `url` properties.</li></ul>
 | `locationReceived`| A function that gets called when the user sends a location. If the location can be mapped to a composite bag item, the validate function of that item will be called first.	| <ul><li><b>value</b>: The location JSON object with `latitude` and `longitude` properties.</li></ul>
+| `disambiguateBagItem` | A handler that can be used to modify the message that is shown to disambiguate between bag items when an entity match applies to more than one bag item. Note that this handler only fires when the skill configuration parameter `Use Enhanced Slot Filling` is switched on. | <ul><li><b>matchValue</b>: The entity value matched based on the user input</li><li><b>matchedBagItems</b>: list of the names of the bag items that are matched against the entity value.</li><li><b>userInput</b>: the last user input message that matched to multiple bag items.</li></ul>
 
 ### Entity-Item Level Events <a name="itemEvents">
 The table below lists all entity-item level events currently supported:
@@ -287,6 +295,25 @@ items: {
     }
 ```
 
+### How to Create a Summary Message<a name="summary">
+When a composite bag entity is resolved, you typically want to show a summary of the the composite bag item values before proceeding.
+The `getDisplayValues()` method on the entity resolution context makes this quite easy. This method return a list of name-value pairs of each composite bag item. Using the `reduce` function you can easily construct a summary message like this:
+
+```javascript
+resolved: async (event, context) => {
+  let msg = 'Got it. Here is a summary of your expense:';
+  msg += context.getDisplayValues().reduce((acc, curr) => `${acc}\n${curr.name}: ${curr.value}`, '');
+  context.addMessage(msg);
+} 
+```
+The summary message will look something like this:
+```
+Got it. Here is a summary of your expense:
+Type: Taxi
+Date: Thu Dec 22 2022
+Amount: 20 dollar
+```
+
 ### How to Use Custom Events <a name="custom">
 The following example is for the use case where the expense date and expense amount are taken from the scanned receipt that's uploaded by the user. If the user then tries to change the date or the amount, the skill replies by telling him that the date or amount cannot be changed because they need to match the data on the receipt. The skill then provides the user an option to remove the receipt again so he can once more change the date. To implement the removal of the receipt, a custom event, `removeReceipt`, is invoked when the user taps the 'Yes' button:
 
@@ -340,4 +367,3 @@ entity: {
 
 As you have seen in the previous examples, you can use `context.addMessage(<payload>)` to create a bot message that is sent to the user. 
 You can call this function multiple times to send multiple messages. See the section on [Conversation Messaging](https://github.com/oracle/bots-node-sdk/blob/master/MESSAGE_MODEL.md) for code samples on how to create a [text message with buttons actions](https://github.com/oracle/bots-node-sdk/blob/master/MESSAGE_MODEL.md#textMessage), a [card message](https://github.com/oracle/bots-node-sdk/blob/master/MESSAGE_MODEL.md#cardMessage), and an [attachment message](https://github.com/oracle/bots-node-sdk/blob/master/MESSAGE_MODEL.md#attachmentMessage).
-

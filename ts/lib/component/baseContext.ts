@@ -10,6 +10,100 @@ const VARIABLE = {
   entity: false
 };
 
+// Variable types supported by the dialog engine
+const CONST = {
+  NLPRESULT_TYPE: 'nlpresult',
+  SYSTEM_INVALID_USER_INPUT: 'system.invalidUserInput',
+};
+
+/**
+ * Wrapper object for accessing nlpresult
+ */
+export class NLPResult {
+  private _nlpresult: any;
+  constructor(nlpresult) {
+    this._nlpresult = nlpresult;
+  }
+
+  /**
+   * Returns matches for the specified entity; may be an empty collection.
+   * If no entity is specified, returns the map of all entities.
+   * @param {string} [entity] - name of the entity
+   * @return {object} The entity match result.
+   */
+  entityMatches(entity?) {
+    if (!this._nlpresult) {
+      return entity === undefined ? {} : [];
+    }
+
+    if (entity === undefined) {
+      // Retrieving entityMatches collection, or an empty collection if none
+      return this._nlpresult.entityMatches ? this._nlpresult.entityMatches : {};
+    } else {
+      if (this._nlpresult.entityMatches) {
+        return this._nlpresult.entityMatches[entity] ? this._nlpresult.entityMatches[entity] : [];
+      } else {
+        return [];
+      }
+    }
+  }
+
+  /**
+   * Returns full payload matches for the specified entity; may be an empty collection.
+   * If no entity is specified, returns the full payload map of all entities.
+   * @param {string} [entity] - name of the entity
+   * @return {object} The full entity match result.
+   */
+  fullEntityMatches(entity?: string) {
+    if (!this._nlpresult) {
+      return entity === undefined ? {} : [];
+    }
+
+    if (entity === undefined) {
+      // Retrieving fullEntityMatches collection, or an empty collection if none
+      return this._nlpresult.fullEntityMatches ? this._nlpresult.fullEntityMatches : {};
+    } else {
+      if (this._nlpresult.fullEntityMatches) {
+        return this._nlpresult.fullEntityMatches[entity] ? this._nlpresult.fullEntityMatches[entity] : [];
+      } else {
+        return [];
+      }
+    }
+  }
+
+  /**
+   * Returns intent matches if any.
+   * Intent matches are returned in descending order of score
+   * @return {object[]} The intent match results, each match with properties score and intent.
+   */
+  intentMatches() {
+    if (!this._nlpresult) {
+      return [];
+    }
+    if (this._nlpresult.intentMatches &&
+      Array.isArray(this._nlpresult.intentMatches.summary) &&
+      this._nlpresult.intentMatches.summary.length > 0) {
+      return this._nlpresult.intentMatches.summary;
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * Returns top intent match (with highest score), if any.
+   * @return {object} The top intent match (with properties score and intent)
+   */
+  topIntentMatch() {
+    let intentMatches = this.intentMatches();
+    return (intentMatches && intentMatches.length > 0 ? intentMatches[0] : {});
+  }
+
+  query() {
+    return (this._nlpresult ? this._nlpresult.query : '');
+  }
+
+}
+
 /**
  * Super class for concrete context classes used to invoke custom components
  * and event handlers
@@ -81,6 +175,47 @@ export abstract class BaseContext {
     return this.logger();
   }
 
+    /**
+   * Returns an NLPResult helper object for working with nlpresult variables.
+   * See the NLPResult documentation for more information.
+   * <p>
+   * If your skill uses visual flows, you don't need to specify a variable name.
+   * If your skill uses a YAML flow, you may specify a particular nlpresult by name (if you have multiple
+   * nlpresult variables defined in the flow), or omit the name if you only have 1 nlpresult.
+   * </p>
+   *
+   * @param {string} [nlpVariableName] - variable that holds the nlpResult
+   * @return {NLPResult} The nlp resolution result.
+   */
+  nlpResult(nlpVariableName?: string): NLPResult {
+    let isVisualDialog = this.getRequest().taskFlow;
+    if (isVisualDialog) {
+      nlpVariableName = 'skill.system.nlpresult';
+    } else if (nlpVariableName === undefined) {
+      for (let name in this.getResponse().context.variables) {
+        if (this.getResponse().context.variables[name].type === CONST.NLPRESULT_TYPE) {
+          this.logger().debug('SDK: using implicitly found nlpresult=' + name);
+          nlpVariableName = name;
+          break;
+        }
+      }
+      if (nlpVariableName === undefined) {
+        throw new Error('SDK: no nlpresult variable present');
+      }
+    }
+
+    const nlpVariable = this.variable(nlpVariableName);
+
+    if (nlpVariable === undefined) {
+      throw new Error('SDK: undefined var=' + nlpVariableName);
+    }
+
+    if (!isVisualDialog && this.getResponse().context.variables[nlpVariableName].type !== CONST.NLPRESULT_TYPE) {
+      throw new Error('SDK: var=' + nlpVariableName + ' not of type nlpresult');
+    }
+
+    return new NLPResult(nlpVariable);
+  }
 
   /**
    * Read or write variables defined in the current flow.
@@ -159,6 +294,41 @@ export abstract class BaseContext {
 
       this.logger().debug('SDK: Setting variable ' + JSON.stringify(context.variables[nameToUse]));
       return this;
+    }
+  }
+
+  /**
+   * Get the definition of a variable
+   *
+   * @param {string} name - The name of the variable
+   */
+  getVariableDefinition(name: string): any {
+    let context = this.getResponse().context;
+    let scopeName = null;
+    let nameToUse = name;
+    let index = name.indexOf('.');
+    if (index > -1) {
+      scopeName = name.substring(0, index);
+      let possibleScope = context;
+      while (possibleScope) {
+        if (possibleScope.scope === scopeName) {
+          context = possibleScope;
+          nameToUse = name.substring(index + 1, name.length);
+          break;
+        } else {
+          // this is to handle the case when the variable name is system.XXX but system is not a scope
+          if (possibleScope.variables && possibleScope.variables.hasOwnProperty(nameToUse)) {
+            context = possibleScope;
+            break;
+          }
+          possibleScope = possibleScope.parent;
+        }
+      }
+    }
+    if (!context.variables || !context.variables.hasOwnProperty(nameToUse)) {
+      return undefined;
+    } else {
+      return context.variables[nameToUse];
     }
   }
 

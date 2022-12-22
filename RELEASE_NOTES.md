@@ -1,5 +1,6 @@
 # Release Notes
 
+- [Version 2.6.4](#v264)
 - [Version 2.6.3](#v263)
 - [Version 2.6.2](#v262)
 - [Version 2.6.1](#v261)
@@ -12,6 +13,22 @@
 - [Version 2.5.0](#v250)
 - [Version 2.4.3](#v243)
 - [Version 2.4.2](#v242)
+
+## Version 2.6.4 <a name="v264">
+
+### New Features
+
+- **SQL Query Event Handlers**: SQL query event handlers can be used to customize the SQL Dialogs query results. See [Writing SQL Query Event Handlers](https://github.com/oracle/bots-node-sdk/blob/master/DATA_QUERY_EVENT_HANDLER.md) for more information. This feature requires Oracle Digital Assistant version 22.12 or later.
+
+### Fixed Issues
+
+- Item disambiguation values are not cleared when setting item value using context.setItemValue
+- Bots Node SDK Hello World sample requires keepTurn(true) to be set to navigate to next state
+- Cannot add action to form with bots-node-sdk
+- Custom component dependencies not bundled. This has been fixed by changing the `bundledDependencies` property in `package.json` to `bundleDependencies` as this is the property name used when installing a package using `npm install`. If you are using this new SDK version with an existing component service, make sure to update your `package.json` accordingly.
+- Preventing packaging of previous custom component package during pack
+- Allow accessing nlpResult from EEH context
+- Calling context.getEntityItems() from an EEH on a skill scoped variable in visual dialog fails because of lookup in flow scope only
 
 ## Version 2.6.3 <a name="v263">
 

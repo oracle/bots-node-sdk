@@ -144,14 +144,13 @@ const message = messageModel.textConversationMessage("Do you want another quote?
 To create a card message with card actions buttons, first use the [`cardObject`](https://oracle.github.io/bots-node-sdk/MessageModel.html#.cardObject) function to create each card, then use the [`postbackActionObject`](https://oracle.github.io/bots-node-sdk/MessageModel.html#.postbackActionObject) function to create each button action, and, finally, use the [`cardConversationMessage`](https://oracle.github.io/bots-node-sdk/MessageModel.html#.cardConversationMessage) function to construct the message object.
 
 ```javascript
-  context messageModel = context.getMessageModel();
+  const messageModel = context.getMessageModel();
   let cards = [];
   cards.push(messageModel.cardObject('4 Dozen Oranges','4 dozen Mandarin oranges in a wooden crate.',
     undefined, undefined, [messageModel.postbackActionObject('Oranges', undefined, { action: 'oranges' })]));
   cards.push(messageModel.cardObject('Carton of Grapes', '10kg ripe grapes in a protected carton.',
     undefined, undefined, [messageModel.postbackActionObject('Grapes', undefined, { action: 'grapes' })]));
   let message = messageModel.cardConversationMessage('vertical', cards);
-}
 ```
 
 ### Creating an Attachment Message <a name="attachmentMessage">

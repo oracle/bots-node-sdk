@@ -167,11 +167,11 @@ class CCPack extends CommandDelegate {
     return this;
   }
   
-  // TASK-19013: bundledDependencies
+  // TASK-19013: bundleDependencies
   _setBundled() {  
     const { dependencies } = this.cc.json;
-    const bundledDependencies = Object.keys(dependencies || {});
-    this._setJson({ bundledDependencies });
+    const bundleDependencies = Object.keys(dependencies || {});
+    this._setJson({ bundleDependencies });
     return this;
   }
 

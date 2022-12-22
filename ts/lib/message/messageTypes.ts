@@ -97,6 +97,7 @@ export interface TableRow {
 export interface Form {
   title?: string;
   fields: FormField[];
+  actions?: Action[];
 }
 
 export interface PaginationInfo {
@@ -110,7 +111,8 @@ export interface PaginationInfo {
  * define message payload types
  */
 export type MessageType = 'text' | 'card' | 'attachment'| 'table'| 'form'| 'tableForm' | 'location' | 'postback';
-export type NonRawMessagePayload = TextMessage | CardMessage | AttachmentMessage | LocationMessage | PostbackMessage ;
+export type NonRawMessagePayload = TextMessage | CardMessage | AttachmentMessage | LocationMessage | PostbackMessage | TableMessage |
+FormMessage | TableFormMessage;
 export type MessagePayload = NonRawMessagePayload | RawMessage;
 export interface BaseMessagePayload {
   type: MessageType;
