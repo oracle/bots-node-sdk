@@ -27,10 +27,10 @@ module.exports = {
         context.addCandidateMessages(); 
       },
       /**
-       * This handler is called when the composite bag entity is resolved
+      * This handler is called when the composite bag entity is resolved
       * @param {EntityBaseEvent} event
       * @param {EntityResolutionContext} context
-       */
+      */
       resolved: async (event, context) => { // eslint-disable-line no-unused-vars
         // add your back-end REST API call here
       }

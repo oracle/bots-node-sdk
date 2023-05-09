@@ -1,5 +1,6 @@
 # Release Notes
 
+- [Version 2.6.5](#v265)
 - [Version 2.6.4](#v264)
 - [Version 2.6.3](#v263)
 - [Version 2.6.2](#v262)
@@ -13,6 +14,19 @@
 - [Version 2.5.0](#v250)
 - [Version 2.4.3](#v243)
 - [Version 2.4.2](#v242)
+
+## Version 2.6.5 <a name="v265">
+
+### New Features
+
+- **New UserInputReceived Entity Event Handler Method**: See [Writing Entity Event Handlers](https://github.com/oracle/bots-node-sdk/blob/master/ENTIY_EVENT_HANDLER.md) for more information.
+
+- **REST Service Event Handlers**: REST service event handlers can be used to transform the REST request and response body when using the Call REST component in your flow. See [Writing REST Service Event Handlers](https://github.com/oracle/bots-node-sdk/blob/master/REST_SERVCICE_EVENT_HANDLER.md) for more information. This feature is only available in the Limited Availability release of Oracle Digital Assistant version 23.06.
+
+### Fixed Issues
+
+- Fixed TypeScript definition of EntityValidateEvent
+- Added TypeScript definition for DisambiguateItemEvemt
 
 ## Version 2.6.4 <a name="v264">
 
