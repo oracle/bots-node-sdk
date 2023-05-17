@@ -3,7 +3,7 @@ import { DataQueryContext } from './dataQueryContext';
 
 /**
  * Invoke data query event handlers
- * @param {object} component - component instance
+ * @param {DataQueryEventHandler} component - component instance
  * @param {DataQueryContext} context - context derived for this invocation
  * @private
  */

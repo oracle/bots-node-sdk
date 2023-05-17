@@ -67,6 +67,10 @@ export namespace Lib {
 
   export type EntityLocationReceivedEvent = lib.EntityLocationReceivedEvent;
 
+  export type UserInputReceivedEvent = lib.UserInputReceivedEvent;
+
+  export type DisambiguateBagItemEvent = lib.DisambiguateBagItemEvent;
+
   export type EntityItemValidateEvent = lib.EntityItemValidateEvent;
 
   export type EntityItemPublishPromptMessageEvent = lib.EntityItemPublishPromptMessageEvent

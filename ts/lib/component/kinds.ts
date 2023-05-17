@@ -62,6 +62,8 @@ export interface EntityEvent {
   resolved?(event: EntityBaseEvent, context: EntityResolutionContext): void
   attachmentReceived?(event: EntityAttachmentReceivedEvent, context: EntityResolutionContext): void
   locationReceived?(event: EntityLocationReceivedEvent, context: EntityResolutionContext): void
+  userInputReceived?(event: UserInputReceivedEvent, context: EntityResolutionContext): void
+  disambiguateBagItem?(event: DisambiguateBagItemEvent, context: EntityResolutionContext): void
 }
 
 export interface EntityItemEvents {
@@ -79,8 +81,20 @@ export interface EntityBaseEvent {
 
 export interface EntityValidateEvent extends EntityBaseEvent {
   currentItem: string;
-  oldValues: [string: object];
-  newValues: [string: object];
+  oldValues: KeyValuePairs;
+  newValues: KeyValuePairs;
+}
+
+export interface KeyValuePairs {
+  [key: string]: any;
+}
+
+export interface KeyArrayValuePairs {
+  [key: string]: [any];
+}
+
+export interface NestedKeyValuePairs {
+  [key: string]: KeyValuePairs;
 }
 
 export interface EntityPublishMessageEvent extends EntityBaseEvent {
@@ -100,6 +114,20 @@ export interface EntityAttachmentReceivedEvent extends EntityBaseEvent {
 
 export interface EntityLocationReceivedEvent extends EntityBaseEvent {
   value: Location;
+}
+
+export interface UserInputReceivedEvent extends EntityBaseEvent {
+  currentItem: string;
+  userInput: string;
+  newItemMatches: KeyValuePairs;
+  disambiguationValues: KeyArrayValuePairs;
+  disambiguationItems: NestedKeyValuePairs;
+}
+
+export interface DisambiguateBagItemEvent extends EntityBaseEvent {
+  userInput: string;
+  matchValue: any;
+  matchedBagItems: [string];
 }
 
 export interface EntityItemValidateEvent extends EntityBaseEvent {

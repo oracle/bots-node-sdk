@@ -1,6 +1,7 @@
 import { BaseContext } from '../component/baseContext';
 import EventHandlerRequestSchemaFactory = require('./schema/eventHandlerRequestSchema');
 import { MessagePayload, NonRawMessagePayload } from '../message';
+import { KeyValuePairs } from '../component/kinds';
 
 const PARENT_SEPARATOR  = '-';
 
@@ -595,6 +596,25 @@ export class EntityResolutionContext extends BaseContext {
    */
   getEntityResolutionStatus(): EntityResolutionStatus {
     return this._entityStatus;
+  }
+
+   /**
+   * Set the bag item matches. Note that this method only takes effect when invoked from the userInputReceived event handler.
+   * @param {KeyValuePairs} matches - map where the key is the full item name and the value the item match object.
+   * @return {EntityResolutionStatus} the status object
+   */
+  setItemMatches(matches: KeyValuePairs) {
+    this._entityStatus.newItemMatches = matches;
+  }
+
+   /**
+   * Clear the entity match for a specific bag item. Note that this method only takes effect when invoked from the userInputReceived
+   * event handler.
+   * @param {string} name - the full item name for which the match needs to be removed.
+   * @return {EntityResolutionStatus} the status object
+   */
+  clearItemMatch(name: string) {
+    delete this._entityStatus.newItemMatches[name];
   }
 
   /**
