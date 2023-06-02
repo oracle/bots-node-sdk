@@ -48,6 +48,16 @@ module.exports = {
     */
     transformResponsePayload: async (event, context) => { 
       return event.payload;
+    },
+
+    /**
+    * Handler to transform the error response payload
+    * @param {TransformPayloadEvent} event
+    * @param {RestServiceContext} context
+    * @returns {object} the transformed error response payload
+    */
+    transformErrorResponsePayload: async (event, context) => { 
+      return event.payload;
     }
   }
 }; 
@@ -95,6 +105,16 @@ export class MyRestServiceEventHandler implements RestServiceEventHandler {
        */
       transformResponsePayload: async (event: TransformPayloadEvent, context: RestServiceContext): Promise<any> => { 
         return event.payload;
+      },
+
+      /**
+       * Handler to transform the error response payload
+       * @param {TransformPayloadEvent} event
+       * @param {RestServiceContext} context
+       * @returns {object} the transformed error response payload
+       */
+      transformErrorResponsePayload: async (event: TransformPayloadEvent, context: RestServiceContext): Promise<any> => { 
+        return event.payload;
       }
 
     };
@@ -122,6 +142,7 @@ The table below lists the event methods that can be implemented:
 
 | Event | Description | Event Properties |
 |--|--|--|
-| `transformRequestPayload` | A handler that can be used to trasnform the REST request body. | <ul><li><b>payload</b>: The request body object.</li></ul>
-| `transformResponsePayload` | A handler that can be used to trasnform the REST response body. | <ul><li><b>payload</b>: The response body object.</li></ul>
+| `transformRequestPayload` | A handler that can be used to transform the REST request body. | <ul><li><b>payload</b>: The request body object.</li></ul>
+| `transformResponsePayload` | A handler that can be used to transform the REST response body. | <ul><li><b>payload</b>: The response body object.</li></ul>
+| `transformErrorResponsePayload` | A handler that can be used to transform the REST response body when the REST service returned an error status (400 or higher). | <ul><li><b>payload</b>: The response body object.</li></ul>
 
