@@ -43,6 +43,16 @@ export class {{className}} implements RestServiceEventHandler {
        */
       transformResponsePayload: async (event: TransformPayloadEvent, context: RestServiceContext): Promise<any> => { 
         return event.payload;
+      },
+
+      /**
+       * Handler to transform the error response payload
+       * @param {TransformPayloadEvent} event
+       * @param {RestServiceContext} context
+       * @returns {object} the transformed error response payload
+       */
+      transformErrorResponsePayload: async (event: TransformPayloadEvent, context: RestServiceContext): Promise<any> => { 
+        return event.payload;
       }
      
     };
