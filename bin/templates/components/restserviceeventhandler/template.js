@@ -34,7 +34,18 @@ module.exports = {
     */
     transformResponsePayload: async (event, context) => { 
       return event.payload;
+    },
+
+    /**
+    * Handler to transform the error response payload
+    * @param {TransformPayloadEvent} event
+    * @param {RestServiceContext} context
+    * @returns {object} the transformed error response payload
+    */
+    transformErrorResponsePayload: async (event, context) => { 
+      return event.payload;
     }
+
   }
 }; 
 

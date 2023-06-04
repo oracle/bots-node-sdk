@@ -25,7 +25,7 @@ export async function invokeRestServiceEventHandlers(component: RestServiceEvent
       if (returnValue) {
         context.setRequestPayload(returnValue);
       }
-    } else if (eventName === `transformResponsePayload`) {
+    } else if (eventName === `transformResponsePayload` || eventName === `transformErrorResponsePayload`) {
       let payload = context.getResponsePayload();
       event.properties = {'payload': payload};
       logger.debug(`Invoking event handler ${eventName}`);
