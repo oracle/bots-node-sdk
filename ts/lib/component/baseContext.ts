@@ -4,6 +4,7 @@ import { ERROR } from '../../common/error';
 import { MessageModel } from '../message/messageModel';
 import { Logger } from '../../common/definitions';
 import { MessagePayload } from '../message';
+import { MessageFactory, RawMessage, NonRawMessage } from '../../lib2';
 
 const VARIABLE = {
   type: 'string',
@@ -377,23 +378,46 @@ export abstract class BaseContext {
   }
 
   /**
+   * Returns the last user message.
+   * @return {NonRawMessage} the last user message. You can cast this message to the appropriate message type.
+   */
+  getUserMessage<T extends NonRawMessage>(): T {
+    return this.getMessageFactory().messageFromJson(this.getRequest().message.messagePayload);
+  }
+
+  /**
    * Returns the MessageModel class for creating or validating messages to or from bots.
-   * @see MessageModel.js
    * @return {MessageModel} The MessageModel class
+   * @deprecated Use getMessageFactory() instead
    */
   getMessageModel(): typeof MessageModel {
     return MessageModel;
   }
 
   /**
-   * Creates a message payload object
-   * @param {object} payload - can take a string payload, an object payload or a MessageModel payload.  A string or object
-   * payload will be parsed into a MessageModel payload.  If the MessageModel payload has a valid common message format,
-   * then reply will use it as messagePayload, else it will use the payload to create a rawConversationMessage as messagePayload.
+   * Returns the MessageFactory class for creating bots messages
+   * @return {MessageFactory} The MessageFactory class
    */
-  constructMessagePayload(payload): MessagePayload {
+  getMessageFactory(): typeof MessageFactory {
+    return MessageFactory;
+  }
+
+  /**
+   * Creates a message payload object
+   * @param {object} payload - can take a string message, a message created by the MessageFactory, or a message created by the
+   * deprecated MessageModel.
+   * @returns {object} message payload in JSON format
+   */
+  constructMessagePayload(payload): any {
     let messagePayload: MessagePayload;
     let messageModel;
+    if (payload instanceof RawMessage ) {
+      // message created with new MessageFactory
+      return payload.toJson();
+    } else if (payload instanceof NonRawMessage) {
+      // message created with new MessageFactory
+      return payload.toJson();
+    }
     if (payload instanceof MessageModel) {
       this.logger().debug('messageModel payload provided');
       messageModel = payload;

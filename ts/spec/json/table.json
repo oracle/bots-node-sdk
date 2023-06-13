@@ -1,0 +1,76 @@
+{
+  "type": "table",
+  "headings": [
+    {
+      "alignment": "left",
+      "label": "First Name",
+      "width": 20,
+      "channelExtensions": {
+        "twilio": {
+          "twilprop": "twilvalue"
+        }
+      }
+    },
+    {
+      "alignment": "left",
+      "label": "Last Name",
+      "width": 20
+    },
+    {
+      "alignment": "left",
+      "label": "Title",
+      "width": 35
+    },
+    {
+      "alignment": "right",
+      "label": "Phone",
+      "width": 25
+    }
+  ],
+  "rows": [
+    {
+      "fields": [
+        {
+          "displayType": "text",
+          "label": null,
+          "value": "John",
+          "width": 20,
+          "alignment": "left"
+        },
+        {
+          "displayType": "text",
+          "label": "Last Name",
+          "value": "Doe",
+          "width": 20,
+          "alignment": "left"
+        },
+        {
+          "displayType": "text",
+          "label": "Title",
+          "value": "Demo Builder God",
+          "width": 35,
+          "alignment": "left"
+        },
+        {
+          "displayType": "text",
+          "label": "Phone",
+          "value": "12345678",
+          "width": 25,
+          "alignment": "right"
+        }
+      ],
+      "channelExtensions": {
+        "twilio": {
+          "rowProp": "rowValue"
+        }
+      }
+    }
+  ],
+  "headerText": "A-Team",
+  "paginationInfo": {
+    "totalCount": 8,
+    "rangeSize": 5,
+    "rangeStart": 0,
+    "status": "Showing 1-5 of 8 items"
+  }
+}

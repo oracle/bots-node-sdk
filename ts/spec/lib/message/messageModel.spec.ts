@@ -49,23 +49,23 @@ describe('MessageModel', () => {
       const actions = actionLabels.map(function (label, index) {
         return MessageModel.postbackActionObject(label, null, { index: index, label: label });
       });
-      let textMsg = MessageModel.textConversationMessage('Hello can I help you?');
-      textMsg = MessageModel.addGlobalActions(textMsg, actions);
+      let textMsg: any = MessageModel.textConversationMessage('Hello can I help you?');
+      MessageModel.addGlobalActions(textMsg, actions);
       const convertedTextMsg = Util.MessageModel.convertRespToText(textMsg);
       // console.log(convertedTextMsg);
       expect(convertedTextMsg.trim()).toEqual('Hello can I help you? The following global actions are available: Menu, Start over, Agent.');
     });
 
   });
-  
+
   describe('createTableFormMessages', function () {
     it('Table message', function () {
 
       let headings = [];
-      headings.push( MessageModel.tableHeaderColumn("First Name"));
-      headings.push( MessageModel.tableHeaderColumn("Last Name"));
-      headings.push( MessageModel.tableHeaderColumn("Phone", 30, "right"));
-  
+      headings.push( MessageModel.tableHeaderColumn('First Name'));
+      headings.push( MessageModel.tableHeaderColumn('Last Name'));
+      headings.push( MessageModel.tableHeaderColumn('Phone', 30, 'right'));
+
       let people = getPeople();
       let rows = [];
       for (let p of people) {
@@ -75,12 +75,12 @@ describe('MessageModel', () => {
         columns.push(MessageModel.tableColumn(p.phone));
         rows.push(MessageModel.tableRow(columns));
       }
-      let message = MessageModel.tableConversationMessage(headings, rows);  
+      let message = MessageModel.tableConversationMessage(headings, rows);
       let messageModel = new MessageModel(message);
       expect(messageModel.isValid()).toBeTruthy();
       if (!messageModel.isValid()) {
         console.log('message model validation error:', messageModel.validationError());
-      } 
+      }
       expect(message.headings.length).toEqual(3);
       expect(message.rows.length).toEqual(5);
     });
@@ -88,9 +88,9 @@ describe('MessageModel', () => {
     it('Table-Form message', function () {
 
       let headings = [];
-      headings.push( MessageModel.tableHeaderColumn("First Name"));
-      headings.push( MessageModel.tableHeaderColumn("Last Name"));
-  
+      headings.push( MessageModel.tableHeaderColumn('First Name'));
+      headings.push( MessageModel.tableHeaderColumn('Last Name'));
+
       let people = getPeople();
       let rows = [];
       let forms = [];
@@ -102,89 +102,89 @@ describe('MessageModel', () => {
         rows.push(MessageModel.tableRow(columns));
         // create form
         let fields = [];
-        fields.push(MessageModel.formField("Title", p.title));
-        fields.push(MessageModel.formField("Phone", p.phone));
-        fields.push(MessageModel.formField("LinkedIn", p.linkedin, "link", "LinkedIn"));
-        forms.push(MessageModel.form(fields, p.firstName + " " + p.lastName));
+        fields.push(MessageModel.formField('Title', p.title));
+        fields.push(MessageModel.formField('Phone', p.phone));
+        fields.push(MessageModel.formField('LinkedIn', p.linkedin, 'link', 'LinkedIn'));
+        forms.push(MessageModel.form(fields, p.firstName + ' ' + p.lastName));
       }
-      let message = MessageModel.tableFormConversationMessage(headings, rows, forms, 2, "View details");  
+      let message = MessageModel.tableFormConversationMessage(headings, rows, forms, 2, 'View details');
       let messageModel = new MessageModel(message);
       expect(messageModel.isValid()).toBeTruthy();
       if (!messageModel.isValid()) {
         console.log('message model validation error:', messageModel.validationError());
-      } 
-      expect(message.headings.length).toEqual(2); 
+      }
+      expect(message.headings.length).toEqual(2);
       expect(message.rows.length).toEqual(5);
       expect(message.forms.length).toEqual(5);
       expect(message.rows[0].fields.length).toEqual(2);
       expect(message.forms[0].fields.length).toEqual(3);
-      expect(message.forms[0].title).toEqual("John Doe");
+      expect(message.forms[0].title).toEqual('John Doe');
     });
 
     it('Form message', function () {
-  
+
       let people = getPeople();
       let forms = [];
       for (let p of people) {
         // create form
         let fields = [];
-        fields.push(MessageModel.formField("Title", p.title));
-        fields.push(MessageModel.formField("Phone", p.phone));
-        fields.push(MessageModel.formField("LinkedIn", p.linkedin, "link", "LinkedIn"));
-        forms.push(MessageModel.form(fields, p.firstName + " " + p.lastName));
+        fields.push(MessageModel.formField('Title', p.title));
+        fields.push(MessageModel.formField('Phone', p.phone));
+        fields.push(MessageModel.formField('LinkedIn', p.linkedin, 'link', 'LinkedIn'));
+        forms.push(MessageModel.form(fields, p.firstName + ' ' + p.lastName));
       }
-      let message = MessageModel.formConversationMessage(forms, 2);  
+      let message = MessageModel.formConversationMessage(forms, 2);
       let messageModel = new MessageModel(message);
       expect(messageModel.isValid()).toBeTruthy();
       if (!messageModel.isValid()) {
         console.log('message model validation error:', messageModel.validationError());
-      } 
+      }
       expect(message.forms.length).toEqual(5);
       expect(message.forms[0].fields.length).toEqual(3);
-      expect(message.forms[0].title).toEqual("John Doe");
+      expect(message.forms[0].title).toEqual('John Doe');
     });
 
   });
 
-  
+
 });
 
 function getPeople() {
   return [
     {
-      "firstName": "John",
-      "lastName": "Doe",
-      "title": "Demo Builder God",
-      "linkedin": "https://www.linkedin.org/in/johndoe",
-      "phone": "1122334455"
+      'firstName': 'John',
+      'lastName': 'Doe',
+      'title': 'Demo Builder God',
+      'linkedin': 'https://www.linkedin.org/in/johndoe',
+      'phone': '1122334455'
     },
     {
-      "firstName": "Jane",
-      "lastName": "Doe",
-      "title": "Multi-lingual Magician",
-      "linkedin": "https://www.linkedin.org/in/janedoe",
-      "phone": "1122334455"
+      'firstName': 'Jane',
+      'lastName': 'Doe',
+      'title': 'Multi-lingual Magician',
+      'linkedin': 'https://www.linkedin.org/in/janedoe',
+      'phone': '1122334455'
     },
     {
-      "firstName": "Steven",
-      "lastName": "King",
-      "title": "Flow Builder Fanatic",
-      "linkedin": "https://www.linkedin.org/in/stevenking",
-      "phone": "1122334455"
+      'firstName': 'Steven',
+      'lastName': 'King',
+      'title': 'Flow Builder Fanatic',
+      'linkedin': 'https://www.linkedin.org/in/stevenking',
+      'phone': '1122334455'
     },
     {
-      "firstName": "Scott",
-      "lastName": "Tiger",
-      "title": "Machine Learning Master",
-      "linkedin": "https://www.linkedin.org/in/scotttiger",
-      "phone": "1122334455"
+      'firstName': 'Scott',
+      'lastName': 'Tiger',
+      'title': 'Machine Learning Master',
+      'linkedin': 'https://www.linkedin.org/in/scotttiger',
+      'phone': '1122334455'
     },
     {
-      "firstName": "Chris",
-      "lastName": "Jones",
-      "title": "Docker Devil",
-      "linkedin": "https://www.linkedin.org/in/chrisjones",
-      "phone": "1122334455"
+      'firstName': 'Chris',
+      'lastName': 'Jones',
+      'title': 'Docker Devil',
+      'linkedin': 'https://www.linkedin.org/in/chrisjones',
+      'phone': '1122334455'
     }
   ];
 }

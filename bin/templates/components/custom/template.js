@@ -18,7 +18,7 @@ module.exports = {
 
 
   /**
-   * invoke methods gets called when the custom component state is executed in the dialog flow
+   * invoke method gets called when the custom component state is executed in the dialog flow
    * @param {CustomComponentContext} context 
    */
   invoke: async (context) => {

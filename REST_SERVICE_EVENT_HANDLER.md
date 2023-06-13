@@ -12,7 +12,6 @@
 
 A REST Service Event Handler (RSEH) enables you to transform customize the REST request body before the REST call is made, and to transform the response body after the REST call is made.
 
-<br/><br/>
 The RSEH is deployed as part of a component service. The built-in Call REST component checks whether an event handler is registered
 and if so, the component invokes the event handler methods to transform the request and/or response body.
 

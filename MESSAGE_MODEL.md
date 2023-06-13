@@ -1,5 +1,7 @@
 # Conversation Messaging 
 
+**Attention**: The information in this page is obsolete. It is using the `MessageModel` class which is now deprecated, and does not support the latest version of Oracle Digital Assitant's  conversation message model. Please use the [`MessageFactory`](https://oracle.github.io/bots-node-sdk/MessageFactory.html) for conversation messaging going forward.
+
 ## Table of contents
 - [Introduction](#introduction)
 - [Using the SDK Message Model](#messageModel)
