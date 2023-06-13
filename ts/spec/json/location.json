@@ -1,0 +1,9 @@
+{
+  "type": "location",
+  "location": {
+    "url": "http://someUrl",
+    "title" : "Some title",
+    "latitude" : 23.5678,
+    "longitude" : 46.5678123
+  }
+}

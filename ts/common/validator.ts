@@ -12,7 +12,7 @@ export class CommonValidator {
   private static _getJoi(): any {
     let Joi = CommonProvider.get(PROVIDER_KEY_JOI);
     if (!Joi) {
-      Joi = require('joi');
+      Joi = joi;
       CommonProvider.register({
         key: PROVIDER_KEY_JOI,
         use: Joi,
@@ -46,7 +46,7 @@ export class CommonValidator {
    * @param payload - Payload to validate against schema
    * @param options - Validation options (optional)
    */
-  public static validate(factory: ValidationSchemaFactory, payload: any, options?: joi.ValidationOptions): joi.ValidationResult<any> {
+  public static validate(factory: ValidationSchemaFactory, payload: any, options?: joi.ValidationOptions): joi.ValidationResult {
     return this.getSchema(factory).validate(payload, options);
   }
 

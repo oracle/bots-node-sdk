@@ -1,0 +1,5 @@
+{
+  "type": "formSubmission",
+  "postback" : {"action" :  "done"},
+  "submittedFields": {"aap": "noot", "wim": ["jet","does"]}
+}

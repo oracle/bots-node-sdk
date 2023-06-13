@@ -1,0 +1,38 @@
+{
+  "type": "form",
+  "forms": [
+    {
+      "fields": [
+        {
+          "displayType": "text",
+          "label": "First Name",
+          "value": "John",
+          "channelExtensions": {
+            "twilio": {
+              "twilprop": "twilvalue"
+            }
+          }
+        },
+        {
+          "displayType": "text",
+          "label": "Last Name",
+          "value": "Doe"
+        },
+        {
+          "displayType": "link",
+          "label": "Website",
+          "value": "http://linkedin",
+          "linkLabel": "LinkedIn"
+        }
+      ]
+    }
+  ],
+  "formColumns": 2,
+  "headerText": "A-Team",
+  "paginationInfo": {
+    "totalCount": 8,
+    "rangeSize": 5,
+    "rangeStart": 0,
+    "status": "Showing 1-5 of 8 items"
+  }
+}

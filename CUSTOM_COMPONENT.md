@@ -4,7 +4,7 @@
 - [Introduction](#introduction)
 - [Custom Component Structure](#structure)
     - [Using Javascript](#js)
-    - [Using Typescript](#ts)
+    - [Using TypeScript](#ts)
     - [The Metadata Object](#metadata)
     - [The Invoke Method](#invoke)
 - [Control the Flow with keepTurn and transition](#flowControl)    
@@ -58,6 +58,10 @@ module.exports = {
     supportedActions: ['weekday', 'weekend']
   },
 
+  /**
+   * invoke method gets called when the custom component state is executed in the dialog flow
+   * @param {CustomComponentContext} context 
+   */
   invoke: async (context) => {
     // Retrieve the value of the 'human' component property.
     const { human } = context.properties();
@@ -89,6 +93,13 @@ module.exports = {
   ...
 }
 ```
+
+<b>TIP</b>: if you are using a JavaScript IDE like Visual Studio Code, you can get code insight and code completion support by defining the `CustomComponentContext` type used in the custom component as follows:
+```javascript
+const { CustomComponentContext } = require ('@oracle/bots-node-sdk/lib');
+```
+When using TypeScript you will automatically get code completion support when your IDE supports it.
+
 
 ### Using TypeScript <a name="ts">
 
@@ -143,13 +154,13 @@ The metadata object can have three properties:
 - **name** (required): The name of the custom component. The name can't have spaces and can only contain letters, numbers, underscores, and dots.
 
 - **properties** (optional): The properties that a developer can set when invoking the custom component from the dialog flow. Each property has a name, and the value is a JSON object with two properties: a boolean `required` property and a `type` property. 
-<br/><br/>
+
 The allowable values for property type are: `object`, `string`, `boolean`, `int`, `double`, `float`, `long`, `list`, `map`, `stringVariable`, `booleanVariable`, `intVariable`, `doubleVariable`, `floatVariable`, `longVariable`, `mapVariable`, `listVariable`, `nlpresultVariable`, and `entityVariable`.
-<br/><br/>
+
 The `required` and `type` properties aren't checked at runtime. In other words, if you don't specify a required component property in the dialog flow or the property value is of the wrong type, the skill will still invoke the custom component. However, when you validate the skill by clicking the **Validate** button, you'll get validation errors whenever a required property is missing or the property value is of the wrong type.
 
 - **supportedActions** (optional): An array of action names that this component might use when calling the `transition(actionName)` function on the custom component `context` object. 
-<br/><br/>
+
 The `supportedActions` aren't checked at runtime. If you call the `transition(actionName)` function with an `actionName` argument value that isn't specified in the `supportedActions` property, it will still work. However, we recommend that you specify all the possible transition actions as `supportedActions` to ensure that the skill validator will warn dialog flow developers if a custom component state doesn't include all the transition actions that the component can set.
 
 ### The Invoke Method <a name="invoke">
@@ -158,7 +169,7 @@ The `invoke` method contains all the logic. In this method you can read and writ
 
 The argument of the `invoke` method is the `context` object. This object references the [CustomComponentContext](https://oracle.github.io/bots-node-sdk/CustomComponentContext.html), which provides access to many convenience methods to create your logic.
 
-More information about creating conversation messages to send to the skill user can be found [here](https://github.com/oracle/bots-node-sdk/blob/master/MESSAGE_MODEL.md).
+More information about creating conversation messages to send to the skill user can be found [here](https://github.com/oracle/bots-node-sdk/blob/master/MESSAGE_FACTORY.md).
 
 ## Control the Flow with keepTurn and transition <a name="flowControl">
 
@@ -351,7 +362,7 @@ invoke: async (context) => {
 You use `context.reply(<payload>)` to send a message to the user. 
 You can call this function multiple times to send multiple messages. When you call this function, `keepTurn` is set to false automatically.
 
-The payload can be a string or a rich message object. See [Conversation Messaging](https://github.com/oracle/bots-node-sdk/blob/master/MESSAGE_MODEL.md) for examples of how to create a [text message with buttons actions](https://github.com/oracle/bots-node-sdk/blob/master/MESSAGE_MODEL.md#textMessage), a [card message](https://github.com/oracle/bots-node-sdk/blob/master/MESSAGE_MODEL.md#cardMessage), and an [attachment message](https://github.com/oracle/bots-node-sdk/blob/master/MESSAGE_MODEL.md#attachmentMessage).
+The payload can be a string or a rich message object. See the section on [Conversation Messaging](https://github.com/oracle/bots-node-sdk/blob/master/MESSAGE_FACTORY.md) for code samples on how to create the various message types, like text, card, attachment, table and (editable) form messages.
 
 ### How to Keep Prompting for User Input <a name="keepPrompting">
 
@@ -365,7 +376,8 @@ invoke: async (context) => {
   
   // Check if postback action is issued and postback is from this component rendering. 
   // This ensures that the component only responds to its own postback actions.     
-  if (context.postback() && context.postback()['system.state'] === context.getRequest().state && context.postback().isNo) {
+  const um = context.getUserMessage()
+  if (um instanceof PostbackMessage && um.getPostback() && um.getPostback()['system.state'] === context.getRequest().state && um.getPostback().isNo) {
     context.keepTurn(true);
     context.transition();
   } else {
@@ -374,11 +386,12 @@ invoke: async (context) => {
     context.reply(`Quote by: ${quote.origin}`);
     // Create a single message with two buttons to request another quote or not.
     let actions = [];
-    const messageModel= context.getMessageModel();
-    actions.push(messageModel.postbackActionObject("Yes", null, { isNo: false}));
-    actions.push(messageModel.postbackActionObject("No", null, { isNo: true}));
-    let buttonMessage = messageModel.textConversationMessage("Do you want another quote?", actions);
-    context.reply(buttonMessage);
+
+    const mf = context.getMessageFactory();
+    const message = mf.createTextMessage('Do you want another quote?')
+      .addAction(mf.createPostbackAction('Yes', { isNo: false }))
+      .addAction(mf.createPostbackAction('No', { isNo: true }));
+    context.reply(message);
     // Although reply() automatically sets keepTurn to false, it's good practice to explicitly set it so that it's
     // easier to see how you intend the component to behave.
     context.keepTurn(false);

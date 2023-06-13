@@ -1,0 +1,38 @@
+{
+  "type": "card",
+  "layout": "horizontal",
+  "cards": [
+    {
+      "title": "CHEESE",
+      "imageUrl": "https://www.pizzahut.com/assets/w/tile/thor/Cheese.png",
+      "description": "Classic marinara sauce topped with whole milk mozzarella cheese.",
+      "id": "PizzaCard",
+      "actions": [
+        {
+          "label": "Order Now",
+          "type": "postback",
+          "postback": {
+            "variables": {
+              "orderedPizzaImage": "https://www.pizzahut.com/assets/w/tile/thor/Cheese.png",
+              "orderedPizza": "CHEESE"
+            },
+            "action": "order"
+          }
+        }
+      ]
+    }
+  ],
+  "footerText": "Some text displayed below the cards",
+  "actions": [
+    {
+      "label": "Cards Level",
+      "type": "location"
+    }
+  ],
+  "globalActions": [
+    {
+      "label": "Global",
+      "type": "location"
+    }
+  ]
+}

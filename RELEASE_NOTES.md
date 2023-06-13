@@ -1,5 +1,6 @@
 # Release Notes
 
+- [Version 2.6.7](#v267)
 - [Version 2.6.6](#v266)
 - [Version 2.6.5](#v265)
 - [Version 2.6.4](#v264)
@@ -15,6 +16,12 @@
 - [Version 2.5.0](#v250)
 - [Version 2.4.3](#v243)
 - [Version 2.4.2](#v242)
+
+## Version 2.6.7 <a name="v267">
+
+### New Features
+
+- **New Message Types and Properties**: This release includes support for the new `EditForm` message type, which allows you to render editable forms with text, number, date, time, single-select, multi-select and toggle fields. This new message type, as well as new properties for existing messages are supported through the new `MessageFactory` class which supersedes the now deprecated `MessageModel` class. See [Conversation Messaging](https://github.com/oracle/bots-node-sdk/blob/master/MESSAGE_FACTORY.md) for more information.
 
 ## Version 2.6.6 <a name="v266">
 
@@ -80,7 +87,7 @@
 - **New 'init' entity event handler**: A new 'init' event is available in entity event handler which fires when entity resolution starts.
 - **New attribute 'supportedActions' in entity event handler metadata**: The `supportedActions` property contains a string array of transition actions that might be set by the event handler. By setting this property, the skill validator will not raise a warning if a transition action created in an event handler is set by by the resolving state in the flow.
 - **New entity resolution context method to set transition action**: When using the new `setTransitionAction` function, the entity resolution process is aborted, and the dialog engine will transition to the state defined for this transition action.
-- **New functions to create table, form and tableForm message payloads**: The ODA conversation message model has been extended with 3 new message types to render data in a table, form, or tableForm layout. These new functions allow you to create these message types using the SDK. See [Conversation Messaging](https://github.com/oracle/bots-node-sdk/blob/master/MESSAGE_MODEL.md) for more information.
+- **New functions to create table, form and tableForm message payloads**: The ODA conversation message model has been extended with 3 new message types to render data in a table, form, or tableForm layout. These new functions allow you to create these message types using the SDK. See [Conversation Messaging](https://github.com/oracle/bots-node-sdk/blob/master/MESSAGE_FACTORY.md) for more information.
 
 ### Fixed Issues
 

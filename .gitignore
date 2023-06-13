@@ -8,4 +8,6 @@ node_modules
 docs
 reports
 typings
+/lib2
+/ts/docs
 oracle-bots-node-sdk-*.tgz
