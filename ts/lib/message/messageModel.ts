@@ -20,6 +20,7 @@ import MessageModelSchemaFactory = require('./schema/messageModelSchema');
  *
  * The payload can be created using the various static utility methods for creating different
  * response types including TextConversationMessage, CardConversationMessage, AttachmentConversationMessage, etc.
+ * @deprecated Use MessageFactory instead
  */
 export class MessageModel {
   private _payload: any;

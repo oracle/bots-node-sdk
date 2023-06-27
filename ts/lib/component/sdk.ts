@@ -263,6 +263,7 @@ export class CustomComponentContext extends BaseContext {
    * Returns the MessageModel class for creating or validating messages to or from bots.
    *
    * @return {MessageModel} The MessageModel class
+   * @deprecated Use getMessageFactory() instead
    */
   MessageModel(): typeof MessageModel {
     return super.getMessageModel();
@@ -404,16 +405,14 @@ export class CustomComponentContext extends BaseContext {
   }
 
   /**
-  * Adds a reply to be sent back to the user.  May be called multiple times
-  * to send multiple replies in a given response.  Automatically sets the
-  * "keepTurn" as false.
-  *
-  * reply can take a string payload, an object payload or a MessageModel payload.  A string or object payload will be parsed
-  * into a MessageModel payload.  If the MessageModel payload has a valid common message format, then reply will use it as
-  * messagePayload, else it will use the payload to create a rawConversationMessage (see MessageModel) as messagePayload.
-  * @param {object|string|MessageModel} payload - payload to be sent back.  payload could also be a string for text response
-  * @param {object} [channelConversation] - to override the default channelConversation from request
-  */
+   * Adds a reply to be sent back to the user. May be called multiple times to send multiple replies in a given response.
+   * Automatically sets the <code>keepTurn</code> as false.
+   * </p>
+   * @param {object} payload - can take a string message, a message created by the MessageFactory, or a message created by
+   * the deprecated MessageModel.
+   * @param {object} [channelConversation] - to override the default channelConversation from request
+   * @returns the message payload in JSON format
+   */
   reply(payload, channelConversation?): this {
     const response: any = {
       tenantId: this.request().message.tenantId,

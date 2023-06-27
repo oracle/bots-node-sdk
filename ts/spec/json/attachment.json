@@ -1,0 +1,8 @@
+{
+  "type": "attachment",
+  "attachment": {
+    "type": "image",
+    "url": "http://someUrl",
+    "title" : "Some title"
+  }
+}

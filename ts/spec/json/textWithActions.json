@@ -1,0 +1,67 @@
+{
+  "type": "text",
+  "text": "my text message",
+  "headerText": "This is header text",
+  "footerText": "This is footer text",
+  "actions": [
+    {
+      "label": "MyLabel",
+      "type": "postback",
+      "postback": {
+        "action": "foo"
+      },
+      "voice": {
+        "text": "voiceiee"
+      },
+      "imageUrl": "http://myImageUrl",
+      "skipAutoNumber": true,
+      "keywords": [
+        "word1",
+        "word2"
+      ],
+      "channelExtensions": {
+        "facebook": {
+          "myProp": "myValue",
+          "myProp2": "myValue2"
+        },
+        "slack": {
+          "myProp": "myValue"
+        }
+      }
+    },
+    {
+      "label": "Call me",
+      "type": "call",
+      "phoneNumber": "06-123456"
+    },
+    {
+      "label": "Share",
+      "type": "share"
+    },
+    {
+      "label": "Location",
+      "type": "location"
+    },
+    {
+      "label": "Oracle",
+      "type": "url",
+      "url": "http://www.oracle.com"
+    }
+  ],
+  "keywords": [
+    {
+      "postback": {
+        "foo": "bar"
+      },
+      "keywords": [
+        "word1",
+        "word2"
+      ]
+    }
+  ],
+  "channelExtensions": {
+    "slack": {
+      "slackProp": "slackValue"
+    }
+  }
+}

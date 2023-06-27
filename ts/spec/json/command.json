@@ -1,0 +1,12 @@
+{
+  "type": "command",
+  "command": "repeatLouder",
+  "properties": {
+    "bool": true,
+    "int": 8,
+    "string": "foo",
+    "object": {
+      "aap": "noot"
+    }
+  }
+}

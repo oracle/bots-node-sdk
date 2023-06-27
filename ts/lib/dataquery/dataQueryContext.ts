@@ -1,6 +1,7 @@
 import { BaseContext } from '../component/baseContext';
-import { PostbackAction } from '../message';
+import { PostbackAction as PostbackActionType} from '../message';
 import { DataQueryUISettings, ReadOnlyFieldMetadata, QueryResult, Layout } from './dataQueryTypes';
+import { PostbackAction } from '../../lib2';
 
 // Response template
 const RESPONSE = {
@@ -149,12 +150,26 @@ export class DataQueryContext extends BaseContext {
    * @param {string} buttonLabel
    * @param {string} the OMRL query
    * @param {string} the title that is used when displaying the query results
-   * @return {PostbackAction} the postback action to exeute the query
+   * @return {PostbackActionType} the postback action to exeute the query
+   * @deprecated Use createQueryAction instead, this returns a PostbackAction created using the MessageFactory which replaces the
+   * deprecated MessageModel.
    */
-  createFollowUpQueryAction(buttonLabel: string, query: string, queryTitle?: string): PostbackAction {
+  createFollowUpQueryAction(buttonLabel: string, query: string, queryTitle?: string): PostbackActionType {
     const messageModel = this.getMessageModel();
     let payload =  { 'action': 'system.omrlQuery', 'variables': {'system.omrql': query, 'system.omrqlResultTitle': queryTitle || '', 'system.isFollowupResponse': true} };
     return messageModel.postbackActionObject(buttonLabel, undefined, payload);
+  }
+
+  /**
+   * Create a CMM postback action that when clicked / tapped by the user will execute a follow-up query.
+   * @param {string} buttonLabel
+   * @param {string} the OMRL query
+   * @param {string} the title that is used when displaying the query results
+   * @return {PostbackAction} the postback action to exeute the query
+   */
+  createQueryAction(buttonLabel: string, query: string, queryTitle?: string): PostbackAction {
+    let payload =  { 'action': 'system.omrlQuery', 'variables': {'system.omrql': query, 'system.omrqlResultTitle': queryTitle || '', 'system.isFollowupResponse': true} };
+    return this.getMessageFactory().createPostbackAction(buttonLabel, payload);
   }
 
   /**

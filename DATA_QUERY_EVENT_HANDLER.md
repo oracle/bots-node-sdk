@@ -4,7 +4,7 @@
 - [Introduction](#introduction)
 - [SQL Query Handler Structure](#structure)
     - [Using Javascript](#js)
-    - [Using Typescript](#ts)
+    - [Using TypeScript](#ts)
 - [Writing SQL Query Handler Functions](#writing)
 - [Supported Events](#events)
     - [Entity Level Events](#entityEvents)
@@ -23,7 +23,7 @@
 ## Introduction <a name="introduction">
 
 An SQL Query Event Handler (SQEH) enables you to customize the SQL Dialogs query results.
-<br/><br/>
+
 The SQEH is deployed as part of a component service. The built-in SQL Dialog component, which receives the queries, identifies a series of events. When one of these events occurs, the component first checks whether a SQEH has been registered to the query's root entity (that is, the first entity that follows FROM in the SQL clause). If so, it then checks if the SQEH has a handler defined for that event. When such a handler exists, the component invokes that event handler method in the SQEH. 
 
 ## SQL Query Event Handler Structure <a name="structure">
@@ -196,7 +196,7 @@ See the [list of supported entity events](#events) for information on which prop
 
 The second argument of each event method  is the `context` object. This object references the [DataQueryContext](https://oracle.github.io/bots-node-sdk/DataQueryContext.html) that provides access to many convenience methods used to create your event handler logic.
 
-You can find more information on creating conversation messages from an event handler [here](https://github.com/oracle/bots-node-sdk/blob/master/MESSAGE_MODEL.md).
+You can find more information on creating conversation messages from an event handler [here](https://github.com/oracle/bots-node-sdk/blob/master/MESSAGE_FACTORY.md).
 
 <b>TIP</b>: if you are using a JavaScript IDE like Visual Studio Code, you can get code insight and code completion support by defining the types used in the event handlers as follows in your JavaScript handler file:
 ```javascript
@@ -213,7 +213,7 @@ The table below lists all entity level events:
 |--|--|--|
 | `changeUISettings` | A handler that can be used to change overall UI settings. For a list of properties you can change, check the `DataQueryUISettings` interface in [Data Query Types](https://github.com/oracle/bots-node-sdk/blob/master/ts/lib/dataquery/dataQueryTypes.ts). | <ul><li><b>settings</b>: The `DataQueryUISettings` object.</li></ul>
 | `changeResponseData` | A handler that can be used to change the query result set. For a list of properties you can change, check the `QueryResult` interface in [Data Query Types](https://github.com/oracle/bots-node-sdk/blob/master/ts/lib/dataquery/dataQueryTypes.ts). | <ul><li><b>responseData</b>: The `QueryResult` object.</li></ul>
-| `changeBotMessages` | A handler that can be used to change the candidate bot message(s) that will be sent to the user. See the section on [Conversation Messaging](https://github.com/oracle/bots-node-sdk/blob/master/MESSAGE_MODEL.md) for more info on adding or changing messages.| <ul><li><b>messages</b>: The list of messages.</li></ul>
+| `changeBotMessages` | A handler that can be used to change the candidate bot message(s) that will be sent to the user. See the section on [Conversation Messaging](https://github.com/oracle/bots-node-sdk/blob/master/MESSAGE_FACTORY.md) for more info on adding or changing messages.| <ul><li><b>messages</b>: The list of messages.</li></ul>
 
 ### Attribute Level Events <a name="attributeEvents">
 The table below lists all attribute level events:
@@ -298,11 +298,18 @@ Here is a code snippet that adds a footer text that displays the execution time 
 changeBotMessages: async (event: ChangeBotMessagesEvent, context: DataQueryContext): Promise<NonRawMessagePayload[]> => {
   // if Interpretation message is enabled (which is the default), then two messages are returned and we need to change the last one
   // to make the code resilient to the interpretation message enabled flag, we always modify the last message
-  let message = event.messages[event.messages.length - 1];
+
+  // convert message from json to appropriate message type class
+  const mf = context.getMessageFactory();
+  let message = mf.messageFromJson(event.messages[event.messages.length - 1]);
+
   let millis = context.getQueryExecutionTime();   
   let minutes = Math.floor(millis / 60000);
   let seconds = ((millis % 60000) / 1000).toFixed(3);
-  message.footerText = `The query was executed in ${minutes > 0 ? minutes + ' minutes and ' : ''}${seconds} seconds.\n\n${message.footerText}`;
+  message.setFooterText(`The query was executed in ${minutes > 0 ? minutes + ' minutes and ' : ''}${seconds} seconds.\n\n${message.footerText}`);
+
+  // convert back to json
+  event.messages[event.messages.length - 1] = message.toJson();
   return event.messages;
 }
 ```
@@ -322,18 +329,22 @@ changeResponseData: async (event: ChangeResponseDataEvent, context: DataQueryCon
 ```
 
 ### How to Add a Global Follow Up Query Action <a name="followUpQueryGlobal">
-We can use the `changeBotMessages` event to add a button action that executes a global follow up query. The `DataQueryContext` contains a convenience method `createFollowUpQueryAction` that takes care of most of the work. The global action button will be added to the `actions` array of the message.
+We can use the `changeBotMessages` event to add a button action that executes a global follow up query. The `DataQueryContext` contains a convenience method `createQueryAction` that takes care of most of the work. The global action button will be added to the `actions` array of the message.
 
 ```javascript
 changeBotMessages: async (event: ChangeBotMessagesEvent, context: DataQueryContext): Promise<NonRawMessagePayload[]> => {
   // if Interpretation message is enabled (which is the default), then two messages are returned and we need to change the last one
   // to make the code resilient to the interpretation message enabled flag, we always modify the last message
-  let message = event.messages[event.messages.length - 1];
+
+  // convert message from json to appropriate message type class
+  const mf = context.getMessageFactory();
+  let message = mf.messageFromJson(event.messages[event.messages.length - 1]);
+
   if (!context.isFollowUpQuery()) {
-    let actions: any[] = message.actions || [];
-    actions.push(context.createFollowUpQueryAction('Show Jobs Count', 'SELECT job, COUNT(*) FROM Emp GROUP BY job', 'Jobs Count'));
-    message.actions = actions;
+    message.addAction(context.createQueryAction('Show Jobs Count', 'SELECT job, COUNT(*) FROM Emp GROUP BY job', 'Jobs Count'));
   }  
+  // convert back to json
+  event.messages[event.messages.length - 1] = message.toJson();
   return event.messages;
 }
 ```
@@ -342,16 +353,22 @@ changeBotMessages: async (event: ChangeBotMessagesEvent, context: DataQueryConte
 We can use the `changeBotMessages` event to add a button action that executes a row level follow up query. The `DataQueryContext` contains a convenience method `createFollowUpQueryAction` that takes care of most of the work. The row level action button will be added to the `actions` array within each `form` within the message.
 
 ```javascript
+// message type imports
+const { FormMessage, TableFormMessage } = require('@oracle/bots-node-sdk/typings/lib2');
+
+
 changeBotMessages: async (event: ChangeBotMessagesEvent, context: DataQueryContext): Promise<NonRawMessagePayload[]> => {
   // if Interpretation message is enabled (which is the default), then two messages are returned and we need to change the last one
   // to make the code resilient to the interpretation message enabled flag, we always modify the last message
-  let message = event.messages[event.messages.length - 1];
+
+  // convert message from json to appropriate message type class
+  const mf = context.getMessageFactory();
+  let message = mf.messageFromJson(event.messages[event.messages.length - 1]);
+
   if (!context.isFollowUpQuery()) {
     let forms = null;  
-    if (message.type == 'form') {
-      forms = (message as FormMessage).forms;
-    } else if (message.type == 'tableForm') {
-      forms = (message as TableFormMessage).forms;
+    if (message instanceof FormMessage || message instanceof TableFormMessage) {
+      forms = message.getForms();
     }
     if (forms) {
       // Add button to drill down into subordinates of a manager
@@ -360,14 +377,13 @@ changeBotMessages: async (event: ChangeBotMessagesEvent, context: DataQueryConte
         let ename = context.getQueryResult()[i].ename;
         let isManager = ['MANAGER','PRESIDENT'].includes(context.getQueryResult()[i].job);
         if (empno && isManager) {
-          // there might be declarative follow-up actions defined in the UI which we need to preserve
-          let actions: any[] = forms[i].actions || [];
-          actions.push(context.createFollowUpQueryAction('Subordinates',`SELECT ename, job FROM Emp WHERE mgr = ${empno}`, `Subordinates of ${ename}` ));
-          forms[i].actions = actions;
+          forms[i].addAction(context.createQueryAction('Subordinates',`SELECT ename, job FROM Emp WHERE mgr = ${empno}`, `Subordinates of ${ename}` ));
         }
       }  
     }  
   }  
+  // convert back to json
+  event.messages[event.messages.length - 1] = message.toJson();
   return event.messages;
 }
 ```
@@ -377,7 +393,11 @@ Because we don't need to cast to the proper message type to get the forms list, 
 changeBotMessages: async (event, context) => {
   // if Interpretation message is enabled (which is the default), then two messages are returned and we need to change the last one
   // to make the code resilient to the interpretation message enabled flag, we always modify the last message
-  let message = event.messages[event.messages.length - 1];
+
+  // convert message from json to appropriate message type class
+  const mf = context.getMessageFactory();
+  let message = mf.messageFromJson(event.messages[event.messages.length - 1]);
+
   let forms = message.forms;  
   if (!context.isFollowUpQuery() && forms) {
     // Add button to drill down into subordinates of a manager
@@ -386,13 +406,12 @@ changeBotMessages: async (event, context) => {
       let ename = context.getQueryResult()[i].ename;
       let isManager = ['MANAGER','PRESIDENT'].includes(context.getQueryResult()[i].job);
       if (empno && isManager) {
-        // there might be declarative follow-up actions defined in the UI which we need to preserve
-        let actions: any[] = forms[i].actions || [];
-        actions.push(context.createFollowUpQueryAction('Subordinates',`SELECT ename, job FROM Emp WHERE mgr = ${empno}`, `Subordinates of ${ename}` ));
-        forms[i].actions = actions;
+        forms[i].addAction(context.createQueryAction('Subordinates',`SELECT ename, job FROM Emp WHERE mgr = ${empno}`, `Subordinates of ${ename}` ));
       }
     }  
   }  
+  // convert back to json
+  event.messages[event.messages.length - 1] = message.toJson();
   return event.messages;
 }
 ```

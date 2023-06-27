@@ -1,0 +1,6 @@
+{
+  "type": "postback",
+  "postback": {
+    "action": "foo"
+  }
+}

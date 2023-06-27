@@ -1,0 +1,6 @@
+{
+  "type": "raw",
+  "payload": {
+    "foo": "bar"
+  }
+}

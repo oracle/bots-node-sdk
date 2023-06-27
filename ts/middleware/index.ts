@@ -35,7 +35,7 @@ export function customComponent(
   service: ServiceInstance,
   options: ComponentMiddlewareOptions & { parser?: ParserMiddlewareOptions } = <any>{}
 ): ServiceInstance {
-  if (options.parser !== false) {
+  if (options.parser) {
     ParserMiddleware.extend(service, options.parser);
   }
   ComponentMiddleware.extend(service, options);

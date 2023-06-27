@@ -1,6 +1,10 @@
 import { CONSTANTS } from '../../common/constants';
 import { isType } from '../../common/definitions';
 
+class SomeClass {
+
+}
+
 describe('Common', () => {
   describe('CONSTANTS', () => {
     it('should declare constants', () => {
@@ -17,6 +21,3 @@ describe('Common', () => {
   });
 });
 
-class SomeClass {
-
-}

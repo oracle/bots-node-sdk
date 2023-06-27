@@ -1,0 +1,147 @@
+{
+  "type": "editForm",
+  "formColumns": 2,
+  "fields": [
+    {
+      "id": "text-field-id",
+      "displayType": "textInput",
+      "label": "TextInputField",
+      "validationRegularExpression": "//[^\\r\\n]*[\\r\\n]",
+      "serverErrorMessage": "this is a server error message",
+      "defaultValue": "this is a default value",
+      "multiLine": true,
+      "minLength": 2,
+      "clientErrorMessage": "this is a client error message",
+      "required": false,
+      "channelExtensions": {
+        "msteams": {
+          "prop1": "teams"
+        }
+      },
+      "autoSubmit": true,
+      "inputStyle": "email",
+      "placeholder": "this is a placeholder",
+      "maxLength": 1024
+    },
+    {
+      "id": "toggle-field-id",
+      "displayType": "toggle",
+      "label": "ToggleField",
+      "valueOff": "no",
+      "valueOn": "yes",
+      "serverErrorMessage": "this is a server error message",
+      "defaultValue": "yes",
+      "labelOn": "I accept",
+      "placeholder": "this is a placeholder",
+      "labelOff": "I do not accept",
+      "clientErrorMessage": "this is a client error message",
+      "required": false
+    },
+    {
+      "id": "single-select-field-id",
+      "displayType": "singleSelect",
+      "options": [
+        {
+          "label": "option1",
+          "value": "value1",
+          "imageUrl": "http://someImage"
+        },
+        {
+          "label": "option2",
+          "value": "value2"
+        },
+        {
+          "label": "option3",
+          "value": "value3"
+        }
+      ],
+      "layoutStyle": "radioGroup",
+      "label": "SingleSelectField",
+      "serverErrorMessage": "this is a server error message",
+      "defaultValue": "this is a default value",
+      "placeholder": "this is a placeholder",
+      "clientErrorMessage": "this is a client error message",
+      "required": false
+    },
+    {
+      "id": "multi-select-field-id",
+      "displayType": "multiSelect",
+      "options": [
+        {
+          "label": "CHEESE",
+          "value": "CHEESE"
+        },
+        {
+          "label": "PEPPERONI",
+          "value": "PEPPERONI"
+        },
+        {
+          "label": "MEAT LOVER",
+          "value": "MEAT LOVER"
+        },
+        {
+          "label": "SUPREME",
+          "value": "SUPREME"
+        }
+      ],
+      "layoutStyle": "checkboxes",
+      "label": "MultiSelectField",
+      "serverErrorMessage": "this is a server error message",
+      "defaultValue": [
+        "PEPPERONI",
+        "CHEESE"
+      ],
+      "placeholder": "this is a placeholder",
+      "clientErrorMessage": "this is a client error message",
+      "required": false
+    },
+    {
+      "id": "number-field-id",
+      "displayType": "numberInput",
+      "label": "NumberInputField",
+      "minValue": -1234.456,
+      "serverErrorMessage": "this is a server error message",
+      "defaultValue": 123.1,
+      "maxValue": 345.6789,
+      "placeholder": "this is a placeholder",
+      "clientErrorMessage": "this is a client error message",
+      "required": false
+    },
+    {
+      "id": "date-field-id",
+      "displayType": "datePicker",
+      "label": "DatePickerField",
+      "minDate": "2017-10-10",
+      "serverErrorMessage": "this is a server error message",
+      "defaultValue": "2017-10-12",
+      "maxDate": "2017-10-15",
+      "placeholder": "this is a placeholder",
+      "clientErrorMessage": "this is a client error message",
+      "required": false
+    },
+    {
+      "id": "time-field-id",
+      "displayType": "timePicker",
+      "label": "TimePickerField",
+      "maxTime": "17:00",
+      "serverErrorMessage": "this is a server error message",
+      "defaultValue": "15:30",
+      "minTime": "09:00",
+      "placeholder": "this is a placeholder",
+      "clientErrorMessage": "this is a client error message",
+      "required": false
+    }
+  ],
+  "headerText": "Use the form below to add an A-Team Member",
+  "title": "A-Team Member",
+  "actions": [
+    {
+      "label": "Submit",
+      "type": "submitForm",
+      "postback": {
+        "variables": {},
+        "action": "done"
+      }
+    }
+  ]
+}

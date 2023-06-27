@@ -2,6 +2,7 @@ import { BaseContext } from '../component/baseContext';
 import EventHandlerRequestSchemaFactory = require('./schema/eventHandlerRequestSchema');
 import { MessagePayload, NonRawMessagePayload } from '../message';
 import { KeyValuePairs } from '../component/kinds';
+import { RawMessage, NonRawMessage } from '../../lib2';
 
 const PARENT_SEPARATOR  = '-';
 
@@ -344,18 +345,32 @@ export class EntityResolutionContext extends BaseContext {
   /**
    * Returns a list of the candidate bot messages created by the the ResolveEntities or CommonResponse component
    * that will be sent to the user when you use addCandidateMessages() function.
-   * @return {NonRawMessagePayload[]} list of candidate messages. Note that these messages are in the format of the conversation
-   * message model (CMM), and can be either a text, attachment or card message payload
+   * @return {NonRawMessagePayload[]} list of candidate messages. Note that these messages are in the JSON format of the conversation
+   * message model (CMM).
+   * @deprecated Use getCandidateMessageList instead
    */
   getCandidateMessages(): NonRawMessagePayload[] {
     return this.getRequest().candidateMessages;
   }
 
   /**
+   * Returns a list of the candidate bot messages created by the the ResolveEntities or CommonResponse component
+   * that will be sent to the user when you use addCandidateMessages() function.
+   * @returns {NonRawMessage[]} list of candidate messages. The messages are returned in the class representation of
+   * each message type. You can cast the message to the proper type, modify it using the
+   * available class methods, and you can add the message by calling context.addMessage().
+   * <p>
+   * See [Conversation Messaging]{@link https://github.com/oracle/bots-node-sdk/blob/master/MESSAGE_FACTORY.md}
+   */
+  getCandidateMessageList<T extends NonRawMessage>(): T[] {
+    const mf = this.getMessageFactory();
+    return this.getRequest().candidateMessages.map(msg => mf.messageFromJson(msg));
+  }
+
+  /**
    * Add the bot messages created by ResolveEntities or CommomResponse component to the response that will
    * be sent to the user.
-   * Note that these messages are in the format of the conversation message model (CMM), and can be either
-   * a text, attachment or card message payload
+   * Note that these messages are in the format of the conversation message model (CMM).
    */
   addCandidateMessages(): void {
     if (this.getRequest().candidateMessages) {
@@ -375,23 +390,32 @@ export class EntityResolutionContext extends BaseContext {
   /**
    * Returns the list of messages that will be sent to the user
    * @return list of messages
+   * @deprecated use getMessageList instead
    */
   getMessages(): MessagePayload[] {
     return this.getResponse().messages || [];
   }
 
   /**
+   * Returns the list of messages that will be sent to the user
+   * @returns {NonRawMessage[]} list of messages, returned in the class representation of  each message type.
+   */
+  getMessageList<T extends NonRawMessage>(): T[] {
+    const messages = this.getResponse().messages || [];
+    const mf = this.getMessageFactory();
+    return messages.map(msg => mf.messageFromJson(msg));
+  }
+
+  /**
    * Adds a message to the bot response sent to the user.
-   * @param {object} payload - can take a string payload, an object payload or a MessageModel payload.  A string or object
-   * payload will be parsed into a MessageModel payload.  If the MessageModel payload has a valid common message format,
-   * then reply will use it as messagePayload, else it will use the payload to create a rawConversationMessage
-   * (see MessageModel) as messagePayload.
+   * @param {object} payload - can take a string message, a message created using the MessageFactory, or a message created using
+   * the deprecated MessageModel.
    * @param {boolean} keepProcessing - If set to false (the default), the message will be sent to the user and
    * the ResolveEntities or CommonResponse component will stop any further processing, and wait for user input.
    * If set to true, the component will continue processing, possibly sending more messages to the
    * user before releasing the turn
    */
-  addMessage(payload: string | MessagePayload, keepProcessing?: boolean) {
+  addMessage(payload: string | NonRawMessage | RawMessage | MessagePayload, keepProcessing?: boolean) {
     this.getResponse().keepProcessing = !!keepProcessing;
     this.getResponse().messages = this.getResponse().messages || [];
     this.getResponse().messages.push(super.constructMessagePayload(payload));
