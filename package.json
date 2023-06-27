@@ -35,7 +35,7 @@
     "ts-docs": "shx rm -rf ./ts/docs && cd ts && npx typedoc",
     "postdocs": "node ./docshim.js",
     "lint": "eslint . --ignore-pattern reports --ignore-pattern examples --ignore-pattern docs && tslint --project ./ts",
-    "test": "nyc jasmine",
+    "test": "npm run types && nyc jasmine",
     "ts-test": "shx rm -rf ./typings && cd ts && tsc --project tsconfig-test.json && cd .. && npx jasmine ./typings/**/*[sS]pec.js",
     "types": "shx rm -rf ./typings && cd ts && tsc",
     "prepack": "npm run build",
