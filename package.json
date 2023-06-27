@@ -31,7 +31,7 @@
   },
   "scripts": {
     "build": "npm run lint && npm run types",
-    "docs": "shx rm -rf ./docs && jsdoc -c jsdoc.json -d ./docs",
+    "docs": "shx rm -rf ./docs && npm run types && jsdoc -c jsdoc.json -d ./docs",
     "ts-docs": "shx rm -rf ./ts/docs && cd ts && npx typedoc",
     "postdocs": "node ./docshim.js",
     "lint": "eslint . --ignore-pattern reports --ignore-pattern examples --ignore-pattern docs && tslint --project ./ts",
