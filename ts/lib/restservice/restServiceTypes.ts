@@ -20,4 +20,14 @@ export interface TransformPayloadEvent {
   payload: any
 }
 
+export interface ChatEntry {
+  role: 'user' | 'system' | 'assistant';
+  content: string;
+}
+
+export interface ValidateResponseEvent {
+  payload: string;
+  chatHistory: ChatEntry[];
+  entityMatches?: Map<string, object[]>
+}
 

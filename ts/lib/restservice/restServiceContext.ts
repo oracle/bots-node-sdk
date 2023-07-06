@@ -1,4 +1,5 @@
 import { BaseContext } from '../component/baseContext';
+import { MessagePayload } from '../message';
 
 // Response template
 const RESPONSE = {
@@ -74,8 +75,38 @@ export class RestServiceContext extends BaseContext {
   /**
    * Set the response payload
    */
-  setResponsePayload(payload: any) {
+  setResponsePayload(payload: any): void {
     this.getResponse().responsePayload = payload;
+  }
+
+  /**
+   * Adds a message to the bot response sent to the user.
+   * NOTE: This method can only be used in the validateResponsePayload handler
+   * @param {object} payload - can take a string message, or a message created using the MessageFactory
+   */
+  addMessage(payload: string | MessagePayload): void {
+    this.getResponse().messages = this.getResponse().messages || [];
+    this.getResponse().messages.push(super.constructMessagePayload(payload));
+  }
+
+  /**
+   * Set a transition action. When you use this function, the dialog engine will transition to the state defined for this transition action.
+   * <p>
+   * NOTE: This method can only be used in the validateResponsePayload handler
+   * @param {string} action - name of the transition action
+   */
+  setTransitionAction(action: string): void {
+    this.getResponse().transitionAction = action;
+  }
+
+  /**
+   * Sets an LLM prompt that will be sent to the LLM
+   * <p>
+   * NOTE: This method can only be used in the validateResponsePayload handler
+   * @param {string} prompt - the text of the prompt
+   */
+  setLLMPrompt(prompt: string): void {
+    this.getResponse().llmPrompt = prompt;
   }
 
 }

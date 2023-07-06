@@ -360,10 +360,10 @@ export abstract class BaseContext {
    */
   translate(rbKey: string, ...rbArgs: string[]) {
     // create freemarker expression that will be resolved in runtime after event handler or custom component response is received
-    let exp = '${rb(\'' + rbKey + '\'';
+    let exp = '${rb("' + rbKey + '"';
     for (let arg of rbArgs) {
       // MIECS-38051: only string args should be enclosed in quotes
-      typeof arg === 'string' ? exp += ',\'' + arg + '\'' : exp += ',' + arg;
+      typeof arg === 'string' ? exp += ',"' + arg + '"' : exp += ',' + arg;
     }
     exp += ')}';
     return exp;

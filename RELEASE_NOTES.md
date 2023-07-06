@@ -1,5 +1,6 @@
 # Release Notes
 
+- [Version 2.6.8](#v268)
 - [Version 2.6.7](#v267)
 - [Version 2.6.6](#v266)
 - [Version 2.6.5](#v265)
@@ -16,6 +17,13 @@
 - [Version 2.5.0](#v250)
 - [Version 2.4.3](#v243)
 - [Version 2.4.2](#v242)
+
+## Version 2.6.8 <a name="v268">
+
+### Fixed Issues
+
+- Documentation fixes
+- Fixed issue in baseContext.translate method for TypeScript.
 
 ## Version 2.6.7 <a name="v267">
 
