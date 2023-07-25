@@ -406,11 +406,11 @@ When using TypeScript, you can cast to the proper message subclass to get design
 if (context.getRequest().state === context.getRequest().previousState) {
   const um = context.getUserMessage();
   if (um instanceof TextMessage) {
-    const utm = um as typeof TextMessage;
+    const utm = um as TextMessage;
     const text = utm.getText();
     // handle text    
   } else if (um instanceof PostbackMessage) {
-    const upm = um as typeof PostbackMessage;
+    const upm = um as PostbackMessage;
     const postback = upm.getPostback();
     // handle postback payload      
     ...
