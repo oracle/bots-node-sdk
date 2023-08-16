@@ -1,4 +1,4 @@
-import { ReadOnlyField, Action } from '../internal';
+import { ReadOnlyField, Action, MessageUtil } from '../internal';
 
 /**
  * Represents an action field.
@@ -15,6 +15,14 @@ export class ActionField extends ReadOnlyField {
   constructor(action: Action) {
     super();
     this.action = action;
+  }
+
+  /**
+   * Deserialize nested object properties into corresponding class instances
+   */
+  public deserializeNestedProperties(): void {
+    super.deserializeNestedProperties();
+    this.action = MessageUtil.deserializeAction(this.action);
   }
 
   /**

@@ -62,10 +62,11 @@ const loadVerifyComponent = ccPath => {
 const npmCompile = async (dir) => {
   const isTs = fs.existsSync(path.resolve(dir, 'tsconfig.json'));
   if (isTs) {
-    // get bin path
-    const npmbin = await ChildPromise.npm(['bin'], { cwd: dir });
+    // get bin path, command below throws error with latest npm versions: Unknown command: "bin"
+    //  const npmbin = await ChildPromise.npm(['bin'], { cwd: dir });
     // get expected tsc bin
-    const tsc = path.join(npmbin, 'tsc');
+    // const tsc = path.join(npmbin, 'tsc');
+    const tsc = path.join(dir, 'node_modules/.bin/tsc');
     if (!fs.existsSync(tsc)) {
       throw new Error(`Typescript detected but 'typescript' is not installed`);
     }

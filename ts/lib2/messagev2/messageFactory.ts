@@ -3,7 +3,7 @@ import {
   , Voice, MessageUtil, Row, TableHeading, DatePickerField, MultiSelectField, SelectFieldOption, NumberInputField, SingleSelectField
   , TextField, TextInputField, TimePickerField, ToggleField, LinkField, Field, ReadOnlyField, TextMessage, Attachment, AttachmentType
   , AttachmentMessage, Card, CardMessage, CommandMessage, CommandType, EditFormMessage, FormMessage, NonRawMessage, RawMessage
-  , TableMessage, TableFormMessage
+  , TableMessage, TableFormMessage, TextStreamMessage, StreamState, CustomEventAction
 } from './internal';
 
 /**
@@ -36,6 +36,19 @@ export class MessageFactory {
    */
   public static createTextMessage(text: string): TextMessage {
     return new TextMessage(text);
+  }
+
+  /**
+   * Create a new text stream message
+   * @param {string} text - The latest text chunk of the stream
+   * @param {string} aggregateText - Aggregate text that has been streamed so far
+   * @param {string} streamId - Unique identifier of the text stream
+   * @param {StreamState} streamState - the state of the stream: start, running or end
+   * @returns {TextStreamMessage} A new instance of the TextStreamMessage class.
+   */
+  public static createTextStreamMessage(text: string, aggregateText: string, streamId: string
+    , streamState: StreamState): TextStreamMessage {
+    return new TextStreamMessage(text, aggregateText, streamId, streamState);
   }
 
   /**
@@ -180,6 +193,16 @@ export class MessageFactory {
    */
   public static createPostbackAction(label: string, postback: object): PostbackAction {
     return new PostbackAction(label, postback);
+  }
+
+  /**
+   * Create a new custom event handler invocation action
+   * @param {string} label The label of the button that invokes the custom event handle when clicked.
+   * @param {string} event The name of the custom event handler
+   * @returns {CustomEventAction} A new instance of the CustomEventAction class.
+   */
+  public static createCustomEventAction(label: string, event: string): CustomEventAction {
+    return new CustomEventAction(label, event);
   }
 
   /**

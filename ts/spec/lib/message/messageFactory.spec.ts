@@ -1,5 +1,5 @@
 import { MessageFactory as MF, TextMessage, Voice, ChannelType, InputStyle, SingleSelectLayoutStyle, MultiSelectLayoutStyle, CardLayout
-  , AttachmentType, FieldAlignment, CommandType} from '../../../lib2';
+  , AttachmentType, FieldAlignment, CommandType, StreamState, TextStreamMessage} from '../../../lib2';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -39,6 +39,18 @@ describe('MessageFactory', () => {
         .setChannelExtensionProperty(ChannelType.slack, 'slackProp', 'slackValue')
 
       const file = path.resolve('ts/spec/json/', 'textWithActions.json');
+      let expected: string = fs.readFileSync(file, 'utf-8');
+      expect(JSON.stringify(tm)).toEqual(JSON.stringify(JSON.parse(expected)));
+
+    });
+  });
+
+  describe('textStreamMessagePayload', function () {
+
+    it('Text Stream', function () {
+
+      let tm: TextStreamMessage = MF.createTextStreamMessage('my text chunk', 'aggregate text and my text chunk', '123-456', StreamState.running);
+      const file = path.resolve('ts/spec/json/', 'textStream.json');
       let expected: string = fs.readFileSync(file, 'utf-8');
       expect(JSON.stringify(tm)).toEqual(JSON.stringify(JSON.parse(expected)));
 

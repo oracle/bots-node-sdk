@@ -84,7 +84,7 @@ When neither `[dest]` nor `--name` are provided, the command writes the artifact
 Run this command in the component package's top-level directory to create a custom component or event handler. The component's language is the same as the language that you specified when you ran the `init` command to create the component package.
 
 If `dest` isn't specified, then the component is written to the `components` directory for JavaScript and the `src/components` directory for TypeScript. If this directory doesn't exist, it will be created.
-The component `name` and `type` arguments are required, and `type` must be either `[c]ustom` or `[e]ntityEventHandler` or `[s]qlQueryEventHandler`.
+The component `name` and `type` arguments are required, and `type` must be either `[c]ustom` or `[e]ntityEventHandler` or `[s]qlQueryEventHandler` or `llm[T]ransformationEventHandler` or `[l]lmComponent`.
 
 For example, to create a new entity event handler component named `resolvePizza`, you can use this command:
 

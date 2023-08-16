@@ -4,18 +4,18 @@
 
 ## Table of contents
 - [Introduction](#introduction)
-- [Using the SDK Message Model](#messageModel)
+- [Using the SDK Message Model](#message-model)
     - [Channel Extensions](#extensions)
     - [Using Postback Keywords](#keywords)
 - [MessageModel Utilities](#utilities)
 - [Code Samples](#samples)
-    - [Creating a Text Message with Action Buttons](#textMessage)
-    - [Creating a Card Message with Card Action Buttons](#cardMessage)
-    - [Creating an Attachment Message](#attachmentMessage)
-    - [Creating a Table Message](#tableMessage)
-    - [Creating a Form Message](#formMessage)
-    - [Creating a TableForm Message](#tableFormMessage)
-    - [Creating a Microsoft Adaptive Cards Message](#adaptiveCardMessage)
+    - [Creating a Text Message with Action Buttons](#text-message)
+    - [Creating a Card Message with Card Action Buttons](#card-message)
+    - [Creating an Attachment Message](#attachment-message)
+    - [Creating a Table Message](#table-message)
+    - [Creating a Form Message](#form-message)
+    - [Creating a TableForm Message](#table-form-message)
+    - [Creating a Microsoft Adaptive Cards Message](#adaptive-card-message)
 
 ## Introduction <a name="introduction">
 Oracle Digital Assitant contains conversation message model (CMM), which defines the various message types that the skill can send to the user (outbound), and the user can send to the skill (inbound). CMM identifies the following message types:
@@ -43,7 +43,7 @@ There might be specific use cases where you want to leverage channel-specific me
 All built-in components create skill messages in CMM format, and the [System.CommonResponse](https://www.oracle.com/pls/topic/lookup?ctx=en/cloud/paas/digital-assistant&id=DACUA-GUID-11BB6EBF-EA29-404E-B966-C3DC70D3625C) component provides full support for all CMM message types.
 We recommend that you consider using the `System.CommonResponse` component before you decide to create conversation messages in custom components. It's generally easier to prepare the data in a custom component by calling some backend service, and then store the data in context variables. You can then transition to a dialog flow state that uses the `System.CommonResponse` component to create the bot messages in CMM format, using and/or iterating over the data that's been stored in context variables by the custom component. The `System.CommonResponse` component contains extensive functionality to process user input, and also includes out-of-the-box support for pagination, which might be useful if you want to enable the user to scroll through large sets of data. 
 
-## Using the SDK Message Model <a name="messageModel">
+## Using the SDK Message Model <a name="message-model">
 
 The SDK provides the [MessageModel](https://oracle.github.io/bots-node-sdk/MessageModel.html) class to create the message types supported by CMM. You can use `context.getMessageModel()` to access the the `MessageModel` from within a custom component's `invoke` method or from with an entity event handler's event method. Use `webhook.MessageModel()` to access from within a `WebhookClient` instance. In addition, you can use the MessageModel independently as shown here:
 
@@ -127,7 +127,7 @@ messageModelUtil.convertRespToText(message);
 All of the following examples create a CMM message type. In a custom component, you use `context.reply(message)` to send the created message.
 In an entity event handler, you use `context.addMessage(message)`.
 
-### Creating a Text Message with Action Buttons <a name="textMessage">
+### Creating a Text Message with Action Buttons <a name="text-message">
 
 To create a text message with actions buttons, first use the [`postbackActionObject`](https://oracle.github.io/bots-node-sdk/MessageModel.html#.postbackActionObject) function to create each button action, and then use the [`textConversationMessage`](https://oracle.github.io/bots-node-sdk/MessageModel.html#.textConversationMessage) function to construct the message object.
 
@@ -141,7 +141,7 @@ actions.push(messageModel.postbackActionObject("No", undefined, { isNo: true }))
 const message = messageModel.textConversationMessage("Do you want another quote?", actions);
 ```
 
-### Creating a Card Message with Card Action Buttons <a name="cardMessage">
+### Creating a Card Message with Card Action Buttons <a name="card-message">
 
 To create a card message with card actions buttons, first use the [`cardObject`](https://oracle.github.io/bots-node-sdk/MessageModel.html#.cardObject) function to create each card, then use the [`postbackActionObject`](https://oracle.github.io/bots-node-sdk/MessageModel.html#.postbackActionObject) function to create each button action, and, finally, use the [`cardConversationMessage`](https://oracle.github.io/bots-node-sdk/MessageModel.html#.cardConversationMessage) function to construct the message object.
 
@@ -155,7 +155,7 @@ To create a card message with card actions buttons, first use the [`cardObject`]
   let message = messageModel.cardConversationMessage('vertical', cards);
 ```
 
-### Creating an Attachment Message <a name="attachmentMessage">
+### Creating an Attachment Message <a name="attachment-message">
 
 You use the [`attachmentConversationMessage`](https://oracle.github.io/bots-node-sdk/MessageModel.html#.attachmentConversationMessage) function to create an attachment message.
 
@@ -176,7 +176,7 @@ You can display action URLs under the attachment, such as links to more videos a
        [urlVideoAction, urlTutorialAction]);
 ```
 
-### Creating a Table Message <a name="tableMessage">
+### Creating a Table Message <a name="table-message">
 
 You use the [`tableConversationMessage`](https://oracle.github.io/bots-node-sdk/MessageModel.html#.tableConversationMessage) function to create a message with table layout.
 
@@ -210,7 +210,7 @@ To create the arguments required for `tableConversationMessage`, you can use the
   let message = messageModel.tableConversationMessage(headings, rows, paginationInfo);
 ```
 
-### Creating a Form Message <a name="FormMessage">
+### Creating a Form Message <a name="form-message">
 
 You use the [`formConversationMessage`](https://oracle.github.io/bots-node-sdk/MessageModel.html#.formConversationMessage) function to create a message with tableForm layout.
 
@@ -241,7 +241,7 @@ To create the arguments required for `formConversationMessage`, you can use the 
   let message = messageModel.formConversationMessage(forms, 2, paginationInfo);
 ```
 
-### Creating a TableForm Message <a name="tableFormMessage">
+### Creating a TableForm Message <a name="table-form-message">
 
 You use the [`tableFormConversationMessage`](https://oracle.github.io/bots-node-sdk/MessageModel.html#.tableFormConversationMessage) function to create a message with tableForm layout.
 
@@ -281,7 +281,7 @@ To create the arguments required for `tableConversationMessage`, you can use the
   let message = messageModel.tableFormConversationMessage(headings, rows, forms, 2, null, paginationInfo);
 ```
 
-### Creating a Microsoft Adaptive Cards Message <a name="adaptiveCardMessage">
+### Creating a Microsoft Adaptive Cards Message <a name="adaptive-card-message">
 
 You use the [`rawConversationMessage`](https://oracle.github.io/bots-node-sdk/MessageModel.html#.rawConversationMessage) function to send a message that uses [Microsoft Adaptive Cards](https://adaptivecards.io/):
 ```javascript

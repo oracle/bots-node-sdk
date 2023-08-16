@@ -1,4 +1,4 @@
-import { Voice, ChannelCustomizable, MessageUtil, Action, Keyword } from '../internal';
+import { Voice, ChannelCustomizable, MessageUtil, Action, Keyword, ReadOnlyForm } from '../internal';
 
 /**
  * Base class for all non-raw message types
@@ -9,7 +9,9 @@ export class NonRawMessage extends ChannelCustomizable {
   private keywords?: Keyword[];
   private voice?: Voice;
   private footerText?: string;
+  private footerForm?: ReadOnlyForm;
   private headerText?: string;
+  private properties?: Map<string, any>;
 
   /**
    * Convert the message to JSON object
@@ -35,6 +37,9 @@ export class NonRawMessage extends ChannelCustomizable {
     }
     if (this.voice) {
       this.voice = MessageUtil.deserializeVoice(this.voice);
+    }
+    if (this.footerForm) {
+      this.footerForm = MessageUtil.deserializeReadOnlyForm(this.footerForm);
     }
   }
 
@@ -168,6 +173,24 @@ export class NonRawMessage extends ChannelCustomizable {
   }
 
   /**
+   * Get the footer form associated with the non-raw message.
+   * @returns {ReadOnlyForm} The form
+   */
+  public getFooterForm(): ReadOnlyForm {
+    return this.footerForm;
+  }
+
+  /**
+   * Set the footer form for the non-raw message.
+   * @param {ReadOnlyForm} footerForm - The form to set.
+   * @returns {this} The current instance of the NonRawMessage class.
+   */
+  public setFooterForm(footerForm: ReadOnlyForm): this {
+    this.footerForm = footerForm;
+    return this;
+  }
+
+  /**
    * Get the header text of the non-raw message.
    * @returns {string} The header text.
    */
@@ -184,4 +207,46 @@ export class NonRawMessage extends ChannelCustomizable {
     this.headerText = headerText;
     return this;
   }
+
+  /**
+   * Gets the properties of the message.
+   * @returns {Map<string, any>} The properties of the message.
+   */
+  public getProperties(): Map<string, any> {
+    return this.properties;
+  }
+
+  /**
+   * Gets the value of a property.
+   * @param {string} propertyName The name of the property.
+   * @returns {any} The property value.
+   */
+  public getPropertyValue(propertyName: string): any {
+    return this.properties ? this.properties[propertyName] : undefined;
+  }
+
+  /**
+   * Sets the properties of the message.
+   * @param {Map<string, any>} properties The properties to set.
+   * @returns {this} The current instance of the NonRawMessage class.
+   */
+  public setProperties(properties: Map<string, any>): this {
+    this.properties = properties;
+    return this;
+  }
+
+  /**
+   * Add a property to the message.
+   * @param {string} name The name of the property.
+   * @param {any} value The value of the property.
+   * @returns {this} The current instance of the NonRawMessage class.
+   */
+  public addProperty(name: string, value: any): this {
+    if (!this.properties) {
+      this.properties = new Map();
+    }
+    this.properties[name] = value;
+    return this;
+  }
+
 }

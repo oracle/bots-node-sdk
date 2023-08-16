@@ -6,3 +6,5 @@ export * from './enums';
 export * from './readOnlyForm';
 export * from './tableHeading';
 export * from './row';
+export * from './column';
+export * from './formRow';

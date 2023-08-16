@@ -7,17 +7,17 @@
     - [Using TypeScript](#ts)
     - [The Metadata Object](#metadata)
     - [The Invoke Method](#invoke)
-- [Control the Flow with keepTurn and transition](#flowControl)    
+- [Control the Flow with keepTurn and transition](#flow-control)    
 - [Access the Backend Using HTTP REST Calls](#rest)
 - [Code Samples](#samples)
-    - [How to Get a Component Property Value](#propertyValue)
-    - [How to Get a Context Variable Value](#getVar)
-    - [How to Get a User or Profile Variable Value](#getProfile)
-    - [How to Get a Skill's Custom Parameter Value](#getCustomParam)  
-    - [How to Set a Context Variable Value](#setVar)
-    - [How to Set a Composite Bag Item Value](#setBagItem)
+    - [How to Get a Component Property Value](#property-value)
+    - [How to Get a Context Variable Value](#get-var)
+    - [How to Get a User or Profile Variable Value](#get-profile)
+    - [How to Get a Skill's Custom Parameter Value](#get-custom-param)  
+    - [How to Set a Context Variable Value](#set-var)
+    - [How to Set a Composite Bag Item Value](#set-bag-item)
     - [How to Send Conversation Messages](#messages)
-    - [How to Keep Prompting for User Input](#keepPrompting)    
+    - [How to Keep Prompting for User Input](#keep-prompting)    
 
 ## Introduction <a name="introduction">
 
@@ -171,7 +171,7 @@ The argument of the `invoke` method is the `context` object. This object referen
 
 More information about creating conversation messages to send to the skill user can be found [here](https://github.com/oracle/bots-node-sdk/blob/master/MESSAGE_FACTORY.md).
 
-## Control the Flow with keepTurn and transition <a name="flowControl">
+## Control the Flow with keepTurn and transition <a name="flow-control">
 
 You use different combinations of the [CustomComponentContext](https://oracle.github.io/bots-node-sdk/CustomComponentContext.html) `keepTurn` and `transition` functions to define how the custom component interacts with a user and how the conversation continues after the component returns flow control to the skill.
 
@@ -238,7 +238,7 @@ The code to make REST calls with `node fetch` looks like this:
 
 ## Code Samples <a name="samples">
 
-### How to Get a Component Property Value <a name="propertyValue">
+### How to Get a Component Property Value <a name="property-value">
 
 You can call `context.properties()` to get an object that contains all the component properties. For example:
 
@@ -272,7 +272,7 @@ or
     const name = context.properties()['name'] || '';
 ```
 
-### How to Get a Context Variable Value <a name="getVar">
+### How to Get a Context Variable Value <a name="get-var">
 
 Add a `metadata` property to pass in the name of the context variable, verify that the property was passed in, and then call `context.getVariable(<variable name>)` to retrieve the value. For example:
 
@@ -286,18 +286,18 @@ if (latitudeVariable) {
 }
 ```
 
-### How to Get a User or Profile Variable Value <a name="getProfile">
+### How to Get a User or Profile Variable Value <a name="get-profile">
 
 To get the value of a user or profile variable, you prefix the name of the variable with `profile.` or `user.` as shown here.
 ```javascript
   let _profileVarValue = context.getVariable('profile.<name>');
   let _userVarValue = context.getVariable('user.<name>');  
 ```
-### How to Get a Skill's Custom Parameter Value <a name="getCustomParam">
+### How to Get a Skill's Custom Parameter Value <a name="get-custom-param">
 
 On the skill's **Settings** tab, add the custom parameter and provide a value (or set the value in the dialog flow). From the custom component, call `context.getVariable('system.config.<parameter-name>')` to retrieve the value.
 
-### How to Set a Context Variable Value <a name="setVar">
+### How to Set a Context Variable Value <a name="set-var">
 
 Add a `metadata` property to pass in the name of the variable, and then call `context.setVariable(<variable name>, <value>)` to set the value. For example:
 
@@ -324,7 +324,7 @@ if (addressVariable){
 }
 ```
 
-### How to Set a Composite Bag Item Value <a name="setBagItem">
+### How to Set a Composite Bag Item Value <a name="set-bag-item">
 
 In the skill, create a context variable and set its type to the name of the composite bag entity. In the custom component, add metadata properties to pass in the name of the composite bag entity variable and the name of the bag item. Add code to check if the entity variable is null, and set it to an empty object if it is. Create an object for the bag item with the desired values and set the bag item to that object. Update the entity variable and return to the skill.
  
@@ -364,7 +364,7 @@ You can call this function multiple times to send multiple messages. When you ca
 
 The payload can be a string or a rich message object. See the section on [Conversation Messaging](https://github.com/oracle/bots-node-sdk/blob/master/MESSAGE_FACTORY.md) for code samples on how to create the various message types, like text, card, attachment, table and (editable) form messages.
 
-### How to Keep Prompting for User Input <a name="keepPrompting">
+### How to Keep Prompting for User Input <a name="keep-prompting">
 
 This code sample keeps showing the user a random quote of the day until the user indicates they want to quit.
 

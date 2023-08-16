@@ -90,7 +90,8 @@
           "value": "http://linkedin",
           "linkLabel": "LinkedIn"
         }
-      ]
+      ],
+      "formRows": []
     }
   ],
   "formColumns": 1,

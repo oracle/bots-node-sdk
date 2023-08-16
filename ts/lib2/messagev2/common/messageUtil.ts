@@ -3,7 +3,8 @@ import {
   , DatePickerField, MultiSelectField, SelectFieldOption, NumberInputField, SingleSelectField, TextField, TextInputField
   , TimePickerField, ToggleField, LinkField, Field, TextMessage, Attachment, AttachmentMessage, Card, CardMessage
   , CommandMessage, EditFormMessage, FormMessage, FormSubmissionMessage, NonRawMessage, TableMessage, TableFormMessage, ReadOnlyForm
-  , PaginationInfo, ChannelExtensions, Row, TableHeading, Location, LocationMessage, PostbackMessage
+  , PaginationInfo, ChannelExtensions, Row, TableHeading, Location, LocationMessage, PostbackMessage, TextStreamMessage
+  , Column, FormRow, ActionField, MediaField
 }
   from '../internal';
 
@@ -50,6 +51,9 @@ export class MessageUtil {
         break;
       case 'text':
         msg = Object.assign(new TextMessage(null), json);
+        break;
+      case 'textStream':
+        msg = Object.assign(new TextStreamMessage(null, null, null, null), json);
         break;
       default:
         throw new Error(`Error deserializing message, unknown message type: ${type}`);
@@ -118,11 +122,15 @@ export class MessageUtil {
   public static deserializeReadOnlyForms(json: ReadOnlyForm[]): ReadOnlyForm[] {
     let forms: ReadOnlyForm[] = [];
     json.forEach(form => {
-      let formInstance = Object.assign(new ReadOnlyForm(), form);
-      formInstance.deserializeNestedProperties();
-      forms.push(formInstance);
+      forms.push(this.deserializeReadOnlyForm(form));
     });
     return forms;
+  }
+
+  public static deserializeReadOnlyForm(form: ReadOnlyForm): ReadOnlyForm {
+    let formInstance = Object.assign(new ReadOnlyForm(), form);
+    formInstance.deserializeNestedProperties();
+    return formInstance;
   }
 
   public static deserializeVoice(json: Voice): Voice {
@@ -170,6 +178,26 @@ export class MessageUtil {
     return rows;
   }
 
+  public static deserializeFormRows(json: FormRow[]): FormRow[] {
+    let formRows: FormRow[] = [];
+    json.forEach(formRow => {
+      let instance = Object.assign(new FormRow(), formRow);
+      instance.deserializeNestedProperties();
+      formRows.push(instance);
+    });
+    return formRows;
+  }
+
+  public static deserializeColumns(json: Column[]): Column[] {
+    let columns: Column[] = [];
+    json.forEach(column => {
+      let instance = Object.assign(new Column(), column);
+      instance.deserializeNestedProperties();
+      columns.push(instance);
+    });
+    return columns;
+  }
+
   public static deserializeFields<T extends Field>(json: T[]): T[] {
     let fields: T[] = [];
     json.forEach(f => fields.push(MessageUtil.deserializeField(f)));
@@ -206,6 +234,12 @@ export class MessageUtil {
         break;
       case 'toggle':
         field = Object.assign(new ToggleField(null, null, null, null), json);
+        break;
+      case 'action':
+        field = Object.assign(new ActionField(null), json);
+        break;
+      case 'media':
+        field = Object.assign(new MediaField(null, null, null), json);
         break;
       default:
         throw new Error(`Error deserializing field, unknown field displayType: ${type}`);

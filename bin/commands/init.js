@@ -19,11 +19,13 @@ function componentTypeOpt(type) {
     t = 'entityeventhandler';
   } else if (t === 's') {
     t = 'sqlqueryeventhandler';
-  } else if (t === 'r') {
-    t = 'restserviceeventhandler';
+  } else if (t === 't') {
+    t = 'llmtransformationeventhandler';
+  } else if (t === 'l') {
+    t = 'llmcomponenteventhandler';
   }
-  if (!~['custom', 'entityeventhandler', 'sqlqueryeventhandler', 'restserviceeventhandler'].indexOf(t)) {
-    throw new Error(`Invalid component type: ${type}, allowable values are [c]ustom or [e]ntityEventHandler or [s]qlQueryEventHandler  or [r]estServiceEventHandler.`);
+  if (!~['custom', 'entityeventhandler', 'sqlqueryeventhandler', 'llmtransformationeventhandler', 'llmcomponenteventhandler'].indexOf(t)) {
+    throw new Error(`Invalid component type: ${type}, allowable values are [c]ustom or [e]ntityEventHandler or [s]qlQueryEventHandler or llm[T]ransformationEventHandler or [l]lmComponentEventHandler.`);
   }
   return t;
 }
@@ -50,7 +52,7 @@ class CCInit extends CommandDelegate {
       .option('-r --run', 'Start service when init completes (with defaults)')
       .option('-n --name <name>', 'Specify a name for the new project', null, nameOpt)
       .option('-c --component-name <name>', 'Name for the first custom component', 'helloWorld', nameOpt)
-      .option('-t --component-type <type>', 'Specify the component type [c]ustom or [e]ntityEventHandler or [s]qlQueryEventHandler or [r]estServiceEventHandler', 'custom', componentTypeOpt);
+      .option('-t --component-type <type>', 'Specify the component type [c]ustom or [e]ntityEventHandler or [s]qlQueryEventHandler or [r]estServiceEventHandler  or [l]lmEventHandler', 'custom', componentTypeOpt);
     // add child command 'init component'
     this.command.delegate(CCInitComponent, 'component');
   }
@@ -182,7 +184,7 @@ class CCInitComponent extends CommandDelegate {
     this.command
       .ignore('componentName').ignore('run').ignore('skipInstall') // inherited from parent
       .argument('name', 'Specify a name for the component', true, nameOpt)
-      .argument('type', 'Specify the component type [c]ustom or [e]ntityEventHandler or [s]qlQueryEventHandler or [r]estServiceEventHandler', true, componentTypeOpt)
+      .argument('type', 'Specify the component type [c]ustom or [e]ntityEventHandler or [s]qlQueryEventHandler or [r]estServiceEventHandler  or [l]lmEventHandler', true, componentTypeOpt)
       .argument('dest', 'Destination directory where component should be added', false)
       .option('-q --quiet', 'Suppress outputs')
 
@@ -238,8 +240,10 @@ class CCInitComponent extends CommandDelegate {
         eventHandlerType = 'ResolveEntities';
       } else if (type === 'sqlqueryeventhandler') {
         eventHandlerType = 'DataQuery';
-      } else if (type === 'restserviceeventhandler') {
-        eventHandlerType = 'RestService';
+      } else if (type === 'llmtransformationeventhandler') {
+        eventHandlerType = 'LlmTransformation';
+      } else if (type === 'llmcomponenteventhandler') {
+        eventHandlerType = 'LlmComponent';
       } 
       writeTemplate(from, to, {
         name,

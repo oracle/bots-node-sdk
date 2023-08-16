@@ -1,0 +1,196 @@
+{
+  "headerText": "Add C-Team Member",
+  "formRows": [{
+    "columns": [{
+      "width": "stretch",
+      "id": "column0",
+      "fields": [
+        {
+          "validationRegularExpression": "//[^\\r\\n]*[\\r\\n]",
+          "serverErrorMessage": "this is a server error message",
+          "labelFontSize": "large",
+          "labelFontWeight": "bold",
+          "defaultValue": "this is a default value",
+          "multiLine": true,
+          "minLength": 2,
+          "label": "TextInputField",
+          "clientErrorMessage": "this is a client error message",
+          "required": false,
+          "channelExtensions": {
+            "msteams": {"prop1": "teams"},
+            "slack": {"prop1": "slack"}
+          },
+          "autoSubmit": true,
+          "displayType": "textInput",
+          "inputStyle": "email",
+          "id": "mock-field-id",
+          "placeholder": "this is a placeholder",
+          "maxLength": 1024,
+          "marginTop": "none"
+        },
+        {
+          "displayType": "toggle",
+          "serverErrorMessage": "this is a server error message",
+          "defaultValue": "yes",
+          "labelOn": "I accept",
+          "id": "mock-field-id",
+          "label": "ToggleField",
+          "placeholder": "this is a placeholder",
+          "valueOff": "no",
+          "labelOff": "I do not accept",
+          "clientErrorMessage": "this is a client error message",
+          "valueOn": "yes",
+          "required": false
+        },
+        {
+          "displayType": "singleSelect",
+          "serverErrorMessage": "this is a server error message",
+          "defaultValue": "this is a default value",
+          "options": [
+            {
+              "label": "option1",
+              "value": "value1"
+            },
+            {
+              "label": "option2",
+              "value": "value2"
+            },
+            {
+              "label": "option3",
+              "value": "value3"
+            }
+          ],
+          "layoutStyle": "radioGroup",
+          "id": "mock-field-id",
+          "label": "SingleSelectField",
+          "placeholder": "this is a placeholder",
+          "clientErrorMessage": "this is a client error message",
+          "required": false
+        },
+        {
+          "displayType": "multiSelect",
+          "serverErrorMessage": "this is a server error message",
+          "defaultValue": [
+            "PEPPERONI",
+            "CHEESE"
+          ],
+          "options": [
+            {
+              "label": "CHEESE",
+              "value": "CHEESE"
+            },
+            {
+              "label": "PEPPERONI",
+              "value": "PEPPERONI"
+            },
+            {
+              "label": "MEAT LOVER",
+              "value": "MEAT LOVER"
+            },
+            {
+              "label": "SUPREME",
+              "value": "SUPREME"
+            }
+          ],
+          "layoutStyle": "checkboxes",
+          "id": "mock-field-id",
+          "label": "MultiSelectField",
+          "placeholder": "this is a placeholder",
+          "clientErrorMessage": "this is a client error message",
+          "required": false
+        },
+        {
+          "displayType": "multiSelect",
+          "serverErrorMessage": "this is a server error message",
+          "defaultValue": [
+            "PEPPERONI",
+            "CHEESE"
+          ],
+          "options": [
+            {
+              "label": "CHEESE",
+              "value": "CHEESE"
+            },
+            {
+              "label": "PEPPERONI",
+              "value": "PEPPERONI"
+            },
+            {
+              "label": "MEAT LOVER",
+              "value": "MEAT LOVER"
+            },
+            {
+              "label": "SUPREME",
+              "value": "SUPREME"
+            }
+          ],
+          "layoutStyle": "list",
+          "id": "mock-field-id",
+          "label": "MultiSelectField2",
+          "placeholder": "this is a placeholder",
+          "clientErrorMessage": "this is a client error message",
+          "required": false
+        },
+        {
+          "displayType": "numberInput",
+          "minValue": -1234.456,
+          "serverErrorMessage": "this is a server error message",
+          "defaultValue": 123.1,
+          "maxValue": 345.6789,
+          "id": "mock-field-id",
+          "label": "NumberInputField",
+          "placeholder": "this is a placeholder",
+          "clientErrorMessage": "this is a client error message",
+          "required": false
+        },
+        {
+          "displayType": "datePicker",
+          "minDate": "2017-10-10",
+          "serverErrorMessage": "this is a server error message",
+          "defaultValue": "2017-10-12",
+          "maxDate": "2017-10-15",
+          "id": "mock-field-id",
+          "label": "DatePickerField",
+          "placeholder": "this is a placeholder",
+          "clientErrorMessage": "this is a client error message",
+          "required": false
+        },
+        {
+          "maxTime": "17:00",
+          "displayType": "timePicker",
+          "serverErrorMessage": "this is a server error message",
+          "defaultValue": "15:30",
+          "minTime": "09:00",
+          "id": "mock-field-id",
+          "label": "TimePickerField",
+          "placeholder": "this is a placeholder",
+          "clientErrorMessage": "this is a client error message",
+          "required": false
+        },
+        {
+          "displayType": "text",
+          "label": "Truncated Name",
+          "alignment": "left",
+          "value": "Steve...",
+          "truncateAt": 5
+        },
+        {
+          "displayType": "action",
+          "action": {
+            "postback": {
+              "variables": {},
+              "action": "done"
+            },
+            "label": "Submit",
+            "type": "submitForm"
+          },
+          "alignment": "left"
+        }
+      ],
+      "verticalAlignment": "center"
+    }],
+    "id": "formRow0"
+  }],
+  "type": "editForm",
+  "formColumns": 1
+}

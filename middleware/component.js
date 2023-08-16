@@ -82,6 +82,24 @@ class ComponentMiddleware extends MiddlewareAbstract {
       this.__getShell(rootRegistry).invokeDataQueryEventHandler(componentName, req.body, this.__invocationCb(res), mixins);      
     });
 
+    /**
+     * handle LLM transformation handler invocation
+     */
+    service.post(this.__endpoint(baseUrl, `/llmtransformation/:${PARAM_COMPONENT}`), (req, res) => {
+      const componentName = req.params[PARAM_COMPONENT];
+      const mixins = Object.assign({}, opts.mixins);
+      this.__getShell(rootRegistry).invokeLlmTransformationHandler(componentName, req.body, this.__invocationCb(res), mixins);      
+    });
+
+    /**
+     * handle LLM component handler invocation
+     */
+    service.post(this.__endpoint(baseUrl, `/llmcomponent/:${PARAM_COMPONENT}`), (req, res) => {
+      const componentName = req.params[PARAM_COMPONENT];
+      const mixins = Object.assign({}, opts.mixins);
+      this.__getShell(rootRegistry).invokeLlmComponentHandler(componentName, req.body, this.__invocationCb(res), mixins);      
+    });
+
   }
 
   /**

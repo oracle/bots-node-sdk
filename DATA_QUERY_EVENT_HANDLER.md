@@ -7,18 +7,18 @@
     - [Using TypeScript](#ts)
 - [Writing SQL Query Handler Functions](#writing)
 - [Supported Events](#events)
-    - [Entity Level Events](#entityEvents)
-    - [Attribute Level Events](#attributeEvents)
+    - [Entity Level Events](#entity-events)
+    - [Attribute Level Events](#attribute-events)
 - [Access the Backend Using HTTP REST Calls](#rest)
 - [Code Samples](#samples)
-    - [How to Set the Query Title](#queryTitle)
+    - [How to Set the Query Title](#query-title)
     - [How to Change the Response Message Layout](#layout)
-    - [How to Add a Footer Text](#footerText)
-    - [How to Add a Total Row](#totalRow)
-    - [How to Add a Global Follow Up Query Action](#followUpQueryGlobal)
-    - [How to Add a Row Level Follow Up Query Action](#followUpQueryRow)
-    - [How to Change Attribute Display Settings](#attributeDisplay)
-    - [How to Format an Attribute Value](#attributeFormat)
+    - [How to Add a Footer Text](#footer-text)
+    - [How to Add a Total Row](#total-row)
+    - [How to Add a Global Follow Up Query Action](#follow-up-query-global)
+    - [How to Add a Row Level Follow Up Query Action](#follow-up-query-row)
+    - [How to Change Attribute Display Settings](#attribute-display)
+    - [How to Format an Attribute Value](#attribute-format)
 
 ## Introduction <a name="introduction">
 
@@ -206,7 +206,7 @@ When using TypeScript, you will automatically get code completion support if you
 
 ## Supported Events <a name="events">
 
-### Entity Level Events <a name="entityEvents">
+### Entity Level Events <a name="entity-events">
 The table below lists all entity level events:
 
 | Event | Description | Event Properties |
@@ -215,7 +215,7 @@ The table below lists all entity level events:
 | `changeResponseData` | A handler that can be used to change the query result set. For a list of properties you can change, check the `QueryResult` interface in [Data Query Types](https://github.com/oracle/bots-node-sdk/blob/master/ts/lib/dataquery/dataQueryTypes.ts). | <ul><li><b>responseData</b>: The `QueryResult` object.</li></ul>
 | `changeBotMessages` | A handler that can be used to change the candidate bot message(s) that will be sent to the user. See the section on [Conversation Messaging](https://github.com/oracle/bots-node-sdk/blob/master/MESSAGE_FACTORY.md) for more info on adding or changing messages.| <ul><li><b>messages</b>: The list of messages.</li></ul>
 
-### Attribute Level Events <a name="attributeEvents">
+### Attribute Level Events <a name="attribute-events">
 The table below lists all attribute level events:
 
 | Event | Description | Event Properties |
@@ -266,7 +266,7 @@ All code samples are using TypeScript. If you are using JavaScript, you just nee
 
 Note that some of the samples below implement functionality that can also be implemented declaratively in the Query Entity page in the Oracle Digital Assistant user interface. However, the declarative settings apply to all types of queries that have the entity as root entity, which might not always be what you want. Using event handlers, you can add conditional behavior, for example, you can check for group-by queries by inspecting `context.getSQLQuery()`, and always display such queries in table layout, even if the number of rows is below the threshold for switching from form layout to table layout as configured in the Query Entity page.
 
-### How to Set the Query Title<a name="queryTitle">
+### How to Set the Query Title<a name="query-title">
 While we can set a static query title using the `Display Name` on the Query Entity page, we can create a dynamic title using the `changeUISettings` event:
 
 ```javascript
@@ -291,7 +291,7 @@ entity: {
   }
 ```
 
-### How to Add a Footer Text<a name="footerText">
+### How to Add a Footer Text<a name="footer-text">
 Here is a code snippet that adds a footer text that displays the execution time of the query. Note that the footerText is also used for the feedback message "Was this answer helpful?" when feedback is enabled, so we need to add our own text before existing footer text.
 
 ```javascript
@@ -314,7 +314,7 @@ changeBotMessages: async (event: ChangeBotMessagesEvent, context: DataQueryConte
 }
 ```
 
-### How to Add a Total Row <a name="totalRow">
+### How to Add a Total Row <a name="total-row">
 We can use the `changeResponseData` event to add a total row to the result. In the code example below, we add a total row when the query result contains more than 1 row and there is a `count` attribute present in the result rows.
 
 ```javascript
@@ -328,7 +328,7 @@ changeResponseData: async (event: ChangeResponseDataEvent, context: DataQueryCon
 }
 ```
 
-### How to Add a Global Follow Up Query Action <a name="followUpQueryGlobal">
+### How to Add a Global Follow Up Query Action <a name="follow-up-query-global">
 We can use the `changeBotMessages` event to add a button action that executes a global follow up query. The `DataQueryContext` contains a convenience method `createQueryAction` that takes care of most of the work. The global action button will be added to the `actions` array of the message.
 
 ```javascript
@@ -349,7 +349,7 @@ changeBotMessages: async (event: ChangeBotMessagesEvent, context: DataQueryConte
 }
 ```
 
-### How to Add a Row Level Follow Up Query Action <a name="followUpQueryRow">
+### How to Add a Row Level Follow Up Query Action <a name="follow-up-query-row">
 We can use the `changeBotMessages` event to add a button action that executes a row level follow up query. The `DataQueryContext` contains a convenience method `createFollowUpQueryAction` that takes care of most of the work. The row level action button will be added to the `actions` array within each `form` within the message.
 
 ```javascript
@@ -416,7 +416,7 @@ changeBotMessages: async (event, context) => {
 }
 ```
 
-### How to Change Attribute Display Settings <a name="attributeDisplay">
+### How to Change Attribute Display Settings <a name="attribute-display">
 We can use the attribute level `changeUISettings` event to change the display characteristics of an attribute. For example, we can completely hide it, or change whether the attribute is displayed in form layout or table layout:
 ```javascript
 hiredate: { 
@@ -430,7 +430,7 @@ hiredate: {
 }  
 ```
 
-### How to Format an Attribute Value <a name="attributeFormat">
+### How to Format an Attribute Value <a name="attribute-format">
 We can use the attribute level `format` event to format the attribute value. 
 ```javascript
 hiredate: { 

@@ -10,6 +10,8 @@ export * from './common/enums';
 export * from './common/readOnlyForm';
 export * from './common/tableHeading';
 export * from './common/row';
+export * from './common/column';
+export * from './common/formRow';
 
 // action exports
 export * from './action/action';
@@ -17,6 +19,7 @@ export * from './action/keyword';
 export * from './action/callAction';
 export * from './action/locationAction';
 export * from './action/postbackAction';
+export * from './action/customEventAction';
 export * from './action/shareAction';
 export * from './action/submitFormAction';
 export * from './action/urlAction';
@@ -35,10 +38,13 @@ export * from './field/textInputField';
 export * from './field/timePickerField';
 export * from './field/toggleField';
 export * from './field/linkField';
+export * from './field/actionField';
+export * from './field/mediaField';
 
 // message exports
 export * from './messagePayload/nonRawMessage';
 export * from './messagePayload/textMessage';
+export * from './messagePayload/textStreamMessage';
 export * from './messagePayload/cardMessage';
 export * from './messagePayload/attachmentMessage';
 export * from './messagePayload/commandMessage';
@@ -50,5 +56,4 @@ export * from './messagePayload/tableFormMessage';
 export * from './messagePayload/locationMessage';
 export * from './messagePayload/formSubmissionMessage';
 export * from './messagePayload/postbackMessage';
-
 export * from './common/messageUtil';
