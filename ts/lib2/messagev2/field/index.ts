@@ -11,9 +11,7 @@ export * from './textInputField';
 export * from './timePickerField';
 export * from './toggleField';
 export * from './linkField';
-
-// field types below will be added in 23.08
-// export * from './actionField';
-// export * from './mediaField';
+export * from './actionField';
+export * from './mediaField';
 
 

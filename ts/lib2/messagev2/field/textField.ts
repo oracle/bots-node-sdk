@@ -1,4 +1,4 @@
-import { ReadOnlyField } from '../internal';
+import { ReadOnlyField, FontSize, FontWeight } from '../internal';
 
 /**
  * Represents a text field.
@@ -6,10 +6,9 @@ import { ReadOnlyField } from '../internal';
  */
 export class TextField extends ReadOnlyField {
   public readonly displayType: string = 'text';
-  // properties below will be added in 23.08
-  // private truncateAt?: number;
-  // private fontSize?: FontSize;
-  // private fontWeight?: FontWeight;
+  private truncateAt?: number;
+  private fontSize?: FontSize;
+  private fontWeight?: FontWeight;
 
   /**
    * Creates an instance of the TextField class.
@@ -23,58 +22,58 @@ export class TextField extends ReadOnlyField {
     this.setValue(value);
   }
 
-  // /**
-  //  * Gets the truncateAt value of the field.
-  //  * @returns The truncateAt value of the field.
-  //  */
-  // public getTruncateAt(): number {
-  //   return this.truncateAt;
-  // }
+  /**
+   * Gets the truncateAt value of the field.
+   * @returns The truncateAt value of the field.
+   */
+  public getTruncateAt(): number {
+    return this.truncateAt;
+  }
 
-  // /**
-  //  * Sets the truncateAt value of the field.
-  //  * @param truncateAt The truncateAt value to set.
-  //  * @returns The updated instance of the TextField.
-  //  */
-  // public setTruncateAt(truncateAt: number): this {
-  //   this.truncateAt = truncateAt;
-  //   return this;
-  // }
+  /**
+   * Sets the truncateAt value of the field.
+   * @param truncateAt The truncateAt value to set.
+   * @returns The updated instance of the TextField.
+   */
+  public setTruncateAt(truncateAt: number): this {
+    this.truncateAt = truncateAt;
+    return this;
+  }
 
-  // /**
-  //  * Gets the fontSize value of the field.
-  //  * @returns The fontSize value of the field.
-  //  */
-  // public getFontSize(): FontSize {
-  //   return this.fontSize;
-  // }
+  /**
+   * Gets the fontSize value of the field.
+   * @returns The fontSize value of the field.
+   */
+  public getFontSize(): FontSize {
+    return this.fontSize;
+  }
 
-  // /**
-  //  * Sets the fontSize value of the field.
-  //  * @param fontSize The fontSize value to set.
-  //  * @returns The updated instance of the TextField.
-  //  */
-  // public setFontSize(fontSize: FontSize): this {
-  //   this.fontSize = fontSize;
-  //   return this;
-  // }
+  /**
+   * Sets the fontSize value of the field.
+   * @param fontSize The fontSize value to set.
+   * @returns The updated instance of the TextField.
+   */
+  public setFontSize(fontSize: FontSize): this {
+    this.fontSize = fontSize;
+    return this;
+  }
 
-  // /**
-  //  * Gets the fontWeight value of the field.
-  //  * @returns The fontWeight value of the field.
-  //  */
-  // public getFontWeight(): FontWeight {
-  //   return this.fontWeight;
-  // }
+  /**
+   * Gets the fontWeight value of the field.
+   * @returns The fontWeight value of the field.
+   */
+  public getFontWeight(): FontWeight {
+    return this.fontWeight;
+  }
 
-  // /**
-  //  * Sets the fontWeight value of the field.
-  //  * @param fontWeight The fontWeight value to set.
-  //  * @returns The updated instance of the TextField.
-  //  */
-  // public setFontWeight(fontWeight: FontWeight): this {
-  //   this.fontWeight = fontWeight;
-  //   return this;
-  // }
+  /**
+   * Sets the fontWeight value of the field.
+   * @param fontWeight The fontWeight value to set.
+   * @returns The updated instance of the TextField.
+   */
+  public setFontWeight(fontWeight: FontWeight): this {
+    this.fontWeight = fontWeight;
+    return this;
+  }
 }
 

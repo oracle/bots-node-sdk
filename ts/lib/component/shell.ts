@@ -1,3 +1,6 @@
+// NOTE: this file is NOT up-todate with latest version of shell.js, but doesn't matter because
+// components are always invoked through shell.js (shell.js is NOT generated from this ts version)
+
 import { CommonProvider } from '../../common/provider';
 import { CustomComponentContext } from './sdk';
 import { EntityResolutionContext } from '../entity';

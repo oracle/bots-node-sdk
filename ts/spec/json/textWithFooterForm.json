@@ -1,0 +1,52 @@
+{
+  "footerForm": {"formRows": [{
+    "columns": [{
+      "width": "stretch",
+      "id": "column0",
+      "fields": [
+        {
+          "linkLabel": "My link label",
+          "displayType": "link",
+          "imageUrl": "http:/linkImageUrl",
+          "label": "Last Name",
+          "alignment": "left"
+        },
+        {
+          "displayType": "media",
+          "mediaType": "image",
+          "label": "Title",
+          "alignment": "left",
+          "value": "http://myImage"
+        },
+        {
+          "displayType": "action",
+          "action": {
+            "postback": {
+              "rating": "positive",
+              "feedbackType": "llm"
+            },
+            "label": "Positive",
+            "type": "postback"
+          },
+          "alignment": "left"
+        },
+        {
+          "displayType": "action",
+          "action": {
+            "postback": {
+              "numberRating": 2,
+              "feedbackType": "generic"
+            },
+            "label": "Custom 1",
+            "type": "postback"
+          },
+          "alignment": "left"
+        }
+      ],
+      "verticalAlignment": "center"
+    }],
+    "id": "formRow0"
+  }]},
+  "text": "Some text with feedback footer",
+  "type": "text"
+}

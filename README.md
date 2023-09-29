@@ -54,7 +54,7 @@ You use the `init component <name> entityEventHandler` command to add an event h
 bots-node-sdk init component myEventHandler entityEventHandler
 ```
 
-This example creates a component of type `entityEventHandler` that is named `myEventHandler`. Instead of typing `entityEventHandler` for the component type argument, you can type `e` as a shortcut.
+This example creates a handler of type `entityEventHandler` that is named `myEventHandler`. Instead of typing `entityEventHandler` for the component type argument, you can type `e` as a shortcut.
 
 ### Add an SQL Query Event Handler to Existing Service
 
@@ -64,7 +64,27 @@ You use the `init component <name> sqlQueryEventHandler` command to add an event
 bots-node-sdk init component myEventHandler sqlQueryEventHandler
 ```
 
-This example creates a component of type `sqlQueryEventHandler` that is named `myEventHandler`. Instead of typing `sqlQueryEventHandler` for the component type argument, you can type `s` as a shortcut.
+This example creates a handler of type `sqlQueryEventHandler` that is named `myEventHandler`. Instead of typing `sqlQueryEventHandler` for the component type argument, you can type `s` as a shortcut.
+
+### Add an LLM Transformation Handler to Existing Service
+
+You use the `init component <name> llmTransformation` command to add an event handler to an existing package. For example:
+
+```text
+bots-node-sdk init component myEventHandler llmTransformation
+```
+
+This example creates a handler of type `LlmTransformation` that is named `myEventHandler`. Instead of typing `llmTransformation` for the component type argument, you can type `t` as a shortcut.
+
+### Add an LLM Validation & Customization Handler to Existing Service
+
+You use the `init component <name> llm` command to add the event handler to an existing package. For example:
+
+```text
+bots-node-sdk init component myEventHandler llm
+```
+
+This example creates a handler of type `LlmComponent` that is named `myEventHandler`. Instead of typing `llm` for the component type argument, you can type `l` as a shortcut.
 
 ### Create a Component Service Package
 

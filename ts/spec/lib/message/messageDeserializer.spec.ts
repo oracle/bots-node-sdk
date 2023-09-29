@@ -2,7 +2,8 @@ import {
   MessageFactory as MF, TextMessage, NonRawMessage, AttachmentMessage, Attachment, Voice, ChannelType, InputStyle, SingleSelectLayoutStyle
   , MultiSelectLayoutStyle, CardLayout, Card, AttachmentType, FieldAlignment, PostbackAction, MessageUtil, ChannelExtensions, CardMessage, 
   LocationAction, TextInputField, TextField, LinkField, EditFormMessage, SingleSelectField, SubmitFormAction, FormMessage, TableMessage
-  , TableFormMessage, CommandMessage, CommandType, LocationMessage, PostbackMessage, FormSubmissionMessage
+  , TableFormMessage, CommandMessage, CommandType, LocationMessage, PostbackMessage, FormSubmissionMessage, TextStreamMessage, StreamState
+  , ColumnWidth, ActionField, VerticalAlignment, Column, FormRow
 } from '../../../lib2';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -29,6 +30,30 @@ describe('MessageDeserializer', () => {
     expect(msg.getChannelExtensionProperty(ChannelType.slack, 'aap')).toEqual('noot');
     expect(msg.getChannelExtensionProperty(ChannelType.facebook, 'wim')).toEqual('zus');
     expect(msg.getChannelExtensionProperty(ChannelType.slack, 'slackProp')).toEqual('slackValue');
+
+  });
+
+  it('Deserialize Text Message with Footer Form', function () {
+
+    const file = path.resolve('ts/spec/json/', 'textWithFooterForm.json');
+    let expected: string = fs.readFileSync(file, 'utf-8');
+
+    let msg = MF.messageFromJson(JSON.parse(expected)) as TextMessage;
+    expect(msg.getFooterForm().getFormRows()[0].getColumns()[0].getWidth() === ColumnWidth.stretch).toBeTrue;
+    expect(msg.getFooterForm().getFormRows()[0].getColumns()[0].getFields().length === 4).toBeTrue;
+
+  });
+
+  it('Deserialize Text Stream Message', function () {
+
+    const file = path.resolve('ts/spec/json/', 'textStream.json');
+    let expected: string = fs.readFileSync(file, 'utf-8');
+
+    let msg = MF.messageFromJson(JSON.parse(expected)) as TextStreamMessage;
+    expect(msg.getText()).toEqual('my text chunk');
+    expect(msg.getAggregateText()).toEqual('aggregate text and my text chunk');
+    expect(msg.getStreamId()).toEqual('123-456');
+    expect(msg.getStreamState()).toEqual(StreamState.running);
 
   });
 
@@ -69,12 +94,29 @@ describe('MessageDeserializer', () => {
 
   });
 
+  it('Deserialize EditableForm with FormRows', function () {
+
+    const file = path.resolve('ts/spec/json/', 'editableForm2.json');
+    let expected: string = fs.readFileSync(file, 'utf-8');    
+    let msg = MF.messageFromJson(JSON.parse(expected)) as EditFormMessage;
+    let row1 = msg.getFormRows()[0];
+    expect(row1.getId()).toEqual('formRow0')
+    let col1: Column = row1.getColumns()[0];
+    expect(col1.getWidth() == ColumnWidth.stretch).toBeTrue;
+    expect(col1.getVerticalAlignment() == VerticalAlignment.center).toBeTrue;
+    let textField = col1.getFields()[8] as TextField;
+    expect(textField.getTruncateAt() == 5).toBeTrue;
+    let actionField = col1.getFields()[9] as ActionField;
+    expect(actionField.getAction().getLabel()).toEqual('Submit');
+
+  });
+
   it('Deserialize Form', function () {
 
     const file = path.resolve('ts/spec/json/', 'form.json');
     let expected: string = fs.readFileSync(file, 'utf-8');
     let msg = MF.messageFromJson(JSON.parse(expected)) as FormMessage;
-    expect(msg.getPaginationInfo().getStatus()).toEqual('Showing 1-5 of 8 items');    
+    expect(msg.getPaginationInfo()!.getStatus()).toEqual('Showing 1-5 of 8 items');    
     let form1 = msg.getForms()[0];
     let field1 = form1.getFields()[0] as TextField;
     expect(field1.getChannelExtensionProperty(ChannelType.twilio, 'twilprop')).toEqual('twilvalue');
@@ -88,12 +130,12 @@ describe('MessageDeserializer', () => {
     const file = path.resolve('ts/spec/json/', 'table.json');
     let expected: string = fs.readFileSync(file, 'utf-8');
     let msg = MF.messageFromJson(JSON.parse(expected)) as TableMessage;
-    expect(msg.getPaginationInfo().getStatus()).toEqual('Showing 1-5 of 8 items');    
+    expect(msg.getPaginationInfo()!.getStatus()).toEqual('Showing 1-5 of 8 items');    
     let heading1 = msg.getHeadings()[0];
     expect(heading1.getChannelExtensionProperty(ChannelType.twilio, 'twilprop')).toEqual('twilvalue');
     expect(msg.getRows()[0].getFields()[0] instanceof TextField).toBeTrue;
     expect(msg.getRows()[0].getChannelExtensionProperty(ChannelType.twilio, 'rowProp')).toEqual('rowValue');
-    expect(msg.getPaginationInfo().getTotalCount()).toEqual(8);
+    expect(msg.getPaginationInfo()!.getTotalCount()).toEqual(8);
 
   });
 

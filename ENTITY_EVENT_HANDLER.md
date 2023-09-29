@@ -7,8 +7,8 @@
     - [Using TypeScript](#ts)
 - [Writing Event Handler Functions](#writing)
 - [Supported Events](#events)
-    - [Entity Level Events](#entityEvents)
-    - [Entity-Item Level Events](#itemEvents)
+    - [Entity Level Events](#entity-events)
+    - [Entity-Item Level Events](#item-events)
 - [Access the Backend Using HTTP REST Calls](#rest)
 - [Code Samples](#samples)
     - [How to Conditionally Prompt for an Item](#prompt)
@@ -17,9 +17,9 @@
     - [How to Set or Update Bag Items](#update)
     - [How to Create a Summary Message](#summary)
     - [How to Use Custom Events](#custom)
-    - [How to Invoke a REST API](#restSample)
+    - [How to Invoke a REST API](#rest-sample)
     - [How to Send Rich Conversation Messages](#messages)
-    - [How to Modify Candidate Messages](#modifyMessage)
+    - [How to Modify Candidate Messages](#modify-message)
 
 ## Introduction <a name="introduction">
 
@@ -124,7 +124,7 @@ When using TypeScript you will automatically get code completion support when yo
 
 ## Supported Events <a name="events">
 
-### Entity Level Events <a name="entityEvents">
+### Entity Level Events <a name="entity-events">
 The table below lists all entity level events currently supported:
 
 | Event | Description | Event Properties |
@@ -139,7 +139,7 @@ The table below lists all entity level events currently supported:
 | `disambiguateBagItem` | A handler that can be used to modify the message that is shown to disambiguate between bag items when an entity match applies to more than one bag item. Note that this handler only fires when the skill configuration parameter `Use Enhanced Slot Filling` is switched on. | <ul><li><b>matchValue</b>: The entity value matched based on the user input</li><li><b>matchedBagItems</b>: list of the names of the bag items that are matched against the entity value.</li><li><b>userInput</b>: the last user input message that matched to multiple bag items.</li></ul>
 | `userInputReceived` | A handler that can be used to inspect and modify new item matches and disambiguation values before the bag items are validated and updated. The handler is invoked on every turn while resolving the composite bag entity. | <ul><li><b>currentItem</b>: The full name of the bag item currently being resolved.</li><li><b>userInput</b>: the last user input message.</li><li><b>newItemMatches</b>: a key-value map where each key is the full name of a bag item, and the value the candidate value for the item. The new item matches can be changed using `context.setItemMatches` and `context.clearItemMatch`.</li><li><b>disambiguationValues</b>: a key-value map where each key is the full name of a bag item, and the value a list of matched values for the item. The disambiguation values for an item can be changed using `context.setDisambiguationValues()` or `context.clearDisambiguationValues()`</li><li><b>disambiguationItems</b>: a key-value map where each key is the full name of a bag item, and the value a map with two properties: <ul><li><b>matchValue</b>: an entity value that matches against multiple bag items</li><li> <b>matchedBagItems</b>: list of the names of all the bag items that match against the entity value. The first item in the list is used as the key in the disambiguationItems map.</li></ul> A disambiguation value that matches multiple items can be removed by calling `context.clearDisambiguationItems()` and passing the full name of the first item in the list as argument.</li></ul>
 
-### Entity-Item Level Events <a name="itemEvents">
+### Entity-Item Level Events <a name="item-events">
 The table below lists all entity-item level events currently supported:
 
 | Event | Description | Event Properties |
@@ -347,7 +347,7 @@ custom: {
 }
 ```
 
-### How to Invoke a REST API <a name="restSample">
+### How to Invoke a REST API <a name="rest-sample">
 Calling a REST API from within an event handler is straightforward. Since all event handlers are async, you can use the `await` keyword in combination with an NPM HTTP request module that supports JavaScript Promises, like `node-fetch`. This allows you to write your asynchronous code in a synchronous matter.
 
 ```javascript
@@ -371,7 +371,7 @@ entity: {
 As you have seen in the previous examples, you can use `context.addMessage(<payload>)` to create a bot message that is sent to the user. 
 You can call this function multiple times to send multiple messages. See the section on [Conversation Messaging](https://github.com/oracle/bots-node-sdk/blob/master/MESSAGE_FACTORY.md) for code samples on how to create the various message types, like text, card, attachment, table and (editable) form messages.
 
-### How to Modify Candidate Messages <a name="modifyMessage">
+### How to Modify Candidate Messages <a name="modify-message">
 
 In the `publishXXX` event handlers, you can receive the list of candidate messages created by the component by calling `context.getCandidateMessageList()`. This method returns a class representation of every message type, allowing you to use various methods in the class and in the `MessageFactory` to modify the message. You can then use `context.addMessage(<payload>)` to send the message. Here is an example:
 

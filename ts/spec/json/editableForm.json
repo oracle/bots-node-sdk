@@ -132,6 +132,7 @@
       "required": false
     }
   ],
+  "formRows": [],
   "headerText": "Use the form below to add an A-Team Member",
   "title": "A-Team Member",
   "actions": [

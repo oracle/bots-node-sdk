@@ -24,7 +24,8 @@
           "value": "http://linkedin",
           "linkLabel": "LinkedIn"
         }
-      ]
+      ],
+      "formRows": []
     }
   ],
   "formColumns": 2,

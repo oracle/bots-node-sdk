@@ -1,5 +1,6 @@
 # Release Notes
 
+- [Version 2.7.0](#v270)
 - [Version 2.6.8](#v268)
 - [Version 2.6.7](#v267)
 - [Version 2.6.6](#v266)
@@ -17,6 +18,20 @@
 - [Version 2.5.0](#v250)
 - [Version 2.4.3](#v243)
 - [Version 2.4.2](#v242)
+
+## <a name="v270">Version 2.7.0 </a>
+
+### New Features
+
+- **LLM Transformation Handlers**: Handlers that can be used to transform the LLM provider request and response format to Oracle's Common LLM Interface (CLMI). See [Writing LLM Transformation Handlers](https://github.com/oracle/bots-node-sdk/blob/master/LLM_TRANSFORMATION_HANDLER.md) for more information. This feature requires Oracle Digital Assistant version 23.10 or later.
+
+- **LLM Validation & Customizationion Handlers**: Handlers that can be used to validate the LLM request and response, and to customize the LLM response messages sent to the user. See [Writing LLM Validation & Customization Handlers](https://github.com/oracle/bots-node-sdk/blob/master/LLM_COMPONENT_HANDLER.md) for more information. This feature requires Oracle Digital Assistant version 23.10 or later.
+
+- **Support for Conversation Message Model Enhancements**: The Conversation MessageModel (CMM) has been enhanced with the new message elements and properties. See [Conversation Messaging](https://github.com/oracle/bots-node-sdk/blob/master/MESSAGE_FACTORY.md) for more information.
+ 
+### Fixed Issues
+
+- Custom component service fails to start or pack when using npm 9.5.1 in typescript
 
 ## Version 2.6.8 <a name="v268">
 
@@ -154,11 +169,11 @@
 - Upgrade to recent versions of node-fetch, typescript, tslint, express, body-parser, @hapi-joi.
 - Some typescript typings could not be found due to absolute path references.
 
-## Version 2.4.2 <a name="v242">
+## <a name="v242">Version 2.4.2 </a>
 
 ### New Features
 
-- **Entity Event Handlers**: See [Writing Entity Event Handlers](https://github.com/oracle/bots-node-sdk/blob/master/ENTIY_EVENT_HANDLER.md) for more information. Note that this feature requires ODA platform version 21.02.
+- **Entity Event Handlers**: See [Writing Entity Event Handlers](https://github.com/oracle/bots-node-sdk/blob/master/ENTITY_EVENT_HANDLER.md) for more information. Note that this feature requires ODA platform version 21.02.
 
 ### Fixed Issues
 

@@ -1,0 +1,7 @@
+{
+  "type": "textStream",
+  "text": "my text chunk",
+  "aggregateText": "aggregate text and my text chunk",
+  "streamId": "123-456",
+  "streamState": "running"
+}

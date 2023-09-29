@@ -1,4 +1,4 @@
-import { CommonProvider } from '../../common/provider';
+import { CommonProvider } from '../../../common/provider'; // must be the js-version import because that is the logger that is mixed in
 import { CommonValidator } from '../../common/validator';
 import { ERROR } from '../../common/error';
 import { MessageModel } from '../message/messageModel';

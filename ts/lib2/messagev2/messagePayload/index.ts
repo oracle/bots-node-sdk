@@ -1,4 +1,5 @@
 export * from './textMessage';
+export * from './textStreamMessage';
 export * from './cardMessage';
 export * from './attachmentMessage';
 export * from './commandMessage';

@@ -1,4 +1,4 @@
-import { NonRawMessage, Field, MessageUtil } from '../internal';
+import { NonRawMessage, Field, MessageUtil, FormRow } from '../internal';
 
 /**
  * Represents an edit form message.
@@ -9,6 +9,7 @@ export class EditFormMessage extends NonRawMessage {
   private title?: string;
   private formColumns = 1;
   private fields: Field[] = [];
+  private formRows: FormRow[] = [];
   private errorMessage?: string;
 
   /**
@@ -18,6 +19,9 @@ export class EditFormMessage extends NonRawMessage {
     super.deserializeNestedProperties();
     if (this.fields) {
       this.fields = MessageUtil.deserializeFields(this.fields);
+    }
+    if (this.formRows) {
+      this.formRows = MessageUtil.deserializeFormRows(this.formRows);
     }
   }
 
@@ -93,6 +97,34 @@ export class EditFormMessage extends NonRawMessage {
    */
   public addField(field: Field): this {
     this.fields.push(field);
+    return this;
+  }
+
+  /**
+   * Gets the list of form rows in the edit form message.
+   * @returns {FormRow[]} The list of form rows in the edit form message.
+   */
+  public getFormRows(): FormRow[] {
+      return this.formRows;
+  }
+
+  /**
+   * Sets the form rows of the edit form message.
+   * @param {FormRow[]} formRows The form rows to set.
+   * @returns {EditFormMessage} The updated instance of the EditFormMessage.
+   */
+  public setFormRows(formRows: FormRow[]): this {
+    this.formRows = formRows;
+    return this;
+  }
+
+  /**
+   * Adds a form row to the edit form message.
+   * @param {FormRow} formRow The form row to add.
+   * @returns {EditFormMessage} The updated instance of the EditFormMessage.
+   */
+  public addFormRow(formRow: FormRow): this {
+    this.formRows.push(formRow);
     return this;
   }
 

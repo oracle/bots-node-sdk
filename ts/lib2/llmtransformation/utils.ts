@@ -1,14 +1,14 @@
-import { RestServiceEventHandler, RestServiceEventHandlers } from './restServiceTypes';
-import { RestServiceContext } from './restServiceContext';
+import { LlmTransformationHandler } from './llmTransformationTypes';
+import { LlmTransformationContext } from './llmTransformationContext';
 /**
  * Invoke rest service event handlers
- * @param {RestServiceEventHandler} component - component instance
- * @param {RestServiceContext} context - context derived for this invocation
+ * @param {LlmTransformationHandler} component - component instance
+ * @param {LlmTransformationContext} context - context derived for this invocation
  * @private
  */
-export async function invokeRestServiceEventHandlers(component: RestServiceEventHandler, context: RestServiceContext) {
+export async function invokeLlmTransformationHandlers(component: LlmTransformationHandler, context: LlmTransformationContext) {
   let logger = context.logger();
-  let handlers: RestServiceEventHandlers = component.handlers();
+  let handlers = (typeof component.handlers === 'function') ? component.handlers() : component.handlers;
 
   let event = context.getRequest().event;
   let eventName = event.name;
@@ -29,13 +29,6 @@ export async function invokeRestServiceEventHandlers(component: RestServiceEvent
       if (returnValue) {
         context.setResponsePayload(returnValue);
       }
-    } else if (eventName === `validateResponsePayload`) {
-      logger.debug(`Invoking event handler ${eventName}`);
-      let returnValue = await Promise.resolve(handler(event.properties, context));
-      // make sure return value is a boolean
-      let retValue = returnValue === undefined ? true : (returnValue + '' === 'true')
-      logger.debug(`${eventName} returned ${retValue}`);
-      context.getResponse().valid = retValue;
     }
   } else {
     logger.debug(`No handler found for event: ${eventName}`);
@@ -44,12 +37,12 @@ export async function invokeRestServiceEventHandlers(component: RestServiceEvent
 
 /**
  * Resolve the event handlers defined by the component
- * @param {RestServiceEventHandler} component - component implementation
+ * @param {LlmTransformationHandler} component - component implementation
  * @private
  */
-export function getRestServiceEventHandlers(component: RestServiceEventHandler) {
+export function getLlmTransformationHandlers(component: LlmTransformationHandler) {
   let events = [];
-  let handlers: RestServiceEventHandlers = component.handlers();
+  let handlers = (typeof component.handlers === 'function') ? component.handlers() : component.handlers;
   if (handlers) {
     Object.keys(handlers).forEach(key => {
       events.push(`${key}`);

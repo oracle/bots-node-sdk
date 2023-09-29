@@ -7,10 +7,9 @@ import { ChannelCustomizable } from '../internal';
 export abstract class Field extends ChannelCustomizable {
   private label?: string;
   private id?: string;
-  // properties below will be added in 23.08
-  // private marginTop: Margin;
-  // private labelFontSize: FontSize;
-  // private labelFontWeight: FontWeight;
+  private marginTop?: Margin;
+  private labelFontSize?: FontSize;
+  private labelFontWeight?: FontWeight;
 
   /**
    * Gets the label of the field.
@@ -48,59 +47,59 @@ export abstract class Field extends ChannelCustomizable {
     return this;
   }
 
-  // /**
-  //  * Gets the margin top value of the field.
-  //  * @returns The margin top value of the field.
-  //  */
-  // public getMarginTop(): Margin {
-  //   return this.marginTop;
-  // }
+  /**
+   * Gets the margin top value of the field.
+   * @returns The margin top value of the field.
+   */
+  public getMarginTop(): Margin {
+    return this.marginTop;
+  }
 
-  // /**
-  //  * Sets the margin top value of the field.
-  //  * @param marginTop The margin top value of the field.
-  //  * @returns This Field instance.
-  //  */
-  // public setMarginTop(marginTop: Margin): this {
-  //   this.marginTop = marginTop;
-  //   return this;
-  // }
+  /**
+   * Sets the margin top value of the field.
+   * @param marginTop The margin top value of the field.
+   * @returns This Field instance.
+   */
+  public setMarginTop(marginTop: Margin): this {
+    this.marginTop = marginTop;
+    return this;
+  }
 
-  // /**
-  //  * Gets the label font size of the field.
-  //  * @returns The label font size of the field.
-  //  */
-  // public getLabelFontSize(): FontSize {
-  //   return this.labelFontSize;
-  // }
+  /**
+   * Gets the label font size of the field.
+   * @returns The label font size of the field.
+   */
+  public getLabelFontSize(): FontSize {
+    return this.labelFontSize;
+  }
 
-  // /**
-  //  * Sets the label font size of the field.
-  //  * @param labelFontSize The label font size of the field.
-  //  * @returns This Field instance.
-  //  */
-  // public setLabelFontSize(labelFontSize: FontSize): this {
-  //   this.labelFontSize = labelFontSize;
-  //   return this;
-  // }
+  /**
+   * Sets the label font size of the field.
+   * @param labelFontSize The label font size of the field.
+   * @returns This Field instance.
+   */
+  public setLabelFontSize(labelFontSize: FontSize): this {
+    this.labelFontSize = labelFontSize;
+    return this;
+  }
 
-  // /**
-  //  * Gets the label font weight of the field.
-  //  * @returns The label font weight of the field.
-  //  */
-  // public getLabelFontWeight(): FontWeight {
-  //   return this.labelFontWeight;
-  // }
+  /**
+   * Gets the label font weight of the field.
+   * @returns The label font weight of the field.
+   */
+  public getLabelFontWeight(): FontWeight {
+    return this.labelFontWeight;
+  }
 
-  // /**
-  //  * Sets the label font weight of the field.
-  //  * @param labelFontWeight The label font weight of the field.
-  //  * @returns This Field instance.
-  //  */
-  // public setLabelFontWeight(labelFontWeight: FontWeight): this {
-  //   this.labelFontWeight = labelFontWeight;
-  //   return this;
-  // }
+  /**
+   * Sets the label font weight of the field.
+   * @param labelFontWeight The label font weight of the field.
+   * @returns This Field instance.
+   */
+  public setLabelFontWeight(labelFontWeight: FontWeight): this {
+    this.labelFontWeight = labelFontWeight;
+    return this;
+  }
 
 }
 

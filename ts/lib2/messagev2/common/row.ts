@@ -1,4 +1,4 @@
-import { ReadOnlyField, MessageUtil, ChannelCustomizable } from '../internal';
+import { ReadOnlyField, MessageUtil, ChannelCustomizable, Action } from '../internal';
 
 /**
  * Represents a row in a channel customizable element.
@@ -6,8 +6,7 @@ import { ReadOnlyField, MessageUtil, ChannelCustomizable } from '../internal';
  */
 export class Row extends ChannelCustomizable {
   private fields: ReadOnlyField[] = [];
-  // properties below will be added in 23.08
-  // private selectAction?: Action;
+  private selectAction?: Action;
 
   /**
    * Deserialize nested object properties into corresponding class instances
@@ -16,6 +15,9 @@ export class Row extends ChannelCustomizable {
     super.deserializeNestedProperties();
     if (this.fields) {
       this.fields = MessageUtil.deserializeFields(this.fields);
+    }
+    if (this.selectAction) {
+      this.selectAction = MessageUtil.deserializeAction(this.selectAction);
     }
   }
 
@@ -48,21 +50,21 @@ export class Row extends ChannelCustomizable {
     return this;
   }
 
-  // /**
-  //  * Gets the select action of the row.
-  //  * @returns The select action.
-  //  */
-  // public getSelectAction(): Action | undefined {
-  //   return this.selectAction;
-  // }
+  /**
+   * Gets the select action of the row.
+   * @returns The select action.
+   */
+  public getSelectAction(): Action | undefined {
+    return this.selectAction;
+  }
 
-  // /**
-  //  * Sets the select action of the row.
-  //  * @param selectAction The select action to set.
-  //  * @returns The updated instance of the Row.
-  //  */
-  // public setSelectAction(selectAction: Action): this {
-  //   this.selectAction = selectAction;
-  //   return this;
-  // }
+  /**
+   * Sets the select action of the row.
+   * @param selectAction The select action to set.
+   * @returns The updated instance of the Row.
+   */
+  public setSelectAction(selectAction: Action): this {
+    this.selectAction = selectAction;
+    return this;
+  }
 }

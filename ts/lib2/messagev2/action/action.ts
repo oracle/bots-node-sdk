@@ -9,8 +9,7 @@ export class Action extends ChannelCustomizable {
   private label?: string;
   private voice?: Voice;
   private imageUrl?: string;
-  // properties below will be added in 23.08
-  // private style: ActionStyle;
+  private style?: ActionStyle;
 
   /**
    * Deserialize nested object properties into corresponding class instances
@@ -102,23 +101,23 @@ export class Action extends ChannelCustomizable {
     return this;
   }
 
-  // /**
-  //  * Gets the style of the action.
-  //  * @returns {string} The style of the action.
-  //  */
-  // public getStyle(): ActionStyle {
-  //   return this.style;
-  // }
+  /**
+   * Gets the style of the action.
+   * @returns {string} The style of the action.
+   */
+  public getStyle(): ActionStyle {
+    return this.style;
+  }
 
-  // /**
-  //  * Sets the style of the action.
-  //  * @param {string} style - The style to set.
-  //  * @returns The current instance of the Action class.
-  //  */
-  // public setStyle(style: ActionStyle): this {
-  //   this.style = style;
-  //   return this;
-  // }
+  /**
+   * Sets the style of the action.
+   * @param {string} style - The style to set.
+   * @returns The current instance of the Action class.
+   */
+  public setStyle(style: ActionStyle): this {
+    this.style = style;
+    return this;
+  }
 
 }
 

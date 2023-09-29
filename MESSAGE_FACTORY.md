@@ -4,19 +4,19 @@
 - [Introduction](#introduction)
     - [Outbound Message Types](#outbound)
     - [Inbound Message Types](#inbound)
-- [Using the SDK Message Factory](#messageFactory)
+- [Using the SDK Message Factory](#message-factory)
     - [Channel Extensions](#extensions)
     - [Using Postback Keywords](#keywords)
 - [Code Samples](#samples)
-    - [Creating a Text Message with Action Buttons](#textMessage)
-    - [Creating a Card Message with Card Action Buttons](#cardMessage)
-    - [Creating an Attachment Message](#attachmentMessage)
-    - [Creating a Table Message](#tableMessage)
-    - [Creating a Form Message](#formMessage)
-    - [Creating a TableForm Message](#tableFormMessage)
-    - [Creating an EditForm Message](#editFormMessage)
-    - [Processing the Last User Message](#userMessage)
-    - [Creating a Microsoft Adaptive Cards Message](#adaptiveCardMessage)
+    - [Creating a Text Message with Action Buttons](#text-message)
+    - [Creating a Card Message with Card Action Buttons](#card-message)
+    - [Creating an Attachment Message](#attachment-message)
+    - [Creating a Table Message](#table-message)
+    - [Creating a Form Message](#form-message)
+    - [Creating a TableForm Message](#table-form-message)
+    - [Creating an EditForm Message](#edit-form-message)
+    - [Processing the Last User Message](#user-message)
+    - [Creating a Microsoft Adaptive Cards Message](#adaptive-card-message)
 
 ## Introduction <a name="introduction">
 Oracle Digital Assitant uses the conversation message model (CMM) to exchange messages between a skill or DA and the various channels. CMM defines the various message types that the skill can send to the user (outbound), and the user can send to the skill (inbound). 
@@ -76,7 +76,7 @@ There might be specific use cases where you want to leverage channel-specific me
 All built-in components create skill messages in CMM format, and the [System.CommonResponse](https://www.oracle.com/pls/topic/lookup?ctx=en/cloud/paas/digital-assistant&id=DACUA-GUID-11BB6EBF-EA29-404E-B966-C3DC70D3625C) component provides full support for all CMM message types.
 We recommend that you consider using the `System.CommonResponse` component before you decide to create conversation messages in custom components. It's generally easier to prepare the data in a custom component by calling some backend service, and then store the data in context variables. You can then transition to a dialog flow state that uses the `System.CommonResponse` component to create the bot messages in CMM format, using and/or iterating over the data that's been stored in context variables by the custom component. The `System.CommonResponse` component contains extensive functionality to process user input, including submitted forms, and also includes out-of-the-box support for pagination, which might be useful if you want to enable the user to scroll through large sets of data. 
 
-## Using the SDK Message Factory <a name="messageFactory">
+## Using the SDK Message Factory <a name="message-factory">
 
 The SDK provides the [MessageFactory](https://oracle.github.io/bots-node-sdk/MessageFactory.html) class to create the message types supported by CMM. You can use `context.getMessageFactory()` to access the the `MessageFactory` from within a custom component's `invoke` method or from with an entity event handler's event method. In addition, you can use the MessageFactory independently as shown here:
 
@@ -130,7 +130,7 @@ context.reply(message);
 All of the following examples create a CMM message type. In a custom component, you use `context.reply(message)` to send the created message.
 In an entity event handler, you use `context.addMessage(message)`.
 
-### Creating a Text Message with Action Buttons <a name="textMessage">
+### Creating a Text Message with Action Buttons <a name="text-message">
 
 To create a text message with actions buttons, first use the [`createTextMessage`](https://oracle.github.io/bots-node-sdk/MessageFactory.html#.createTextMessage) method to create the message, and then use the `addAction` and  [`createPostbackAction`](https://oracle.github.io/bots-node-sdk/MessageFactory.html#.createPostbackAction) methods to add the button actions.
 
@@ -141,7 +141,7 @@ const message = mf.createTextMessage('Do you want another quote?')
   .addAction(mf.createPostbackAction('No', { isNo: true }));
 ```
 
-### Creating a Card Message with Card Action Buttons <a name="cardMessage">
+### Creating a Card Message with Card Action Buttons <a name="card-message">
 
 To create a card message with card actions buttons, first use the [`createCardMessage`](https://oracle.github.io/bots-node-sdk/MessageFactory.html#.createCardMessage) method to create the card message, then use the `addCard` and [`createCard`](https://oracle.github.io/bots-node-sdk/MessageFactory.html#.createCard) methods to create each card, and, finally, use the `addAction` and [`createPostbackAction`](https://oracle.github.io/bots-node-sdk/MessageFactory.html#.createPostbackAction) method to add a button action to each card.
 
@@ -160,7 +160,7 @@ const message = mf.createCardMessage()
     .addAction(mf.createPostbackAction('Grapes', { action: 'grapes' })));
 ```
 
-### Creating an Attachment Message <a name="attachmentMessage">
+### Creating an Attachment Message <a name="attachment-message">
 
 You use the [`createAttachmentMessage`](https://oracle.github.io/bots-node-sdk/MessageFactory.html#.createAttachmentMessage) method to create an attachment message.
 
@@ -183,7 +183,7 @@ const message = mf.createAttachmentMessage(
   .addAction(mf.createUrlAction('More Tutorials','https://example.com/tutorials.html'));
 ```
 
-### Creating a Table Message <a name="tableMessage">
+### Creating a Table Message <a name="table-message">
 
 You use the [`createTableMessage`](https://oracle.github.io/bots-node-sdk/MessageFactory.html#.createTableMessage) method to create a message with table layout.
 
@@ -210,7 +210,7 @@ const message = mf.createTableMessage()
       .setStatus(context.translate('systemConfiguration_paginationStatus', 1, 3, 5)));
 ```
 
-### Creating a Form Message <a name="FormMessage">
+### Creating a Form Message <a name="form-message">
 
 You use the [`createFormMessage`](https://oracle.github.io/bots-node-sdk/MessageFactory.html#.createFormMessage) method to create a message with form layout.
 
@@ -235,7 +235,7 @@ const message = mf.createFormMessage()
       .setStatus(context.translate('systemConfiguration_paginationStatus', 1, 3, 5)));
 ```
 
-### Creating a TableForm Message <a name="tableFormMessage">
+### Creating a TableForm Message <a name="table-form-message">
 
 You use the [`createTableFormMessage`](https://oracle.github.io/bots-node-sdk/MessageFactory.html#.createTableFormMessage) method to create a message with table-form layout. In a table-form layout, each row can be expanded to show an inline form that discloses additional read-only fields, and optionally a list of actions.
 
@@ -261,7 +261,7 @@ const message = mf.createTableFormMessage()
       .setStatus(context.translate('systemConfiguration_paginationStatus', 1, 3, 5)));
 ```
 
-### Creating an EditForm Message <a name="editFormMessage">
+### Creating an EditForm Message <a name="edit-form-message">
 
 You use the [`createEditFormMessage`](https://oracle.github.io/bots-node-sdk/MessageFactory.html#.createEditFormMessage) method to create a message with an editable form. You should include a `submitFormAction` to submit the form. You can also set `autoSubmit` to true on a field, then the value of that field will be auto-submitted, allowing you to update other parts of the form based on the value submitted. In both cases, a FormSubmissionMessage [`FormSubmissionMessage`](https://oracle.github.io/bots-node-sdk/FormSubmissionMessage.html) is sent to the bot.
 
@@ -372,7 +372,7 @@ When you are creating an editable form in an entity event handler, the built-in 
 - if the `variable` property of the component is set to a `map` variable, the map variable is updated with the field ID as key and the field value as value for each submitted field.
 - if the `variable` property of the component is set to a `compositeBag` entity variable, it looks up a bag item by the same name as the field ID. If found, it updates the composite bag item. For entity-based bag items, the submitted field value is first used for entity matching so the complete entity match value is stored as value.
 
-### Processing the Last User Message <a name="userMessage">
+### Processing the Last User Message <a name="user-message">
 
 The last user message can be retrieved in event handlers and custom components by calling `context.getUserMessage()`. This method returns an instance of one of the [inbound message types](#inbound). In event handlers, the user message is typically processed by the built-in component, however, in custom components that send an interactive message with buttons and/or editable fields, the custom component typically needs to process the user message as well.
 
@@ -418,7 +418,7 @@ if (context.getRequest().state === context.getRequest().previousState) {
 ```
 
 
-### Creating a Microsoft Adaptive Cards Message <a name="adaptiveCardMessage">
+### Creating a Microsoft Adaptive Cards Message <a name="adaptive-card-message">
 
 You use the [`createRawMessage`](https://oracle.github.io/bots-node-sdk/MessageFactory.html#.createRawMessage) method to send a message that uses [Microsoft Adaptive Cards](https://adaptivecards.io/):
 ```javascript

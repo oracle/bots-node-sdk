@@ -7,7 +7,6 @@ import { NonRawMessage } from '../internal';
 export class CommandMessage extends NonRawMessage {
   public readonly type: string = 'command';
   private command: CommandType;
-  private properties?: Map<string, any>;
 
   /**
    * Creates an instance of the CommandMessage class.
@@ -36,46 +35,6 @@ export class CommandMessage extends NonRawMessage {
     return this;
   }
 
-  /**
-   * Gets the properties of the message.
-   * @returns {Map<string, any>} The properties of the message.
-   */
-  public getProperties(): Map<string, any> {
-    return this.properties;
-  }
-
-  /**
-   * Gets the value of a property.
-   * @param {string} propertyName The name of the property.
-   * @returns {any} The property value.
-   */
-  public getPropertyValue(propertyName: string): any {
-    return this.properties ? this.properties[propertyName] : undefined;
-  }
-
-  /**
-   * Sets the properties of the message.
-   * @param {Map<string, any>} properties The properties to set.
-   * @returns {this} The updated instance of the CommandMessage.
-   */
-  public setProperties(properties: Map<string, any>): this {
-    this.properties = properties;
-    return this;
-  }
-
-  /**
-   * Add a property to the message.
-   * @param {string} name The name of the property.
-   * @param {any} value The value of the property.
-   * @returns {this} The updated instance of the CommandMessage.
-   */
-  public addProperty(name: string, value: any): this {
-    if (!this.properties) {
-      this.properties = new Map();
-    }
-    this.properties[name] = value;
-    return this;
-  }
 }
 
 /**

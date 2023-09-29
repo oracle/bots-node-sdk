@@ -1,4 +1,4 @@
-import { ReadOnlyField, Action, Voice, MessageUtil, ChannelCustomizable } from '../internal';
+import { ReadOnlyField, Action, Voice, MessageUtil, ChannelCustomizable, FormRow } from '../internal';
 
 /**
  * Represents a read-only form.
@@ -9,9 +9,9 @@ export class ReadOnlyForm extends ChannelCustomizable {
   private title?: string;
   private voice?: Voice;
   private fields: ReadOnlyField[] = [];
+  private formRows: FormRow[] = [];
   private actions?: Action[];
-  // properties below will be added in 23.08
-  // private selectAction?: Action;
+  private selectAction?: Action;
 
   /**
    * Deserialize nested object properties into corresponding class instances
@@ -24,8 +24,14 @@ export class ReadOnlyForm extends ChannelCustomizable {
     if (this.fields) {
       this.fields = MessageUtil.deserializeFields(this.fields);
     }
+    if (this.formRows) {
+      this.formRows = MessageUtil.deserializeFormRows(this.formRows);
+    }
     if (this.actions) {
       this.actions = MessageUtil.deserializeActions(this.actions);
+    }
+    if (this.selectAction) {
+      this.selectAction = MessageUtil.deserializeAction(this.selectAction);
     }
   }
 
@@ -123,6 +129,34 @@ export class ReadOnlyForm extends ChannelCustomizable {
   }
 
   /**
+   * Gets the list of form rows in the edit form message.
+   * @returns {FormRow[]} The list of form rows in the edit form message.
+   */
+  public getFormRows(): FormRow[] {
+    return this.formRows;
+  }
+
+  /**
+   * Sets the form rows of the edit form message.
+   * @param {FormRow[]} formRows The form rows to set.
+   * @returns {ReadOnlyForm} The updated instance of the ReadOnlyForm.
+   */
+  public setFormRows(formRows: FormRow[]): this {
+    this.formRows = formRows;
+    return this;
+  }
+
+  /**
+   * Adds a form row to the edit form message.
+   * @param {FormRow} formRow The form row to add.
+   * @returns {ReadOnlyForm} The updated instance of the ReadOnlyForm.
+   */
+  public addFormRow(formRow: FormRow): this {
+    this.formRows.push(formRow);
+    return this;
+  }
+
+  /**
    * Gets the list of actions in the read-only form.
    * @returns {Action[]} The list of actions in the read-only form.
    */
@@ -143,22 +177,22 @@ export class ReadOnlyForm extends ChannelCustomizable {
     return this;
   }
 
-  // /**
-  //  * Gets the select action of the read-only form.
-  //  * @returns The select action of the read-only form.
-  //  */
-  // public getSelectAction(): Action {
-  //   return this.selectAction;
-  // }
+  /**
+   * Gets the select action of the read-only form.
+   * @returns The select action of the read-only form.
+   */
+  public getSelectAction(): Action {
+    return this.selectAction;
+  }
 
-  // /**
-  //  * Sets the select action of the read-only form.
-  //  * @param selectAction The select action to set.
-  //  * @returns The updated instance of the ReadOnlyForm.
-  //  */
-  // public setSelectAction(selectAction: Action): this {
-  //   this.selectAction = selectAction;
-  //   return this;
-  // }
+  /**
+   * Sets the select action of the read-only form.
+   * @param selectAction The select action to set.
+   * @returns The updated instance of the ReadOnlyForm.
+   */
+  public setSelectAction(selectAction: Action): this {
+    this.selectAction = selectAction;
+    return this;
+  }
 
 }
