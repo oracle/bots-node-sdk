@@ -154,6 +154,8 @@ See the README.md that's created in your scaffolded TypeScript project for more 
 - [Writing Custom Components](https://github.com/oracle/bots-node-sdk/blob/master/CUSTOM_COMPONENT.md) - Guidelines and tips for writing custom components.
 - [Writing Entity Event Handlers](https://github.com/oracle/bots-node-sdk/blob/master/ENTITY_EVENT_HANDLER.md) - Guidelines and tips for writing entity event handlers.
 - [Writing SQL Query Event Handlers](https://github.com/oracle/bots-node-sdk/blob/master/DATA_QUERY_EVENT_HANDLER.md) - Guidelines and tips for writing data query event handlers.
+- [Writing LLM Transformation Handlers](https://github.com/oracle/bots-node-sdk/blob/master/LLM_TRANSFORMATION_HANDLER.md) - Guidelines and tips for writing LLM transformation handlers.
+- [Writing LLM Validation & Customization Handlers](https://github.com/oracle/bots-node-sdk/blob/master/LLM_COMPONENT_HANDLER.md) - Guidelines and tips for writing LLM validation & customization handlers.
 - [Conversation Messaging](https://github.com/oracle/bots-node-sdk/blob/master/MESSAGE_FACTORY.md) - Creating conversation messages from custom code.
 - [Writing Webhooks](https://github.com/oracle/bots-node-sdk/blob/master/WEBHOOK.md) - Integrate with custom messaging channels using incoming/outgoing webhook.
 - [Unit Testing](https://github.com/oracle/bots-node-sdk/blob/master/testing/TESTING.md) - Unit testing facilities.
@@ -170,7 +172,7 @@ See the README.md that's created in your scaffolded TypeScript project for more 
 
 ## License
 
-Copyright © 2018-2022, Oracle and/or its affiliates. All rights reserved.
+Copyright © 2018-2023, Oracle and/or its affiliates. All rights reserved.
 
 The Universal Permissive License (UPL), Version 1.0
 

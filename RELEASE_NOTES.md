@@ -1,5 +1,6 @@
 # Release Notes
 
+- [Version 2.7.1](#v271)
 - [Version 2.7.0](#v270)
 - [Version 2.6.8](#v268)
 - [Version 2.6.7](#v267)
@@ -18,6 +19,12 @@
 - [Version 2.5.0](#v250)
 - [Version 2.4.3](#v243)
 - [Version 2.4.2](#v242)
+
+## <a name="v271">Version 2.7.1 </a>
+ 
+### Fixed Issues
+
+- Removed logging of context variable values
 
 ## <a name="v270">Version 2.7.0 </a>
 

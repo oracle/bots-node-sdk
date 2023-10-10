@@ -18,6 +18,7 @@ export interface LlmTransformationHandlers {
 }
 
 export interface TransformPayloadEvent {
-  payload: any
+  payload: any;
+  compartmentId?: string
 }
 
