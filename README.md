@@ -172,7 +172,7 @@ See the README.md that's created in your scaffolded TypeScript project for more 
 
 ## License
 
-Copyright © 2018-2022, Oracle and/or its affiliates. All rights reserved.
+Copyright © 2018-2023, Oracle and/or its affiliates. All rights reserved.
 
 The Universal Permissive License (UPL), Version 1.0
 
