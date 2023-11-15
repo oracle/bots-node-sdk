@@ -19,6 +19,8 @@
         "word1",
         "word2"
       ],
+      "displayType": "icon",
+      "style": "danger",
       "channelExtensions": {
         "facebook": {
           "myProp": "myValue",

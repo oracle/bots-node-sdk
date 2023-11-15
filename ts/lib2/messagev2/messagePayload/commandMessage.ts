@@ -63,5 +63,10 @@ export enum CommandType {
   home = 'home',
   exit = 'exit',
   startDoNotDisturbMode = 'startDoNotDisturbMode',
-  stopDoNotDisturbMode = 'stopDoNotDisturbMode'
+  stopDoNotDisturbMode = 'stopDoNotDisturbMode',
+  invokeFlow = 'invokeFlow',
+  updateApplicationContext = 'updateApplicationContext',
+  custom = 'custom',
+  replayRequest = 'replayRequest',
+  executeApplicationAction = 'executeApplicationAction'
 }

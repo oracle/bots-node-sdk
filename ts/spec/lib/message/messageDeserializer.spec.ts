@@ -3,7 +3,7 @@ import {
   , MultiSelectLayoutStyle, CardLayout, Card, AttachmentType, FieldAlignment, PostbackAction, MessageUtil, ChannelExtensions, CardMessage, 
   LocationAction, TextInputField, TextField, LinkField, EditFormMessage, SingleSelectField, SubmitFormAction, FormMessage, TableMessage
   , TableFormMessage, CommandMessage, CommandType, LocationMessage, PostbackMessage, FormSubmissionMessage, TextStreamMessage, StreamState
-  , ColumnWidth, ActionField, VerticalAlignment, Column, FormRow
+  , ColumnWidth, ActionField, VerticalAlignment, Column, FormRow, PopupAction, DisplayType, ExecuteApplicationActionCommandMessage, UpdateApplicationContextCommandMessage, ContextSource
 } from '../../../lib2';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -43,6 +43,20 @@ describe('MessageDeserializer', () => {
     expect(msg.getFooterForm().getFormRows()[0].getColumns()[0].getFields().length === 4).toBeTrue;
 
   });
+
+  it('Deserialize Text Message with PopupAction', function () {
+
+    const file = path.resolve('ts/spec/json/', 'textWithPopupAction.json');
+    let expected: string = fs.readFileSync(file, 'utf-8');
+
+    let msg = MF.messageFromJson(JSON.parse(expected)) as TextMessage;
+    expect(msg.getActions()[0] instanceof PopupAction).toBeTruthy;
+    let action = msg.getActions()[0] as PopupAction;
+    expect(action.getPopupContent() instanceof EditFormMessage).toBeTruthy;
+    expect(action.getDisplayType() === DisplayType.link).toBeTrue;
+
+  });
+
 
   it('Deserialize Text Stream Message', function () {
 
@@ -169,6 +183,33 @@ describe('MessageDeserializer', () => {
     expect(msg.getPropertyValue('int')).toEqual(8);
     expect(msg.getPropertyValue('string')).toEqual('foo');
     expect(msg.getPropertyValue('object')).toEqual({'aap': 'noot'});        
+
+  });
+
+  it('Deserialize ExecuteApplicationActionCommand', function () {
+
+    const file = path.resolve('ts/spec/json/', 'executeApplicationActionCommand.json');
+    let expected: string = fs.readFileSync(file, 'utf-8');
+    let msg = MF.messageFromJson(JSON.parse(expected)) as ExecuteApplicationActionCommandMessage;
+    expect(msg.getCommand()).toEqual(CommandType.executeApplicationAction);  
+    expect(msg.getAction()).toEqual('updateFields');
+    expect(msg.getApplicationName()).toEqual('HCM');
+    expect(msg.getPageName()).toEqual('JobRequisition');
+    expect(msg.getPropertyValue('foo')).toEqual('bar');
+
+  });
+
+  it('Deserialize UpdateApplicationContextCommand', function () {
+
+    const file = path.resolve('ts/spec/json/', 'updateApplicationContextCommand.json');
+    let expected: string = fs.readFileSync(file, 'utf-8');
+    let msg = MF.messageFromJson(JSON.parse(expected)) as UpdateApplicationContextCommandMessage;
+    expect(msg.getCommand()).toEqual(CommandType.updateApplicationContext);  
+    expect(msg.getContextSource()).toEqual(ContextSource.skill);
+    expect(msg.getReset()).toBeTruthy;
+    expect(msg.getApplicationName()).toEqual('HCM');
+    expect(msg.getPageName()).toEqual('JobRequisition');
+    expect(msg.getParameterValue('foo')).toEqual('bar');
 
   });
 

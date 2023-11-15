@@ -33,15 +33,12 @@ export async function invokeResolveEntitiesEventHandlers(
       handlerPath = `entity.${eventName}`;
     }
     if (handler) {
-      logger.debug(`Invoking event handler ${handlerPath} with event: ${JSON.stringify(event)}`);
       // event handlers can be async (returning a promise), but we dont want to enforce
       // every event handler is async, hence Promise.resolve wrapping of invocation
       let returnValue = await Promise.resolve(handler(event.properties || {}, context));
       // make sure return value is a boolean
       let retValue = returnValue === undefined ? true : (returnValue + '' === 'true')
-      logger.debug(`${eventName} returned ${retValue}`);
       if (eventName === 'shouldPrompt') {
-        logger.debug(`Adding ${itemName} to shouldPrompt cache with value ${retValue}`);
         context._getShouldPromptCache()[itemName] = retValue;
         if (retValue) {
           // only invoke next shouldPrompt handler when current handler returned false
@@ -60,7 +57,7 @@ export async function invokeResolveEntitiesEventHandlers(
         }
       }
     } else {
-      logger.debug(`No handler found for event: ${handlerPath}`);
+      logger.error(`No handler found for event: ${handlerPath}`);
       break;
     }
   }
