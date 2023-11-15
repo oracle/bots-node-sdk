@@ -1,4 +1,5 @@
 export * from './callAction';
+export * from './popupAction';
 export * from './action';
 export * from './keyword';
 export * from './locationAction';

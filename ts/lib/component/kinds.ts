@@ -70,7 +70,7 @@ export interface EntityItemEvents {
   shouldPrompt?(event: EntityValidateEvent, context: EntityResolutionContext): void
   validate?(event: EntityItemValidateEvent, context: EntityResolutionContext): void
   publishPromptMessage?(event: EntityItemPublishPromptMessageEvent, context: EntityResolutionContext): void
-  publishDisambiguationMessage?(event: EntityItemPublishDisambiguationMessageEvent, context: EntityResolutionContext): void
+  publishDisambiguateMessage?(event: EntityItemPublishDisambiguateMessageEvent, context: EntityResolutionContext): void
   maxPromptsReached?(event: EntityItemMaxPromptsReachedEvent, context: EntityResolutionContext): void
 }
 
@@ -139,7 +139,7 @@ export interface EntityItemPublishPromptMessageEvent extends EntityBaseEvent {
   promptCount: number;
 }
 
-export interface EntityItemPublishDisambiguationMessageEvent extends EntityBaseEvent {
+export interface EntityItemPublishDisambiguateMessageEvent extends EntityBaseEvent {
   disambiguationValues: object[];
 }
 

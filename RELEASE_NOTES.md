@@ -1,5 +1,6 @@
 # Release Notes
 
+- [Version 2.7.2](#v272)
 - [Version 2.7.1](#v271)
 - [Version 2.7.0](#v270)
 - [Version 2.6.8](#v268)
@@ -19,6 +20,16 @@
 - [Version 2.5.0](#v250)
 - [Version 2.4.3](#v243)
 - [Version 2.4.2](#v242)
+
+## <a name="v272">Version 2.7.2 </a>
+ 
+### New Features
+- Added new CMM message types and properties 
+
+### Fixed Issues
+
+- Removed logging that might disclose sensitive info
+- Fixed name of bag item disambiguateMessage event in TypeScript
 
 ## <a name="v271">Version 2.7.1 </a>
  

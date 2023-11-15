@@ -18,20 +18,18 @@ export async function invokeLlmTransformationHandlers(component: LlmTransformati
     // event handlers can be async (returning a promise), but we dont want to enforce
     // every event handler is async, hence Promise.resolve wrapping of invocation
     if (eventName === `transformRequestPayload`) {
-      logger.debug(`Invoking event handler ${eventName}`);
       let returnValue = await Promise.resolve(handler(event.properties, context));
       if (returnValue) {
         context.setRequestPayload(returnValue);
       }
     } else if (eventName === `transformResponsePayload` || eventName === `transformErrorResponsePayload`) {
-      logger.debug(`Invoking event handler ${eventName}`);
       let returnValue = await Promise.resolve(handler(event.properties, context));
       if (returnValue) {
         context.setResponsePayload(returnValue);
       }
     }
   } else {
-    logger.debug(`No handler found for event: ${eventName}`);
+    logger.error(`No handler found for event: ${eventName}`);
   }
 }
 
