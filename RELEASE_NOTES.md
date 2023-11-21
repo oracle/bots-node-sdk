@@ -30,6 +30,7 @@
 
 - Removed logging that might disclose sensitive info
 - Fixed name of bag item disambiguateMessage event in TypeScript
+- Fixed issue with nested items not supported in entity item event in TypeScript
 
 ## <a name="v271">Version 2.7.1 </a>
  

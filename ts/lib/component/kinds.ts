@@ -67,6 +67,7 @@ export interface EntityEvent {
 }
 
 export interface EntityItemEvents {
+  items?: EntityItems;
   shouldPrompt?(event: EntityValidateEvent, context: EntityResolutionContext): void
   validate?(event: EntityItemValidateEvent, context: EntityResolutionContext): void
   publishPromptMessage?(event: EntityItemPublishPromptMessageEvent, context: EntityResolutionContext): void
