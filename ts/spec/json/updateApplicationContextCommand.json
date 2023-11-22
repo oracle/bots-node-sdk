@@ -1,0 +1,10 @@
+{
+  "type": "updateApplicationContextCommand",
+  "command": "updateApplicationContext",
+  "applicationName": "HCM",
+  "source" : "skill",
+  "reset": true,
+  "pageName": "JobRequisition",
+  "fieldName": "JobDescription",
+  "parameters": {"foo": "bar"}
+}

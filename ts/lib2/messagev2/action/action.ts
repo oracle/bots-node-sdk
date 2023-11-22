@@ -10,6 +10,7 @@ export class Action extends ChannelCustomizable {
   private voice?: Voice;
   private imageUrl?: string;
   private style?: ActionStyle;
+  private displayType?: DisplayType;
 
   /**
    * Deserialize nested object properties into corresponding class instances
@@ -119,6 +120,24 @@ export class Action extends ChannelCustomizable {
     return this;
   }
 
+  /**
+   * Gets the style of the action.
+   * @returns {DisplayType} The display type of the action.
+   */
+  public getDisplayType(): DisplayType {
+    return this.displayType;
+  }
+
+  /**
+   * Sets the display type of the action.
+   * @param {DisplayType} displayType - The display type to set.
+   * @returns The current instance of the Action class.
+   */
+  public setDisplayType(displayType: DisplayType): this {
+    this.displayType = displayType;
+    return this;
+  }
+
 }
 
 /**
@@ -127,5 +146,14 @@ export class Action extends ChannelCustomizable {
 export enum ActionStyle {
   primary = 'primary',
   danger = 'danger',
+}
+
+/**
+ * Represents the display type of an action.
+ */
+export enum DisplayType {
+  button = 'button',
+  link = 'link',
+  icon = 'icon',
 }
 

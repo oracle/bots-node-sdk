@@ -1,5 +1,5 @@
 import { MessageFactory as MF, TextMessage, Voice, ChannelType, InputStyle, SingleSelectLayoutStyle, MultiSelectLayoutStyle, CardLayout
-  , AttachmentType, FieldAlignment, CommandType, StreamState, TextStreamMessage} from '../../../lib2';
+  , AttachmentType, FieldAlignment, CommandType, StreamState, TextStreamMessage, DisplayType, ActionStyle} from '../../../lib2';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -19,6 +19,8 @@ describe('MessageFactory', () => {
           .setSkipAutoNumber(true)
           .addKeyword('word1')
           .addKeyword('word2')
+          .setDisplayType(DisplayType.icon)
+          .setStyle(ActionStyle.danger)
           .setChannelExtensionProperty(ChannelType.facebook, 'myProp', 'myValue')
           .setChannelExtensionProperty(ChannelType.facebook, 'myProp2', 'myValue2')
           .setChannelExtensionProperty(ChannelType.slack, 'myProp', 'myValue')

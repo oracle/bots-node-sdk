@@ -75,7 +75,7 @@ export namespace Lib {
 
   export type EntityItemPublishPromptMessageEvent = lib.EntityItemPublishPromptMessageEvent
 
-  export type EntityItemPublishDisambiguationMessageEvent = lib.EntityItemPublishDisambiguationMessageEvent
+  export type EntityItemPublishDisambiguateMessageEvent = lib.EntityItemPublishDisambiguateMessageEvent
 
   export type EntityItemMaxPromptsReachedEvent = lib.EntityItemMaxPromptsReachedEvent
 

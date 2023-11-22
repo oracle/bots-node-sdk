@@ -34,7 +34,6 @@ export async function invokeDataQueryEventHandlers(component: DataQueryEventHand
           // update row with formatted value if attribute is included in the row and has a value
           if (row[attributeName]) {
             event.properties = {'attributeValue': row[attributeName]};
-            logger.debug(`Invoking event handler ${handlerPath} with event: ${JSON.stringify(event)}`);
             let returnValue = await Promise.resolve(handler(event.properties, context));
             if (returnValue) {
               row[attributeName] = returnValue
@@ -46,7 +45,6 @@ export async function invokeDataQueryEventHandlers(component: DataQueryEventHand
         let metadata = context.getAttributeUISettings(attributeName);
         if (metadata) {
           event.properties = {'settings': metadata};
-          logger.debug(`Invoking event handler ${handlerPath} with event: ${JSON.stringify(event)}`);
           let returnValue = await Promise.resolve(handler(event.properties, context));
           if (returnValue) {
             context.setAttributeUISettings(attributeName, returnValue);
@@ -57,7 +55,6 @@ export async function invokeDataQueryEventHandlers(component: DataQueryEventHand
         let settings = context.getUISettings();
         if (settings) {
           event.properties = {'settings': settings};
-          logger.debug(`Invoking event handler ${handlerPath} with event: ${JSON.stringify(event)}`);
           let returnValue = await Promise.resolve(handler(event.properties, context));
           if (returnValue) {
             context.setUISettings(returnValue);
@@ -66,21 +63,19 @@ export async function invokeDataQueryEventHandlers(component: DataQueryEventHand
       } else if (handlerPath === `entity.changeResponseData`) {
         let data = context.getQueryResult() || [];
         event.properties = {'responseData': data};
-        logger.debug(`Invoking event handler ${handlerPath} with event: ${JSON.stringify(event)}`);
         let returnValue = await Promise.resolve(handler(event.properties, context));
         if (returnValue) {
           context.setQueryResult(returnValue);
         }
       } else if (handlerPath === `entity.changeBotMessages`) {
         event.properties = {'messages': context.getRequest().candidateMessages};
-        logger.debug(`Invoking event handler ${handlerPath} with event: ${JSON.stringify(event)}`);
         let returnValue = await Promise.resolve(handler(event.properties, context));
         if (returnValue) {
           context.getResponse().messages = returnValue;
         }
       }
     } else {
-      logger.debug(`No handler found for event: ${handlerPath}`);
+      logger.error(`No handler found for event: ${handlerPath}`);
       break;
     }
   }

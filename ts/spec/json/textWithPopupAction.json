@@ -1,0 +1,79 @@
+{
+  "text": "I'm sorry the answer wasn't helpful. Can you please provide feedback to help me improve?",
+  "type": "text",
+  "actions": [
+    {
+      "popupContent": {
+        "type": "editForm",
+        "title": "Give your feedback",
+        "fields": [
+          {
+            "displayType": "text",
+            "labelFontWeight": "bold",
+            "label": "What was the issue with this response?"
+          },
+          {
+            "displayType": "multiSelect",
+            "options": [
+              {
+                "label": "Inaccurate",
+                "value": "inaccurate"
+              },
+              {
+                "label": "Inappropriate",
+                "value": "inappropriate"
+              },
+              {
+                "label": "Irrelevant",
+                "value": "irrelevant"
+              },
+              {
+                "label": "Other",
+                "value": "other"
+              }
+            ],
+            "layoutStyle": "checkboxes",
+            "id": "system_feedback_reasons",
+            "required": true
+          },
+          {
+            "displayType": "textInput",
+            "multiLine": true,
+            "id": "system_feedback_comments",
+            "placeholder": "Additional feedback"
+          }
+        ],
+        "formColumns": 1,
+        "actions": [
+          {
+            "postback": {
+              "rating": "negative",
+              "system.botId": "D92910F5-16F9-4F24-BF2B-8284B356AC61",
+              "action": "cancel",
+              "system.flow": "UnresolvedIntent",
+              "feedbackType": "llm",
+              "system.state": "invokeLLM"
+            },
+            "label": "Cancel",
+            "type": "postback"
+          },
+          {
+            "postback": {
+              "rating": "negative",
+              "system.botId": "D92910F5-16F9-4F24-BF2B-8284B356AC61",
+              "action": "cancel",
+              "system.flow": "UnresolvedIntent",
+              "feedbackType": "llm",
+              "system.state": "invokeLLM"
+            },
+            "label": "Submit Feedback",
+            "type": "submitForm"
+          }
+        ],
+        "channelExtensions": {}
+      },
+      "displayType": "link",
+      "label": "Give Feedback",
+      "type": "popup"
+    }
+  ]}

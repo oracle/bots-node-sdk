@@ -1,0 +1,8 @@
+{
+  "type": "executeApplicationActionCommand",
+  "command": "executeApplicationAction",
+  "applicationName": "HCM",
+  "pageName": "JobRequisition",
+  "action" : "updateFields",
+  "properties": {"foo": "bar"}
+}

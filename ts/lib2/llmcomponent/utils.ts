@@ -24,14 +24,11 @@ export async function invokeLlmComponentHandlers(component: LlmComponentHandler,
     // event handlers can be async (returning a promise), but we dont want to enforce
     // every event handler is async, hence Promise.resolve wrapping of invocation
     if (eventName === `validateResponsePayload` || eventName === `validateRequestPayload`) {
-      logger.debug(`Invoking event handler ${eventName}`);
       let returnValue = await Promise.resolve(handler(event.properties, context));
       // make sure return value is a boolean
       let retValue = returnValue === undefined ? true : (returnValue + '' === 'true')
-      logger.debug(`${eventName} returned ${retValue}`);
       context.getResponse().valid = retValue;
     } else if (eventName === `changeBotMessages` ) {
-      logger.debug(`Invoking event handler ${eventName}`);
       // convert json messages to message class
       const mf = context.getMessageFactory();
       let messages = event.properties.messages.map(msg => mf.messageFromJson(msg));
@@ -48,11 +45,10 @@ export async function invokeLlmComponentHandlers(component: LlmComponentHandler,
       let currMessages = context.getResponse().messages || [];
       context.getResponse().messages = currMessages.concat(messages);
     } else {
-      logger.debug(`Invoking ${event.custom ? 'custom ' : ''}event handler ${eventName}`);
       await Promise.resolve(handler(event.properties, context));
     }
   } else {
-    logger.debug(`No handler found for event: ${eventName}`);
+    logger.error(`No handler found for event: ${eventName}`);
   }
 }
 

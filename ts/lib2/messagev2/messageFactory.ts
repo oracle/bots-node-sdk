@@ -3,8 +3,10 @@ import {
   , Voice, MessageUtil, Row, TableHeading, DatePickerField, MultiSelectField, SelectFieldOption, NumberInputField, SingleSelectField
   , TextField, TextInputField, TimePickerField, ToggleField, LinkField, Field, ReadOnlyField, TextMessage, Attachment, AttachmentType
   , AttachmentMessage, Card, CardMessage, CommandMessage, CommandType, EditFormMessage, FormMessage, NonRawMessage, RawMessage
-  , TableMessage, TableFormMessage, TextStreamMessage, StreamState, CustomEventAction
+  , TableMessage, TableFormMessage, TextStreamMessage, StreamState, CustomEventAction, PopupAction, ActionField, MediaField, MediaType
+  , Action
 } from './internal';
+import { ExecuteApplicationActionCommandMessage, UpdateApplicationContextCommandMessage } from './messagePayload';
 
 /**
  * Factory class to create the various message types of Oracle Digital Assistant Conversation Message Model (CMM)
@@ -175,6 +177,26 @@ export class MessageFactory {
   }
 
   /**
+   * Creates an instance of the ExecuteApplicationActionCommandMessage class.
+   * @param {string} applicationName The name of the application
+   * @param {string} action The action to execute
+   * @returns {ExecuteApplicationActionCommandMessage} The created instance of the ExecuteApplicationActionCommandMessage.
+   */
+  public static createExecuteApplicationActionCommandMessage(applicationName: string, action: string):
+  ExecuteApplicationActionCommandMessage {
+    return new ExecuteApplicationActionCommandMessage(applicationName, action);
+  }
+
+  /**
+   * Creates an instance of the UpdateApplicationContextCommandMessage class.
+   * @param {string} applicationName The name of the application
+   * @returns {UpdateApplicationContextCommandMessage} The created instance of the UpdateApplicationContextCommandMessage.
+   */
+  public static createUpdateApplicationContextCommandMessage(applicationName: string): UpdateApplicationContextCommandMessage {
+    return new UpdateApplicationContextCommandMessage(applicationName);
+  }
+
+  /**
    * Creates an instance of the PaginationInfo class.
    * @param {number} totalCount The total count.
    * @param {number} rangeSize The range size.
@@ -241,6 +263,16 @@ export class MessageFactory {
    */
   public static createUrlAction(label: string, url: string): UrlAction {
     return new UrlAction(label, url);
+  }
+
+  /**
+   * Create a new Popup action
+   * @param {string} label The label of the Popup action.
+   * @param {NonRawMessage} popupContent The content shown in the popup.
+   * @returns {PopupAction} A new instance of the PopupAction class.
+   */
+  public static createPopupAction(label: string, popupContent: NonRawMessage): PopupAction {
+    return new PopupAction(label, popupContent);
   }
 
   /**
@@ -368,26 +400,24 @@ export class MessageFactory {
     return new LinkField(label, value, linkLabel);
   }
 
-  // fields below will be added in 23.08
+  /**
+   * Creates an instance of the ActionField class.
+   * @param action The action of the action field.
+   * @returns The created instance of the ActionField.
+   */
+  public static createActionField(action: Action) {
+    return new ActionField(action);
+  }
 
-  // /**
-  //  * Creates an instance of the ActionField class.
-  //  * @param action The action of the action field.
-  //  * @returns The created instance of the ActionField.
-  //  */
-  // public static createActionField(action: Action) {
-  //   return new ActionField(action);
-  // }
-
-  // /**
-  //  * Creates an instance of the MediaField class.
-  //  * @param label The label of the field.
-  //  * @param value The URL value of the field
-  //  * @param mediaType The media type for the field.
-  //  * @returns The created instance of the MediaField.
-  //  */
-  // public static createMediaField(label: string, value: string, mediaType: MediaType): MediaField {
-  //   return new MediaField(label, value, mediaType);
-  // }
+  /**
+   * Creates an instance of the MediaField class.
+   * @param label The label of the field.
+   * @param value The URL value of the field
+   * @param mediaType The media type for the field.
+   * @returns The created instance of the MediaField.
+   */
+  public static createMediaField(label: string, value: string, mediaType: MediaType): MediaField {
+    return new MediaField(label, value, mediaType);
+  }
 
 }

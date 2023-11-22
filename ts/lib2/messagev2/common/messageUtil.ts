@@ -4,7 +4,7 @@ import {
   , TimePickerField, ToggleField, LinkField, Field, TextMessage, Attachment, AttachmentMessage, Card, CardMessage
   , CommandMessage, EditFormMessage, FormMessage, FormSubmissionMessage, NonRawMessage, TableMessage, TableFormMessage, ReadOnlyForm
   , PaginationInfo, ChannelExtensions, Row, TableHeading, Location, LocationMessage, PostbackMessage, TextStreamMessage
-  , Column, FormRow, ActionField, MediaField
+  , Column, FormRow, ActionField, MediaField, PopupAction, UpdateApplicationContextCommandMessage, ExecuteApplicationActionCommandMessage
 }
   from '../internal';
 
@@ -55,6 +55,12 @@ export class MessageUtil {
       case 'textStream':
         msg = Object.assign(new TextStreamMessage(null, null, null, null), json);
         break;
+      case 'updateApplicationContextCommand':
+        msg = Object.assign(new UpdateApplicationContextCommandMessage(null), json);
+        break;
+      case 'executeApplicationActionCommand':
+        msg = Object.assign(new ExecuteApplicationActionCommandMessage(null, null), json);
+        break;
       default:
         throw new Error(`Error deserializing message, unknown message type: ${type}`);
     }
@@ -86,6 +92,9 @@ export class MessageUtil {
         break;
       case 'submitForm':
         action = Object.assign(new SubmitFormAction(null), json);
+        break;
+      case 'popup':
+        action = Object.assign(new PopupAction(null, null), json);
         break;
       case 'url':
         action = Object.assign(new UrlAction(null, null), json);
