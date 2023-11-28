@@ -22,7 +22,7 @@ export class UpdateApplicationContextCommandMessage extends CommandMessage {
   private pageName?: string;
   private fieldName?: string;
   private parameters?: Map<string, any>;
-  private contextSource: ContextSource;
+  private source: ContextSource;
   private reset?: boolean;
 
   /**
@@ -31,7 +31,7 @@ export class UpdateApplicationContextCommandMessage extends CommandMessage {
    */
   constructor(applicationName: string) {
     super(CommandType.updateApplicationContext);
-    this.contextSource = ContextSource.skill;
+    this.source = ContextSource.skill;
     this.applicationName = applicationName;
   }
 
@@ -39,8 +39,18 @@ export class UpdateApplicationContextCommandMessage extends CommandMessage {
    * Gets the context source
    * @returns {ContextSource} The context source
    */
-  public getContextSource(): ContextSource {
-    return this.contextSource;
+  public getSource(): ContextSource {
+    return this.source;
+  }
+
+  /**
+   * Sets the context source
+   * @param {ContextSource} The context source
+   * @returns {this} The updated instance of the UpdateContextCommandMessage.
+   */
+  public setSource(source: ContextSource): this {
+    this.source = source;
+    return this;
   }
 
   /**

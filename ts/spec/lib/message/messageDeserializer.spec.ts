@@ -205,7 +205,7 @@ describe('MessageDeserializer', () => {
     let expected: string = fs.readFileSync(file, 'utf-8');
     let msg = MF.messageFromJson(JSON.parse(expected)) as UpdateApplicationContextCommandMessage;
     expect(msg.getCommand()).toEqual(CommandType.updateApplicationContext);  
-    expect(msg.getContextSource()).toEqual(ContextSource.skill);
+    expect(msg.getSource()).toEqual(ContextSource.skill);
     expect(msg.getReset()).toBeTruthy;
     expect(msg.getApplicationName()).toEqual('HCM');
     expect(msg.getPageName()).toEqual('JobRequisition');

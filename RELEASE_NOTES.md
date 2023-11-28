@@ -1,5 +1,6 @@
 # Release Notes
 
+- [Version 2.7.3](#v273)
 - [Version 2.7.2](#v272)
 - [Version 2.7.1](#v271)
 - [Version 2.7.0](#v270)
@@ -20,6 +21,12 @@
 - [Version 2.5.0](#v250)
 - [Version 2.4.3](#v243)
 - [Version 2.4.2](#v242)
+
+## <a name="v273">Version 2.7.3 </a>
+ 
+### Fixed Issues
+
+- Renamed contextSource property to source in UpdateApplicationContextCommand
 
 ## <a name="v272">Version 2.7.2 </a>
  
