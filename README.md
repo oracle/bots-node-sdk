@@ -165,10 +165,11 @@ See the README.md that's created in your scaffolded TypeScript project for more 
 
 ## Contributing
 
-<!--[nodoc]-->
-`@oracle/bots-node-sdk` is an open source project. See
-[CONTRIBUTING](https://github.com/oracle/bots-node-sdk/blob/master/CONTRIBUTING.md) for details.
-<!--[/nodoc]-->
+This project welcomes contributions from the community. Before submitting a pull request, please [review our contribution guide](./CONTRIBUTING.md)
+
+## Security
+
+Please consult the [security guide](./SECURITY.md) for our responsible security vulnerability disclosure process
 
 ## License
 
